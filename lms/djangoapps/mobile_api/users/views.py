@@ -285,7 +285,6 @@ class UserCourseEnrollmentsList(generics.ListAPIView):
             is_mobile_available_for_user(self.request.user, enrollment.course_overview)
         ]
 
-
 @api_view(["GET"])
 @mobile_view()
 def my_user_info(request):
