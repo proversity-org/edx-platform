@@ -744,7 +744,7 @@ def prepare_content(content, course_key, is_staff=False, discussion_division_ena
         'read', 'group_id', 'group_name', 'pinned', 'abuse_flaggers',
         'stats', 'resp_skip', 'resp_limit', 'resp_total', 'thread_type',
         'endorsed_responses', 'non_endorsed_responses', 'non_endorsed_resp_total',
-        'endorsement', 'context', 'last_activity_at'
+        'endorsement', 'context', 'last_activity_at', 'private_to_peers'
     ]
 
     if (content.get('anonymous') is False) and ((content.get('anonymous_to_peers') is False) or is_staff):

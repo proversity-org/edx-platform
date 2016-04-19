@@ -173,6 +173,7 @@ define([
                 'is_cohorted': false,
                 'allow_anonymous_to_peers': false,
                 'allow_anonymous': true,
+                'allow_private_to_peers': false,
                 'category_map': {'subcategories': {}, 'children': [], 'entries': {}},
                 'cohorts': []
             }

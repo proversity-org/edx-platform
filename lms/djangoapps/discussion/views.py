@@ -87,9 +87,14 @@ def make_course_settings(course, user):
         'is_discussion_division_enabled': course_discussion_division_enabled(course_discussion_settings),
         'allow_anonymous': course.allow_anonymous,
         'allow_anonymous_to_peers': course.allow_anonymous_to_peers,
+<<<<<<< HEAD
         'groups': [
             {"id": str(group_id), "name": group_name} for group_id, group_name in group_names_by_id.iteritems()
         ],
+=======
+        'allow_private_to_peers': course.allow_private_to_peers,
+        'cohorts': [{"id": str(g.id), "name": g.name} for g in get_course_cohorts(course)],
+>>>>>>> add support for private to staff forum posts
         'category_map': utils.get_discussion_category_map(course, user)
     }
 

@@ -53,8 +53,14 @@
                     },
                     allow_anonymous: false,
                     allow_anonymous_to_peers: false,
+<<<<<<< HEAD
                     is_discussion_division_enabled: true,
                     groups: [
+=======
+                    allow_private_to_peers: false,
+                    is_cohorted: true,
+                    cohorts: [
+>>>>>>> add support for private to staff forum posts
                         {
                             id: 1,
                             name: 'Cohort1'
@@ -123,10 +129,18 @@
                         children: [],
                         entries: {}
                     },
+<<<<<<< HEAD
                     allow_anonymous: false,
                     allow_anonymous_to_peers: false,
                     is_discussion_division_enabled: true,
                     groups: [
+=======
+                    'allow_anonymous': false,
+                    'allow_anonymous_to_peers': false,
+                    'allow_private_to_peers': false,
+                    'is_cohorted': true,
+                    'cohorts': [
+>>>>>>> add support for private to staff forum posts
                         {
                             id: 1,
                             name: 'Cohort1'
@@ -166,10 +180,11 @@
             var checkPostCancelReset;
             beforeEach(function() {
                 this.course_settings = new DiscussionCourseSettings({
-                    allow_anonymous_to_peers: true,
-                    allow_anonymous: true,
-                    category_map: {
-                        subcategories: {
+                    'allow_anonymous_to_peers': true,
+                    'allow_anonymous': true,
+                    'allow_private_to_peers': true,
+                    'category_map': {
+                        'subcategories': {
                             'Week 1': {
                                 subcategories: {},
                                 children: [
@@ -315,7 +330,8 @@
                 collection: this.discussion,
                 course_settings: new DiscussionCourseSettings({
                     allow_anonymous: false,
-                    allow_anonymous_to_peers: false
+                    allow_anonymous_to_peers: false,
+                    allow_private_to_peers: false
                 }),
                 mode: 'inline',
                 topicId: topicId
