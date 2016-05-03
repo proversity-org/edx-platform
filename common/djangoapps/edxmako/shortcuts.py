@@ -39,16 +39,24 @@ def marketing_link(name):
     # link_map maps URLs from the marketing site to the old equivalent on
     # the Django site
     link_map = settings.MKTG_URL_LINK_MAP
+
     enable_mktg_site = configuration_helpers.get_value(
         'ENABLE_MKTG_SITE',
         settings.FEATURES.get('ENABLE_MKTG_SITE', False)
+    )
+    enable_mktg_urls = configuration_helpers.get_value(
+        'ENABLE_MKTG_URLS',
+        settings.FEATURES.get('ENABLE_MKTG_URLS', False)
     )
     marketing_urls = configuration_helpers.get_value(
         'MKTG_URLS',
         settings.MKTG_URLS
     )
 
-    if enable_mktg_site and name in marketing_urls:
+    if enable_mktg_urls and name in marketing_urls:
+        # assume marketing urls are full path links
+        return marketing_urls.get(name)
+    elif enable_mktg_site and name in marketing_urls:
         # special case for when we only want the root marketing URL
         if name == 'ROOT':
             return marketing_urls.get('ROOT')
