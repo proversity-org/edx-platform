@@ -556,15 +556,21 @@ class CourseOverview(TimeStampedModel):
             for course_overview in CourseOverview.objects.values('id')
         ]
 
+    def is_course_home_sidebar_enabled(self):
+        """
+        Returns True if course home sidebar (handouts) is enabled
+        """
+        course = modulestore().get_course(self.id)
+        return course.course_home_sidebar_enabled
+
     def is_discussion_tab_enabled(self):
         """
         Returns True if course has discussion tab and is enabled
         """
-        tabs = self.tabs.all()
-        # creates circular import; hence explicitly referenced is_discussion_enabled
-        for tab in tabs:
-            if tab.tab_id == "discussion" and django_comment_client.utils.is_discussion_enabled(self.id):
-                return True
+        course = modulestore().get_course(self.id)
+        for tab in course.tabs:
+            if tab.type == "discussion" and django_comment_client.utils.is_discussion_enabled(self.id):
+                return not tab.is_hidden
         return False
 
     @property
