@@ -58,6 +58,17 @@ from openedx.core.djangolib.js_utils import (
         <p class="copy">${_('Use course updates to notify students of important dates or exams, highlight particular discussions in the forums, announce schedule changes, and respond to student questions. You add or edit updates in HTML.')}</p>
       </div>
     </section>
+    % if not context_course.course_home_sidebar_enabled:
+      % if len(context_course.info_sidebar_name) == 0:
+        <section class="content">
+          <a href="/settings/advanced/${course_locator}" class=" button new-button" style="float: right;">Course Home Sidebar <i class="icon fa fa-question" style="padding-bottom: 3%;"></i></a>
+        </section>
+      % else:
+        <section class="content">
+          <a href="/settings/advanced/${course_locator}" class=" button new-button" style="float: right;">${_(context_course.info_sidebar_name)} <i class="icon fa fa-question" style="padding-bottom: 3%;"></i></a>
+        </section>
+      % endif
+    % endif
   </div>
 
   <div class="main-wrapper">
@@ -72,7 +83,12 @@ from openedx.core.djangolib.js_utils import (
             <ol class="update-list" id="course-update-list"></ol>
           </article>
         </div>
-        <div class="sidebar course-handouts" id="course-handouts-view"></div>
+          <script>
+            var infoSidebarName = "${_(context_course.info_sidebar_name)}";
+          </script>
+        % if context_course.course_home_sidebar_enabled:
+          <div class="sidebar course-handouts" id="course-handouts-view"></div>
+        % endif
       </div>
     </div>
   </div>

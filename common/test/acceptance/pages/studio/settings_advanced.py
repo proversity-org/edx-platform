@@ -170,6 +170,7 @@ class AdvancedSettingsPage(CoursePage):
             'advanced_modules',
             'allow_anonymous',
             'allow_anonymous_to_peers',
+            'allow_private_to_peers',
             'allow_public_wiki_access',
             'cert_html_view_overrides',
             'cert_name_long',
@@ -182,6 +183,11 @@ class AdvancedSettingsPage(CoursePage):
             'advertised_start',
             'announcement',
             'display_name',
+<<<<<<< HEAD
+=======
+            'info_sidebar_name',
+            'course_home_sidebar_enabled',
+>>>>>>> respect visibility status of course home sidebar
             'is_new',
             'issue_badges',
             'max_student_enrollments_allowed',

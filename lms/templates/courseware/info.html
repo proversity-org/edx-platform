@@ -83,6 +83,11 @@ from openedx.core.djangolib.markup import HTML, Text
           ${HTML(get_course_info_section(request, masquerade_user, course, 'updates'))}
 
         </section>
+<<<<<<< HEAD
+=======
+
+        % if course.course_home_sidebar_enabled:
+>>>>>>> respect visibility status of course home sidebar
         <section aria-label="${_('Handout Navigation')}" class="handouts">
           % if course_tools:
             <h3 class="hd hd-3 handouts-header">${_("Course Tools")}</h3>
@@ -99,7 +104,10 @@ from openedx.core.djangolib.markup import HTML, Text
           <h3 class="hd hd-3  handouts-header">${_(course.info_sidebar_name)}</h3>
           ${HTML(get_course_info_section(request, masquerade_user, course, 'handouts'))}
         </section>
+        % endif
+
       % else:
+        % if course.course_home_sidebar_enabled:
         <section class="updates">
           <h3 class="hd hd-3 handouts-header">${_("Course Updates and News")}</h3>
           ${HTML(get_course_info_section(request, masquerade_user, course, 'guest_updates'))}
@@ -108,7 +116,8 @@ from openedx.core.djangolib.markup import HTML, Text
           <h3 class="hd hd-3 handouts-header">${_("Course Handouts")}</h3>
           ${HTML(get_course_info_section(request, masquerade_user, course, 'guest_handouts'))}
         </section>
-      % endif <!-- if course authenticated -->
+        % endif
+      % endif
       </div>
   </div>
 </main>
