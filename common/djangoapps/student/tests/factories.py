@@ -10,6 +10,7 @@ from factory import lazy_attribute
 from factory.django import DjangoModelFactory
 from opaque_keys.edx.keys import CourseKey
 from pytz import UTC
+<<<<<<< HEAD
 
 from course_modes.models import CourseMode
 from student.models import (
@@ -22,6 +23,10 @@ from student.models import (
     UserProfile,
     UserStanding
 )
+=======
+from opaque_keys.edx.locations import SlashSeparatedCourseKey
+from organizations.models import Organization, OrganizationUser
+>>>>>>> Added organization field to student profile model
 
 # Factories are self documenting
 # pylint: disable=missing-docstring
@@ -60,6 +65,49 @@ class UserProfileFactory(DjangoModelFactory):
     allow_certificate = True
 
 
+<<<<<<< HEAD
+=======
+class CourseModeFactory(DjangoModelFactory):
+    class Meta(object):
+        model = CourseMode
+
+    course_id = None
+    mode_display_name = CourseMode.DEFAULT_MODE.name
+    mode_slug = CourseMode.DEFAULT_MODE_SLUG
+    suggested_prices = ''
+    currency = 'usd'
+    expiration_datetime = None
+
+    @lazy_attribute
+    def min_price(self):
+        if CourseMode.is_verified_slug(self.mode_slug):
+            return random.randint(1, 100)
+        return 0
+
+
+class OrganizationFactory(DjangoModelFactory):
+    class Meta(object):
+        model = Organization
+
+    name = "MIT Test"
+    active = 1
+    created = datetime(2012, 1, 1, tzinfo=UTC)
+    modified = datetime(2012, 1, 1, tzinfo=UTC)
+    short_name = 'MITx'
+    description = "MIT Test Description"
+
+
+class OrganizationUserFactory(DjangoModelFactory):
+    class Meta(object):
+        model = OrganizationUser
+
+    active = 1
+    user_id_id = 1
+    is_instructor = 1
+    organization_id = 1
+
+
+>>>>>>> Added organization field to student profile model
 class RegistrationFactory(DjangoModelFactory):
     class Meta(object):
         model = Registration

@@ -77,7 +77,11 @@ from util.milestones_helpers import (
     remove_prerequisite_course,
     set_prerequisite_courses
 )
+<<<<<<< HEAD
 from util.organizations_helpers import add_organization_course, get_organization_by_short_name, organizations_enabled
+=======
+from organizations.models import Organization, OrganizationUser
+>>>>>>> Added organization field to student profile model
 from util.string_utils import _has_non_ascii_characters
 from xblock_django.api import deprecated_xblocks
 from xmodule.contentstore.content import StaticContent
@@ -281,18 +285,26 @@ def course_rerun_handler(request, course_key_string):
     GET
         html: return html page with form to rerun a course for the given course id
     """
+    user = request.user
+    org_course_creator = _is_org_course_creator(user)
+    is_global_staff = GlobalStaff().has_user(user)
+
+    # this is_staff is different, it is the Django User Model staff status
+    edit_org = 'disabled' if not (user.is_superuser or user.is_staff) else ''
+
     # Only global staff (PMs) are able to rerun courses during the soft launch
-    if not GlobalStaff().has_user(request.user):
+    if not is_global_staff and not org_course_creator is None and not org_course_creator:
         raise PermissionDenied()
     course_key = CourseKey.from_string(course_key_string)
     with modulestore().bulk_operations(course_key):
-        course_module = get_course_and_check_access(course_key, request.user, depth=3)
+        course_module = get_course_and_check_access(course_key, user, depth=3)
         if request.method == 'GET':
             return render_to_response('course-create-rerun.html', {
                 'source_course_key': course_key,
                 'display_name': course_module.display_name,
-                'user': request.user,
-                'course_creator_status': _get_course_creator_status(request.user),
+                'user': user,
+                'edit_org': edit_org,
+                'course_creator_status': _get_course_creator_status(user),
                 'allow_unicode_course_id': settings.FEATURES.get('ALLOW_UNICODE_COURSE_ID', False)
             })
 
@@ -377,6 +389,9 @@ def _accessible_courses_summary_iter(request, org=None):
         if course_summary.location.course == 'templates':
             return False
 
+        if not _user_in_same_org(request.user, course_summary.id):
+            return False;
+
         return has_studio_read_access(request.user, course_summary.id)
     if org is not None:
         courses_summary = [] if org == '' else CourseOverview.get_all_courses(orgs=[org])
@@ -387,7 +402,38 @@ def _accessible_courses_summary_iter(request, org=None):
     return courses_summary, in_process_course_actions
 
 
+<<<<<<< HEAD
 def _accessible_courses_iter(request):
+=======
+def _get_user_org(user):
+    """
+    Gets the organization associated with this user.
+    """
+    user_org = Organization.objects.filter(
+        organizationuser__active=True,
+        organizationuser__user_id_id=user.id).values().first()
+    return user_org
+
+def _user_in_same_org(user, course_id):
+    """
+    Checks if user ORG matches course ORG
+    """
+    user_org = _get_user_org(user)
+
+    course_org = Organization.objects.filter(
+        organizationcourse__course_id=course_id).values().first()
+
+    # either user or course has no org
+    if not user_org or not course_org:
+        return True
+
+    if user_org['id'] == course_org['id']:
+        return True
+    else:
+        return False
+
+def _accessible_courses_list(request):
+>>>>>>> Added organization field to student profile model
     """
     List all courses available to the logged in user by iterating through all the courses.
     This method is only used by tests.
@@ -408,6 +454,9 @@ def _accessible_courses_iter(request):
         # TODO remove this condition when templates purged from db
         if course.location.course == 'templates':
             return False
+
+        if not _user_in_same_org(request.user, course.id):
+            return False;
 
         return has_studio_read_access(request.user, course.id)
 
@@ -527,7 +576,10 @@ def course_listing(request):
     split_archived = settings.FEATURES.get(u'ENABLE_SEPARATE_ARCHIVED_COURSES', False)
     active_courses, archived_courses = _process_courses_list(courses_iter, in_process_course_actions, split_archived)
     in_process_course_actions = [format_in_process_course_view(uca) for uca in in_process_course_actions]
+    edit_org = 'disabled' if not (request.user.is_superuser or request.user.is_staff) else ''
+    org_short_name =  _get_user_org(request.user)['short_name'] if _get_user_org(request.user) else ''
 
+<<<<<<< HEAD
     return render_to_response(u'index.html', {
         u'courses': active_courses,
         u'archived_courses': archived_courses,
@@ -542,6 +594,22 @@ def course_listing(request):
         u'allow_unicode_course_id': settings.FEATURES.get(u'ALLOW_UNICODE_COURSE_ID', False),
         u'allow_course_reruns': settings.FEATURES.get(u'ALLOW_COURSE_RERUNS', True),
         u'optimization_enabled': optimization_enabled
+=======
+    return render_to_response('index.html', {
+        'courses': courses,
+        'in_process_course_actions': in_process_course_actions,
+        'libraries_enabled': LIBRARIES_ENABLED,
+        'libraries': [format_library_for_view(lib) for lib in libraries],
+        'show_new_library_button': get_library_creator_status(user),
+        'user': user,
+        'user_organization': org_short_name,
+        'edit_org': edit_org,
+        'request_course_creator_url': reverse('contentstore.views.request_course_creator'),
+        'course_creator_status': _get_course_creator_status(user),
+        'rerun_creator_status': GlobalStaff().has_user(user),
+        'allow_unicode_course_id': settings.FEATURES.get('ALLOW_UNICODE_COURSE_ID', False),
+        'allow_course_reruns': settings.FEATURES.get('ALLOW_COURSE_RERUNS', True),
+>>>>>>> Added organization field to student profile model
     })
 
 
@@ -751,7 +819,7 @@ def _create_or_rerun_course(request):
     Returns the destination course_key and overriding fields for the new course.
     Raises DuplicateCourseError and InvalidKeyError
     """
-    if not auth.user_has_role(request.user, CourseCreatorRole()):
+    if _get_course_creator_status(request.user) != 'granted':
         raise PermissionDenied()
 
     try:
@@ -821,6 +889,7 @@ def _create_new_course(request, org, number, run, fields):
                         'you will need to add it to the system')},
             status=400
         )
+
     store_for_new_course = modulestore().default_modulestore.get_modulestore_type()
     new_course = create_new_course_in_store(store_for_new_course, request.user, org, number, run, fields)
     add_organization_course(org_data, new_course.id)
@@ -893,6 +962,17 @@ def _rerun_course(request, org, number, run, fields):
     # Rerun the course as a new celery task
     json_fields = json.dumps(fields, cls=EdxJSONEncoder)
     rerun_course.delay(unicode(source_course_key), unicode(destination_course_key), request.user.id, json_fields)
+
+    org_data = get_organization_by_short_name(org)
+    if not org_data and organizations_enabled():
+        return JsonResponse(
+            {'error': _('You must link this course to an organization in order to continue. '
+                        'Organization you selected does not exist in the system, '
+                        'you will need to add it to the system')},
+            status=400
+        )
+
+    add_organization_course(org_data, destination_course_key)
 
     # Return course listing page
     return JsonResponse({
@@ -1683,6 +1763,14 @@ def are_content_experiments_enabled(course):
         'split_test' in course.advanced_modules
     )
 
+def _is_org_course_creator(user):
+    """
+    Helper to determine if user is an organizational instructor and course creator
+    """
+    user_org_link = OrganizationUser.objects.filter(
+        active=True,
+        user_id_id=user.id).values().first()
+    return user_org_link['is_instructor'] if user_org_link else None
 
 def _get_course_creator_status(user):
     """
@@ -1692,8 +1780,11 @@ def _get_course_creator_status(user):
     If the user passed in has not previously visited the index page, it will be
     added with status 'unrequested' if the course creator group is in use.
     """
-
-    if user.is_staff:
+    org_course_creator = _is_org_course_creator(user)
+    # Rather keep the original logic if the user is not linked to an ORG
+    if org_course_creator is not None:
+        course_creator_status = 'granted' if org_course_creator else 'disallowed_for_this_site'
+    elif user.is_staff:
         course_creator_status = 'granted'
     elif settings.FEATURES.get('DISABLE_COURSE_CREATION', False):
         course_creator_status = 'disallowed_for_this_site'

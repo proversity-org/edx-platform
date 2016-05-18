@@ -204,7 +204,6 @@ admin.site.register(PendingNameChange)
 admin.site.register(DashboardConfiguration, ConfigurationModelAdmin)
 admin.site.register(RegistrationCookieConfiguration, ConfigurationModelAdmin)
 
-
 # We must first un-register the User model since it may also be registered by the auth app.
 try:
     admin.site.unregister(User)
@@ -212,3 +211,4 @@ except NotRegistered:
     pass
 
 admin.site.register(User, UserAdmin)
+admin.site.register(UserProfile, UserProfileAdmin)

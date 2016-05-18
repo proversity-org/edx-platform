@@ -6,7 +6,12 @@ from contentstore.tests.utils import AjaxEnabledTestClient
 from contentstore.utils import delete_course, reverse_url
 from courseware.tests.factories import UserFactory
 from student.models import CourseEnrollment
+<<<<<<< HEAD
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
+=======
+from student.tests.factories import OrganizationFactory
+from student.tests.factories import OrganizationUserFactory
+>>>>>>> Added organization field to student profile model
 
 
 class TestUsersDefaultRole(ModuleStoreTestCase):
@@ -22,6 +27,9 @@ class TestUsersDefaultRole(ModuleStoreTestCase):
         self.user = UserFactory(is_staff=True)
         self.client = AjaxEnabledTestClient()
         self.client.login(username=self.user.username, password='test')
+
+        self.test_org = OrganizationFactory(short_name='Org_1')
+        self.test_organizationuser = OrganizationUserFactory()
 
         # create a course via the view handler to create course
         self.course_key = self.store.make_course_key('Org_1', 'Course_1', 'Run_1')

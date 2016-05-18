@@ -57,6 +57,11 @@ from track import contexts
 from util.milestones_helpers import is_entrance_exams_enabled
 from util.model_utils import emit_field_changed_events, get_changed_fields_dict
 from util.query import use_read_replica_if_available
+<<<<<<< HEAD
+=======
+from util.milestones_helpers import is_entrance_exams_enabled
+from organizations.models import Organization
+>>>>>>> 47eb2ed... Added organization field to student profile model
 
 UNENROLL_DONE = Signal(providing_args=["course_enrollment", "skip_refund"])
 ENROLL_STATUS_CHANGE = Signal(providing_args=["event", "user", "course_id", "mode", "cost", "currency"])
@@ -505,13 +510,29 @@ def unique_id_for_user(user, save=True):
     return anonymous_id_for_user(user, None, save=save)
 
 
+class OrganizationUser(models.Model):
+    """
+    An OrganizationUser represents the link between an Organization and a
+    User (via user id).
+    """
+    user_id = models.OneToOneField(User, unique=True, db_index=True)
+    organization = models.ForeignKey(Organization, db_index=True)
+    is_instructor = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        """ Meta class for this Django model """
+        unique_together = (('user_id', 'organization'),)
+        verbose_name = _('Link Organization')
+        verbose_name_plural = _('Link Organizations')
+
+
 # TODO: Should be renamed to generic UserGroup, and possibly
 # Given an optional field for type of group
 class UserTestGroup(models.Model):
     users = models.ManyToManyField(User, db_index=True)
     name = models.CharField(blank=False, max_length=32, db_index=True)
     description = models.TextField(blank=True)
-
 
 class Registration(models.Model):
     ''' Allows us to wait for e-mail before user is registered. A

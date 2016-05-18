@@ -12,7 +12,14 @@ from opaque_keys.edx.keys import CourseKey
 from contentstore.tests.utils import AjaxEnabledTestClient, parse_json
 from student.roles import CourseInstructorRole, CourseStaffRole
 from student.tests.factories import UserFactory
+<<<<<<< HEAD
 from util.organizations_helpers import add_organization, get_course_organizations
+=======
+from student.tests.factories import OrganizationFactory
+from student.tests.factories import OrganizationUserFactory
+from contentstore.tests.utils import AjaxEnabledTestClient, parse_json
+from datetime import datetime
+>>>>>>> Added organization field to student profile model
 from xmodule.course_module import CourseFields
 from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.django import modulestore
@@ -45,6 +52,10 @@ class TestCourseListing(ModuleStoreTestCase):
             start=datetime.utcnow()
         )
         self.source_course_key = source_course.id
+
+        self.org_x = OrganizationFactory(short_name='orgX')
+        self.org_origin = OrganizationFactory(short_name='origin')
+        self.test_organizationuser = OrganizationUserFactory()
 
         for role in [CourseInstructorRole, CourseStaffRole]:
             role(self.source_course_key).add_users(self.user)
@@ -120,7 +131,7 @@ class TestCourseListing(ModuleStoreTestCase):
         """
         with modulestore().default_store(store):
             response = self.client.ajax_post(self.course_create_rerun_url, {
-                'org': 'orgX',
+                'org': 'orgXNotExist',
                 'number': 'CS101',
                 'display_name': 'Course with web certs enabled',
                 'run': '2015_T2'

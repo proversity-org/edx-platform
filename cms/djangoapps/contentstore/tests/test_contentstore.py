@@ -49,6 +49,26 @@ from xmodule.modulestore.xml_exporter import export_course_to_xml
 from xmodule.modulestore.xml_importer import import_course_from_xml, perform_xlint
 from xmodule.seq_module import SequenceDescriptor
 
+<<<<<<< HEAD
+=======
+from contentstore.utils import delete_course_and_groups, reverse_url, reverse_course_url
+from django_comment_common.utils import are_permissions_roles_seeded
+
+from student import auth
+from student.models import CourseEnrollment
+from student.roles import CourseCreatorRole, CourseInstructorRole
+from opaque_keys import InvalidKeyError
+from contentstore.tests.utils import get_url
+from course_action_state.models import CourseRerunState, CourseRerunUIStateManager
+
+from course_action_state.managers import CourseActionStateItemNotFoundError
+from xmodule.contentstore.content import StaticContent
+from xmodule.modulestore.django import modulestore
+
+from student.tests.factories import OrganizationFactory
+from student.tests.factories import OrganizationUserFactory
+
+>>>>>>> Added organization field to student profile model
 TEST_DATA_CONTENTSTORE = copy.deepcopy(settings.CONTENTSTORE)
 TEST_DATA_CONTENTSTORE['DOC_STORE_CONFIG']['db'] = 'test_xcontent_%s' % uuid4().hex
 
@@ -1147,6 +1167,8 @@ class ContentStoreTest(ContentStoreTestCase):
     def setUp(self):
         super(ContentStoreTest, self).setUp()
 
+        self.test_org = OrganizationFactory()
+        self.test_organizationuser = OrganizationUserFactory()
         self.course_data = {
             'org': 'MITx',
             'number': '111',
@@ -1194,6 +1216,8 @@ class ContentStoreTest(ContentStoreTestCase):
         self.course_data['org'] = 'org.foo.bar'
         self.course_data['number'] = 'course.number'
         self.course_data['run'] = 'run.name'
+        # Create a new ORG
+        self.new_test_org = OrganizationFactory(short_name='org.foo.bar')
         self.assert_created_course()
 
     @ddt.data(ModuleStoreEnum.Type.split, ModuleStoreEnum.Type.mongo)
@@ -1352,7 +1376,17 @@ class ContentStoreTest(ContentStoreTestCase):
     @ddt.data(ModuleStoreEnum.Type.split, ModuleStoreEnum.Type.mongo)
     def test_create_course_case_change(self, default_store):
         """Test new course creation - error path due to case insensitive name equality"""
+<<<<<<< HEAD
         self.course_data['number'] = '99x'
+=======
+        self.course_data['number'] = 'capital'
+        self.client.ajax_post('/course/', self.course_data)
+        cache_current = self.course_data['org']
+        self.course_data['org'] = self.course_data['org'].lower()
+        self.test_lowerorg = OrganizationFactory(short_name=self.course_data['org'])
+        self.assert_course_creation_failed('There is already a course defined with the same organization and course number. Please change either organization or course number to be unique.')
+        self.course_data['org'] = cache_current
+>>>>>>> 258bdc5... Nonexistent ORG then don't create course. Update tests
 
         with self.store.default_store(default_store):
 
@@ -1389,13 +1423,20 @@ class ContentStoreTest(ContentStoreTestCase):
         self.course_data['number'] = '{}a'.format(self.course_data['number'])
         resp = self.client.ajax_post('/course/', self.course_data)
         self.assertEqual(resp.status_code, 200)
+
         self.course_data['number'] = cache_current
         self.course_data['org'] = 'a{}'.format(self.course_data['org'])
+        # Create a new ORG
+        self.new_test_org = OrganizationFactory(short_name = self.course_data['org'])
+        # change user ORG
+        self.test_organizationuser.organization_id = self.new_test_org.id
+        self.test_organizationuser.save()
         resp = self.client.ajax_post('/course/', self.course_data)
         self.assertEqual(resp.status_code, 200)
 
     def test_create_course_with_bad_organization(self):
         """Test new course creation - error path for bad organization name"""
+        self.test_badorg = OrganizationFactory(short_name='University of California, Berkeley')
         self.course_data['org'] = 'University of California, Berkeley'
         self.assert_course_creation_failed(r"(?s)Unable to create course 'Robot Super Course'.*")
 
@@ -1404,11 +1445,21 @@ class ContentStoreTest(ContentStoreTestCase):
         with mock.patch.dict('django.conf.settings.FEATURES', {'DISABLE_COURSE_CREATION': True}):
             self.assert_created_course()
 
-    def test_create_course_with_course_creation_disabled_not_staff(self):
-        """Test new course creation -- error path for course creation disabled, not staff access."""
+    def test_create_course_with_course_creation_disabled_not_staff_user_org_exists(self):
+        """Test new course creation -- user org exists, course creation disabled, not staff access."""
         with mock.patch.dict('django.conf.settings.FEATURES', {'DISABLE_COURSE_CREATION': True}):
             self.user.is_staff = False
             self.user.save()
+            self.assert_created_course()
+
+    def test_create_course_with_course_creation_disabled_not_staff(self):
+        """Test new course creation -- user org not exists, course creation disabled, not staff access."""
+        with mock.patch.dict('django.conf.settings.FEATURES', {'DISABLE_COURSE_CREATION': True}):
+            self.user.is_staff = False
+            self.user.save()
+            self.test_organizationuser.user_id_id=10
+            self.test_organizationuser.organization_id=10
+            self.test_organizationuser.save()
             self.assert_course_permission_denied()
 
     def test_create_course_no_course_creators_staff(self):
@@ -1613,6 +1664,8 @@ class ContentStoreTest(ContentStoreTestCase):
             'display_name': 'Robot Super Course',
             'run': target_id.run
         }
+        # Create a new ORG
+        self.new_test_org = OrganizationFactory(short_name='edX')
         _create_course(self, target_id, course_data)
         course_module = self.store.get_course(target_id)
         course_module.wiki_slug = 'toy'
@@ -1852,6 +1905,10 @@ class RerunCourseTest(ContentStoreTestCase):
     """
     def setUp(self):
         super(RerunCourseTest, self).setUp()
+
+        self.test_org = OrganizationFactory()
+        self.test_organizationuser = OrganizationUserFactory()
+
         self.destination_course_data = {
             'org': 'MITx',
             'number': '111',
@@ -2056,7 +2113,7 @@ class RerunCourseTest(ContentStoreTestCase):
         Test that unique wiki_slug is assigned to rerun course.
         """
         course_data = {
-            'org': 'edX',
+            'org': 'MITx',
             'number': '123',
             'display_name': 'Rerun Course',
             'run': '2013'
