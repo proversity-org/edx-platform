@@ -1376,17 +1376,7 @@ class ContentStoreTest(ContentStoreTestCase):
     @ddt.data(ModuleStoreEnum.Type.split, ModuleStoreEnum.Type.mongo)
     def test_create_course_case_change(self, default_store):
         """Test new course creation - error path due to case insensitive name equality"""
-<<<<<<< HEAD
         self.course_data['number'] = '99x'
-=======
-        self.course_data['number'] = 'capital'
-        self.client.ajax_post('/course/', self.course_data)
-        cache_current = self.course_data['org']
-        self.course_data['org'] = self.course_data['org'].lower()
-        self.test_lowerorg = OrganizationFactory(short_name=self.course_data['org'])
-        self.assert_course_creation_failed('There is already a course defined with the same organization and course number. Please change either organization or course number to be unique.')
-        self.course_data['org'] = cache_current
->>>>>>> 258bdc5... Nonexistent ORG then don't create course. Update tests
 
         with self.store.default_store(default_store):
 
