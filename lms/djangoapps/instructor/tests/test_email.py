@@ -56,6 +56,7 @@ class TestNewInstructorDashboardEmailViewMongoBacked(SharedModuleStoreTestCase):
 
         send_to_label = '<div class="send_to_list">Send to:</div>'
         self.assertIn(send_to_label, response.content)
+
         self.assertEqual(response.status_code, 200)
 
     # The course is Mongo-backed but the flag is disabled (should not work)

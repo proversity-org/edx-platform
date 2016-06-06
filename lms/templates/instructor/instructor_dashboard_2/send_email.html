@@ -76,7 +76,7 @@ from openedx.core.djangolib.markup import HTML
             <label>
                 ${_("Message:")}
                 <div class="email-editor">
-                    ${ HTML(section_data['editor']) }
+                    ${ section_data['editor'] }
                 </div>
                 <input type="hidden" name="message" value="">
             </label>
