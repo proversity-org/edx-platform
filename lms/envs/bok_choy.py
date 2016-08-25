@@ -183,6 +183,7 @@ FEATURES['ENABLE_COURSEWARE_SEARCH'] = True
 
 # Enable dashboard search for tests
 FEATURES['ENABLE_DASHBOARD_SEARCH'] = True
+FEATURES['ENABLE_DASHBOARD_SIDEBAR'] = True
 
 # discussion home panel, which includes a subscription on/off setting for discussion digest emails.
 FEATURES['ENABLE_DISCUSSION_HOME_PANEL'] = True
