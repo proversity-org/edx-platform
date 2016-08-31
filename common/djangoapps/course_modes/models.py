@@ -227,6 +227,11 @@ class CourseMode(models.Model):
         self._expiration_datetime = new_datetime
 
     @classmethod
+    def get_default_course_mode(cls):
+        default_currency = settings.PAID_COURSE_REGISTRATION_CURRENCY[0]
+        return Mode(cls.AUDIT, _('Audit'), 0, '', default_currency, None, None, None, None)
+
+    @classmethod
     def all_modes_for_courses(cls, course_id_list):
         """Find all modes for a list of course IDs, including expired modes.
 
@@ -246,7 +251,7 @@ class CourseMode(models.Model):
         # Assign default modes if nothing available in the database
         missing_courses = set(course_id_list) - set(modes_by_course.keys())
         for course_id in missing_courses:
-            modes_by_course[course_id] = [cls.DEFAULT_MODE]
+            modes_by_course[course_id] = [cls.get_default_course_mode()]
 
         return modes_by_course
 
@@ -348,7 +353,7 @@ class CourseMode(models.Model):
 
         modes = ([mode.to_tuple() for mode in found_course_modes])
         if not modes:
-            modes = [cls.DEFAULT_MODE]
+            modes = [cls.get_default_course_mode()]
 
         return modes
 

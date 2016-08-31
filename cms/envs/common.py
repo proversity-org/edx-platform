@@ -109,9 +109,14 @@ from lms.envs.common import (
 
     CONTACT_EMAIL,
 
+<<<<<<< HEAD
     DISABLE_ACCOUNT_ACTIVATION_REQUIREMENT_SWITCH,
     # Video Image settings
     VIDEO_IMAGE_SETTINGS,
+=======
+    # Setting for PAID_COURSE_REGISTRATION, DOES NOT AFFECT VERIFIED STUDENTS
+    PAID_COURSE_REGISTRATION_CURRENCY
+>>>>>>> display default checkout currency correctly
 )
 from path import Path as path
 from warnings import simplefilter
