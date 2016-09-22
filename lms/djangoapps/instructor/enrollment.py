@@ -361,15 +361,21 @@ def get_email_params(course, auto_enroll, secure=True, course_key=None, display_
     )
     # TODO: Use request.build_absolute_uri rather than '{proto}://{site}{path}'.format
     # and check with the Services team that this works well with microsites
+
+    full_course_url = u'{proto}://{site}{path}'.format(
+        proto=protocol,
+        site=stripped_site_name,
+        path=reverse('course_root', kwargs={'course_id': course_key}).replace('+','%2B')
+    )
     registration_url = u'{proto}://{site}{path}'.format(
         proto=protocol,
         site=stripped_site_name,
-        path=reverse('register_user')
+        path=reverse('register_user') + '?next=' + full_course_url
     )
     course_url = u'{proto}://{site}{path}'.format(
         proto=protocol,
         site=stripped_site_name,
-        path=reverse('course_root', kwargs={'course_id': course_key})
+        path=reverse('signin_user') + '?next=' + full_course_url
     )
 
     # We can't get the url to the course's About page if the marketing site is enabled.
