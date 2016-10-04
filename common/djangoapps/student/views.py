@@ -2026,6 +2026,10 @@ def create_account_with_params(request, params):
 
     create_comments_service_user(user)
 
+    is_user_api_registration = False
+    if 'is_user_api_registration' in request.session:
+        is_user_api_registration = request.session['is_user_api_registration']
+
     # Don't send email if we are:
     #
     # 1. Doing load testing.
@@ -2042,6 +2046,7 @@ def create_account_with_params(request, params):
         not settings.FEATURES.get('SKIP_EMAIL_VALIDATION', None) and
         not settings.FEATURES.get('AUTOMATIC_AUTH_FOR_TESTING') and
         not (do_external_auth and settings.FEATURES.get('BYPASS_ACTIVATION_EMAIL_FOR_EXTAUTH')) and
+        not (is_user_api_registration and settings.FEATURES.get('BYPASS_ACTIVATION_FOR_USER_API')) and
         not (
             third_party_provider and third_party_provider.skip_email_verification and
             user.email == running_pipeline['kwargs'].get('details', {}).get('email')

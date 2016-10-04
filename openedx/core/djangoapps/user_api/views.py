@@ -146,6 +146,9 @@ class RegistrationView(APIView):
         if data.get("honor_code") and "terms_of_service" not in data:
             data["terms_of_service"] = data["honor_code"]
 
+        # Enable use of BYPASS_ACTIVATION_FOR_USER_API
+        request.session['is_user_api_registration'] = True
+
         try:
             user = create_account_with_params(request, data)
         except AccountValidationError as err:
