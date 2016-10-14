@@ -2,6 +2,8 @@
 <%namespace name='static' file='static_content.html'/>
 <%! from django.utils.translation import ugettext as _ %>
 
+% if len(courses) > 0:
+
 <section class="courses-container">
   <section class="highlighted-courses">
 
@@ -26,3 +28,5 @@
 
   </section>
 </section>
+
+% endif
