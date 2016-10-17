@@ -20,6 +20,13 @@ class VideoFields(object):
         scope=Scope.settings
     )
 
+    duration = Float(
+        help="Duration of video in seconds",
+        display_name="Duration",
+        default=0.0,
+        scope=Scope.settings
+    )
+
     saved_video_position = RelativeTime(
         help=_("Current position in the video."),
         scope=Scope.user_state,

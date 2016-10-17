@@ -13,8 +13,10 @@ Examples of html5 videos for manual testing:
     https://s3.amazonaws.com/edx-course-videos/edx-intro/edX-FA12-cware-1_100.ogv
 """
 import copy
+import datetime
 import json
 import logging
+import hashlib
 import random
 from collections import OrderedDict
 from operator import itemgetter
@@ -372,6 +374,8 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
             'cdn_exp_group': cdn_exp_group,
             'id': self.location.html_id(),
             'display_name': self.display_name_with_default,
+            'duration': self.duration,
+            'edx_video_id': self.edx_video_id,
             'handout': self.handout,
             'download_video_link': download_video_link,
             'track': track_url,
@@ -494,6 +498,43 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
         This should be fixed too.
         """
         metadata_was_changed_by_user = old_metadata != own_metadata(self)
+
+        if edxval_api and int(self.duration) > 0:
+            video_url = ""
+            if len(self.html5_sources):
+                video_url = self.html5_sources[0]
+            elif self.youtube_id_1_0:
+                video_url = "https://www.youtube.com/watch?v=" + str(self.youtube_id_1_0)
+
+            if video_url:
+                if not self.edx_video_id:
+                    now = datetime.datetime.now()
+                    hash_object = hashlib.sha256(str(now))
+                    hex_dig = hash_object.hexdigest()
+                    self.edx_video_id = hex_dig
+                    self.save()
+
+                payload = {
+                    "url": video_url,
+                    "edx_video_id": self.edx_video_id,
+                    "duration": self.duration,
+                    "status": "live",
+                    "encoded_videos": [{
+                        "url": video_url,
+                        "file_size": 1,
+                        "bitrate": 1,
+                        "profile": "mobile_high"
+                    }]
+                }
+
+                # TODO: Change this try catch
+                try:
+                    edxval_api.get_video_info(hex_dig)
+                except:
+                    edxval_api.create_video(payload)
+                # with this
+                # edxval_api.create_video(payload)
+                # when edxval app is updated
 
         # There is an edge case when old_metadata and own_metadata are same and we are importing transcript from youtube
         # then there is a syncing issue where html5_subs are not syncing with youtube sub, We can make sync better by
@@ -698,6 +739,8 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
         video_url = metadata_fields['html5_sources']
         video_id = metadata_fields['edx_video_id']
         youtube_id_1_0 = metadata_fields['youtube_id_1_0']
+        duration = metadata_fields['duration']
+        edx_video_id = metadata_fields['edx_video_id']
 
         def get_youtube_link(video_id):
             """
@@ -751,7 +794,8 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
         metadata = {
             'display_name': display_name,
             'video_url': video_url,
-            'edx_video_id': video_id
+            'edx_video_id': video_id,
+            'duration': duration
         }
 
         _context.update({'transcripts_basic_tab_metadata': metadata})
