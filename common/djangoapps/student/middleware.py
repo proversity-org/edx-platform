@@ -56,10 +56,8 @@ class UserCourseFilteringMiddleware(object):
     NB this should not affect ADMIN OR LMS. Do not add this Middleware to LMS.
     """
     def process_request(self, request):
-        org_is_enabled = settings.FEATURES.get('ORGANIZATIONS_APP', False)
-        if org_is_enabled:
-	    user = request.user
-
+        if settings.FEATURES.get('ORGANIZATIONS_APP', False):
+            user = request.user
             user_org = Organization.objects.filter(
                 organizationuser__active=True,
                 organizationuser__user_id_id=user.id).values().first()

@@ -9,12 +9,15 @@ from contentstore.tests.utils import AjaxEnabledTestClient
 from contentstore.utils import reverse_course_url, reverse_url
 from student import auth
 <<<<<<< HEAD
+<<<<<<< HEAD
 from student.roles import CourseInstructorRole, CourseStaffRole, OrgInstructorRole, OrgStaffRole
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 =======
 from student.tests.factories import OrganizationFactory
 from student.tests.factories import OrganizationUserFactory
 >>>>>>> Added organization field to student profile model
+=======
+>>>>>>> force and lock organization for org users in studio
 
 
 class TestCourseAccess(ModuleStoreTestCase):
@@ -35,10 +38,6 @@ class TestCourseAccess(ModuleStoreTestCase):
         # create a course via the view handler which has a different strategy for permissions than the factory
         self.course_key = self.store.make_course_key('myu', 'mydept.mycourse', 'myrun')
         course_url = reverse_url('course_handler')
-
-        self.test_org = OrganizationFactory(short_name=self.course_key.org)
-        self.mylink = OrganizationUserFactory(user_id_id=self.user.id, organization_id=self.test_org.id)
-
         self.client.ajax_post(
             course_url,
             {
@@ -48,6 +47,7 @@ class TestCourseAccess(ModuleStoreTestCase):
                 'run': self.course_key.run,
             },
         )
+
         self.users = self._create_users()
 
     def _create_users(self):
@@ -62,7 +62,6 @@ class TestCourseAccess(ModuleStoreTestCase):
             user.is_active = True
             user.save()
             users.append(user)
-            OrganizationUserFactory(user_id_id=user.id, organization_id=self.test_org.id)
         return users
 
     def tearDown(self):
@@ -79,7 +78,6 @@ class TestCourseAccess(ModuleStoreTestCase):
         """
         # first check the course creator.has explicit access (don't use has_access as is_staff
         # will trump the actual test)
-        print(CourseInstructorRole(self.course_key).has_user(self.user))
         self.assertTrue(
             CourseInstructorRole(self.course_key).has_user(self.user),
             "Didn't add creator as instructor."

@@ -3,7 +3,16 @@ import random
 from datetime import datetime
 from uuid import uuid4
 
+<<<<<<< HEAD
 import factory
+=======
+from student.models import (User, UserProfile, Registration,
+                            CourseEnrollmentAllowed, CourseEnrollment,
+                            PendingEmailChange, UserStanding,
+                            CourseAccessRole)
+
+from course_modes.models import CourseMode
+>>>>>>> force and lock organization for org users in studio
 from django.contrib.auth.models import AnonymousUser, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from factory import lazy_attribute
@@ -103,7 +112,7 @@ class OrganizationUserFactory(DjangoModelFactory):
 
     active = 1
     user_id_id = 1
-    is_instructor = 1
+    is_staff = 1
     organization_id = 1
 
 

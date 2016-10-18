@@ -389,8 +389,9 @@ def _accessible_courses_summary_iter(request, org=None):
         if course_summary.location.course == 'templates':
             return False
 
-        if not _user_in_same_org(request.user, course_summary.id):
-            return False;
+        if not GlobalStaff().has_user(request.user):
+            if not _user_in_same_org(request.user, course_summary.id):
+                return False;
 
         return has_studio_read_access(request.user, course_summary.id)
     if org is not None:
@@ -425,12 +426,9 @@ def _user_in_same_org(user, course_id):
 
     # either user or course has no org
     if not user_org or not course_org:
-        return True
-
-    if user_org['id'] == course_org['id']:
-        return True
-    else:
         return False
+
+    return user_org['id'] == course_org['id']
 
 def _accessible_courses_list(request):
 >>>>>>> Added organization field to student profile model
@@ -480,6 +478,9 @@ def _accessible_courses_list_from_groups(request):
     instructor_courses = UserBasedRole(request.user, CourseInstructorRole.ROLE).courses_with_role()
     staff_courses = UserBasedRole(request.user, CourseStaffRole.ROLE).courses_with_role()
     all_courses = filter(filter_ccx, instructor_courses | staff_courses)
+
+    if len(all_courses) == 0:
+        raise AccessListFallback
 
     for course_access in all_courses:
         course_key = course_access.course_id
@@ -1770,7 +1771,7 @@ def _is_org_course_creator(user):
     user_org_link = OrganizationUser.objects.filter(
         active=True,
         user_id_id=user.id).values().first()
-    return user_org_link['is_instructor'] if user_org_link else None
+    return user_org_link and (user_org_link['is_staff'] if user_org_link else False)
 
 def _get_course_creator_status(user):
     """

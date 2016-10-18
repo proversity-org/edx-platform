@@ -507,23 +507,6 @@ def unique_id_for_user(user, save=True):
     return anonymous_id_for_user(user, None, save=save)
 
 
-class OrganizationUser(models.Model):
-    """
-    An OrganizationUser represents the link between an Organization and a
-    User (via user id).
-    """
-    user_id = models.OneToOneField(User, unique=True, db_index=True)
-    organization = models.ForeignKey(Organization, db_index=True)
-    is_instructor = models.BooleanField(default=False)
-    active = models.BooleanField(default=True)
-
-    class Meta:
-        """ Meta class for this Django model """
-        unique_together = (('user_id', 'organization'),)
-        verbose_name = _('Link Organization')
-        verbose_name_plural = _('Link Organizations')
-
-
 # TODO: Should be renamed to generic UserGroup, and possibly
 # Given an optional field for type of group
 class UserTestGroup(models.Model):

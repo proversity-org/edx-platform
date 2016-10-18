@@ -8,6 +8,14 @@ from ccx_keys.locator import CCXBlockUsageLocator, CCXLocator
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from opaque_keys.edx.locator import LibraryLocator
+<<<<<<< HEAD
+=======
+from ccx_keys.locator import CCXLocator, CCXBlockUsageLocator
+
+from organizations.models import Organization
+from student.roles import GlobalStaff, CourseCreatorRole, CourseStaffRole, CourseInstructorRole, CourseRole, \
+    CourseBetaTesterRole, OrgInstructorRole, OrgStaffRole, LibraryUserRole, OrgLibraryUserRole
+>>>>>>> force and lock organization for org users in studio
 
 from student.roles import (
     CourseBetaTesterRole,
@@ -67,6 +75,15 @@ def user_has_role(user, role):
         return True
     return False
 
+def _get_user_org(user):
+    """
+    Gets the organization associated with this user.
+    """
+    user_org = Organization.objects.filter(
+        organizationuser__active=True,
+        organizationuser__user_id_id=user.id).values().first()
+    return user_org['short_name'] if user_org else None
+
 
 def get_user_permissions(user, course_key, org=None):
     """
@@ -95,6 +112,8 @@ def get_user_permissions(user, course_key, org=None):
     if course_key and isinstance(course_key, LibraryLocator):
         if OrgLibraryUserRole(org=org).has_user(user) or user_has_role(user, LibraryUserRole(course_key)):
             return STUDIO_VIEW_USERS | STUDIO_VIEW_CONTENT
+    if _get_user_org(user) == org:
+        return all_perms
     return STUDIO_NO_PERMISSIONS
 
 
