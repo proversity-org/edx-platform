@@ -2,12 +2,21 @@
 
 ${_("Dear {full_name}").format(full_name=full_name)}
 
+% if user_is_active:
 ${_("You have been enrolled in {course_name} at {site_name} by a member "
 	"of the course staff. The course should now appear on your {site_name} "
 	"dashboard.").format(
 		course_name=display_name or course.display_name_with_default_escaped,
 		site_name=site_name
 	)}
+% else:
+${_("You have been enrolled in {course_name} at {site_name} by a member "
+	"of the course staff. Once you have activated your account you will be able to access the course on your {site_name} "
+	"dashboard.").format(
+		course_name=display_name or course.display_name_with_default_escaped,
+		site_name=site_name
+	)}
+% endif
 
 ${_("To start accessing course materials, please visit {course_url}").format(
 		course_url=course_url

@@ -138,6 +138,7 @@ def enroll_email(course_id, student_email, auto_enroll=False, email_students=Fal
             email_params['message'] = 'enrolled_enroll'
             email_params['email_address'] = student_email
             email_params['full_name'] = previous_state.full_name
+            email_params['user_is_active'] = previous_state.user.is_active
             send_mail_to_student(student_email, email_params, language=language)
     else:
         cea, _ = CourseEnrollmentAllowed.objects.get_or_create(course_id=course_id, email=student_email)
@@ -399,6 +400,7 @@ def get_email_params(course, auto_enroll, secure=True, course_key=None, display_
         'course_url': course_url,
         'course_about_url': course_about_url,
         'is_shib_course': is_shib_course,
+        'user_is_active': True
     }
     return email_params
 
@@ -420,6 +422,7 @@ def send_mail_to_student(student, param_dict, language=None):
         `full_name`: student full name (a `str`)
         `message`: type of email to send and template to use (a `str`)
         `is_shib_course`: (a `boolean`)
+        `active_user`: (a `boolean`)
     ]
 
     `language` is the language used to render the email. If None the language
