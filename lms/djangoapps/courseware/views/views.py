@@ -668,6 +668,7 @@ def course_about(request, course_id):
             return redirect(reverse(course_home_url_name(course.id), args=[unicode(course.id)]))
 
         registered = registered_for_course(course, request.user)
+        user_is_active = request.user.is_active
 
         staff_access = bool(has_access(request.user, 'staff', course))
         studio_url = get_studio_url(course, 'settings/details')
@@ -753,6 +754,7 @@ def course_about(request, course_id):
             'staff_access': staff_access,
             'studio_url': studio_url,
             'registered': registered,
+            'user_is_active': user_is_active,
             'course_target': course_target,
             'is_cosmetic_price_enabled': settings.FEATURES.get('ENABLE_COSMETIC_DISPLAY_PRICE'),
             'course_price': course_price,

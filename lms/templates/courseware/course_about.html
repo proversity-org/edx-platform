@@ -7,6 +7,7 @@ from django.conf import settings
 from edxmako.shortcuts import marketing_link
 from openedx.core.djangolib.markup import HTML
 from openedx.core.lib.courses import course_image_url
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 %>
 
 <%inherit file="../main.html" />
@@ -118,15 +119,24 @@ from openedx.core.lib.courses import course_image_url
 
         <div class="main-cta">
         %if user.is_authenticated() and registered:
-          %if show_courseware_link:
+          %if show_courseware_link and user_is_active:
             <a href="${course_target}">
+          %else:
+            <a href="#">
           %endif
 
           <span class="register disabled">${_("You are enrolled in this course")}</span>
 
-          %if show_courseware_link:
+          %if show_courseware_link and user_is_active:
             <strong>${_("View Course")}</strong>
             </a>
+          %else:
+            </a>
+            <p>
+              <b>${_("Activate Your {platform_name} Account").format(
+                  platform_name=configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME
+              ))}</b>
+            </p>
           %endif
 
         %elif in_cart:
