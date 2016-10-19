@@ -87,6 +87,7 @@ class UserReadOnlySerializer(serializers.Serializer):
             # https://docs.djangoproject.com/en/1.8/ref/databases/#fractional-seconds-support-for-time-and-datetime-fields
             "date_joined": user.date_joined.replace(microsecond=0),
             "is_active": user.is_active,
+            "is_staff": user.is_staff,
             "bio": None,
             "country": None,
             "profile_image": None,
