@@ -422,7 +422,7 @@ def send_mail_to_student(student, param_dict, language=None):
         `full_name`: student full name (a `str`)
         `message`: type of email to send and template to use (a `str`)
         `is_shib_course`: (a `boolean`)
-        `active_user`: (a `boolean`)
+        `user_is_active`: (a `boolean`)
     ]
 
     `language` is the language used to render the email. If None the language
