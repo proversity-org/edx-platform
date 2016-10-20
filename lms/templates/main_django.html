@@ -23,6 +23,8 @@
   {% optional_include "head-extra.html"|microsite_template_path %}
 
   <meta name="path_prefix" content="{{EDX_ROOT_URL}}">
+  <!-- Cookie Law -->
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.1/cookieconsent.min.css" />
 </head>
 
 <body class="{% block bodyclass %}{% endblock %} lang_{{LANGUAGE_CODE}}">
@@ -46,6 +48,19 @@
     {% javascript 'base_application' %}
 
     {% render_block "js" %}
+
+  <!-- Cookie Law -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.1/cookieconsent.min.js"></script>
+  <script>
+    window.cookieconsent.initialise({
+      palette:{
+        popup: {background: "#323538", text: "#ffffff"},
+        button: {background: "#06a8e0"},
+      },
+      theme: "classic"
+    });
+    $('.cc-window').css("font-family", "Lato");
+  </script>
 </body>
 </html>
 

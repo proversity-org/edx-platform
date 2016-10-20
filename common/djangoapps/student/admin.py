@@ -211,4 +211,3 @@ except NotRegistered:
     pass
 
 admin.site.register(User, UserAdmin)
-admin.site.register(UserProfile, UserProfileAdmin)
