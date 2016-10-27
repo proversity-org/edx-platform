@@ -1127,10 +1127,11 @@ def results_callback(request):
         "Date": request.META.get("HTTP_DATE", "")
     }
 
+    body_for_signature = {"EdX-ID": body_dict["EdX-ID"]}
     has_valid_signature(
         "POST",
         headers,
-        body_dict,
+        body_for_signature,
         settings.VERIFY_STUDENT["SOFTWARE_SECURE"]["API_ACCESS_KEY"],
         settings.VERIFY_STUDENT["SOFTWARE_SECURE"]["API_SECRET_KEY"]
     )
