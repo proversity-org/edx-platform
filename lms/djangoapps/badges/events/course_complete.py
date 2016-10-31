@@ -69,18 +69,23 @@ def criteria(course_key):
     return u'{}{}'.format(site_prefix(), about_path)
 
 
-def get_completion_badge(course_id, user):
+def get_completion_badge(course_id, user, preview_mode=None):
     """
     Given a course key and a user, find the user's enrollment mode
     and get the Course Completion badge.
     """
     from student.models import CourseEnrollment
-    badge_classes = CourseEnrollment.objects.filter(
-        user=user, course_id=course_id
-    ).order_by('-is_active')
-    if not badge_classes:
-        return None
-    mode = badge_classes[0].mode
+    if user.is_staff:
+        mode = 'honor'
+        if preview_mode:
+            mode = preview_mode
+    else:
+        badge_classes = CourseEnrollment.objects.filter(
+            user=user, course_id=course_id
+        ).order_by('-is_active')
+        if not badge_classes:
+            return None
+        mode = badge_classes[0].mode
     course = modulestore().get_course(course_id)
     if not course.issue_badges:
         return None

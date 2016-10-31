@@ -1,6 +1,8 @@
 """
 Database models for the badges app
 """
+import logging
+
 from importlib import import_module
 
 from config_models.models import ConfigurationModel
@@ -18,6 +20,8 @@ from opaque_keys.edx.keys import CourseKey
 from badges.utils import deserialize_count_specs
 from openedx.core.djangoapps.xmodule_django.models import CourseKeyField
 from xmodule.modulestore.django import modulestore
+
+logger = logging.getLogger(__name__)
 
 
 def validate_badge_image(image):
@@ -88,6 +92,7 @@ class BadgeClass(models.Model):
         except cls.DoesNotExist:
             if not create:
                 return None
+
         badge_class = cls(
             slug=slug,
             issuing_component=issuing_component,
@@ -97,7 +102,17 @@ class BadgeClass(models.Model):
             description=description,
             criteria=criteria,
         )
-        badge_class.image.save(image_file_handle.name, image_file_handle)
+
+        try:
+            badge_class.image.save(image_file_handle.name, image_file_handle)
+        except:
+            logger.warning('Image for (%s) doesn\'t exist at %s', str(badge_class), str(image_file_handle))
+            try:
+                image_file_handle = CourseCompleteImageConfiguration.image_for_mode('default')
+                badge_class.image.save(image_file_handle.name, image_file_handle)
+            except:
+                logger.warning('Image for default Badge doesn\'t exist at %s', str(image_file_handle))
+
         badge_class.full_clean()
         badge_class.save()
         return badge_class
@@ -219,7 +234,10 @@ class CourseCompleteImageConfiguration(models.Model):
             return cls.objects.get(mode=mode).icon
         except cls.DoesNotExist:
             # Fall back to default, if there is one.
-            return cls.objects.get(default=True).icon
+            try:
+                return cls.objects.get(default=True).icon
+            except:
+                return None
 
     class Meta(object):
         app_label = "badges"

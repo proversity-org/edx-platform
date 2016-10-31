@@ -448,13 +448,13 @@ def _update_configuration_context(context, configuration):
         context.update(config.get(config_key, {}))
 
 
-def _update_badge_context(context, course, user):
+def _update_badge_context(context, course, user, preview_mode=None):
     """
     Updates context with badge info.
     """
     badge = None
     if badges_enabled() and course.issue_badges:
-        badges = get_completion_badge(course.location.course_key, user).get_for_user(user)
+        badges = get_completion_badge(course.location.course_key, user, preview_mode).get_for_user(user)
         if badges:
             badge = badges[0]
     context['badge'] = badge
@@ -583,7 +583,7 @@ def render_html_view(request, user_id, course_id):
     _update_certificate_context(context, user_certificate, platform_name)
 
     # Append badge info
-    _update_badge_context(context, course, user)
+    _update_badge_context(context, course, user, preview_mode)
 
     # Append site configuration overrides
     _update_configuration_context(context, configuration)
