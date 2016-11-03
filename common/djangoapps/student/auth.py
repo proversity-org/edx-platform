@@ -15,6 +15,7 @@ from ccx_keys.locator import CCXLocator, CCXBlockUsageLocator
 from organizations.models import Organization
 from student.roles import GlobalStaff, CourseCreatorRole, CourseStaffRole, CourseInstructorRole, CourseRole, \
     CourseBetaTesterRole, OrgInstructorRole, OrgStaffRole, LibraryUserRole, OrgLibraryUserRole
+<<<<<<< HEAD
 >>>>>>> force and lock organization for org users in studio
 
 from student.roles import (
@@ -29,6 +30,10 @@ from student.roles import (
     OrgLibraryUserRole,
     OrgStaffRole
 )
+=======
+
+from organizations.models import OrganizationUser
+>>>>>>> add disable library creation feature flag
 
 # Studio permissions:
 STUDIO_EDIT_ROLES = 8
@@ -75,15 +80,6 @@ def user_has_role(user, role):
         return True
     return False
 
-def _get_user_org(user):
-    """
-    Gets the organization associated with this user.
-    """
-    user_org = Organization.objects.filter(
-        organizationuser__active=True,
-        organizationuser__user_id_id=user.id).values().first()
-    return user_org['short_name'] if user_org else None
-
 
 def get_user_permissions(user, course_key, org=None):
     """
@@ -112,8 +108,16 @@ def get_user_permissions(user, course_key, org=None):
     if course_key and isinstance(course_key, LibraryLocator):
         if OrgLibraryUserRole(org=org).has_user(user) or user_has_role(user, LibraryUserRole(course_key)):
             return STUDIO_VIEW_USERS | STUDIO_VIEW_CONTENT
-    if _get_user_org(user) == org:
-        return all_perms
+    # Finally, check if user is linked directly to the organization:
+    user_org = OrganizationUser.objects.filter(
+        active=True,
+        organization__short_name=org,
+        user_id=user.id).values().first()
+    if user_org:
+        if user_org['is_staff']:
+            return all_perms
+        else:
+            return STUDIO_EDIT_CONTENT | STUDIO_VIEW_CONTENT
     return STUDIO_NO_PERMISSIONS
 
 

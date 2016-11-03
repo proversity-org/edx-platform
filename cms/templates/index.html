@@ -36,7 +36,8 @@ from openedx.core.djangolib.js_utils import (
           % elif course_creator_status=='disallowed_for_this_site' and settings.FEATURES.get('STUDIO_REQUEST_EMAIL',''):
           <a href="mailto:${settings.FEATURES.get('STUDIO_REQUEST_EMAIL','')}">${_("Email staff to create course")}</a>
           % endif
-          % if show_new_library_button:
+
+          % if library_creator_status=='granted':
             <a href="#" class="button new-button new-library-button"><span class="icon fa fa-plus icon-inline" aria-hidden="true"></span>
             ${_("New Library")}</a>
           % endif
@@ -80,7 +81,7 @@ from openedx.core.djangolib.js_utils import (
                   <label for="new-course-org">${_("Organization")}</label>
                   ## Translators: This is an example for the name of the organization sponsoring a course, seen when filling out the form to create a new course. The organization name cannot contain spaces.
                   ## Translators: "e.g. UniversityX or OrganizationX" is a placeholder displayed when user put no data into this field.
-                  <input ${edit_org} class="${edit_org} new-course-org" id="new-course-org" type="text" name="new-course-org" value="${user_organization}" required placeholder="${_('e.g. UniversityX or OrganizationX')}" aria-describedby="tip-new-course-org tip-error-new-course-org" />
+                  <input ${org_editable} class="new-course-org ${org_editable}" id="new-course-org" type="text" name="new-course-org" value="${org_short_name}" required placeholder="${_('e.g. UniversityX or OrganizationX')}" aria-describedby="tip-new-course-org tip-error-new-course-org" />
                   <span class="tip" id="tip-new-course-org">${Text(_("The name of the organization sponsoring the course. {strong_start}Note: The organization name is part of the course URL.{strong_end} This cannot be changed, but you can set a different display name in Advanced Settings later.")).format(
                       strong_start=HTML('<strong>'),
                       strong_end=HTML('</strong>'),
@@ -127,7 +128,7 @@ from openedx.core.djangolib.js_utils import (
 
       % endif
 
-      %if libraries_enabled and show_new_library_button:
+      %if libraries_enabled and library_creator_status=='granted':
       <div class="wrapper-create-element wrapper-create-library">
         <form class="form-create create-library library-info" id="create-library-form" name="create-library-form">
           <div class="wrap-error">
@@ -154,7 +155,7 @@ from openedx.core.djangolib.js_utils import (
                 </li>
                 <li class="field text required">
                   <label for="new-library-org">${_("Organization")}</label>
-                  <input class="new-library-org" id="new-library-org" type="text" name="new-library-org" required placeholder="${_('e.g. UniversityX or OrganizationX')}" aria-describedby="tip-new-library-org tip-error-new-library-org" />
+                  <input ${org_editable} class="new-library-org ${org_editable}" id="new-library-org" type="text" name="new-library-org" value="${org_short_name}" required placeholder="${_('e.g. UniversityX or OrganizationX')}" aria-describedby="tip-new-library-org tip-error-new-library-org" />
                   <span class="tip" id="tip-new-library-org">${_("The public organization name for your library.")} ${_("This cannot be changed.")}</span>
                   <span class="tip tip-error is-hiding" id="tip-error-new-library-org"></span>
                 </li>
@@ -458,7 +459,7 @@ from openedx.core.djangolib.js_utils import (
               </div>
           </div>
         </div>
-        % if show_new_library_button:
+        % if library_creator_status=='granted':
         <div class="notice-item has-actions">
           <div class="msg">
               <h3 class="title">${_('Create Your First Library')}</h3>
