@@ -1036,6 +1036,9 @@ INSTALLED_APPS = [
     # django-oauth-toolkit
     'oauth2_provider',
 
+    # django-oauth-plus
+    'oauth_provider',
+
     # These are apps that aren't strictly needed by Studio, but are imported by
     # other apps that are.  Django 1.8 wants to have imported models supported
     # by installed apps.
