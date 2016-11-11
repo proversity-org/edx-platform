@@ -756,7 +756,7 @@ def upload_grades_csv(_xmodule_instance_args, _entry_id, course_id, _task_input,
         grade_header.append(assignment_info['average_header'])
 
     rows.append(
-        ["Student ID", "Email", "Username", "Grade"] +
+        ["Student ID", "Email", "Username", "Enrollment Date", "Grade"] +
         grade_header +
         cohorts_header +
         group_configs_header +
@@ -842,9 +842,10 @@ def upload_grades_csv(_xmodule_instance_args, _entry_id, course_id, _task_input,
                 grade_results.append([assignment_average])
 
         grade_results = list(chain.from_iterable(grade_results))
+        enrollment_date = CourseEnrollment.get_enrollment(student, course_id).created.strftime('%Y-%m-%d')
 
         rows.append(
-            [student.id, student.email, student.username, course_grade.percent] +
+            [student.id, student.email, student.username, enrollment_date, course_grade.percent] +
             grade_results + cohorts_group_name + group_configs_group_names + team_name +
             [enrollment_mode] + [verification_status] + certificate_info
         )
