@@ -1026,9 +1026,6 @@ def is_discussion_enabled(course_id):
     """
     Return True if discussions are enabled; else False
     """
-    course = courses.get_course_by_id(course_id)
-    if not tabs.ExternalDiscussionCourseTab.is_enabled(course):
-        return False
     return settings.FEATURES.get('ENABLE_DISCUSSION_SERVICE')
 
 
