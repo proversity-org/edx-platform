@@ -22,26 +22,26 @@
 
     // helpers
     %print-no-background {
-        background: none !important;
+        background: none;
     }
 
     %print-hide {
-        display: none !important;
+        display: none;
     }
 
     %print-black-on-white {
-        background: $white !important;
-        color: $black !important;
+        background: $white;
+        color: $black;
     }
 
     %print-layout-wrapper {
-        padding: 0 !important;
+        padding: 0;
     }
 
     %print-rendering-section {
         margin-bottom: spacing-vertical(small);
-        border-bottom: none !important;
-        padding-bottom: 0 !important;
+        border-bottom: none;
+        padding-bottom: 0;
 
         &:last-child {
             border: none;
@@ -57,7 +57,7 @@
 
     // prevent images from bleeding over the edge of the printed page
     img {
-       max-width: 100% !important;
+       max-width: 100%;
     }
 
     // prevent large elements from being split across multiple pages
@@ -73,12 +73,12 @@
 
     body {
         height: auto;
-        margin: spacing-vertical(mid-large) spacing-vertical(mid-small) 0 spacing-vertical(mid-small) !important;
+        margin: spacing-vertical(mid-large) spacing-vertical(mid-small) 0 spacing-vertical(mid-small);
         padding: 0;
     }
 
     .wrapper-view {
-        margin-bottom: 0 !important;
+        margin-bottom: 0;
 
     }
 }
@@ -190,7 +190,7 @@
     }
 
     .accomplishment-rendering {
-        top: 0 !important;
+        top: 0;
         border: rem(1) solid palette(grayscale, back);
         border-top: rem(2) solid $cert-base-color;
         box-shadow: none;
@@ -203,7 +203,7 @@
 
         .accomplishment-type-symbol {
             @include size(rem(75));
-            border: none !important;
+            border: none;
         }
 
         .wrapper-statement-and-signatories {
@@ -226,14 +226,14 @@
         }
 
         .accomplishment-orgs {
-            margin-bottom: 0 !important;
-            border-bottom: none !important;
-            padding-bottom: 0 !important;
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
 
             .wrapper-organization {
                 height: rem(48);
-                margin-top: spacing-vertical(mid-small) !important;
-                margin-bottom: spacing-vertical(mid-small) !important;
+                margin-top: spacing-vertical(mid-small);
+                margin-bottom: spacing-vertical(mid-small);
             }
 
             .organization-logo {
@@ -255,8 +255,8 @@
                 height: spacing-vertical(small);
                 max-width: 100%;
                 margin-top: 0;
-                padding-top: 0 !important;
-                padding-bottom: 0 !important;
+                padding-top: 0;
+                padding-bottom: 0;
             }
 
             .signatory-name {
@@ -264,7 +264,7 @@
             }
 
             .signatory-credentials {
-                margin-bottom: 0 !important;
+                margin-bottom: 0;
             }
 
             // CASE: > 4 signatures
@@ -290,8 +290,8 @@
 
             .metadata {
                 margin-bottom: 0;
-                border-bottom: none !important;
-                padding-bottom: 0 !important;
+                border-bottom: none;
+                padding-bottom: 0;
 
                 .label, .value {
                     display: inline-block;
@@ -307,15 +307,15 @@
         }
         .accomplishment-id {
             float: left;
-            width: 65% !important;
-            margin: 0 !important;
+            width: 65%;
+            margin: 0;
             @include text-align(left);
         }
 
         .accomplishment-date {
             float: right;
-            width: 35% !important;
-            margin: 0 !important;
+            width: 35%;
+            margin: 0;
             @include text-align(right);
         }
 

@@ -30,10 +30,10 @@
 .forum-nav-browse-filter-input {
   @include padding-left($baseline/4);
   @include padding-right($baseline/2 + 12px); // Leave room for icon
-  box-shadow: none !important;
-  border-radius: $forum-border-radius !important;
-  height: auto !important;
-  font-size: $forum-small-font-size !important;
+  box-shadow: none;
+  border-radius: $forum-border-radius;
+  height: auto;
+  font-size: $forum-small-font-size;
 }
 
 // Override global ul rules
@@ -76,7 +76,7 @@ li[class*=forum-nav-thread-label-] {
 
   // Override clearfix stuff in .sidebar ul li rules
   &:before, &:after {
-    display: none !important;
+    display: none;
   }
 }
 
@@ -103,11 +103,11 @@ li[class*=forum-nav-thread-label-] {
 .discussion-module {
 
   .post-header {
-    margin-bottom: 0 !important;  // overrides default header styling
-    padding-bottom: 0 !important;  // overrides default header styling
+    margin-bottom: 0;  // overrides default header styling
+    padding-bottom: 0;  // overrides default header styling
 
     .posted-details {
-      margin: ($baseline/5) 0 !important; // overrides courseware p styling
+      margin: ($baseline/5) 0; // overrides courseware p styling
     }
 
     .post-labels {
@@ -115,7 +115,7 @@ li[class*=forum-nav-thread-label-] {
     }
 
     .post-title {
-      margin-bottom: 0 !important; // overrides "#seq_content h1" styling
+      margin-bottom: 0; // overrides "#seq_content h1" styling
     }
   }
 }
@@ -123,9 +123,9 @@ li[class*=forum-nav-thread-label-] {
 // overrides courseware styling to keep views consistent everywhere
 .discussion-article {
   .response-header {
-    line-height: 1 !important;
-    font-size: $forum-base-font-size !important;
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
+    line-height: 1;
+    font-size: $forum-base-font-size;
+    margin-bottom: 0;
+    padding-bottom: 0;
   }
 }

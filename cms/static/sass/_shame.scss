@@ -58,7 +58,7 @@ body b {
 }
 
 .ui-datepicker {
-  background: $white !important;
+  background: $white;
 }
 
 /* known things to do (paint the fence, sand the floor, wax on/off):
@@ -70,10 +70,10 @@ body b {
 */
 
 .modal-content.cheatsheet-is-shown {
-  overflow: visible !important;
+  overflow: visible;
 
   .CodeMirror {
-    overflow: visible !important;
+    overflow: visible;
   }
 }
 
@@ -119,7 +119,7 @@ div.wrapper-comp-editor.is-inactive ~ div.launch-latex-compiler{
 
 // xmodule editor tab font-weight override
 .xmodule_edit.xmodule_VideoDescriptor .editor-with-tabs .editor-tabs .inner_tab_wrap a.tab {
-  font-weight: normal !important;
+  font-weight: normal;
 }
 
 // ====================

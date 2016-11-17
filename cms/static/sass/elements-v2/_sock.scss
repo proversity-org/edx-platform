@@ -11,9 +11,9 @@
   .wrapper-inner {
     @include linear-gradient($gray-d3 0%, $gray-d3 98%, $black 100%);
     display: none;
-    width: 100% !important;
+    width: 100%;
     border-bottom: 1px solid $white;
-    padding: 0 $baseline !important;
+    padding: 0 $baseline;
   }
 
   // sock - actions

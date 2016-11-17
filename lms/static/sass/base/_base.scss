@@ -132,7 +132,7 @@ a, a:visited {
 }
 
 .no-min-scale {
-  min-width: 0px !important;
+  min-width: 0px;
 }
 
 span.edx {
@@ -247,16 +247,16 @@ mark {
         margin: .5rem 0;
         font-weight: initial;
         text-shadow: none;
-        letter-spacing: initial !important;
-        text-transform: normal !important;
+        letter-spacing: initial;
+        text-transform: normal;
         vertical-align: initial;
-        
+
         &:hover,
         &:focus {
-            background: $link-color !important;
+            background: $link-color;
             color: $white;
-            box-shadow: none !important;
-            text-shadow: none !important;
+            box-shadow: none;
+            text-shadow: none;
         }
     }
 }

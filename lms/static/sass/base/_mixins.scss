@@ -214,6 +214,6 @@
   @extend %shame-link-base;
 
   &:hover, &:focus {
-    text-decoration: underline !important;
+    text-decoration: underline;
   }
 }

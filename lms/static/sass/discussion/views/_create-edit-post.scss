@@ -25,8 +25,8 @@
 
   .post-errors {
     margin: 0 0 $baseline;
-    padding: 0 !important;
-    list-style: none !important;
+    padding: 0;
+    list-style: none;
   }
 
   .post-field {
@@ -163,7 +163,7 @@
   }
 
   select.field-input {
-    border: 1px solid $forum-color-border !important;  // !important required to override -webkit-appearance
+    border: 1px solid $forum-color-border;  // required to override -webkit-appearance
     height: 40px;
   }
 

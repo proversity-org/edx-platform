@@ -34,7 +34,7 @@
     .page-header-secondary > .form-actions > button {
         // Overrides base size set in lms/static/sass/shared-v2/_layouts.scss
         // Done to match size of UXPL's search box. This is bad, I know.
-        height: $searchBoxHeight !important;
+        height: $searchBoxHeight;
     }
 }
 
@@ -98,9 +98,9 @@
     &.is-focused {
         // switched from a to button;
         // need to override button styles
-        background-image: none !important;
-        box-shadow: none !important;
-        background: $forum-color-background !important;
+        background-image: none;
+        box-shadow: none;
+        background: $forum-color-background;
     }
 }
 

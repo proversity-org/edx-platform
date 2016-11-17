@@ -454,12 +454,12 @@
 
   .upload-modal {
     display: none;
-    width: 640px !important;
-    margin-left: -320px !important;
+    width: 640px;
+    margin-left: -320px;
 
     .modal-body {
-      height: auto !important;
-      overflow-y: auto !important;
+      height: auto;
+      overflow-y: auto;
       text-align: center;
     }
 

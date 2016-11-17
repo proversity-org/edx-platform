@@ -225,31 +225,31 @@ html.video-fullscreen {
       box-shadow: inset 1px 1px 2px rgba(0, 0, 0, .1);
       border: 1px solid #ddd;
       &.critical-time {
-        border-left: 4px solid #b30101 !important;
+        border-left: 4px solid #b30101;
         margin: 0 auto;
       }
       &.success {
-        border-left: 4px solid #22B557 !important;
+        border-left: 4px solid #22B557;
         margin: 0 auto;
       }
       &.success-top-bar {
-        border-top: 4px solid #22B557 !important;
+        border-top: 4px solid #22B557;
         margin: 0 auto;
       }
       &.success-left-bar {
-        border-left: 4px solid #22B557 !important;
+        border-left: 4px solid #22B557;
         margin: 0 auto;
       }
       &.message-top-bar {
-        border-top: 4px solid #FAB95C !important;
+        border-top: 4px solid #FAB95C;
         margin: 0 auto;
       }
       &.message-left-bar {
-        border-left: 4px solid #FAB95C !important;
+        border-left: 4px solid #FAB95C;
         margin: 0 auto;
       }
       &.failure {
-        border-left: 4px solid #C93B34 !important;
+        border-left: 4px solid #C93B34;
         margin: 0 auto;
       }
       &.warning {
@@ -603,7 +603,7 @@ html.video-fullscreen {
 
     @media print {
       padding: 4mm 2mm 0;
-      background: transparent !important;
+      background: transparent;
     }
   }
 
@@ -637,7 +637,7 @@ html.video-fullscreen {
 
   @media print {
     border: 0;
-    background: transparent !important;
+    background: transparent;
   }
 }
 
@@ -680,8 +680,8 @@ section.self-assessment {
  */
 
 .CodeMirror {
-    
+
     .CodeMirror-linenumber.CodeMirror-gutter-elt {
-        color: $gray-d3 !important;
+        color: $gray-d3;
     }
 }

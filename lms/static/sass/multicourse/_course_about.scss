@@ -61,14 +61,14 @@
 
             .button-org {
                 @include margin-left($baseline*0.75);
-                background: transparent !important;
-                border: none !important;
-                box-shadow: none !important;
-                text-shadow: none !important;
-                text-transform: normal !important;
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                text-shadow: none;
+                text-transform: normal;
                 font-size: $body-font-size;
-                color: $base-font-color !important;
-                letter-spacing: 0px !important;
+                color: $base-font-color;
+                letter-spacing: 0px;
 
                 &:hover, &:focus {
                     color: $link-color;

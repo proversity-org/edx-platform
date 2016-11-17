@@ -934,7 +934,7 @@ $light-border: 1px solid $gray-l5;
   }
 
   .no-border {
-    border: none !important;
+    border: none;
   }
 
   table.course-receipt {
@@ -1075,7 +1075,7 @@ $light-border: 1px solid $gray-l5;
 @media print {
 
   a[href]:after {
-    content: none !important;
+    content: none;
   }
 
   .steps, .blue.pull-right, .bordered-bar .pull-right, .left.nav-global.authenticated {

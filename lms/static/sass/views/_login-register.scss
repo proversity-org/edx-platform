@@ -296,6 +296,13 @@
                 display: inline;
             }
 
+<<<<<<< HEAD
+=======
+            &.error {
+                color: $red;
+            }
+
+>>>>>>> remove all the css importants
             &[for="register-data_sharing_consent"],
             &[for="register-honor_code"],
             &[for="register-terms_of_service"] {
@@ -587,7 +594,7 @@
         .message-copy p {
             @extend %t-copy-base;
             font-family: $sans-serif;
-            margin: 0 !important;
+            margin: 0;
             padding: 0;
 
             li {
@@ -626,7 +633,7 @@
         background: tint($red,95%);
 
         .message-title {
-            color: shade($red, 10%) !important;
+            color: shade($red, 10%);
         }
 
         .message-copy {
@@ -640,7 +647,7 @@
         background: tint($green, 95%);
 
         .message-title {
-            color: shade($green, 10%) !important;
+            color: shade($green, 10%);
         }
 
         .message-copy {

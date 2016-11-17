@@ -61,7 +61,7 @@
 
         .placeholder-cam {
             .copy {
-                font-weight: bold !important;
+                font-weight: bold;
             }
         }
 
@@ -161,7 +161,7 @@
         .tip {
             .is-expandable {
                 .title-expand {
-                    color: $blue !important;
+                    color: $blue;
                 }
             }
 
@@ -172,10 +172,10 @@
         }
 
         .help-tips {
-            margin-left: 0 !important;
+            margin-left: 0;
 
             .title {
-                font-size: 16px !important;
+                font-size: 16px;
             }
 
             .list-tips {
@@ -209,7 +209,7 @@
             }
 
             .wrapper-photos {
-                margin-bottom: 0 !important;
+                margin-bottom: 0;
             }
         }
 

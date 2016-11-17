@@ -442,8 +442,8 @@
 
     &:focus,
     &:hover {
-      background-image: none !important;
-      background-color: transparent !important;
+      background-image: none;
+      background-color: transparent;
       color: $link-color;
     }
   }
@@ -466,9 +466,9 @@
 
     &:focus,
     &:hover {
-        background-image: none !important;
-        background-color: $transparent !important;
-        box-shadow: none !important;
+        background-image: none;
+        background-color: $transparent;
+        box-shadow: none;
     }
 }
 
