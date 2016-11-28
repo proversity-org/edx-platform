@@ -37,7 +37,7 @@ def i_created_a_video_component(step):
 
 @step('I have created a Video component with subtitles$')
 def i_created_a_video_with_subs(_step):
-    _step.given('I have created a Video component with subtitles "3_yD_cEKoCk"')
+    _step.given('I have created a Video component with subtitles "2DpfBIp_-W0"')
 
 
 @step('I have created a Video component with subtitles "([^"]*)"$')
