@@ -15,6 +15,10 @@ from rest_framework.response import Response
 
 import pygeoip
 from student.auth import has_course_author_access
+<<<<<<< HEAD
+=======
+from openedx.core.djangoapps.embargo.models import CountryAccessRule, RestrictedCourse
+>>>>>>> use full path to import embargo models
 
 from .models import CountryAccessRule, RestrictedCourse
 
