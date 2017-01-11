@@ -911,7 +911,7 @@ class CertificateGenerationConfiguration(ConfigurationModel):
         app_label = "certificates"
 
 
-class CertificateHtmlViewConfiguration(ConfigurationModel):
+class CertificateHtmlViewConfiguration(models.Model):
     """
     Static values for certificate HTML view context parameters.
     Default values will be applied across all certificate types (course modes)
@@ -927,12 +927,24 @@ class CertificateHtmlViewConfiguration(ConfigurationModel):
             }
         }
     """
-    class Meta(ConfigurationModel.Meta):
+    class Meta(object):
         app_label = "certificates"
+        ordering = ("-change_date", )
 
     configuration = models.TextField(
         help_text="Certificate HTML View Parameters (JSON)"
     )
+
+    change_date = models.DateTimeField(auto_now_add=True, verbose_name=_("Change date"))
+    changed_by = models.ForeignKey(
+        User,
+        editable=False,
+        null=True,
+        on_delete=models.PROTECT,
+        # Translators: this label indicates the name of the user who made this change:
+        verbose_name=_("Changed by"),
+    )
+    enabled = models.BooleanField(default=False, verbose_name=_("Enabled"))
 
     def clean(self):
         """
@@ -942,6 +954,7 @@ class CertificateHtmlViewConfiguration(ConfigurationModel):
             json.loads(self.configuration)
         except ValueError:
             raise ValidationError('Must be valid JSON string.')
+
 
     @classmethod
     def get_config(cls):
