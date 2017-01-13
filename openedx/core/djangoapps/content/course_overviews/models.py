@@ -60,44 +60,49 @@ class CourseOverview(TimeStampedModel):
     # Start/end dates
     start = DateTimeField(null=True)
     end = DateTimeField(null=True)
-    advertised_start = TextField(null=True)
-    announcement = DateTimeField(null=True)
+    advertised_start = TextField(null=True, blank=True)
+    announcement = DateTimeField(null=True, blank=True)
 
     # URLs
-    course_image_url = TextField()
-    social_sharing_url = TextField(null=True)
-    end_of_course_survey_url = TextField(null=True)
+    course_image_url = TextField(null=True, blank=True)
+    social_sharing_url = TextField(null=True, blank=True)
+    end_of_course_survey_url = TextField(null=True, blank=True)
 
     # Certification data
-    certificates_display_behavior = TextField(null=True)
+    certificates_display_behavior = TextField(null=True, blank=True)
     certificates_show_before_end = BooleanField(default=False)
     cert_html_view_enabled = BooleanField(default=False)
     has_any_active_web_certificate = BooleanField(default=False)
+<<<<<<< HEAD
     cert_name_short = TextField()
     cert_name_long = TextField()
     certificate_available_date = DateTimeField(default=None, null=True)
+=======
+    cert_name_short = TextField(null=True, blank=True)
+    cert_name_long = TextField(null=True, blank=True)
+>>>>>>> course overviews update required fields admin
 
     # Grading
-    lowest_passing_grade = DecimalField(max_digits=5, decimal_places=2, null=True)
+    lowest_passing_grade = DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
 
     # Access parameters
-    days_early_for_beta = FloatField(null=True)
+    days_early_for_beta = FloatField(null=True, blank=True)
     mobile_available = BooleanField(default=False)
     visible_to_staff_only = BooleanField(default=False)
-    _pre_requisite_courses_json = TextField()  # JSON representation of list of CourseKey strings
+    _pre_requisite_courses_json = TextField(null=True, blank=True)  # JSON representation of list of CourseKey strings
 
     # Enrollment details
-    enrollment_start = DateTimeField(null=True)
-    enrollment_end = DateTimeField(null=True)
-    enrollment_domain = TextField(null=True)
+    enrollment_start = DateTimeField(null=True, blank=True)
+    enrollment_end = DateTimeField(null=True, blank=True)
+    enrollment_domain = TextField(null=True, blank=True)
     invitation_only = BooleanField(default=False)
-    max_student_enrollments_allowed = IntegerField(null=True)
+    max_student_enrollments_allowed = IntegerField(null=True, blank=True)
 
     # Catalog information
-    catalog_visibility = TextField(null=True)
-    short_description = TextField(null=True)
-    course_video_url = TextField(null=True)
-    effort = TextField(null=True)
+    catalog_visibility = TextField(null=True, blank=True)
+    short_description = TextField(null=True, blank=True)
+    course_video_url = TextField(null=True, blank=True)
+    effort = TextField(null=True, blank=True)
     self_paced = BooleanField(default=False)
     marketing_url = TextField(null=True)
     eligible_for_financial_aid = BooleanField(default=True)
