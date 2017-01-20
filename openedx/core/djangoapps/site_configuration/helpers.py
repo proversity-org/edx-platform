@@ -106,6 +106,9 @@ def get_value(val_name, default=None, **kwargs):
         Configuration/Microsite value for the given key.
     """
 
+    if not default and hasattr(settings, val_name):
+        default = getattr(settings, val_name)
+
     if is_site_configuration_enabled():
         # Retrieve the requested field/value from the site configuration
         configuration_value = get_configuration_value(val_name, default=default)

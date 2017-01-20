@@ -9,7 +9,11 @@ the SessionMiddleware.
 """
 from django.conf import settings
 from django.utils.translation import LANGUAGE_SESSION_KEY
+<<<<<<< HEAD
 from django.utils.translation.trans_real import parse_accept_lang_header
+=======
+from django.utils.translation import activate
+>>>>>>> respect default language code
 
 from openedx.core.djangoapps.dark_lang import DARK_LANGUAGE_KEY
 from openedx.core.djangoapps.dark_lang.models import DarkLangConfig
@@ -126,6 +130,11 @@ class DarkLangMiddleware(object):
         """
         auth_user = request.user.is_authenticated()
         preview_lang = None
+
+        if 'language_default' not in request.session:
+            preview_lang = configuration_helpers.get_value('LANGUAGE_CODE')
+            request.session['language_default'] = preview_lang
+
         if auth_user:
             # Get the request user's dark lang preference
             preview_lang = get_user_preference(request.user, DARK_LANGUAGE_KEY)
