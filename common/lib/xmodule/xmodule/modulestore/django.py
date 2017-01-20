@@ -25,6 +25,7 @@ import django.utils
 from django.utils.translation import get_language, to_locale
 
 from pymongo import ReadPreference
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from xmodule.contentstore.django import contentstore
 from xmodule.modulestore.draft_and_published import BranchSettingMixin
 from xmodule.modulestore.mixed import MixedModuleStore
@@ -384,11 +385,12 @@ class ModuleI18nService(object):
             xblock_locale_path = resource_filename(xblock_resource, xblock_locale_dir)
             xblock_domain = 'text'
             selected_language = get_language()
+            language_code = configuration_helpers.get_value('LANGUAGE_CODE')
             try:
                 self.translator = gettext.translation(
                     xblock_domain,
                     xblock_locale_path,
-                    [to_locale(selected_language if selected_language else settings.LANGUAGE_CODE)]
+                    [to_locale(selected_language if selected_language else language_code)]
                 )
             except IOError:
                 # Fall back to the default Django translator if the XBlock translator is not found.

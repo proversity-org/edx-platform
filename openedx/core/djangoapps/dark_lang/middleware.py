@@ -13,7 +13,14 @@ from django.utils.translation.trans_real import parse_accept_lang_header
 
 from openedx.core.djangoapps.dark_lang import DARK_LANGUAGE_KEY
 from openedx.core.djangoapps.dark_lang.models import DarkLangConfig
+<<<<<<< HEAD
 from openedx.core.djangoapps.user_api.preferences.api import get_user_preference
+=======
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+from openedx.core.djangoapps.user_api.preferences.api import (
+    get_user_preference
+)
+>>>>>>> get LANGUAGE_CODE from configuration helper
 
 # If django 1.7 or higher is used, the right-side can be updated with new-style codes.
 CHINESE_LANGUAGE_CODE_MAP = {
@@ -65,8 +72,9 @@ class DarkLangMiddleware(object):
         Current list of released languages
         """
         language_options = DarkLangConfig.current().released_languages_list
-        if settings.LANGUAGE_CODE not in language_options:
-            language_options.append(settings.LANGUAGE_CODE)
+        language_code = configuration_helpers.get_value('LANGUAGE_CODE')
+        if language_code not in language_options:
+            language_options.append(language_code)
         return language_options
 
     def process_request(self, request):
