@@ -64,6 +64,10 @@ from model_utils.models import TimeStampedModel
 
 from badges.events.course_complete import course_badge_check
 from badges.events.course_meta import completion_check, course_group_check
+<<<<<<< HEAD
+=======
+from config_models.models import ConfigurationModel, cache
+>>>>>>> fix certificate html view configuration super class
 from lms.djangoapps.instructor_task.models import InstructorTask
 from openedx.core.djangoapps.signals.signals import COURSE_CERT_AWARDED
 from openedx.core.djangoapps.xmodule_django.models import CourseKeyField, NoneToEmptyManager
@@ -911,7 +915,7 @@ class CertificateGenerationConfiguration(ConfigurationModel):
         app_label = "certificates"
 
 
-class CertificateHtmlViewConfiguration(models.Model):
+class CertificateHtmlViewConfiguration(ConfigurationModel):
     """
     Static values for certificate HTML view context parameters.
     Default values will be applied across all certificate types (course modes)
@@ -927,7 +931,7 @@ class CertificateHtmlViewConfiguration(models.Model):
             }
         }
     """
-    class Meta(object):
+    class Meta(ConfigurationModel.Meta):
         app_label = "certificates"
         ordering = ("-change_date", )
 
@@ -935,16 +939,16 @@ class CertificateHtmlViewConfiguration(models.Model):
         help_text="Certificate HTML View Parameters (JSON)"
     )
 
-    change_date = models.DateTimeField(auto_now_add=True, verbose_name=_("Change date"))
-    changed_by = models.ForeignKey(
-        User,
-        editable=False,
-        null=True,
-        on_delete=models.PROTECT,
-        # Translators: this label indicates the name of the user who made this change:
-        verbose_name=_("Changed by"),
-    )
-    enabled = models.BooleanField(default=False, verbose_name=_("Enabled"))
+
+    def save(self, *args, **kwargs):
+        """
+        Clear the cached value when saving a new configuration entry
+        """
+        super(ConfigurationModel, self).save(*args, **kwargs)
+        cache.delete(self.cache_key_name(*[getattr(self, key) for key in self.KEY_FIELDS]))
+        if self.KEY_FIELDS:
+            cache.delete(self.key_values_cache_key_name())
+
 
     def clean(self):
         """
