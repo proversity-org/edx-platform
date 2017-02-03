@@ -81,7 +81,7 @@ def _get_course(course_key, user):
         # Raise course not found if the user cannot access the course
         # since it doesn't make sense to redirect an API.
         raise CourseNotFoundError("Course not found.")
-    if not any([tab.type == 'discussion' and tab.is_enabled(course, user) and not tab.is_hidden for tab in course.tabs]):
+    if not any([tab.type == 'discussion' and tab.is_enabled(course, user) for tab in course.tabs]):
         raise DiscussionDisabledError("Discussion is disabled for the course.")
     return course
 
