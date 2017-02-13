@@ -203,6 +203,11 @@ def video_summary(video_profiles, course_id, video_descriptor, request, local_ca
     else:
         video_url = video_descriptor.source
 
+    video_alternatives = []
+    for source in video_descriptor.html5_sources:
+        if source != video_url:
+            video_alternatives.append(source)
+
     # Get duration/size, else default
     duration = video_data.get('duration', None)
     size = default_encoded_video.get('file_size', 0)
@@ -226,6 +231,7 @@ def video_summary(video_profiles, course_id, video_descriptor, request, local_ca
 
     ret = {
         "video_url": video_url,
+        "video_alternatives": video_alternatives,
         "video_thumbnail_url": None,
         "duration": duration,
         "size": size,
