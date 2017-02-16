@@ -72,6 +72,7 @@ class CourseSerializer(serializers.Serializer):  # pylint: disable=abstract-meth
     start_type = serializers.CharField()
     pacing = serializers.CharField()
     mobile_available = serializers.BooleanField()
+    invitation_only = serializers.BooleanField()
     hidden = serializers.SerializerMethodField()
     invitation_only = serializers.BooleanField()
 
