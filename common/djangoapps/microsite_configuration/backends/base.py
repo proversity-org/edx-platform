@@ -153,7 +153,7 @@ class BaseMicrositeBackend(AbstractBaseMicrositeBackend):
 
         for key, value in settings.MICROSITE_CONFIGURATION.items():
             subdomain = value.get('domain_prefix')
-            if subdomain and domain.startswith(subdomain):
+            if domain == value.get('SITE_NAME') or (subdomain and domain.startswith(subdomain)):
                 self._set_microsite_config(key, subdomain, domain)
                 return
 
