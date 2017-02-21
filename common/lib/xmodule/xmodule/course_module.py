@@ -885,6 +885,14 @@ class CourseFields(object):
         ),
         scope=Scope.settings, default=False
     )
+    minimum_age = Float(
+        display_name=_("Minimum Age"),
+        help=_(
+            "Enter a number of years. If specified only students of or older than the given age will be allowed to enroll."
+            "A value of 0 (zero) indicates that no age restriction applies."
+        ),
+        scope=Scope.settings, default=0.0
+    )
 
 
 class CourseModule(CourseFields, SequenceModule):  # pylint: disable=abstract-method

@@ -726,11 +726,19 @@ def course_about(request, course_id):
         invitation_only = course.invitation_only
         is_course_full = CourseEnrollment.objects.is_course_full(course)
 
+        is_old_enough = bool(not course.minimum_age or not hasattr(request.user, 'profile') or not request.user.profile.age) or \
+            bool(request.user.profile.age >= course.minimum_age)
+
         # Register button should be disabled if one of the following is true:
         # - Student is already registered for course
         # - Course is already full
         # - Student cannot enroll in course
+<<<<<<< HEAD
         active_reg_button = not (registered or is_course_full or not can_enroll)
+=======
+        # - Student is not old enough to register
+        active_reg_button = not(registered or is_course_full or not can_enroll or not is_old_enough)
+>>>>>>> course enrollment age minimum
 
         is_shib_course = uses_shib(course)
 
@@ -768,6 +776,7 @@ def course_about(request, course_id):
             'is_course_full': is_course_full,
             'can_enroll': can_enroll,
             'invitation_only': invitation_only,
+            'is_old_enough': is_old_enough,
             'active_reg_button': active_reg_button,
             'is_shib_course': is_shib_course,
             # We do not want to display the internal courseware header, which is used when the course is found in the

@@ -1245,6 +1245,11 @@ def change_enrollment(request, check_access=True):
             )
             return HttpResponseBadRequest(_("Course id is invalid"))
 
+        course = modulestore().get_course(course_id)
+        if(course.minimum_age and user.profile.age):
+            if(user.profile.age < course.minimum_age):
+                return HttpResponseBadRequest(_("You are not old enough to enroll in this course"))
+
         # Record the user's email opt-in preference
         if settings.FEATURES.get('ENABLE_MKTG_EMAIL_OPT_IN'):
             _update_email_opt_in(request, course_id.org)
