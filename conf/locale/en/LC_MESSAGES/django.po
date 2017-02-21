@@ -21731,10 +21731,10 @@ msgid ""
 "#%(r2)d"
 msgstr ""
 
-#: proversity-theme/lms/templates/index.html
+#: lms/templates/index.html
 msgid "Improve your skills today!"
 msgstr ""
 
-#: proversity-theme/lms/templates/index.html
+#: lms/templates/index.html
 msgid "Doroob's programs provide the skills you need to succeed"
 msgstr ""

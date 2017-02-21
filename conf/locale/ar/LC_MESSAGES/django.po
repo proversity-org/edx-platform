@@ -24264,10 +24264,10 @@ msgid ""
 "#%(r2)d"
 msgstr "أُنشأت مراجعة جديدة: الدمج بين المراجعة #%(r1)d والمراجعة #%(r2)d "
 
-#: proversity-theme/lms/templates/index.html
+#: lms/templates/index.html
 msgid "Improve your skills today!"
 msgstr "طور مهاراتك"
 
-#: proversity-theme/lms/templates/index.html
+#: lms/templates/index.html
 msgid "Doroob's programs provide the skills you need to succeed"
 msgstr "يوفر دروب البرامج التي تحتاجها للنجاح"
