@@ -73,6 +73,7 @@ class CourseSerializer(serializers.Serializer):  # pylint: disable=abstract-meth
     pacing = serializers.CharField()
     mobile_available = serializers.BooleanField()
     invitation_only = serializers.BooleanField()
+    minimum_age = serializers.SerializerMethodField()
     hidden = serializers.SerializerMethodField()
     invitation_only = serializers.BooleanField()
 
@@ -96,6 +97,17 @@ class CourseSerializer(serializers.Serializer):  # pylint: disable=abstract-meth
             urllib.urlencode({'course_id': course_overview.id}),
         ])
         return self.context['request'].build_absolute_uri(base_url)
+
+    def get_minimum_age(self, course_overview):
+        """
+        Get the representation for SerializerMethodField `minimum_age`
+        Represents the minimum enrollment age for the course
+        """
+        # Note: This makes a call to the modulestore, unlike the other
+        # fields from CourseSerializer, which get their data
+        # from the CourseOverview object in SQL.
+        courseDetails = CourseDetails.fetch(course_overview.id)
+        return courseDetails.minimum_age
 
 
 class CourseDetailSerializer(CourseSerializer):  # pylint: disable=abstract-method
