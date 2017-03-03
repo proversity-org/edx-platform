@@ -108,6 +108,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     Serializes User models
     """
     name = serializers.ReadOnlyField(source='profile.name')
+    year_of_birth = serializers.ReadOnlyField(source='profile.year_of_birth')
     course_enrollments = serializers.HyperlinkedIdentityField(
         view_name='courseenrollment-detail',
         lookup_field='username'
@@ -115,5 +116,5 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta(object):
         model = User
-        fields = ('id', 'username', 'email', 'name', 'course_enrollments')
+        fields = ('id', 'username', 'email', 'name', 'year_of_birth', 'course_enrollments')
         lookup_field = 'username'
