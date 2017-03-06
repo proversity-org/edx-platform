@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from xblock.fields import Scope
 from xblock.runtime import KeyValueStore
 
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from courseware.access import is_mobile_available_for_user
 from courseware.courses import get_current_child
 from courseware.model_data import FieldDataCache
@@ -279,9 +280,12 @@ class UserCourseEnrollmentsList(generics.ListAPIView):
             is_active=True
         ).order_by('created').reverse()
         org = self.request.query_params.get('org', None)
+        orgs = configuration_helpers.get_all_orgs()
         return [
             enrollment for enrollment in enrollments
-            if enrollment.course_overview and self.is_org(org, enrollment.course_overview.org) and
+            if enrollment.course_overview and
+            self.is_org(org, enrollment.course_overview.org) and
+            (org or enrollment.course_overview.org not in orgs) and
             is_mobile_available_for_user(self.request.user, enrollment.course_overview)
         ]
 
