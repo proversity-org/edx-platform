@@ -311,7 +311,21 @@ function(_, Hls) {
             });
 
             if (Hls.isSupported()) {
-                this.hls = new Hls();
+                this.videoEl.find('source').each(function(index, source){
+                    var playlist = $(source).attr('src');
+                    if(playlist.substr(playlist.lastIndexOf('.')+1, 4) == 'm3u8'){
+                        _this.hls = new Hls();
+                        _this.hls.attachMedia(_this.video);
+                        _this.hls.on(Hls.Events.MEDIA_ATTACHED, function(){
+                            _this.hls.loadSource(playlist);
+                            _this.hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                                console.log("HLS manifest loaded, found " + data.levels.length + " quality levels");
+                            });
+                        });
+                        return false;
+                    }
+                });
+                /*this.hls = new Hls();
                 this.hls.attachMedia(this.video);
                 this.hls.on(Hls.Events.MEDIA_ATTACHED, function(){
                     _this.videoEl.find('source').each(function(index, source){
@@ -319,12 +333,12 @@ function(_, Hls) {
                         if(playlist.substr(playlist.lastIndexOf('.')+1, 4) == 'm3u8'){
                             _this.hls.loadSource(playlist);
                             _this.hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-                                //console.log("HLS manifest loaded, found " + data.levels.length + " quality levels");
+                                console.log("HLS manifest loaded, found " + data.levels.length + " quality levels");
                             });
                             return false;
                         }
                     });
-                });
+                });*/
             }
 
             // When the <video> tag has been processed by the browser, and it
