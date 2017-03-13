@@ -22,8 +22,7 @@
 // Learn more at https://github.com/dailymotion/hls.js
 //
 (function(f) {
-  define = typeof define == "function" ? define : RequireJS.define;
-  define('video/00_hls.js', [], f);
+  RequireJS.define('video/00_hls.js', [], f);
 })(function() {
         var define, module, exports;
         return (function e(t, n, r) {
