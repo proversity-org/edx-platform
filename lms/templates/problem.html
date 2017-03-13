@@ -9,7 +9,9 @@ from openedx.core.djangolib.markup import HTML
   ${ problem['name'] }
 </h3>
 
-<div class="problem-progress" id="${ id }-problem-progress"></div>
+% if show_graded:
+  <div class="problem-progress" id="${ id }-problem-progress"></div>
+% endif
 
 <div class="problem">
   ${ HTML(problem['html']) }
