@@ -103,3 +103,4 @@ git+https://github.com/open-craft/xblock-poll@7ba819b968fe8faddb78bb22e1fe763700
 git+https://github.com/edx-solutions/xblock-drag-and-drop-v2@v2.0.18#egg=xblock-drag-and-drop-v2==2.0.18
 git+https://github.com/proversity-org/edx-xblock-bibblio#egg=edx-xblock-bibblio
 -e git+https://github.com/Stanford-Online/xblock-free-text-response#egg=xblock-free-text-response
+git+https://github.com/proversity-org/recap-xblock.git#egg=recap-xblock
