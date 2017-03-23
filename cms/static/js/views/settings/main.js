@@ -80,9 +80,6 @@ define(['js/views/validation', 'codemirror', 'tinymce', 'underscore', 'jquery', 
                },
 
                 initialiseTinyMCE: function(self) {
-                  tinyMCE.baseURL = "" + baseUrl + "/js/vendor/tinymce/js/tinymce";
-                  console.log("heyyy", tinyMCE.baseURL);
-
                   this.tiny_mce_textarea = $(".tinymce", this.element).tinymce({
                     script_url: "" + baseUrl + "/js/vendor/tinymce/js/tinymce/tinymce.full.min.js",
                     theme: "modern",
@@ -117,6 +114,7 @@ define(['js/views/validation', 'codemirror', 'tinymce', 'underscore', 'jquery', 
                     valid_elements: "*[*]",
                     extended_valid_elements: "*[*]",
                     invalid_elements: "",
+                    // make sure the model gets updated when the text is edited
                     setup: function(ed) {
                         var thisTarget = ed;
                         ed.on('change', function(e) {
@@ -134,26 +132,7 @@ define(['js/views/validation', 'codemirror', 'tinymce', 'underscore', 'jquery', 
                     init_instance_callback: this.initInstanceCallback,
                     browser_spellcheck: true
                   });
-
-                  // tinymce.init({
-                  //     selector: "textarea#course-overview",
-                  //     themes: 'modern',
-                  //     setup:function(ed) {
-                  //       var thisTarget = ed;
-                  //       ed.on('change', function(e) {
-                            
-                  //           var cachethis = this;
-                  //           var field = self.selectorToField[thisTarget.id];
-
-                  //           self.clearValidationErrors();
-                  //           var newVal = ed.getContent();
-                  //           if (self.model.get(field) != newVal) {
-                  //               self.setAndValidate(field, newVal);
-                  //           }
-                  //       });
-                  //     }
-                                         
-                  //  });
+                  // set the content in this instance of the tinymce
                   tinymce.activeEditor.setContent(this.model.get('overview'));
                 },
 
