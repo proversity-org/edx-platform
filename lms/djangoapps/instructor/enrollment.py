@@ -49,10 +49,12 @@ class EmailEnrollmentState(object):
             # is_active is `None` if the user is not enrolled in the course
             exists_ce = is_active is not None and is_active
             full_name = user.profile.name
+            user_active = user.is_active
         else:
             mode = None
             exists_ce = False
             full_name = None
+            user_active = False
         ceas = CourseEnrollmentAllowed.objects.filter(course_id=course_id, email=email).all()
         exists_allowed = ceas.exists()
         state_auto_enroll = exists_allowed and ceas[0].auto_enroll
@@ -62,6 +64,7 @@ class EmailEnrollmentState(object):
         self.allowed = exists_allowed
         self.auto_enroll = bool(state_auto_enroll)
         self.full_name = full_name
+        self.user_active = user_active
         self.mode = mode
 
     def __repr__(self):
@@ -138,7 +141,7 @@ def enroll_email(course_id, student_email, auto_enroll=False, email_students=Fal
             email_params['message'] = 'enrolled_enroll'
             email_params['email_address'] = student_email
             email_params['full_name'] = previous_state.full_name
-            email_params['user_is_active'] = previous_state.user.is_active
+            email_params['user_is_active'] = previous_state.user_active
             send_mail_to_student(student_email, email_params, language=language)
     else:
         cea, _ = CourseEnrollmentAllowed.objects.get_or_create(course_id=course_id, email=student_email)
