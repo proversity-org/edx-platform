@@ -21,7 +21,48 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
 <%block name="js_extra">
   <script type="text/javascript">
   (function() {
-    $(".register").click(function(event) {
+
+    $('#age-confirmation').on('click', function(event) {
+      event.preventDefault();
+      $('#ageModal').modal('toggle');
+      $('#modalButton').css('display', 'none');
+      $('.main-cta').prepend('<a href="#" class="register">${_("Enroll in {course_name}").format(course_name=course.display_number_with_default) | h}</a>')
+      $('#lean_overlay').fadeToggle();
+
+
+      $(".register").on('click', function(event) {
+        console.log('trying to submit hidden enroll form')
+         $("#class_enroll_form").submit();
+         event.preventDefault();
+       });
+
+      $('#class_enroll_form').on('ajax:complete', function(event, xhr) {
+        if(xhr.status == 200) {
+          if (xhr.responseText == "") {
+            location.href = "${reverse('dashboard')}";
+          }
+          else {
+            location.href = xhr.responseText;
+          }
+        } else if (xhr.status == 403) {
+            location.href = "${reverse('register_user')}?course_id=${course.id | u}&enrollment_action=enroll";
+        } else {
+          $('#register_error').html(
+              (xhr.responseText ? xhr.responseText : "${_("An error occurred. Please try again later.")}")
+          ).css("display", "block");
+        }
+      });
+    });
+
+    $('#age-denial').on('click', function(event) {
+      event.preventDefault();
+      $('#ageModal').modal('toggle');
+      $('#modalButton').css('display', 'none');
+      $('.main-cta').prepend('<span class="register disabled">${_("You are not old enough to enroll")}</span>');
+      $('#lean_overlay').fadeToggle();
+    });
+
+    $(".register").on('click', function(event) {
       $("#class_enroll_form").submit();
       event.preventDefault();
     });
@@ -105,9 +146,42 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
 
 <%block name="pagetitle">${course.display_name_with_default_escaped}</%block>
 
-<section class="course-info">
+<section class="course-info" >
   <header class="course-profile">
+
     <div class="intro-inner-wrapper">
+
+    <!-- Age verification modal must be positioned here-->
+
+      <div class="modal" style="z-index: 4; top: 30%; left: 30%;" data-backdrop="false" id="ageModal" tabindex="-1" role="dialog" aria-labelledby="ageModalLabel" >
+        <div class="inner-wrapper modal-dialog" role="document">
+          <div class="modal-content" style="padding: 10px;">
+            <div class="modal-header">
+               <button class="close-modal" data-dismiss="modal">
+                <span class="icon fa fa-remove" aria-hidden="true"></span>
+                <span class="sr">
+                  ## Translators: this is a control to allow users to exit out of this modal interface (a menu or piece of UI that takes the full focus of the screen)
+                  ${_("Close")}
+                </span>
+              </button>
+              <h2 class="modal-title" id="ageModalLabel"><center>Please verify that you meet the course age minimum</center></h2>
+            </div>
+            <div class="modal-body">
+              <center>
+                ${_("Are you {min_age} years or older?").format(min_age=int(course.minimum_age))}
+              </center>
+            </div>
+            <div class="modal-footer" style="padding-top: 15px;"> 
+              <center>
+                <input name="submit" id='age-confirmation' type="submit" value="${_("Yes")}" />
+                <input name="submit" id='age-denial' type="submit" value="${_("No")}" />
+              </center>  
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="lean_overlay" style="display: block; opacity: 1; display:none; z-index:3;"></div>
+
       <div class="table">
       <section class="intro">
         <div class="heading-group">
@@ -117,7 +191,8 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
           </h1>
         </div>
 
-        <div class="main-cta">
+        <div class="main-cta">  
+
         %if user.is_authenticated() and registered:
           %if show_courseware_link and user_is_active:
             <a href="${course_target}">
@@ -154,6 +229,24 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
         ## so that they can register and become a real user that can enroll.
         %elif not is_shib_course and not can_enroll:
           <span class="register disabled">${_("Enrollment is Closed")}</span>
+
+        %elif needs_to_verify_age:
+          <script type="text/javascript" src="${static.url('js/bootstrap-modal.js')}"></script>
+          <script>
+             $(document).ready(function(){
+                $('#modalButton').on('click', function() {
+                  $('#ageModal').modal('show');
+                  $('#lean_overlay').fadeToggle()            
+                });
+            });
+          </script>
+
+          <!-- Button trigger modal which is attached to intro-inner-wrapper section -->
+
+          <button type="button" id='modalButton' class="btn btn-primary btn-lg" data-toggle="modal" >
+            Please verify your age
+          </button>  
+
         %elif not is_old_enough:
           <span class="register disabled">${_("You are not old enough to enroll")}</span>
         %elif can_add_course_to_cart:
@@ -325,15 +418,15 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
     </div>
       %endif
 
-  </div>
-
+    </div>
   </div>
 </div>
 
+      
 ## Need to put this hidden form on the page so that the registration button works.
 ## Since it's no harm to display a hidden form, we display it with the most permissive conditional
 ## which is when the student is not registered.
-%if active_reg_button or is_shib_course:
+%if active_reg_button or is_shib_course or needs_to_verify_age:
   <div style="display: none;">
     <form id="class_enroll_form" method="post" data-remote="true" action="${reverse('change_enrollment')}">
       <fieldset class="enroll_fieldset">
