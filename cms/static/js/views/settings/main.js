@@ -1,7 +1,7 @@
 define(['js/views/validation', 'codemirror', 'tinymce', 'underscore', 'jquery', 'jquery.ui', 'js/utils/date_utils',
     'js/models/uploads', 'js/views/uploads', 'js/views/license', 'js/models/license',
     'common/js/components/views/feedback_notification', 'jquery.timepicker', 'date', 'gettext',
-    'js/views/learning_info', 'js/views/instructor_info', 'edx-ui-toolkit/js/utils/string-utils', 'tinymce', 'jquery.tinymce'],
+    'js/views/learning_info', 'js/views/instructor_info', 'edx-ui-toolkit/js/utils/string-utils', 'jquery.tinymce'],
        function(ValidatingView, CodeMirror, tinymce, _, $, ui, DateUtils, FileUploadModel,
                 FileUploadDialog, LicenseView, LicenseModel, NotificationView,
                 timepicker, date, gettext, LearningInfoView, InstructorInfoView, StringUtils) {
@@ -80,6 +80,7 @@ define(['js/views/validation', 'codemirror', 'tinymce', 'underscore', 'jquery', 
                },
 
                 initialiseTinyMCE: function(self) {
+                  tinymce.baseURL = baseUrl + "/js/vendor/tinymce/js/tinymce/";
                   this.tiny_mce_textarea = $(".tinymce", this.element).tinymce({
                     script_url: "" + baseUrl + "/js/vendor/tinymce/js/tinymce/tinymce.full.min.js",
                     theme: "modern",
