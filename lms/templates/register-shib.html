@@ -71,7 +71,7 @@ import calendar
         $submitButton.
           removeClass('is-disabled').
           attr('aria-disabled', false).
-          removeProp('disabled').
+          prop('disabled', false).
           text("${_('Update my {platform_name} Account').format(platform_name=settings.PLATFORM_NAME)}");
       }
       else {
