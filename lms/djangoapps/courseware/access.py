@@ -19,6 +19,12 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.utils.timezone import UTC
 from opaque_keys.edx.keys import CourseKey, UsageKey
+<<<<<<< HEAD
+=======
+from organizations.models import OrganizationUser
+
+from util import milestones_helpers as milestones_helpers
+>>>>>>> fix organizational course mapping for insights
 from xblock.core import XBlock
 
 from courseware.access_response import (
@@ -678,6 +684,18 @@ def _has_access_to_course(user, access_level, course_key):
         log.debug("Error in access._has_access_to_course access_level=%s unknown", access_level)
         debug("Deny: unknown access level")
         return ACCESS_DENIED
+
+    org_user = OrganizationUser.objects.filter(
+        active=True,
+        organization__short_name=course_key.org,
+        user_id=user.id
+    ).values().first()
+
+    staff_access = (
+        CourseStaffRole(course_key).has_user(user) or
+        OrgStaffRole(course_key.org).has_user(user) or
+        (org_user and org_user['is_staff'])
+    )
 
     if staff_access and access_level == 'staff':
         debug("Allow: user has course staff access")
