@@ -19,52 +19,87 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
 </%block>
 
 <%block name="js_extra">
+<<<<<<< HEAD
   <script type="text/javascript">
+=======
+  ## CourseTalk widget js script
+  % if show_coursetalk_widget:
+      <script src="//d3q6qq2zt8nhwv.cloudfront.net/s/js/widgets/coursetalk-read-reviews.js"></script>
+  % endif
+<script type="text/javascript">
+>>>>>>> add localStorage for age verification pop up
   (function() {
 
-    $('#age-confirmation').on('click', function(event) {
-      event.preventDefault();
+    var course_id = '${course.id}';
+
+    var ageCallBack = function() {
       $('#ageModal').modal('toggle');
       $('#modalButton').css('display', 'none');
-      $('.main-cta').prepend('<a href="#" class="register">${_("Enroll in {course_name}").format(course_name=course.display_number_with_default) | h}</a>')
-      $('#lean_overlay').fadeToggle();
+    };
 
-
-      $(".register").on('click', function(event) {
-        console.log('trying to submit hidden enroll form')
-         $("#class_enroll_form").submit();
-         event.preventDefault();
-       });
-
-      $('#class_enroll_form').on('ajax:complete', function(event, xhr) {
-        if(xhr.status == 200) {
-          if (xhr.responseText == "") {
-            location.href = "${reverse('dashboard')}";
-          }
-          else {
-            location.href = xhr.responseText;
-          }
-        } else if (xhr.status == 403) {
-            location.href = "${reverse('register_user')}?course_id=${course.id | u}&enrollment_action=enroll";
-        } else {
-          $('#register_error').html(
-              (xhr.responseText ? xhr.responseText : "${_("An error occurred. Please try again later.")}")
-          ).css("display", "block");
-        }
-      });
-    });
-
-    $('#age-denial').on('click', function(event) {
-      event.preventDefault();
-      $('#ageModal').modal('toggle');
-      $('#modalButton').css('display', 'none');
-      $('.main-cta').prepend('<span class="register disabled">${_("You are not old enough to enroll")}</span>');
-      $('#lean_overlay').fadeToggle();
-    });
-
-    $(".register").on('click', function(event) {
+    var registerEnroll = function() {
       $("#class_enroll_form").submit();
       event.preventDefault();
+    };
+
+    var registerComplete = function(event, xhr) {
+      if(xhr.status == 200) {
+            if (xhr.responseText == "") {
+              location.href = "${reverse('dashboard')}";
+            }
+            else {
+              location.href = xhr.responseText;
+            }
+          } else if (xhr.status == 403) {
+              location.href = "${reverse('register_user')}?course_id=${course.id | u}&enrollment_action=enroll";
+          } else {
+            $('#register_error').html(
+                (xhr.responseText ? xhr.responseText : "${_("An error occurred. Please try again later.")}")
+            ).css("display", "block");
+          }
+    }
+
+    // focus the Yes button on modal    
+    $('.modal').on('shown.bs.modal', function () {
+      $('#age-confirmation').focus();
+    });
+
+    // Deal with age confirmation click
+    $('#age-confirmation').on('click', function(event) {
+      event.preventDefault();
+      ageCallBack();
+      $('.main-cta').prepend('<a href="#" class="register">${_("Enroll in {course_name}").format(course_name=course.display_number_with_default) | h}</a>')
+      
+      // Submit the enroll form
+      $(".register").on('click', function(event) {
+         registerEnroll();
+      });
+      
+      // Check status of enroll form submission
+      $('#class_enroll_form').on('ajax:complete', registerComplete);
+      
+      // Store the response in localStorage
+      localStorage.setItem(course_id, 'yes');
+    });
+
+    // Deal with Age denial click
+    $('#age-denial').on('click', function(event) {
+      event.preventDefault();
+      ageCallBack();
+      $('.main-cta').prepend('<span class="register disabled">${_("You are not old enough to enroll")}</span>');
+
+      // Store the response in localStorage
+      localStorage.setItem(course_id, 'no');
+    });
+
+    // Toggle the overlay when the modal is hidden
+    $('.modal').on('hidden.bs.modal', function () {
+        $('#lean_overlay').fadeToggle();
+      });   
+
+    // Submit the enroll form
+    $(".register").on('click', function(event) {
+      registerEnroll();
     });
 
     % if can_add_course_to_cart:
@@ -119,22 +154,9 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
 
     %else:
 
-    $('#class_enroll_form').on('ajax:complete', function(event, xhr) {
-      if(xhr.status == 200) {
-        if (xhr.responseText == "") {
-          location.href = "${reverse('dashboard')}";
-        }
-        else {
-          location.href = xhr.responseText;
-        }
-      } else if (xhr.status == 403) {
-          location.href = "${reverse('register_user')}?course_id=${course.id | u}&enrollment_action=enroll";
-      } else {
-        $('#register_error').html(
-            (xhr.responseText ? xhr.responseText : "${_("An error occurred. Please try again later.")}")
-        ).css("display", "block");
-      }
-    });
+    // Check status of enroll form submission
+
+    $('#class_enroll_form').on('ajax:complete', registerComplete);
 
     %endif
 
@@ -151,7 +173,7 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
 
     <div class="intro-inner-wrapper">
 
-    <!-- Age verification modal must be positioned here-->
+    <!-- Age verification modal must be positioned here -->
 
       <div class="modal" style="z-index: 4; top: 30%; left: 30%;" data-backdrop="false" id="ageModal" tabindex="-1" role="dialog" aria-labelledby="ageModalLabel" >
         <div class="inner-wrapper modal-dialog" role="document">
@@ -232,20 +254,64 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
 
         %elif needs_to_verify_age:
           <script type="text/javascript" src="${static.url('js/bootstrap-modal.js')}"></script>
-          <script>
-             $(document).ready(function(){
-                $('#modalButton').on('click', function() {
-                  $('#ageModal').modal('show');
-                  $('#lean_overlay').fadeToggle()            
-                });
-            });
-          </script>
+        <script>
+          $(document).ready(function(){
 
-          <!-- Button trigger modal which is attached to intro-inner-wrapper section -->
+            var course_id = '${course.id}';
 
-          <button type="button" id='modalButton' class="btn btn-primary btn-lg" data-toggle="modal" >
-            Please verify your age
-          </button>  
+
+            // Check if the user has verified their age on page load/reload, check localStorage and display proper register buttons
+
+            if (localStorage.getItem(course_id) === null) {
+              $('.main-cta').prepend("<button class='verifyAge' type='button' id='modalButton' class='btn btn-primary btn-lg' data-toggle='modal' >${_('Enroll in {course_name}').format(course_name=course.display_number_with_default) | h} </button>");
+
+              // Bind functions to injected button
+              $('#modalButton').on('click', function() {
+                $('#ageModal').modal('show');
+                $('#lean_overlay').fadeToggle()            
+              });
+            }
+
+            if (localStorage.getItem(course_id) != null) {
+              var response = localStorage.getItem(course_id);
+              
+              var registerEnroll = function() {
+                $("#class_enroll_form").submit();
+                event.preventDefault();
+              };
+
+              var registerComplete = function(event, xhr) {
+                if(xhr.status == 200) {
+                      if (xhr.responseText == "") {
+                        location.href = "${reverse('dashboard')}";
+                      }
+                      else {
+                        location.href = xhr.responseText;
+                      }
+                    } else if (xhr.status == 403) {
+                        location.href = "${reverse('register_user')}?course_id=${course.id | u}&enrollment_action=enroll";
+                    } else {
+                      $('#register_error').html(
+                          (xhr.responseText ? xhr.responseText : "${_("An error occurred. Please try again later.")}")
+                      ).css("display", "block");
+                    }
+              }
+
+              // if user has verified their age, allow them to enroll, otherwise display "Not old enough"
+              if (response == 'yes') {         
+                $('.main-cta').prepend('<a href="#" class="register">${_("Enroll in {course_name}").format(course_name=course.display_number_with_default) | h}</a>')
+                // Submit the enroll form
+                $(".register").on('click', function(event) {
+                  registerEnroll();
+                }); 
+                // Check status of enroll form submission
+                $('#class_enroll_form').on('ajax:complete', registerComplete);
+              } else {
+              $('.main-cta').prepend('<span class="register disabled">${_("You are not old enough to enroll")}</span>');
+              }
+            }
+          });
+        </script>
 
         %elif not is_old_enough:
           <span class="register disabled">${_("You are not old enough to enroll")}</span>
