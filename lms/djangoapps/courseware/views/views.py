@@ -732,7 +732,7 @@ def course_about(request, course_id):
             bool(request.user.profile.age >= course.minimum_age)
 
         # The user was born in the year where they might be old enough, but we need to verify that they have turned the course.minimum age
-        needs_to_verify_age = bool(course.minimum_age - request.user.profile.age == 1)
+        needs_to_verify_age = not hasattr(request.user, 'profile') or bool(course.minimum_age - request.user.profile.age == 1)
 
         # Register button should be disabled if one of the following is true:
         # - Student is already registered for course
