@@ -36,14 +36,16 @@ function setup_debug(element_id, edit_link, staff_context){
 
     staffDebugTrigger.on('click', function() {
         DialogTabControls.initializeTabKeyValues(debugModalSelector);
-        $(debugModalSelector).css({"position": ""});
         $(debugModalSelector).attr("aria-hidden", "false");
+        var modal_width = $(debugModalSelector).outerWidth();
+        $(debugModalSelector).css({"margin-left": -modal_width*0.5})
     });
 
     historyTrigger.on('click', function() {
         DialogTabControls.initializeTabKeyValues(historyModalSelector);
-        $(historyModalSelector).css({"position": ""});
         $(historyModalSelector).attr("aria-hidden", "false");
+        var modal_width = $(historyModalSelector).outerWidth();
+        $(historyModalSelector).css({"margin-left": -modal_width*0.5})
     });
 
     xqaLogTrigger.on('click', function() {
