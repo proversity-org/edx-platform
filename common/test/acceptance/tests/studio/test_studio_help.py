@@ -529,7 +529,7 @@ class CourseOutlineHelpTest(StudioCourseTest):
         Then Help link should open.
         And help url should be correct
         """
-        expected_url = _get_expected_documentation_url('/developing_course/course_outline.html')s
+        expected_url = _get_expected_documentation_url('/developing_course/course_outline.html')
 
         # Assert that help link is correct.
         assert_nav_help_link(
