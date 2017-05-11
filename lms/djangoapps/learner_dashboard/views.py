@@ -1,7 +1,11 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 """Learner dashboard views"""
 =======
 f>>"""Learner dashboard views"""
+=======
+"""Learner dashboard views"""
+>>>>>>> fixing merge error
 import waffle
 >>>>>>> never use edx pattern library
 from django.contrib.auth.decorators import login_required
