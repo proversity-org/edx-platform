@@ -385,7 +385,7 @@ class ModuleI18nService(object):
             xblock_locale_path = resource_filename(xblock_resource, xblock_locale_dir)
             xblock_domain = 'text'
             selected_language = get_language()
-            language_code = configuration_helpers.get_value('LANGUAGE_CODE')
+            language_code = 'enUS' #configuration_helpers.get_value('LANGUAGE_CODE')
             try:
                 self.translator = gettext.translation(
                     xblock_domain,
