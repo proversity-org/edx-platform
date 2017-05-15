@@ -580,6 +580,7 @@ def course_listing(request):
 
     user_org = _get_user_org(request.user)
     org_editable = 'readonly' if not request.user.is_staff else ''
+    edit_org = 'disabled' if not (request.user.is_superuser or request.user.is_staff) else ''
     org_short_name = user_org['short_name'] if user_org else ''
 
 <<<<<<< HEAD
