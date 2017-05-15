@@ -25,7 +25,7 @@ import django.utils
 from django.utils.translation import get_language, to_locale
 
 from pymongo import ReadPreference
-from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+#from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from xmodule.contentstore.django import contentstore
 from xmodule.modulestore.draft_and_published import BranchSettingMixin
 from xmodule.modulestore.mixed import MixedModuleStore
