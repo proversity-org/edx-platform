@@ -17,8 +17,8 @@
 (function(requirejs, require, define) {
     define(
 'video/02_html5_video.js',
-['underscore', 'video/00_hls.js'],
-function(_, Hls) {
+['underscore'],
+function(_) {
     var HTML5Video = {};
 
     HTML5Video.Player = (function() {
@@ -310,7 +310,7 @@ function(_, Hls) {
                 });
             });
 
-            if (Hls.isSupported()) {
+            /*if (Hls.isSupported()) {
                 this.videoEl.find('source').each(function(index, source){
                     var playlist = $(source).attr('src');
                     if(playlist.substr(playlist.lastIndexOf('.')+1, 4) == 'm3u8'){
@@ -325,21 +325,7 @@ function(_, Hls) {
                         return false;
                     }
                 });
-                /*this.hls = new Hls();
-                this.hls.attachMedia(this.video);
-                this.hls.on(Hls.Events.MEDIA_ATTACHED, function(){
-                    _this.videoEl.find('source').each(function(index, source){
-                        var playlist = $(source).attr('src');
-                        if(playlist.substr(playlist.lastIndexOf('.')+1, 4) == 'm3u8'){
-                            _this.hls.loadSource(playlist);
-                            _this.hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-                                console.log("HLS manifest loaded, found " + data.levels.length + " quality levels");
-                            });
-                            return false;
-                        }
-                    });
-                });*/
-            }
+            }*/
 
             // When the <video> tag has been processed by the browser, and it
             // is ready for playback, notify other parts of the VideoPlayer,
