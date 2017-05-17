@@ -728,11 +728,19 @@ def course_about(request, course_id):
         invitation_only = course.invitation_only
         is_course_full = CourseEnrollment.objects.is_course_full(course)
 
+        # If age is not set, user needs to set age
+        needs_to_set_age = bool(not request.user.profile.age)
+
+        if course.minimum_age is None or int(course.minimum_age) is 0:
+            needs_to_verify_age = False
+            display_age = 0
+        elif course.minimum_age > 0:
+            # The user was born in the year where they might be old enough, but we need to verify that they have turned the course.minimum age
+            needs_to_verify_age = not hasattr(request.user, 'profile') or bool(int(course.minimum_age) - request.user.profile.age == 1)
+            display_age = int(course.minimum_age)         
+        
         is_old_enough = bool(not course.minimum_age or not hasattr(request.user, 'profile') or not request.user.profile.age) or \
             bool(request.user.profile.age >= course.minimum_age)
-
-        # The user was born in the year where they might be old enough, but we need to verify that they have turned the course.minimum age
-        needs_to_verify_age = not hasattr(request.user, 'profile') or bool(course.minimum_age - request.user.profile.age == 1)
 
         # Register button should be disabled if one of the following is true:
         # - Student is already registered for course
@@ -766,8 +774,10 @@ def course_about(request, course_id):
         reviews_fragment_view = CourseReviewsModuleFragmentView().render_to_fragment(request, course=course)
 
         context = {
+            'account_settings_url': reverse('account_settings'),
             'course': course,
             'course_details': course_details,
+            'display_age': display_age,
             'staff_access': staff_access,
             'studio_url': studio_url,
             'registered': registered,
@@ -786,6 +796,7 @@ def course_about(request, course_id):
             'can_enroll': can_enroll,
             'invitation_only': invitation_only,
             'is_old_enough': is_old_enough,
+            'needs_to_set_age': needs_to_set_age,
             'needs_to_verify_age': needs_to_verify_age,
             'active_reg_button': active_reg_button,
             'is_shib_course': is_shib_course,

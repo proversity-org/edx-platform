@@ -190,7 +190,7 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
             </div>
             <div class="modal-body">
               <center>
-                ${_("Are you {min_age} years or older?").format(min_age=int(course.minimum_age))}
+                ${_("Are you {min_age} years or older?").format(min_age=display_age)}
               </center>
             </div>
             <div class="modal-footer" style="padding-top: 15px;"> 
@@ -251,6 +251,9 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
         ## so that they can register and become a real user that can enroll.
         %elif not is_shib_course and not can_enroll:
           <span class="register disabled">${_("Enrollment is Closed")}</span>
+
+        %elif needs_to_set_age:
+            <span class="add-to-cart">${_("Set your Year of Birth in the <a href='{account_settings_url}'>account settings</a>".format(account_settings_url=account_settings_url))}</span>
 
         %elif needs_to_verify_age:
           <script type="text/javascript" src="${static.url('js/bootstrap-modal.js')}"></script>
