@@ -104,8 +104,8 @@ class CourseOverview(TimeStampedModel):
     course_video_url = TextField(null=True, blank=True)
     effort = TextField(null=True, blank=True)
     self_paced = BooleanField(default=False)
-    marketing_url = TextField(null=True)
-    eligible_for_financial_aid = BooleanField(default=True)
+    #marketing_url = TextField(null=True)
+    #eligible_for_financial_aid = BooleanField(default=True)
 
     language = TextField(null=True)
 
