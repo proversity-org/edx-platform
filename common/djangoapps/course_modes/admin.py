@@ -42,7 +42,7 @@ class CourseModeForm(forms.ModelForm):
         
 
     mode_slug = forms.ChoiceField(choices=COURSE_MODE_SLUG_CHOICES, label=_("Mode"))
-    course_id = forms.ChoiceField(choices=[(course.id, course.display_name) for course in CourseOverview.objects.all().order_by('display_name')], label=("Course"))
+    #course_id = forms.ChoiceField(choices=[(course.id, course.display_name) for course in CourseOverview.objects.all().order_by('display_name')], label=("Course"))
 
     # The verification deadline is stored outside the course mode in the verify_student app.
     # (we used to use the course mode expiration_datetime as both an upgrade and verification deadline).
