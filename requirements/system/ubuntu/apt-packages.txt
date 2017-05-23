@@ -3,6 +3,7 @@ pkg-config
 gfortran
 libatlas-dev
 libblas-dev
+libssl-dev
 liblapack-dev
 liblapack3gf
 curl
