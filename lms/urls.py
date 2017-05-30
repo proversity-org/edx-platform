@@ -35,6 +35,9 @@ urlpatterns = (
     url(r'^dashboard$', 'student.views.dashboard', name="dashboard"),
     url(r'^change_enrollment$', 'student.views.change_enrollment', name='change_enrollment'),
 
+	# Submissions api
+    url(r'^api/submissions/', include('submissions.urls')),
+	
     # Event tracking endpoints
     url(r'', include('track.urls')),
 
