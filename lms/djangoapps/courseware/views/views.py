@@ -735,9 +735,13 @@ def course_about(request, course_id):
             needs_to_verify_age = False
             display_age = 0
         elif course.minimum_age > 0:
-            # The user was born in the year where they might be old enough, but we need to verify that they have turned the course.minimum age
-            needs_to_verify_age = not hasattr(request.user, 'profile') or bool(int(course.minimum_age) - request.user.profile.age == 1)
-            display_age = int(course.minimum_age)         
+            if needs_to_set_age is False:
+                # The user was born in the year where they might be old enough, but we need to verify that they have turned the course.minimum age
+                needs_to_verify_age = not hasattr(request.user, 'profile') or bool(int(course.minimum_age) - request.user.profile.age == 1)
+                display_age = int(course.minimum_age)
+            elif needs_to_set_age is True:
+                needs_to_verify_age = False      
+                display_age = int(course.minimum_age)
         
         is_old_enough = bool(not course.minimum_age or not hasattr(request.user, 'profile') or not request.user.profile.age) or \
             bool(request.user.profile.age >= course.minimum_age)
