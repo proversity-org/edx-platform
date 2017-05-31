@@ -100,6 +100,7 @@ git+https://github.com/edx/edx-proctoring.git@1.2.0#egg=edx-proctoring==1.2.0
 
 # Third Party XBlocks
 <<<<<<< HEAD
+<<<<<<< HEAD
 git+https://github.com/open-craft/xblock-poll@7ba819b968fe8faddb78bb22e1fe7637005eb414#egg=xblock-poll==1.2.7
 git+https://github.com/edx-solutions/xblock-drag-and-drop-v2@v2.0.18#egg=xblock-drag-and-drop-v2==2.0.18
 =======
@@ -114,6 +115,10 @@ git+https://github.com/proversity-org/xblock-drag-and-drop-v2@2.0.18#egg=xblock-
 =======
 git+https://github.com/proversity-org/xblock-drag-and-drop-v2#egg=xblock-drag-and-drop-v2==2.0.18
 >>>>>>> UPD: requirement update to proversity fork
+=======
+git+https://github.com/open-craft/xblock-poll@v1.2.6#egg=xblock-poll==1.2.6
+git+https://github.com/proversity-org/xblock-drag-and-drop-v2#egg=xblock-drag-and-drop-v2==2.0.18
+>>>>>>> Proversity/staging (#380)
 git+https://github.com/proversity-org/edx-xblock-bibblio#egg=edx-xblock-bibblio
 -e git+https://github.com/proversity-org/xblock-free-text-response#egg=xblock-free-text-response
 git+https://github.com/proversity-org/recap-xblock.git#egg=recap-xblock
