@@ -18,7 +18,6 @@ class SiteFactory(DjangoModelFactory):
     name = "test microsite"
     domain = "test-site.testserver"
 
-
 class MicrositeFactory(DjangoModelFactory):
     """
     Factory for Microsite

@@ -17,6 +17,11 @@ from model_utils.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 
 
+class BasicMicrosite(models.Model):
+
+    values = JSONField(null=False, blank=True, load_kwargs={'object_pairs_hook': collections.OrderedDict})
+
+
 class Microsite(models.Model):
     """
     This is where the information about the microsite gets stored to the db.
