@@ -95,8 +95,15 @@ class MicrositesViewSet(ViewSet):
         if 'staging' in site_name:
             site_name = site_name.replace('staging.', '')
 
-        site = Site(domain=site_url, name=site_name)
-        site.save()
+
+        # need to check if site exists, do not duplicate
+
+        if not Site.objects.filter(domain=site_url):
+            site = Site(domain=site_url, name=site_name)
+            site.save()
+        else:
+            return Response({'error': 'That site url already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
         org_data = {
             'name': json_values['platform_name'],
             'short_name': json_values['course_org_filter'],
@@ -115,9 +122,12 @@ class MicrositesViewSet(ViewSet):
             microsite.save()
         except IntegrityError:
             return Response(
-                {"Integrity error": "Duplicate entry for microsite key {key}".format(key=org_data['short_name'])},
+                {"error": "Duplicate entry for microsite key {key}".format(key=org_data['short_name'])},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        # Get the id of the newly created microsite
+        microsite_id = {"id": microsite.id}
 
         # Map the organization and microsite
         mapping = MicrositeOrganizationMapping(organization=org_data['short_name'], microsite=microsite)
@@ -125,7 +135,7 @@ class MicrositesViewSet(ViewSet):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(microsite_id, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -200,6 +210,8 @@ class MicrositesDetailView(ViewSet):
         # Get the microsite
 
         microsite = Microsite.objects.get(pk=pk)
+        microsite_id = {"id": microsite.id}
+        domain = microsite.site.domain
         serializer = MicrositeSerializer(data=request.data)
         if microsite is None:
             return Response(
@@ -216,16 +228,21 @@ class MicrositesDetailView(ViewSet):
         elif microsite.site.domain != update_data["SITE_NAME"]:
             site_url = update_data["SITE_NAME"]
             site_name = update_data['domain_prefix']
-            site = Site(domain=site_url, name=site_name)
-            site.save()
-            Microsite.objects.filter(pk=pk).update(site=site)
+            if not Site.objects.filter(domain=site_url):
+                new_site = Site(domain=site_url, name=site_name)
+                new_site.save()
+                Microsite.objects.filter(pk=pk).update(site=new_site)
+                old_site = Site.objects.filter(domain=domain)
+                old_site.delete()
+            else:
+                return Response({'error': 'That site url already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
         Microsite.objects.filter(pk=pk).update(values=request.data)
-
+        
         if serializer.is_valid():
             serializer.save()
             return Response(
-                {"message": "The microsite was updated"},
+                microsite_id,
                 status=status.HTTP_200_OK
             )
 
