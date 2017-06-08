@@ -1,0 +1,25 @@
+<%page expression_filter="h" args="section_data"/>
+
+<%!
+from django.utils.encoding import escape_uri_path
+from django.utils.translation import ugettext as _
+from openedx.core.djangolib.markup import HTML, Text
+%>
+
+<div>
+    <div>
+        <div>
+            <br>
+            <p>
+                ${_("Skeleton Recap tab. This is where all the Recap/Freetextresponses will live.")}
+            </p>
+        </div>
+    </div>
+    <div>
+    <div>
+        <br>
+        <!-- future work : display all sent notifcations messages here -->
+        <p id='note-msg'></p>
+
+    </div>
+</div>

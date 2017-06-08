@@ -128,6 +128,7 @@ def instructor_dashboard_2(request, course_id):
         _section_student_admin(course, access),
         _section_data_download(course, access),
     ]
+    
 
     analytics_dashboard_message = None
     if show_analytics_dashboard_message(course_key):
@@ -201,6 +202,41 @@ def instructor_dashboard_2(request, course_id):
     ]
     if len(openassessment_blocks) > 0:
         sections.append(_section_open_response_assessment(request, course, openassessment_blocks, access))
+
+
+    # define a generic function to get any category of xblock
+
+    def get_course_blocks(course_key, category):
+        """
+        Retrieve all XBlocks in the course for a particular category.
+    
+        Returns only XBlocks that are published and haven't been deleted.
+        """
+        # Note: we need to check if found components have been orphaned
+        # due to a bug in split modulestore (PLAT-799).  Once that bug
+        # is resolved, we can skip the `_is_in_course_tree()` check entirely.
+        return [
+            block for block in modulestore().get_items(
+                course_key,
+                qualifiers={"category": category},
+            )
+        ]
+
+    print "HHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "RECAP",  get_course_blocks(course_key, "recap")
+
+    recap_blocks = get_course_blocks(course_key, "recap")
+    sections.append(_section_recap(request, course, recap_blocks, access))
+
 
     disable_buttons = not _is_small_course(course_key)
 
@@ -730,7 +766,6 @@ def _section_metrics(course, access):
 def _section_open_response_assessment(request, course, openassessment_blocks, access):
     """Provide data for the corresponding dashboard section """
     course_key = course.id
-
     ora_items = []
     parents = {}
 
@@ -768,6 +803,25 @@ def _section_open_response_assessment(request, course, openassessment_blocks, ac
     }
     return section_data
 
+
+def _section_recap(request, course, recap_blocks, access):
+    """Provide data for the corresponding dashboard section """
+    course_key = course.id
+    recap_items = []
+
+    for block in recap_blocks:
+        recap_items.append({
+            #'url_base': reverse('xblock_view', args=[]),
+            'url_base': reverse('xblock_view', args=[course.id, block.location, 'student_view']),
+            })
+
+    section_data = {
+        'section_key': 'recap',
+        'section_display_name': _('Recap'),
+        'access': access,
+        'course_id': unicode(course_key),
+    }
+    return section_data
 
 def is_ecommerce_course(course_key):
     """
