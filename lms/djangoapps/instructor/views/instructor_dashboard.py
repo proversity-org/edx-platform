@@ -59,6 +59,8 @@ from .tools import get_units_with_due_date, title_or_url
 
 log = logging.getLogger(__name__)
 
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 
 class InstructorDashboardTab(CourseTab):
     """
@@ -820,14 +822,19 @@ def _section_recap(request, course, recap_blocks, access):
             })
     print recap_items
 
+    user_list = User.objects.all()
+    paginator = Paginator(user_list, 10)
+    
     section_data = {
         'fragment': block.render('recap_blocks_listing_view', context={
             'recap_items': recap_items,
         }),
+        'users': user_list,
         'section_key': 'recap',
         'section_display_name': _('Recap'),
         'access': access,
         'course_id': unicode(course_key),
+
     }
     return section_data
 
