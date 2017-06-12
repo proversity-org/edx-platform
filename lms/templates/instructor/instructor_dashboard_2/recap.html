@@ -11,6 +11,8 @@ from openedx.core.djangolib.markup import HTML, Text
 <%! from openedx.core.djangolib.markup import HTML %>
 
 
+<input type="text" name="username" id="filter_username"> <button>Filter User</button>
+
 <table class="table table-bordered">
   <thead>
     <tr>
@@ -30,11 +32,39 @@ from openedx.core.djangolib.markup import HTML, Text
   </tbody>
 </table>
 
+% if section_data['users'].has_other_pages:
+  <ul class="pagination">
+    % if section_data['users'].has_previous:
+      <li><a href="?page= section_data['users'].previous_page_number">&laquo;</a></li>
+    % else:
+      <li class="disabled"><span>&laquo;</span></li>
+    % endif
+    % for i in section_data['users'].paginator.page_range:
+      % if section_data['users'].number == i:
+        <li class="active"><span>${i} <span class="sr-only">(current)</span></span></li>
+      % else:
+        <li><a href="?page=${i}">${i}</a></li>
+      % endif
+    % endfor
+    % if section_data['users'].has_next:
+      <li><a href="?page= section_data['users'].next_page_number">&raquo;</a></li>
+    % else:
+      <li class="disabled"><span>&raquo;</span></li>
+    %endif
+  </ul>
+%endif
+
+
 <section class="recap-dashboard">
     ${HTML(section_data['fragment'].body_html())}
 </section>
 
+  <script>
+    $("#filter_username").change(function () {
+      console.log("change")
 
+    });
+  </script>
 
 
 <style>

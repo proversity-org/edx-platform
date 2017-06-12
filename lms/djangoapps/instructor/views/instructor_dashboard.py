@@ -60,7 +60,7 @@ from .tools import get_units_with_due_date, title_or_url
 log = logging.getLogger(__name__)
 
 from django.contrib.auth.models import User
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 class InstructorDashboardTab(CourseTab):
     """
@@ -819,17 +819,26 @@ def _section_recap(request, course, recap_blocks, access):
             'name': block.display_name,
             #'url_base': reverse('xblock_view', args=[]),
             'url_base': reverse('xblock_view', args=[course.id, block.location, 'recap_blocks_listing_view']),
+            'url_student_view': reverse('xblock_view', args=[course.id, block.location, 'student_view']),
             })
     print recap_items
 
     user_list = User.objects.all()
-    paginator = Paginator(user_list, 10)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(user_list, 4)
+
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        users = paginator.page(1)
+    except EmptyPage:
+        users = paginator.page(paginator.num_pages)
     
     section_data = {
         'fragment': block.render('recap_blocks_listing_view', context={
             'recap_items': recap_items,
         }),
-        'users': user_list,
+        'users': users,
         'section_key': 'recap',
         'section_display_name': _('Recap'),
         'access': access,
