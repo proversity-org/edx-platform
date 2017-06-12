@@ -222,17 +222,10 @@ def instructor_dashboard_2(request, course_id):
             )
         ]
 
-    print "HHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
+    
     print "RECAP",  get_course_blocks(course_key, "recap")
+
+    # Get all the recap xblocks in a course
 
     recap_blocks = get_course_blocks(course_key, "recap")
     sections.append(_section_recap(request, course, recap_blocks, access))
@@ -806,16 +799,31 @@ def _section_open_response_assessment(request, course, openassessment_blocks, ac
 
 def _section_recap(request, course, recap_blocks, access):
     """Provide data for the corresponding dashboard section """
+    print "HHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
+    print "---------------------------------------------------------------------------"
     course_key = course.id
     recap_items = []
 
     for block in recap_blocks:
         recap_items.append({
+            'name': block.display_name,
             #'url_base': reverse('xblock_view', args=[]),
-            'url_base': reverse('xblock_view', args=[course.id, block.location, 'student_view']),
+            'url_base': reverse('xblock_view', args=[course.id, block.location, 'recap_blocks_listing_view']),
             })
+    print recap_items
 
     section_data = {
+        'fragment': block.render('recap_blocks_listing_view', context={
+            'recap_items': recap_items,
+        }),
         'section_key': 'recap',
         'section_display_name': _('Recap'),
         'access': access,

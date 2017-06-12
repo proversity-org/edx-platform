@@ -6,20 +6,45 @@ from django.utils.translation import ugettext as _
 from openedx.core.djangolib.markup import HTML, Text
 %>
 
+<style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+</style>
 <div>
-    <div>
-        <div>
-            <br>
-            <p>
-                ${_("Skeleton Recap tab. This is where all the Recap/Freetextresponses will live.")}
-            </p>
-        </div>
-    </div>
     <div>
     <div>
         <br>
-        <!-- future work : display all sent notifcations messages here -->
-        <p id='note-msg'></p>
+        <p>${_("Please type the applicant's email address to download their report. ")}</p>
+        <br>
+        <input id='filter-users'>
+        <br>
 
     </div>
+    </div>
+    <br>
+  <table>
+  <tr>
+    <th>Recap</th>
+    <th>User</th>
+    <th>Download</th>
+  </tr>
+  <tr>
+    <td><select>
+  <option>Recap Unit 1 </option>
+  <option>Recap Unit 2</option>
+</select></td>
+    <td>Maria Anders</td>
+    <td><button>Donwload</button></td>
+  </tr>
+</table>
 </div>
