@@ -5,9 +5,14 @@ Instructor Dashboard Views
 import datetime
 import logging
 import uuid
+<<<<<<< HEAD
 
 import pytz
 from django.conf import settings
+=======
+import pytz
+from openedx.core.lib.xblock_builtin import get_css_dependencies, get_js_dependencies
+>>>>>>> try add recap js directly using url, should load in instructor dash
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseServerError
@@ -18,8 +23,17 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 from mock import patch
+<<<<<<< HEAD
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
+=======
+
+from openedx.core.lib.xblock_utils import wrap_xblock, wrap_fragment
+from openedx.core.lib.url_utils import quote_slashes
+from xmodule.html_module import HtmlDescriptor
+from xmodule.modulestore.django import modulestore
+from xmodule.tabs import CourseTab
+>>>>>>> try add recap js directly using url, should load in instructor dash
 from xblock.field_data import DictFieldData
 from xblock.fields import ScopeIds
 
@@ -225,8 +239,6 @@ def instructor_dashboard_2(request, course_id):
         ]
 
     
-    print "RECAP",  get_course_blocks(course_key, "recap")
-
     # Get all the recap xblocks in a course
 
     recap_blocks = get_course_blocks(course_key, "recap")
@@ -698,7 +710,7 @@ def _section_send_email(course, access):
     course_modes = []
     if not VerifiedTrackCohortedCourse.is_verified_track_cohort_enabled(course_key):
         course_modes = CourseMode.modes_for_course(course_key, include_expired=True, only_selectable=False)
-    email_editor = fragment.content
+    email_editor = fragmentf.content
     section_data = {
         'section_key': 'send_email',
         'section_display_name': _('Email'),
@@ -801,7 +813,7 @@ def _section_open_response_assessment(request, course, openassessment_blocks, ac
 
 def _section_recap(request, course, recap_blocks, access):
     """Provide data for the corresponding dashboard section """
-    print "HHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"
+    
     print "---------------------------------------------------------------------------"
     print "---------------------------------------------------------------------------"
     print "---------------------------------------------------------------------------"
@@ -814,6 +826,17 @@ def _section_recap(request, course, recap_blocks, access):
     course_key = course.id
     recap_items = []
 
+    user_list = User.objects.all()
+    page = request.GET.get('page', 1)
+    paginator = Paginator(user_list, 10)
+
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        users = paginator.page(1)
+    except EmptyPage:
+        users = paginator.page(paginator.num_pages)
+    
     for block in recap_blocks:
         recap_items.append({
             'name': block.display_name,
@@ -823,21 +846,59 @@ def _section_recap(request, course, recap_blocks, access):
             })
     print recap_items
 
-    user_list = User.objects.all()
-    page = request.GET.get('page', 1)
-    paginator = Paginator(user_list, 4)
+    #def wrap_xblock(
+    #    runtime_class,
+    #    block,
+    #    view,
+    #    frag,
+    #    context,                        # pylint: disable=unused-argument
+    #    usage_id_serializer,
+    #    request_token,                  # pylint: disable=redefined-outer-name
+    #    display_name_only=False,
+    #    extra_data=None
+    #):
+    # wrap_xblock('LmsRuntime', block, 'recap_blocks_listing_view', frag, context, usage)
 
-    try:
-        users = paginator.page(page)
-    except PageNotAnInteger:
-        users = paginator.page(1)
-    except EmptyPage:
-        users = paginator.page(paginator.num_pages)
-    
-    section_data = {
-        'fragment': block.render('recap_blocks_listing_view', context={
+    # html_module = HtmlDescriptor(
+    #         course.system,
+    #         DictFieldData({'data': ''}),
+    #         ScopeIds(None, None, None, course_key.make_usage_key('html', 'fake'))
+    #     )
+    #     fragment = course.system.render(html_module, 'studio_view')
+    # fragment = wrap_xblock(
+    #     'LmsRuntime', html_module, 'studio_view', fragment, None,
+    #     extra_data={"course-id": unicode(course_key)},
+    #     usage_id_serializer=lambda usage_id: quote_slashes(unicode(usage_id)),
+    #     # Generate a new request_token here at random, because this module isn't connected to any other
+    #     # xblock rendering.
+    #     request_token=uuid.uuid1().get_hex()
+    # )
+
+    print "BLLOOOOOCCCCCK", block 
+    fragment = block.render('recap_blocks_listing_view',
+        context={
             'recap_items': recap_items,
-        }),
+            'users': users
+        }
+    )
+
+    recap_block = recap_blocks[0]
+    block, __ = get_module_by_usage_id(
+        request, unicode(course_key), unicode(recap_block.location),
+        disable_staff_debug_info=True, course=course
+    )
+
+    fragment = wrap_xblock(
+        'LmsRuntime', recap_block, 'studio_view', fragment, None,
+        extra_data={"course-id": unicode(course_key)},
+        usage_id_serializer=lambda usage_id: quote_slashes(unicode(usage_id)),
+        # Generate a new request_token here at random, because this module isn't connected to any other
+        # xblock rendering.
+        request_token=uuid.uuid1().get_hex()
+    )
+
+    section_data = {
+        'fragment': fragment,
         'users': users,
         'section_key': 'recap',
         'section_display_name': _('Recap'),
