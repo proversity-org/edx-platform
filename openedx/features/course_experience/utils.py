@@ -51,10 +51,14 @@ def get_course_outline_block_tree(request, course_id):
         if last_accessed_child_position and block.get('children'):
             block['last_accessed'] = True
 <<<<<<< HEAD
+<<<<<<< HEAD
             if last_accessed_child_position <= len(block['children']):
 =======
             if len(block['children']) >= last_accessed_child_position:
 >>>>>>> fix bad last accessed conditional
+=======
+            if len(block['children']) >= last_accessed_child_position:
+>>>>>>> microsites api and last accessed conditional (#395)
                 last_accessed_child_block = block['children'][last_accessed_child_position - 1]
                 last_accessed_child_block['last_accessed'] = True
                 mark_last_accessed(user, course_key, last_accessed_child_block)
