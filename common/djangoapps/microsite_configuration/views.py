@@ -2,9 +2,12 @@
 """
 Views for microsites api end points.
 """
+import sys, yaml
+from collections import OrderedDict
 from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
 from django.apps import apps
+from django.conf import settings
 from django.contrib.sites.models import Site
 from edx_rest_framework_extensions.authentication import JwtAuthentication
 from rest_framework.response import Response
@@ -19,7 +22,52 @@ from organizations import api as organizations_api
 from organizations import exceptions as org_exceptions
 from openedx.core.djangoapps.user_api.errors import UserNotFound, UserNotAuthorized
 
+"""
+    The following 3 methods are helper functions to:
+        1: generate a proper json object for the microsite values to be sent up and down the server
+        2: generate a yaml file that gets saved on the server that will be used to generate,
+           configuration files for the microsites to run through lms and for the nginx site configurations.
+           
+    The file location is controlled via EDXAPP_MICROSITE_CONFIG_FILE kept in server_vars.yml
 
+"""
+
+# Updated the given map with the key:value pair provided, but if the value provided is an OrderedDict
+# it will construct a new dict object and update the new created dict with the contents of that OrderedDict recursively
+def update_map( map, key, values):
+    if isinstance(values, OrderedDict):
+        new_map = {}
+        for i in values:
+            update_map(new_map, i, values[i])
+        map.update({key:new_map})
+    else:
+        map.update({key:values})
+
+# simple utility to serve as intermetiate between save_to_file and update_map,
+# as to allow for the transformation of a single microsite value set.
+def build_inner_map(microsite):
+    inner_map = {}
+
+    for item in microsite:
+        update_map(inner_map, item, microsite[item])
+    return inner_map
+
+# get all microsites from the database and loop over them contructing a dictionary by the use of build_inner_map,
+# each microsite is parsed with build_inner_map and then added to a main "outer" dictionary for compiling of the yaml file.
+# after all microsites has been parsed the main dictonary is dumped as a yaml file.
+def save_to_file():
+    microsites = Microsite.objects.all()
+    data = {}
+    outer_map = {}
+    for microsite in microsites:
+        outer_map.update({microsite.key: build_inner_map(microsite.values)})
+
+    data.update({"PLATFORM_EDXAPP_MICROSITE_CONFIGURATION":outer_map})
+    
+    f = open(settings.MICROSITE_CONFIG_FILE, 'w+')
+    f.write("---\n")
+    yaml.safe_dump(data, f, default_flow_style=False, encoding='utf-8', allow_unicode=True)
+    f.close()
 
 class MicrositesViewSet(ViewSet):
 
@@ -75,9 +123,12 @@ class MicrositesViewSet(ViewSet):
     authentication_classes = (OAuth2Authentication, JwtAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
 
-
     def get(self, request, format=None):
         microsites = Microsite.objects.all()
+
+        for microsite in microsites:
+            microsite.values = build_inner_map(microsite.values)
+
         serializer = MicrositeModelSerializer(microsites, many=True)
         return Response(serializer.data)
 
@@ -133,11 +184,13 @@ class MicrositesViewSet(ViewSet):
         mapping = MicrositeOrganizationMapping(organization=org_data['short_name'], microsite=microsite)
         mapping.save()
 
+
         if serializer.is_valid():
             serializer.save()
+            save_to_file()
             return Response(microsite_id, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class MicrositesDetailView(ViewSet):
 
@@ -187,6 +240,7 @@ class MicrositesDetailView(ViewSet):
         try:
             queryset = Microsite.objects.all()
             microsite = get_object_or_404(queryset, pk=pk)
+            microsite.values = build_inner_map(microsite.values)
             serializer = MicrositeModelSerializer(microsite)
         except UserNotAuthorized:
             return Response(status=status.HTTP_403_FORBIDDEN)
@@ -241,9 +295,9 @@ class MicrositesDetailView(ViewSet):
         
         if serializer.is_valid():
             serializer.save()
+            save_to_file()
             return Response(
                 microsite_id,
                 status=status.HTTP_200_OK
             )
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

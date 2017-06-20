@@ -3103,6 +3103,7 @@ MICROSITE_BACKEND = 'microsite_configuration.backends.filebased.FilebasedMicrosi
 MICROSITE_TEMPLATE_BACKEND = 'microsite_configuration.backends.filebased.FilebasedMicrositeTemplateBackend'
 # TTL for microsite database template cache
 MICROSITE_DATABASE_TEMPLATE_CACHE_TTL = 5 * 60
+MICROSITE_CONFIG_FILE = '/edx/app/edxapp/microsites.yml'
 
 ################################ Settings for rss_proxy ################################
 
