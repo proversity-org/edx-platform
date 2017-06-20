@@ -129,12 +129,21 @@ from .tools import (
 )
 
 log = logging.getLogger(__name__)
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+from xhtml2pdf import pisa
 
+<<<<<<< HEAD
 TASK_SUBMISSION_OK = 'created'
 
 SUCCESS_MESSAGE_TEMPLATE = _("The {report_type} report is being created. "
                              "To view the status of the report, see Pending Tasks below.")
 
+=======
+from django.conf import settings
+from django.http import HttpResponse
+from django.template import Context
+from django.template.loader import get_template
+>>>>>>> xhtml2pdf working, need to show pdf in view, successfully created though
 
 def common_exceptions_400(func):
     """
@@ -3395,9 +3404,30 @@ def _get_boolean_param(request, param_name):
     return request.POST.get(param_name, False) in ['true', 'True', True]
 
 
+<<<<<<< HEAD
 def _create_error_response(request, msg):
     """
     Creates the appropriate error response for the current request,
     in JSON form.
     """
     return JsonResponse({"error": _(msg)}, 400)
+=======
+@csrf_protect
+def generate_pdf(request, course_id): 
+
+    print 'I AM CALLING THIS FUNCTION'
+    print 'I AM CALLING THIS FUNCTION'
+
+
+    data = ''
+    if request.method == 'POST':
+        #template = get_template('recap.html')
+        data = request.POST.get('recap_answers', None)
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'    
+        #pisa.CreatePDF(data, response,
+        #   encoding='utf-8')
+        print response       
+        return response
+
+>>>>>>> xhtml2pdf working, need to show pdf in view, successfully created though

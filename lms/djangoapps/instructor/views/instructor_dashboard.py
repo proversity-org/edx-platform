@@ -76,6 +76,9 @@ log = logging.getLogger(__name__)
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from submissions import api
+from xblock.runtime import KvsFieldData, KeyValueStore
+
 class InstructorDashboardTab(CourseTab):
     """
     Defines the Instructor Dashboard view type that is shown as a course tab.
@@ -242,7 +245,8 @@ def instructor_dashboard_2(request, course_id):
     # Get all the recap xblocks in a course
 
     recap_blocks = get_course_blocks(course_key, "recap")
-    sections.append(_section_recap(request, course, recap_blocks, access))
+    free_text_blocks = get_course_blocks(course_key, 'freetextresponse')
+    sections.append(_section_recap(request, course, recap_blocks, free_text_blocks, access))
 
 
     disable_buttons = not _is_small_course(course_key)
@@ -811,24 +815,29 @@ def _section_open_response_assessment(request, course, openassessment_blocks, ac
     return section_data
 
 
-def _section_recap(request, course, recap_blocks, access):
+def _section_recap(request, course, recap_blocks, free_text_blocks, access):
     """Provide data for the corresponding dashboard section """
     
     print "---------------------------------------------------------------------------"
     print "---------------------------------------------------------------------------"
     print "---------------------------------------------------------------------------"
     print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
+    print free_text_blocks
+
+    
     course_key = course.id
     recap_items = []
+    
+    # Get list of enrolled students for this course
 
-    user_list = User.objects.all()
+    user_list = User.objects.filter(
+        courseenrollment__course_id=course_key,
+        courseenrollment__is_active=1,
+        is_staff=0,
+    ).order_by('username').select_related('profile')
+
     page = request.GET.get('page', 1)
-    paginator = Paginator(user_list, 10)
+    paginator = Paginator(user_list, 5)
 
     try:
         users = paginator.page(page)
@@ -838,49 +847,15 @@ def _section_recap(request, course, recap_blocks, access):
         users = paginator.page(paginator.num_pages)
     
     for block in recap_blocks:
+
         recap_items.append({
             'name': block.display_name,
             #'url_base': reverse('xblock_view', args=[]),
             'url_base': reverse('xblock_view', args=[course.id, block.location, 'recap_blocks_listing_view']),
             'url_student_view': reverse('xblock_view', args=[course.id, block.location, 'student_view']),
             })
-    print recap_items
 
-    #def wrap_xblock(
-    #    runtime_class,
-    #    block,
-    #    view,
-    #    frag,
-    #    context,                        # pylint: disable=unused-argument
-    #    usage_id_serializer,
-    #    request_token,                  # pylint: disable=redefined-outer-name
-    #    display_name_only=False,
-    #    extra_data=None
-    #):
-    # wrap_xblock('LmsRuntime', block, 'recap_blocks_listing_view', frag, context, usage)
-
-    # html_module = HtmlDescriptor(
-    #         course.system,
-    #         DictFieldData({'data': ''}),
-    #         ScopeIds(None, None, None, course_key.make_usage_key('html', 'fake'))
-    #     )
-    #     fragment = course.system.render(html_module, 'studio_view')
-    # fragment = wrap_xblock(
-    #     'LmsRuntime', html_module, 'studio_view', fragment, None,
-    #     extra_data={"course-id": unicode(course_key)},
-    #     usage_id_serializer=lambda usage_id: quote_slashes(unicode(usage_id)),
-    #     # Generate a new request_token here at random, because this module isn't connected to any other
-    #     # xblock rendering.
-    #     request_token=uuid.uuid1().get_hex()
-    # )
-
-    print "BLLOOOOOCCCCCK", block 
-    fragment = block.render('recap_blocks_listing_view',
-        context={
-            'recap_items': recap_items,
-            'users': users
-        }
-    )
+    print recap_blocks
 
     recap_block = recap_blocks[0]
     block, __ = get_module_by_usage_id(
@@ -888,8 +863,18 @@ def _section_recap(request, course, recap_blocks, access):
         disable_staff_debug_info=True, course=course
     )
 
+    field_data = block.runtime.service(block, 'field-data')
+        # Need to get a specific users answers to the xblock
+    fragment = block.render('recap_blocks_listing_view',
+        context={
+            'recap_items': recap_items,
+            'users': users,
+        }
+    )
+
+
     fragment = wrap_xblock(
-        'LmsRuntime', recap_block, 'studio_view', fragment, None,
+        'LmsRuntime', recap_block, 'recap_blocks_listing_view', fragment, None,
         extra_data={"course-id": unicode(course_key)},
         usage_id_serializer=lambda usage_id: quote_slashes(unicode(usage_id)),
         # Generate a new request_token here at random, because this module isn't connected to any other
@@ -904,6 +889,7 @@ def _section_recap(request, course, recap_blocks, access):
         'section_display_name': _('Recap'),
         'access': access,
         'course_id': unicode(course_key),
+         'generate_pdf_url': reverse('generate_pdf', kwargs={'course_id': unicode(course.id)})
 
     }
     return section_data
