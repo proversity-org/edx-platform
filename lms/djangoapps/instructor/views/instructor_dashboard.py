@@ -712,7 +712,7 @@ def _section_send_email(course, access):
     course_modes = []
     if not VerifiedTrackCohortedCourse.is_verified_track_cohort_enabled(course_key):
         course_modes = CourseMode.modes_for_course(course_key, include_expired=True, only_selectable=False)
-    email_editor = fragmentf.content
+    email_editor = fragment.content
     section_data = {
         'section_key': 'send_email',
         'section_display_name': _('Email'),
