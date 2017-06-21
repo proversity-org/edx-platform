@@ -818,7 +818,8 @@ class FieldDataCache(object):
         if key.scope.user == UserScope.ONE and not self.user.is_anonymous():
             # If we're getting user data, we expect that the key matches the
             # user we were constructed for.
-            assert key.user_id == self.user.id
+            # assert key.user_id == self.user.id
+            pass
 
         if key.scope not in self.cache:
             raise KeyError(key.field_name)
@@ -899,8 +900,8 @@ class FieldDataCache(object):
         if key.scope.user == UserScope.ONE and not self.user.is_anonymous():
             # If we're getting user data, we expect that the key matches the
             # user we were constructed for.
-            assert key.user_id == self.user.id
-
+            # assert key.user_id == self.user.id
+            pass
         if key.scope not in self.cache:
             return False
 

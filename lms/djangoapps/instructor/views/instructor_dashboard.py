@@ -240,13 +240,11 @@ def instructor_dashboard_2(request, course_id):
                 qualifiers={"category": category},
             )
         ]
-
     
     # Get all the recap xblocks in a course
 
     recap_blocks = get_course_blocks(course_key, "recap")
-    free_text_blocks = get_course_blocks(course_key, 'freetextresponse')
-    sections.append(_section_recap(request, course, recap_blocks, free_text_blocks, access))
+    sections.append(_section_recap(request, course, recap_blocks, access))
 
 
     disable_buttons = not _is_small_course(course_key)
@@ -815,16 +813,28 @@ def _section_open_response_assessment(request, course, openassessment_blocks, ac
     return section_data
 
 
-def _section_recap(request, course, recap_blocks, free_text_blocks, access):
+def get_submission_key(self, usage_key):
+    return dict(
+        student_id=self.runtime.anonymous_student_id,
+        course_id=unicode(usage_key.course_key),
+        item_id=unicode(usage_key),
+        item_type=usage_key.block_type,
+    )
+
+
+def get_submission(self, usage_key):
+    try:
+        submission_key = self.get_submission_key(usage_key)
+        submission = api.get_submissions(submission_key, limit=1)
+        value = submission[0]["answer"]
+    except IndexError:
+        value = None
+    return value
+
+def _section_recap(request, course, recap_blocks, access):
     """Provide data for the corresponding dashboard section """
     
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
-    print "---------------------------------------------------------------------------"
-    print free_text_blocks
 
-    
     course_key = course.id
     recap_items = []
     
@@ -833,8 +843,9 @@ def _section_recap(request, course, recap_blocks, free_text_blocks, access):
     user_list = User.objects.filter(
         courseenrollment__course_id=course_key,
         courseenrollment__is_active=1,
-        is_staff=0,
     ).order_by('username').select_related('profile')
+
+    # Set up the paginator
 
     page = request.GET.get('page', 1)
     paginator = Paginator(user_list, 5)
@@ -855,7 +866,6 @@ def _section_recap(request, course, recap_blocks, free_text_blocks, access):
             'url_student_view': reverse('xblock_view', args=[course.id, block.location, 'student_view']),
             })
 
-    print recap_blocks
 
     recap_block = recap_blocks[0]
     block, __ = get_module_by_usage_id(
@@ -863,8 +873,8 @@ def _section_recap(request, course, recap_blocks, free_text_blocks, access):
         disable_staff_debug_info=True, course=course
     )
 
-    field_data = block.runtime.service(block, 'field-data')
-        # Need to get a specific users answers to the xblock
+    # Set up recap instructor dashboard fragment, pass data to the context
+
     fragment = block.render('recap_blocks_listing_view',
         context={
             'recap_items': recap_items,
@@ -872,6 +882,7 @@ def _section_recap(request, course, recap_blocks, free_text_blocks, access):
         }
     )
 
+    # Wrap the fragment and get all resources associated with this view
 
     fragment = wrap_xblock(
         'LmsRuntime', recap_block, 'recap_blocks_listing_view', fragment, None,
@@ -892,6 +903,7 @@ def _section_recap(request, course, recap_blocks, free_text_blocks, access):
          'generate_pdf_url': reverse('generate_pdf', kwargs={'course_id': unicode(course.id)})
 
     }
+
     return section_data
 
 def is_ecommerce_course(course_key):

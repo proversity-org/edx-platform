@@ -10,57 +10,9 @@ from openedx.core.djangolib.markup import HTML, Text
 <%page args="section_data" expression_filter="h"/>
 <%! from openedx.core.djangolib.markup import HTML %>
 
-
-
-
 <section class="recap-dashboard">
     ${HTML(section_data['fragment'].body_html())}
 </section>
-
-<table class="table table-bordered">
-  <thead>
-    <tr>
-      <th>Username</th>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Download</th>
-    </tr>
-  </thead>
-  <tbody>
-    % for user in section_data['users']:
-      <tr>
-        <td>${user.username }</td>
-        <td>${user.first_name } ${user.last_name}</td>
-        <td>${user.email }</td>
-        <td><form id="download_${user.id}" action="${ section_data['generate_pdf_url'] }" method="post"><input type='submit' value='Download'></input></form></td>
-      </tr>
-    % endfor
-  </tbody>
-</table>
-
-% if section_data['users'].has_other_pages:
-  <ul class="pagination">
-    % if section_data['users'].has_previous:
-      <li><a href="?page= section_data['users'].previous_page_number">&laquo;</a></li>
-    % else:
-      <li class="disabled"><span>&laquo;</span></li>
-    % endif
-    % for i in section_data['users'].paginator.page_range:
-      % if section_data['users'].number == i:
-        <li class="active"><span>${i} <span class="sr-only">(current)</span></span></li>
-      % else:
-        <li><a href="?page=${i}">${i}</a></li>
-      % endif
-    % endfor
-    % if section_data['users'].has_next:
-      <li><a href="?page= section_data['users'].next_page_number">&raquo;</a></li>
-    % else:
-      <li class="disabled"><span>&raquo;</span></li>
-    %endif
-  </ul>
-%endif
-
-
 
 <style>
 table {

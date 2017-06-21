@@ -3405,6 +3405,7 @@ def _get_boolean_param(request, param_name):
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 def _create_error_response(request, msg):
     """
     Creates the appropriate error response for the current request,
@@ -3431,3 +3432,5 @@ def generate_pdf(request, course_id):
         return response
 
 >>>>>>> xhtml2pdf working, need to show pdf in view, successfully created though
+=======
+>>>>>>> stating to clean up code, sort our pagination asap
