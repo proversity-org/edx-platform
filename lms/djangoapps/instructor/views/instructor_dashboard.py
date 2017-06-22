@@ -837,6 +837,7 @@ def _section_recap(request, course, recap_blocks, access):
 
     course_key = course.id
     recap_items = []
+    recap_fragments = []
     
     # Get list of enrolled students for this course
 
@@ -848,7 +849,7 @@ def _section_recap(request, course, recap_blocks, access):
     # Set up the paginator
 
     page = request.GET.get('page', 1)
-    paginator = Paginator(user_list, 5)
+    paginator = Paginator(user_list, 10)
 
     try:
         users = paginator.page(page)
@@ -872,18 +873,14 @@ def _section_recap(request, course, recap_blocks, access):
         request, unicode(course_key), unicode(recap_block.location),
         disable_staff_debug_info=True, course=course
     )
-
     # Set up recap instructor dashboard fragment, pass data to the context
-
     fragment = block.render('recap_blocks_listing_view',
         context={
             'recap_items': recap_items,
             'users': users,
         }
     )
-
     # Wrap the fragment and get all resources associated with this view
-
     fragment = wrap_xblock(
         'LmsRuntime', recap_block, 'recap_blocks_listing_view', fragment, None,
         extra_data={"course-id": unicode(course_key)},
@@ -899,8 +896,7 @@ def _section_recap(request, course, recap_blocks, access):
         'section_key': 'recap',
         'section_display_name': _('Recap'),
         'access': access,
-        'course_id': unicode(course_key),
-         'generate_pdf_url': reverse('generate_pdf', kwargs={'course_id': unicode(course.id)})
+        'course_id': unicode(course_key)
 
     }
 
