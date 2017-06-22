@@ -129,9 +129,8 @@ from .tools import (
 )
 
 log = logging.getLogger(__name__)
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
-from xhtml2pdf import pisa
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 TASK_SUBMISSION_OK = 'created'
 
@@ -144,6 +143,8 @@ from django.http import HttpResponse
 from django.template import Context
 from django.template.loader import get_template
 >>>>>>> xhtml2pdf working, need to show pdf in view, successfully created though
+=======
+>>>>>>> clean code, need to refactor some
 
 def common_exceptions_400(func):
     """
@@ -3402,6 +3403,7 @@ def _get_boolean_param(request, param_name):
     values to boolean values.
     """
     return request.POST.get(param_name, False) in ['true', 'True', True]
+<<<<<<< HEAD
 
 
 <<<<<<< HEAD
@@ -3434,3 +3436,5 @@ def generate_pdf(request, course_id):
 >>>>>>> xhtml2pdf working, need to show pdf in view, successfully created though
 =======
 >>>>>>> stating to clean up code, sort our pagination asap
+=======
+>>>>>>> clean code, need to refactor some

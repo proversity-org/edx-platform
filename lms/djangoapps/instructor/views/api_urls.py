@@ -171,5 +171,4 @@ urlpatterns = patterns(
     url(r'^certificate_invalidation_view/$',
         'lms.djangoapps.instructor.views.api.certificate_invalidation_view',
         name='certificate_invalidation_view'),
-
 )
