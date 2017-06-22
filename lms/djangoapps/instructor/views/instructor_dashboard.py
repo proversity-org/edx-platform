@@ -17,6 +17,15 @@ from openedx.core.lib.xblock_builtin import get_css_dependencies, get_js_depende
 =======
 >>>>>>> clean code, need to refactor some
 from django.contrib.auth.decorators import login_required
+<<<<<<< HEAD
+=======
+from django.contrib.auth.models import User
+from django.views.decorators.http import require_POST
+from django.utils.translation import ugettext as _, ugettext_noop
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.cache import cache_control
+from edxmako.shortcuts import render_to_response
+>>>>>>> tidy code
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseServerError
 from django.utils.html import escape
@@ -76,7 +85,6 @@ from .tools import get_units_with_due_date, title_or_url
 
 log = logging.getLogger(__name__)
 
-from django.contrib.auth.models import User
 
 
 class InstructorDashboardTab(CourseTab):
@@ -833,7 +841,6 @@ def _section_recap(request, course, recap_blocks, access):
         courseenrollment__is_active=1,
     ).order_by('username').select_related('profile')
 
-    
     for block in recap_blocks:
 
         recap_items.append({
@@ -872,7 +879,6 @@ def _section_recap(request, course, recap_blocks, access):
         'section_display_name': _('Recap'),
         'access': access,
         'course_id': unicode(course_key)
-
     }
 
     return section_data
