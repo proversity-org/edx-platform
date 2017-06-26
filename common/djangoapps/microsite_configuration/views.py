@@ -4,8 +4,6 @@ Views for microsites api end points.
 """
 import sys, yaml
 from collections import OrderedDict
-from django.shortcuts import get_object_or_404
-from django.db import IntegrityError
 from django.apps import apps
 from django.conf import settings
 from django.contrib.sites.models import Site
