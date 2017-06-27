@@ -649,12 +649,36 @@ def submit_feedback(request):
             success = False
 
     else:
-        if settings.HELPDESK == 'Zendesk':
-            success = _record_feedback_in_zendesk(realname, email, subject, details, tags, additional_info)
-        elif settings.HELPDESK == 'Freshdesk':
-            success = _record_feedback_in_freshdesk(realname, email, subject, details, tags, additional_info)
+        custom_fields = None
 
-    _record_feedback_in_datadog(tags)
+        if settings.ZENDESK_CUSTOM_FIELDS:
+            custom_field_context = _get_zendesk_custom_field_context(request, learner_data=enterprise_learner_data)
+            custom_fields = _format_zendesk_custom_fields(custom_field_context)
+
+        if settings.HELPDESK == 'Zendesk':
+            success = _record_feedback_in_zendesk(
+            context["realname"],
+            context["email"],
+            context["subject"],
+            context["details"],
+            context["tags"],
+            context["additional_info"],
+            support_email=context["support_email"],
+            custom_fields=custom_fields
+        )
+        elif settings.HELPDESK == 'Freshdesk':
+            success = _record_feedback_in_freshdesk(
+            context["realname"],
+            context["email"],
+            context["subject"],
+            context["details"],
+            context["tags"],
+            context["additional_info"],
+            support_email=context["support_email"],
+            custom_fields=custom_fields
+        )
+
+    _record_feedback_in_datadog(context["tags"])
 
     return HttpResponse(status=(200 if success else 500))
 
