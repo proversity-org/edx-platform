@@ -662,9 +662,7 @@ def submit_feedback(request):
             context["subject"],
             context["details"],
             context["tags"],
-            context["additional_info"],
-            support_email=context["support_email"],
-            custom_fields=custom_fields
+            context["additional_info"]
         )
         elif settings.HELPDESK == 'Freshdesk':
             success = _record_feedback_in_freshdesk(
@@ -673,9 +671,7 @@ def submit_feedback(request):
             context["subject"],
             context["details"],
             context["tags"],
-            context["additional_info"],
-            support_email=context["support_email"],
-            custom_fields=custom_fields
+            context["additional_info"]
         )
 
     _record_feedback_in_datadog(context["tags"])
