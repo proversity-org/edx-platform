@@ -250,6 +250,23 @@ class MicrositesDetailView(ViewSet):
 
         return Response(serializer.data)
 
+    def delete(self, request, pk, format=None):
+
+        # Get the mircosite
+
+        microsite = Microsite.objects.get(pk=pk)
+        microsite_id = {"id": microsite.id}
+        domain = microsite.site.domain
+        associated_site = Site.objects.get(domain=domain)
+        
+        # Delete the site which deletes the microsite and org mapping
+        associated_site.delete()
+        
+        return Response(
+            microsite_id, 
+            status=status.HTTP_200_OK
+        )
+
 
     def put(self, request, pk, format=None):
 

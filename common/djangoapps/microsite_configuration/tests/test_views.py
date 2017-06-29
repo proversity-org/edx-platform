@@ -8,7 +8,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
 from microsite_configuration.tests.factories import MicrositeFactory
-
+from microsite_configuration.models import Microsite
 
 class TestMicrositesViewSet(TestCase):
 
@@ -118,6 +118,14 @@ class TestMicrositesDetailView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_api_does_not_get_invalid_microsite(self):
+        '''
+            Test that the api can get a microsite
+        '''
+        url = reverse('microsite-detail', kwargs={"pk": 1000})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
     def test_api_can_update_microsite(self):
         '''
@@ -130,6 +138,17 @@ class TestMicrositesDetailView(TestCase):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_api_can_delete_microsite(self):
+        '''
+            Test that the api can delete a micrdosite
+        '''
+        url = reverse('microsite-detail', kwargs={"pk": 1})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        with self.assertRaises(Microsite.DoesNotExist):
+            Microsite.objects.get(pk=1)
+
 
     def test_api_invalid_update_microsite(self):
 
