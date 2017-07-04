@@ -257,7 +257,7 @@ def instructor_dashboard_2(request, course_id):
 
     # Add the Recap instructor dashboard tab if there is a recap Xblock
     
-    if len(recap_blocks) == 0:
+    if len(recap_blocks) == 1:
         sections.append(_section_recap(request, course, recap_blocks, access))
 
 
