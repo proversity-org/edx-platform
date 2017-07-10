@@ -1,9 +1,13 @@
 from django.conf import settings
 <<<<<<< HEAD
+<<<<<<< HEAD
 from django.conf.urls import patterns, url
 =======
 from .views import RecoverPasswordView
 >>>>>>> add recover password endpoint
+=======
+from .views import RecoverPasswordView
+>>>>>>> Proversity/staging (#411)
 
 urlpatterns = []
 
