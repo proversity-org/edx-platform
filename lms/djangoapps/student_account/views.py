@@ -47,6 +47,13 @@ from third_party_auth.decorators import xframe_allow_whitelisted
 from util.bad_request_rate_limiter import BadRequestRateLimiter
 from util.date_utils import strftime_localized
 
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.viewsets import ViewSet
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_oauth.authentication import OAuth2Authentication
+
 AUDIT_LOG = logging.getLogger("audit")
 log = logging.getLogger(__name__)
 User = get_user_model()  # pylint:disable=invalid-name
@@ -586,3 +593,49 @@ def account_settings_context(request):
         } for state in auth_states if state.provider.display_for_login or state.has_account]
 
     return context
+
+class RecoverPasswordView(ViewSet):
+
+    """
+    **Use Cases**
+            Resets a password of a user providing his/her email address
+        **Example Requests**:
+            POST /account/recover-password
+            {"email": "staff@example.com"}
+
+        **Response Values**
+            Success:
+            {"message": "You will receive your new password on your email."}
+            Wrong email:
+            {"error": "Provide a valid email."}
+            No email provided:
+            {"error": "Provide an email to recover your password."}
+    """
+
+    def post(self, request, format=None):
+        data = request.data
+        if 'email' in data:
+            limiter = BadRequestRateLimiter()
+            if limiter.is_rate_limit_exceeded(request):
+                AUDIT_LOG.warning("Password reset rate limit exceeded")
+                return HttpResponseForbidden()
+
+            email = data['email']
+
+            if len(email) > 0:
+
+                try:
+                    request_password_change(email, request.get_host(), request.is_secure())
+                    user = User.objects.get(email=email)
+                    destroy_oauth_tokens(user)
+                    return Response({"message": "You will receive your new password on your email."}, status=status.HTTP_200_OK)
+                except UserNotFound:
+                    AUDIT_LOG.info("Invalid password reset attempt")
+                    # Increment the rate limit counter
+                    limiter.tick_bad_request_counter(request)
+                    return Response({"error": "Provide a valid email."}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({"error": "Provide an email to recover your password."}, status=status.HTTP_400_BAD_REQUEST)
+
+        else:
+            return Response({"error": "Provide an email to recover your password."}, status=status.HTTP_400_BAD_REQUEST)
