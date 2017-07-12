@@ -40,6 +40,7 @@
             this.$container = $container;
             this.$emailEditor = XBlock.initializeBlock($('.xblock-studio_view'));
             this.$send_to = this.$container.find("input[name='send_to']");
+            this.$specific_learners = this.$container.find("textarea[name='specific_learners']");
             this.$cohort_targets = this.$send_to.filter('[value^="cohort:"]');
             this.$course_mode_targets = this.$send_to.filter('[value^="track:"]');
             this.$subject = this.$container.find("input[name='subject']");
@@ -56,10 +57,11 @@
             this.$email_messages_wrapper = this.$container.find('.email-messages-wrapper');
             this.$btn_send.click(function() {
                 var body, confirmMessage, displayTarget, fullConfirmMessage, message,
-                    sendData, subject, successMessage, target, targets, validation, i, len;
+                    sendData, subject, successMessage, target, targets, specific_learners, validation, i, len;
                 subject = sendemail.$subject.val();
                 body = sendemail.$emailEditor.save().data;
                 targets = [];
+                specific_learners = sendemail.$specific_learners.val().split(',');
                 sendemail.$send_to.filter(':checked').each(function() {
                     return targets.push(this.value);
                 });
@@ -79,7 +81,7 @@
                         alert(message);  // eslint-disable-line no-alert
                         return false;
                     }
-                    displayTarget = function(value) {
+                    displayTarget = function(value, specific_learners) {
                         if (value === 'myself') {
                             return gettext('Yourself');
                         } else if (value === 'staff') {
@@ -92,6 +94,13 @@
                         } else if (value.startsWith('track')) {
                             return gettext('All learners in the {track_name} track')
                                 .replace('{track_name}', value.slice(value.indexOf(':') + 1));
+                        } else if (specific_learners) {
+                            var learners = '';
+                            specific_learners.forEach(function(learner, index) {
+                                learners += learner;
+                            })
+
+                            return learners
                         }
                     };
                     successMessage = gettext('Your email message was successfully queued for sending. In courses with a large number of learners, email messages to learners might take up to an hour to be sent.');  // eslint-disable-line max-len
@@ -99,7 +108,11 @@
                         'You are sending an email message with the subject {subject} to the following recipients.');
                     for (i = 0, len = targets.length; i < len; i++) {
                         target = targets[i];
-                        confirmMessage += '\n-' + displayTarget(target);
+                        if (specific_learners && specific_learners.length > 0) {
+                            confirmMessage += '\n' + displayTarget(target, specific_learners);
+                        } else {
+                            confirmMessage += '\n-' + displayTarget(target, null);
+                        }
                     }
                     confirmMessage += '\n\n' + gettext('Is this OK?');
                     fullConfirmMessage = confirmMessage.replace('{subject}', subject);
@@ -108,7 +121,8 @@
                             action: 'send',
                             send_to: JSON.stringify(targets),
                             subject: subject,
-                            message: body
+                            message: body,
+                            specific_learners: sendemail.$specific_learners.val()
                         };
                         return $.ajax({
                             type: 'POST',

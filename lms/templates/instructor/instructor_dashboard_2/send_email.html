@@ -26,6 +26,11 @@ from openedx.core.djangolib.markup import HTML
                     <input type="checkbox" name="send_to" value="learners" id="target_learners">
                     <label for="target_learners">${_("All Learners")}</label>
                 </li>
+                <li>
+                    <input type="checkbox" name="send_to" value="specific_learners" id="target_specific_learners">
+                    <label for="target_specific_learners">Specific Learners</label>
+                    <textarea name="specific_learners" rows="10" cols="50" style="height:175px;"></textarea>
+                </li>
             </ul>
             %if len(section_data['cohorts']) > 0:
             <ul role="group" class="email-targets-secondary">
