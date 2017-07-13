@@ -2552,6 +2552,7 @@ def list_forum_members(request, course_id):
 
 def send_email_to_specific_learners(course, learners, template_name, from_addr, subject, message):
     log.info(u'send_email_to_specific_learners')
+    log.info(learners)
     connection = get_connection()
     connection.open()
 
@@ -2601,7 +2602,7 @@ def send_email_to_specific_learners(course, learners, template_name, from_addr, 
                 subject,
                 plaintext_msg,
                 from_addr,
-                [email],
+                [learner],
                 connection=connection
             )
             email_msg.attach_alternative(html_msg, 'text/html')
@@ -2609,7 +2610,7 @@ def send_email_to_specific_learners(course, learners, template_name, from_addr, 
             # Send email
             connection.send_messages([email_msg])
         except Exception as e:
-            print e
+            log.info(e)
             pass
 
 
@@ -2641,6 +2642,8 @@ def send_email(request, course_id):
     subject = request.POST.get("subject")
     message = request.POST.get("message")
     specific_learners = _split_input_list(request.POST.get("specific_learners"))
+    log.info(u'specific_learners')
+    log.info(specific_learners)
 
     # allow two branding points to come from Site Configuration: which CourseEmailTemplate should be used
     # and what the 'from' field in the email should be
@@ -2689,7 +2692,8 @@ def send_email(request, course_id):
         send_email_to_specific_learners(course, specific_learners, template_name, from_addr, subject, message)
         response_payload = {
             'course_id': course_id.to_deprecated_string(),
-            'success': True
+            'success': True,
+            'from_addr': from_addr
         }
         return JsonResponse(response_payload)
     else:
