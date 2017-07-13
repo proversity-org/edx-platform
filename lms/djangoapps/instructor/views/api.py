@@ -2607,7 +2607,8 @@ def send_email_to_specific_learners(course, learners, template_name, from_addr):
 
             # Send email
             connection.send_messages([email_msg])
-        except:
+        except Exception as e:
+            print e
             pass
 
 
