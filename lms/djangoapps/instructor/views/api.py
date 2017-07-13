@@ -2550,7 +2550,7 @@ def list_forum_members(request, course_id):
     }
     return JsonResponse(response_payload)
 
-def send_email_to_specific_learners(course, learners, template_name, from_addr):
+def send_email_to_specific_learners(course, learners, template_name, from_addr, subject, message):
     connection = get_connection()
     connection.open()
 
@@ -2592,12 +2592,12 @@ def send_email_to_specific_learners(course, learners, template_name, from_addr):
             email_context['course_id'] = course_id
 
             # Construct message content using templates and context:
-            plaintext_msg = course_email_template.render_plaintext(course_email.text_message, email_context)
-            html_msg = course_email_template.render_htmltext(course_email.html_message, email_context)
+            plaintext_msg = course_email_template.render_plaintext(message, email_context)
+            html_msg = course_email_template.render_htmltext(message, email_context)
 
             # Create email:
             email_msg = EmailMultiAlternatives(
-                course_email.subject,
+                subject,
                 plaintext_msg,
                 from_addr,
                 [email],
@@ -2683,7 +2683,7 @@ def send_email(request, course_id):
         return HttpResponseBadRequest(repr(err))
 =======
     if len(targets) > 0 and targets[0] == 'specific_learners':
-        send_email_to_specific_learners(course, specific_learners, template_name, from_addr)
+        send_email_to_specific_learners(course, specific_learners, template_name, from_addr, subject, message)
         response_payload = {
             'course_id': course_id.to_deprecated_string(),
             'success': True
