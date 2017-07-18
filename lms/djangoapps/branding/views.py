@@ -24,7 +24,6 @@ from util.json_request import JsonResponse
 
 log = logging.getLogger(__name__)
 
-
 @ensure_csrf_cookie
 @cache_if_anonymous()
 def index(request):
