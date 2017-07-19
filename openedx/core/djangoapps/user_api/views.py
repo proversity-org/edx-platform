@@ -43,7 +43,74 @@ class LoginSessionView(APIView):
 
     @method_decorator(ensure_csrf_cookie)
     def get(self, request):
+<<<<<<< HEAD
         return HttpResponse(get_login_session_form().to_json(), content_type="application/json")
+=======
+        """Return a description of the login form.
+
+        This decouples clients from the API definition:
+        if the API decides to modify the form, clients won't need
+        to be updated.
+
+        See `user_api.helpers.FormDescription` for examples
+        of the JSON-encoded form description.
+
+        Returns:
+            HttpResponse
+
+        """
+        form_desc = FormDescription("post", reverse("user_api_login_session"))
+
+        # Translators: This label appears above a field on the login form
+        # meant to hold the user's email address.
+        email_label = "%s %s %s" % (_(u"Username"), _(u"or"), _(u"email"))
+
+        # Translators: This example email address is used as a placeholder in
+        # a field on the login form meant to hold the user's email address.
+        email_placeholder = "%s %s %s" % (_(u"username"), _(u"or"), _(u"username@domain.com"))
+
+        # Translators: These instructions appear on the login form, immediately
+        # below a field meant to hold the user's email address.
+        email_instructions = _("The email address you used to register with {platform_name}").format(
+            platform_name=configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
+        )
+
+        form_desc.add_field(
+            "email",
+            field_type="email",
+            label=email_label,
+            placeholder=email_placeholder,
+            instructions=email_instructions,
+            restrictions={
+                "min_length": EMAIL_MIN_LENGTH,
+                "max_length": EMAIL_MAX_LENGTH,
+            }
+        )
+
+        # Translators: This label appears above a field on the login form
+        # meant to hold the user's password.
+        password_label = _(u"Password")
+
+        form_desc.add_field(
+            "password",
+            label=password_label,
+            field_type="password",
+            restrictions={
+                "min_length": PASSWORD_MIN_LENGTH,
+                "max_length": PASSWORD_MAX_LENGTH,
+            }
+        )
+
+        form_desc.add_field(
+            "remember",
+            field_type="checkbox",
+            label=_("Remember me"),
+            default=False,
+            required=False,
+        )
+
+        return HttpResponse(form_desc.to_json(), content_type="application/json")
+>>>>>>> Login with username (#420)
 
     @method_decorator(require_post_params(["email", "password"]))
     @method_decorator(csrf_protect)
