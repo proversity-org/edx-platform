@@ -847,7 +847,7 @@ def _section_recap(request, course, recap_blocks, access):
             'name': block.display_name,
             #'url_base': reverse('xblock_view', args=[]),
             'url_base': reverse('xblock_view', args=[course.id, block.location, 'recap_blocks_listing_view']),
-            'url_student_view': reverse('xblock_view', args=[course.id, block.location, 'student_view']),
+            'make_pdf_json': reverse('xblock_handler', args=[course.id, block.location, 'make_pdf_json']),  
             })
 
     recap_block = recap_blocks[0]
