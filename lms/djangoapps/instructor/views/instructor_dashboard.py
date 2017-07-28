@@ -254,10 +254,11 @@ def instructor_dashboard_2(request, course_id):
     # Get all the recap xblocks in a course
 
     recap_blocks = get_course_blocks(course_key, "recap")
+    free_blocks = get_course_blocks(course_key, "freetextresponse")
 
     # Add the Recap instructor dashboard tab if there is a recap Xblock
     
-    if len(recap_blocks) == 1:
+    if len(recap_blocks) > 0:
         sections.append(_section_recap(request, course, recap_blocks, access))
 
 
@@ -842,10 +843,9 @@ def _section_recap(request, course, recap_blocks, access):
     ).order_by('username').select_related('profile')
 
     for block in recap_blocks:
-
         recap_items.append({
             'name': block.display_name,
-            #'url_base': reverse('xblock_view', args=[]),
+            'block_list': block.xblock_list,
             'url_base': reverse('xblock_view', args=[course.id, block.location, 'recap_blocks_listing_view']),
             'make_pdf_json': reverse('xblock_handler', args=[course.id, block.location, 'make_pdf_json']),  
             })
