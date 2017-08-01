@@ -370,6 +370,7 @@ DOC_STORE_CONFIG = AUTH_TOKENS['DOC_STORE_CONFIG']
 # Datadog for events!
 DATADOG = AUTH_TOKENS.get("DATADOG", {})
 DATADOG.update(ENV_TOKENS.get("DATADOG", {}))
+ENABLE_DOG = ENV_TOKENS.get("ENABLE_DOG", False)
 
 # TODO: deprecated (compatibility with previous settings)
 if 'DATADOG_API' in AUTH_TOKENS:

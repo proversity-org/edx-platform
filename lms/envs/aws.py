@@ -576,6 +576,7 @@ EMAIL_HOST_PASSWORD = AUTH_TOKENS.get('EMAIL_HOST_PASSWORD', '')  # django defau
 # Datadog for events!
 DATADOG = AUTH_TOKENS.get("DATADOG", {})
 DATADOG.update(ENV_TOKENS.get("DATADOG", {}))
+ENABLE_DOG = ENV_TOKENS.get("ENABLE_DOG", False)
 
 # TODO: deprecated (compatibility with previous settings)
 if 'DATADOG_API' in AUTH_TOKENS:

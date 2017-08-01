@@ -3189,6 +3189,8 @@ DEFAULT_SITE_THEME = None
 
 ENABLE_COMPREHENSIVE_THEMING = True
 
+ENABLE_DOG = False
+
 # API access management
 API_ACCESS_MANAGER_EMAIL = 'api-access@example.com'
 API_ACCESS_FROM_EMAIL = 'api-requests@example.com'

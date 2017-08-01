@@ -22,6 +22,6 @@ def run():
 
     # Not all arguments are documented.
     # Look at the source code for details.
-    dog_stats_api.start(**options)
-
-    dog_http_api.api_key = options.get('api_key')
+    if settings.ENV_TOKENS.get('ENABLE_DOG'):
+        dog_stats_api.start(**options)
+        dog_http_api.api_key = options.get('api_key')

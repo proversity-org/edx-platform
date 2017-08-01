@@ -678,7 +678,7 @@ def _collect_assets_cmd(system, **kwargs):
                 sys=system
             )
     except KeyError:
-        collectstatic_stdout_str = "> /dev/null"
+        collectstatic_stdout_str = ""
 
     return collectstatic_stdout_str
 
