@@ -1832,11 +1832,26 @@ def _do_create_account(form, custom_form=None):
     return (user, profile, registration)
 
 
+<<<<<<< HEAD
 def _create_or_set_user_attribute_created_on_site(user, site):
     # Create or Set UserAttribute indicating the microsite site the user account was created on.
     # User maybe created on 'courses.edx.org', or a white-label site
     if site:
         UserAttribute.set_user_attribute(user, 'created_on_site', site.domain)
+=======
+def authenticate_to_linkedin_using_msdk(access_token, user):
+    fields = ':(email-address,first-name,headline,id,industry,last-name,location,specialties,summary)'
+    params = {'format': 'json', 'oauth2_access_token': access_token}
+    headers = {'x-li-src': 'msdk'}
+    url = 'https://api.linkedin.com/v1/people/~%s' % fields
+    r = requests.get(url, params=params, headers=headers)
+    log.info('===================================')
+    log.info('authenticate_to_linkedin_using_msdk')
+    log.info(r.json())
+    log.info(r.status_code)
+    log.info('===================================')
+    return user
+>>>>>>> sso to linkedin for mobile
 
 
 def create_account_with_params(request, params):
@@ -1979,7 +1994,10 @@ def create_account_with_params(request, params):
             pipeline_user = None
             error_message = ""
             try:
-                pipeline_user = request.backend.do_auth(social_access_token, user=user)
+                if (params.get('is_mobile', False)):
+                    pipeline_user = authenticate_to_linkedin_using_msdk(social_access_token, user=user)
+                else:
+                    pipeline_user = request.backend.do_auth(social_access_token, user=user)
             except AuthAlreadyAssociated:
                 error_message = _("The provided access_token is already associated with another user.")
             except (HTTPError, AuthException):
