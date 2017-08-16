@@ -1,7 +1,11 @@
 """
 Forms to support third-party to first-party OAuth 2.0 access token exchange
 """
+<<<<<<< HEAD
 import provider.constants
+=======
+import requests
+>>>>>>> authenticate to linkedin mobile in login
 from django.contrib.auth.models import User
 from django.forms import CharField
 from edx_oauth2_provider.constants import SCOPE_NAMES
@@ -40,6 +44,19 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
                 }
             )
         return field_val
+
+    def authenticate_to_linkedin_using_msdk(access_token, username):
+        fields = ':(email-address,first-name,headline,id,industry,last-name,location,specialties,summary)'
+        params = {'format': 'json', 'oauth2_access_token': access_token}
+        headers = {'x-li-src': 'msdk'}
+        url = 'https://api.linkedin.com/v1/people/~%s' % fields
+        r = requests.get(url, params=params, headers=headers)
+        log.info('===================================')
+        log.info('authenticate_to_linkedin_using_msdk')
+        log.info(r.json())
+        log.info(r.status_code)
+        log.info('===================================')
+        return User.objects.get(username=username)
 
     def clean_access_token(self):
         """
@@ -92,7 +109,14 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
         user = None
         access_token = self.cleaned_data.get("access_token")
         try:
+<<<<<<< HEAD
             user = backend.do_auth(access_token, allow_inactive_user=True)
+=======
+            if (self.cleaned_data.get('is_mobile', False)):
+                user = authenticate_to_linkedin_using_msdk(self.cleaned_data.get("access_token"), self.cleaned_data.get("username"))
+            else:
+                user = backend.do_auth(self.cleaned_data.get("access_token"), allow_inactive_user=True)
+>>>>>>> authenticate to linkedin mobile in login
         except (HTTPError, AuthException):
             pass
         if user and isinstance(user, User):
