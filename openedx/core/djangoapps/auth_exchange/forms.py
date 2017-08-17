@@ -28,7 +28,7 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
     access_token = CharField(required=False)
     scope = ScopeChoiceField(choices=SCOPE_NAMES, required=False)
     client_id = CharField(required=False)
-    username CharField(required=False)
+    username = CharField(required=False)
     is_linkedin_mobile = BooleanField(default=False)
 
     def __init__(self, request, oauth2_adapter, *args, **kwargs):
