@@ -56,9 +56,6 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
         headers = {'x-li-src': 'msdk', 'Authorization': 'Bearer ' + access_token}
         url = 'https://api.linkedin.com/v1/people/~%s' % fields
         r = requests.get(url, params=params, headers=headers)
-        log.info('===== authenticate_to_linkedin_using_msdk_login =====')
-        log.info(email)
-        log.info(r.status_code)
         if r.status_code == 200:
             try:
                 return User.objects.get(username=email)
