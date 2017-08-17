@@ -6,6 +6,11 @@ import datetime
 import json
 import logging
 import uuid
+<<<<<<< HEAD
+=======
+import json
+import requests
+>>>>>>> add requests
 import warnings
 from collections import defaultdict, namedtuple
 from urlparse import parse_qs, urlsplit, urlunsplit
