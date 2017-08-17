@@ -56,6 +56,9 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
         headers = {'x-li-src': 'msdk', 'Authorization': 'Bearer ' + access_token}
         url = 'https://api.linkedin.com/v1/people/~%s' % fields
         r = requests.get(url, params=params, headers=headers)
+        log.info('===== authenticate_to_linkedin_using_msdk_login =====')
+        log.info(email)
+        log.info(r.status_code)
         if r.status_code == 200:
             return User.objects.get(username=email)
         else:
@@ -75,8 +78,6 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
 
     def clean(self):
         log.info("===== ECHANGE FORM cleaning the form =====")
-        log.info(self)
-
         log.info("== CLEANED DATA ==")
         log.info(self.cleaned_data)
 
@@ -84,8 +85,6 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
             return {}
 
         backend = self.request.backend
-        log.info("== BACKEND ==")
-        log.info(backend)
         if not isinstance(backend, social_oauth.BaseOAuth2):
             raise OAuthValidationError(
                 {
@@ -134,7 +133,7 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
 >>>>>>> add logs
             if (self.cleaned_data.get('is_linkedin_mobile', False)):
                 user =\
-                    self.uthenticate_to_linkedin_using_msdk(
+                    self.authenticate_to_linkedin_using_msdk(
                         self.cleaned_data.get("access_token"),
                         self.cleaned_data.get("email")
                     )
