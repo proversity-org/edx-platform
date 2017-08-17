@@ -55,8 +55,8 @@ class AccessTokenExchangeBase(APIView):
         """
         Handle POST requests to get a first-party access token.
         """
-        data = request.POST
-        if request.POST.get('is_linkedin_mobile', False):
+        data = request.POST.copy()
+        if data.get('is_linkedin_mobile', False):
             data['csrfmiddlewaretoken'] = _get_new_csrf_key()
 
         form = AccessTokenExchangeForm(request=request, oauth2_adapter=self.oauth2_adapter, data=data)  # pylint: disable=no-member
