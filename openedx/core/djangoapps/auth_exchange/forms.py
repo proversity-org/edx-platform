@@ -60,7 +60,10 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
         log.info(email)
         log.info(r.status_code)
         if r.status_code == 200:
-            return User.objects.get(username=email)
+            try:
+                return User.objects.get(username=email)
+            except User.DoesNotExist:
+                return None
         else:
             return None
 
