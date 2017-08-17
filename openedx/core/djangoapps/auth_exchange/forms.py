@@ -28,6 +28,8 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
     access_token = CharField(required=False)
     scope = ScopeChoiceField(choices=SCOPE_NAMES, required=False)
     client_id = CharField(required=False)
+    username CharField(required=False)
+    is_linkedin_mobile = BooleanField(default=False)
 
     def __init__(self, request, oauth2_adapter, *args, **kwargs):
         super(AccessTokenExchangeForm, self).__init__(*args, **kwargs)
@@ -73,11 +75,17 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
 
     def clean(self):
         log.info("===== ECHANGE FORM cleaning the form =====")
+        log.info(self)
+
+        log.info("== CLEANED DATA ==")
+        log.info(self.cleaned_data)
 
         if self._errors:
             return {}
 
         backend = self.request.backend
+        log.info("== BACKEND ==")
+        log.info(backend)
         if not isinstance(backend, social_oauth.BaseOAuth2):
             raise OAuthValidationError(
                 {
@@ -114,6 +122,7 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
         try:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             user = backend.do_auth(access_token, allow_inactive_user=True)
 =======
             if (self.cleaned_data.get('is_mobile', False)):
@@ -121,6 +130,8 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
 =======
             log.info(self.cleaned_data)
             log.info("====================================================")
+=======
+>>>>>>> add logs
             if (self.cleaned_data.get('is_linkedin_mobile', False)):
                 user =\
                     authenticate_to_linkedin_using_msdk(

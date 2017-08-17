@@ -57,6 +57,8 @@ class AccessTokenExchangeBase(APIView):
         """
         data = request.POST.copy()
         if data.get('is_linkedin_mobile', False):
+            log.info("PRINTING DATA")
+            log.info(data)
             data['csrfmiddlewaretoken'] = _get_new_csrf_key()
 
         form = AccessTokenExchangeForm(request=request, oauth2_adapter=self.oauth2_adapter, data=data)  # pylint: disable=no-member
