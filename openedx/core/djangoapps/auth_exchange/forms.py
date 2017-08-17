@@ -51,6 +51,7 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
         return field_val
 
     def authenticate_to_linkedin_using_msdk(self, access_token, email):
+        log.error("authenticate_to_linkedin_using_msdk")
         fields = ':(email-address,first-name,headline,id,industry,last-name,location,specialties,summary)'
         params = {'format': 'json'}
         headers = {'x-li-src': 'msdk', 'Authorization': 'Bearer ' + access_token}
@@ -58,7 +59,7 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
         r = requests.get(url, params=params, headers=headers)
         if r.status_code == 200:
             try:
-                return User.objects.get(username=email)
+                return User.objects.get(email=email)
             except User.DoesNotExist:
                 return None
         else:
@@ -79,7 +80,7 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
     def clean(self):
         if self._errors:
             return {}
-
+        log.error("===== clean =====")
         backend = self.request.backend
         if not isinstance(backend, social_oauth.BaseOAuth2):
             raise OAuthValidationError(
@@ -133,7 +134,11 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
                         self.cleaned_data.get("access_token"),
                         self.cleaned_data.get("email")
                     )
+<<<<<<< HEAD
 >>>>>>> update authentication to linkedin thorugh authorization header
+=======
+                log.error(user)
+>>>>>>> replace username for email in query
             else:
                 user = backend.do_auth(self.cleaned_data.get("access_token"), allow_inactive_user=True)
 >>>>>>> authenticate to linkedin mobile in login
