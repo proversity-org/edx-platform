@@ -28,7 +28,7 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
     access_token = CharField(required=False)
     scope = ScopeChoiceField(choices=SCOPE_NAMES, required=False)
     client_id = CharField(required=False)
-    username = CharField(required=False)
+    email = CharField(required=False)
     is_linkedin_mobile = BooleanField()
 
     def __init__(self, request, oauth2_adapter, *args, **kwargs):
@@ -50,14 +50,14 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
             )
         return field_val
 
-    def authenticate_to_linkedin_using_msdk(access_token, username):
+    def authenticate_to_linkedin_using_msdk(access_token, email):
         fields = ':(email-address,first-name,headline,id,industry,last-name,location,specialties,summary)'
         params = {'format': 'json'}
         headers = {'x-li-src': 'msdk', 'Authorization': 'Bearer ' + access_token}
         url = 'https://api.linkedin.com/v1/people/~%s' % fields
         r = requests.get(url, params=params, headers=headers)
         if r.status_code == 200:
-            return User.objects.get(username=username)
+            return User.objects.get(username=email)
         else:
             return None
 
@@ -134,9 +134,9 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
 >>>>>>> add logs
             if (self.cleaned_data.get('is_linkedin_mobile', False)):
                 user =\
-                    authenticate_to_linkedin_using_msdk(
+                    self.uthenticate_to_linkedin_using_msdk(
                         self.cleaned_data.get("access_token"),
-                        self.cleaned_data.get("username")
+                        self.cleaned_data.get("email")
                     )
 >>>>>>> update authentication to linkedin thorugh authorization header
             else:
