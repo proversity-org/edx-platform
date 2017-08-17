@@ -56,11 +56,14 @@ class AccessTokenExchangeBase(APIView):
         Handle POST requests to get a first-party access token.
         """
         data = request.POST.copy()
+        log.info('=== AccessTokenExchangeBase ===')
+        log.info(data)
         if data.get('is_linkedin_mobile', False):
             data['csrfmiddlewaretoken'] = _get_new_csrf_key()
-
+        log.info(data)
         form = AccessTokenExchangeForm(request=request, oauth2_adapter=self.oauth2_adapter, data=data)  # pylint: disable=no-member
         if not form.is_valid():
+            log.info("=== form is not valid ===")
             return self.error_response(form.errors)  # pylint: disable=no-member
             
         user = form.cleaned_data["user"]
