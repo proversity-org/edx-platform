@@ -50,7 +50,7 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
             )
         return field_val
 
-    def authenticate_to_linkedin_using_msdk(access_token, email):
+    def authenticate_to_linkedin_using_msdk(self, access_token, email):
         fields = ':(email-address,first-name,headline,id,industry,last-name,location,specialties,summary)'
         params = {'format': 'json'}
         headers = {'x-li-src': 'msdk', 'Authorization': 'Bearer ' + access_token}
@@ -77,10 +77,6 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
         return self._require_oauth_field("client_id")
 
     def clean(self):
-        log.info("===== ECHANGE FORM cleaning the form =====")
-        log.info("== CLEANED DATA ==")
-        log.info(self.cleaned_data)
-
         if self._errors:
             return {}
 
