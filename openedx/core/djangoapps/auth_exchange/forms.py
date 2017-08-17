@@ -7,7 +7,7 @@ import provider.constants
 import requests
 >>>>>>> authenticate to linkedin mobile in login
 from django.contrib.auth.models import User
-from django.forms import CharField
+from django.forms import CharField, BooleanField
 from edx_oauth2_provider.constants import SCOPE_NAMES
 from oauth2_provider.models import Application
 from provider.forms import OAuthForm, OAuthValidationError
