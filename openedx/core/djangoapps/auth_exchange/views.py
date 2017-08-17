@@ -30,6 +30,9 @@ from openedx.core.djangoapps.auth_exchange.forms import AccessTokenExchangeForm
 from openedx.core.djangoapps.oauth_dispatch import adapters
 from openedx.core.lib.api.authentication import OAuth2AuthenticationAllowInactiveUser
 
+import logging
+log = logging.getLogger("edx.student")
+
 
 class AccessTokenExchangeBase(APIView):
     """
@@ -51,8 +54,11 @@ class AccessTokenExchangeBase(APIView):
         """
         Handle POST requests to get a first-party access token.
         """
+        log.info("===== EXCHANGE of TOKEN from EXTERNAL PROVIDER =====")
+        log.info(request.POST)
+        log.info("====================================================")
         form = AccessTokenExchangeForm(request=request, oauth2_adapter=self.oauth2_adapter, data=request.POST)  # pylint: disable=no-member
-        if not request.POST.get('is_mobile', False):
+        if not request.POST.get('is_linkedin_mobile', False):
             if not form.is_valid():
                 return self.error_response(form.errors)  # pylint: disable=no-member
             

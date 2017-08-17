@@ -1846,17 +1846,24 @@ def _create_or_set_user_attribute_created_on_site(user, site):
 =======
 def authenticate_to_linkedin_using_msdk(access_token, user):
     fields = ':(email-address,first-name,headline,id,industry,last-name,location,specialties,summary)'
-    params = {'format': 'json', 'oauth2_access_token': access_token}
-    headers = {'x-li-src': 'msdk'}
+    params = {'format': 'json'}
+    headers = {'x-li-src': 'msdk', 'Authorization': 'Bearer ' + access_token}
     url = 'https://api.linkedin.com/v1/people/~%s' % fields
     r = requests.get(url, params=params, headers=headers)
     log.info('===================================')
-    log.info('authenticate_to_linkedin_using_msdk')
+    log.info('authenticate_to_linkedin_using_msdk_in_registration')
     log.info(r.json())
     log.info(r.status_code)
     log.info('===================================')
+<<<<<<< HEAD
     return user
 >>>>>>> sso to linkedin for mobile
+=======
+    if r.status_code == 200:
+        return user
+    else:
+        return None
+>>>>>>> update authentication to linkedin thorugh authorization header
 
 
 def create_account_with_params(request, params):
@@ -1999,8 +2006,12 @@ def create_account_with_params(request, params):
             pipeline_user = None
             error_message = ""
             try:
-                if (params.get('is_mobile', False)):
-                    pipeline_user = authenticate_to_linkedin_using_msdk(social_access_token, user=user)
+                if (params.get('is_linkedin_mobile', False)):
+                    pipeline_user =\
+                        authenticate_to_linkedin_using_msdk(
+                            social_access_token,
+                            user
+                        )
                 else:
                     pipeline_user = request.backend.do_auth(social_access_token, user=user)
             except AuthAlreadyAssociated:

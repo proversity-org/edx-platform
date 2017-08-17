@@ -19,6 +19,9 @@ from social_core.exceptions import AuthException
 
 from third_party_auth import pipeline
 
+import logging
+log = logging.getLogger("edx.student")
+
 
 class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
     """Form for access token exchange endpoint"""
@@ -47,16 +50,19 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
 
     def authenticate_to_linkedin_using_msdk(access_token, username):
         fields = ':(email-address,first-name,headline,id,industry,last-name,location,specialties,summary)'
-        params = {'format': 'json', 'oauth2_access_token': access_token}
-        headers = {'x-li-src': 'msdk'}
+        params = {'format': 'json'}
+        headers = {'x-li-src': 'msdk', 'Authorization': 'Bearer ' + access_token}
         url = 'https://api.linkedin.com/v1/people/~%s' % fields
         r = requests.get(url, params=params, headers=headers)
         log.info('===================================')
-        log.info('authenticate_to_linkedin_using_msdk')
+        log.info('authenticate_to_linkedin_using_msdk_in_login')
         log.info(r.json())
         log.info(r.status_code)
         log.info('===================================')
-        return User.objects.get(username=username)
+        if r.status_code == 200:
+            return User.objects.get(username=username)
+        else:
+            return None
 
     def clean_access_token(self):
         """
@@ -71,6 +77,8 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
         return self._require_oauth_field("client_id")
 
     def clean(self):
+        log.info("===== ECHANGE FORM cleaning the form =====")
+
         if self._errors:
             return {}
 
@@ -110,10 +118,21 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
         access_token = self.cleaned_data.get("access_token")
         try:
 <<<<<<< HEAD
+<<<<<<< HEAD
             user = backend.do_auth(access_token, allow_inactive_user=True)
 =======
             if (self.cleaned_data.get('is_mobile', False)):
                 user = authenticate_to_linkedin_using_msdk(self.cleaned_data.get("access_token"), self.cleaned_data.get("username"))
+=======
+            log.info(self.cleaned_data)
+            log.info("====================================================")
+            if (self.cleaned_data.get('is_linkedin_mobile', False)):
+                user =\
+                    authenticate_to_linkedin_using_msdk(
+                        self.cleaned_data.get("access_token"),
+                        self.cleaned_data.get("username")
+                    )
+>>>>>>> update authentication to linkedin thorugh authorization header
             else:
                 user = backend.do_auth(self.cleaned_data.get("access_token"), allow_inactive_user=True)
 >>>>>>> authenticate to linkedin mobile in login
