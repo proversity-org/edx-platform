@@ -101,6 +101,7 @@ class BadgeClass(models.Model):
             mode=mode,
             description=description,
             criteria=criteria,
+            image=image_file_handle
         )
 
         try:
@@ -113,7 +114,7 @@ class BadgeClass(models.Model):
             except:
                 logger.warning('Image for default Badge doesn\'t exist at %s', str(image_file_handle))
 
-        badge_class.full_clean()
+        #badge_class.full_clean()
         badge_class.save()
         return badge_class
 

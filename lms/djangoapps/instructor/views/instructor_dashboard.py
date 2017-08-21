@@ -254,7 +254,6 @@ def instructor_dashboard_2(request, course_id):
     # Get all the recap xblocks in a course
 
     recap_blocks = get_course_blocks(course_key, "recap")
-    free_blocks = get_course_blocks(course_key, "freetextresponse")
 
     # Add the Recap instructor dashboard tab if there is a recap Xblock
     

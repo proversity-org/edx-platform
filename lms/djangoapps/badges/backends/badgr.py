@@ -141,7 +141,7 @@ class BadgrBackend(BadgeBackend):
             'evidence': evidence_url,
         }
         response = requests.post(
-            self._assertion_url(self._slugify(badge_class)), headers=self._get_headers(), data=data,
+            self._assertion_url(badge_class.slug), headers=self._get_headers(), data=data,
             timeout=settings.BADGR_TIMEOUT
         )
         self._log_if_raised(response, data)
@@ -168,6 +168,7 @@ class BadgrBackend(BadgeBackend):
         slug = self._slugify(badge_class)
         if slug in BadgrBackend.badges:
             return
+
         response = requests.get(self._badge_url(slug), headers=self._get_headers(), timeout=settings.BADGR_TIMEOUT)
         if response.status_code != 200:
             self._create_badge(badge_class)
@@ -177,5 +178,5 @@ class BadgrBackend(BadgeBackend):
         """
         Make sure the badge class has been created on the backend, and then award the badge class to the user.
         """
-        self._ensure_badge_created(badge_class)
+        #self._ensure_badge_created(badge_class)
         return self._create_assertion(badge_class, user, evidence_url)

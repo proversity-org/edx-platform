@@ -1,6 +1,6 @@
 """ API v0 views. """
 import logging
-
+import json
 from django.contrib.auth import get_user_model
 from django.http import Http404
 from opaque_keys import InvalidKeyError
@@ -186,13 +186,28 @@ class UserGradeView(GradeViewMixin, GenericAPIView):
 
         prep_course_for_grading(course, request)
         course_grade = CourseGradeFactory().create(grade_user, course)
-        return Response([{
+        courseware_summary = course_grade.chapter_grades.values()
+        grade_summary = course_grade.summary
+
+        grades_schema = {}
+        for chapter in courseware_summary:
+            for section in chapter['sections']:
+                earned = section.all_total.earned
+                total = section.all_total.possible
+                name = section.display_name
+                if len(section.problem_scores.values()) > 0:
+                    if total > 0:
+                        grades_schema[str(name)] = "{0:.0%}".format( float(earned)/total) 
+
+
+        return Response({
             'username': grade_user.username,
             'course_key': course_id,
             'passed': course_grade.passed,
             'percent': course_grade.percent,
             'letter_grade': course_grade.letter_grade,
-        }])
+            'section_scores': grades_schema
+        })
 
 
 class CourseGradingPolicy(GradeViewMixin, ListAPIView):
