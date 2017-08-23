@@ -114,7 +114,6 @@ class BadgeClass(models.Model):
             except:
                 logger.warning('Image for default Badge doesn\'t exist at %s', str(image_file_handle))
 
-        #badge_class.full_clean()
         badge_class.save()
         return badge_class
 
@@ -178,6 +177,16 @@ class BadgeAssertion(TimeStampedModel):
         if course_id:
             return cls.objects.filter(user=user, badge_class__course_id=course_id)
         return cls.objects.filter(user=user)
+
+    @classmethod
+    def slug_assertion_for_user(cls, user, slug=None):
+        """
+        Get a specific badge assertions for a user.
+        """
+        if slug:
+            return cls.objects.filter(user=user, badge_class__slug=slug).values()
+        return cls.objects.filter(user=user).values()
+
 
     class Meta(object):
         app_label = "badges"

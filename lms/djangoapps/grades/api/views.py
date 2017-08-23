@@ -1,6 +1,5 @@
 """ API v0 views. """
 import logging
-import json
 from django.contrib.auth import get_user_model
 from django.http import Http404
 from opaque_keys import InvalidKeyError
