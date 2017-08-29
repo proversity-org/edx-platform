@@ -13,6 +13,11 @@ from pkg_resources import resource_string
 from xblock.fields import Boolean, Dict, Integer, List, Scope, String
 from xblock.fragment import Fragment
 
+<<<<<<< HEAD
+=======
+from xblock.core import XBlock
+from xmodule.raw_module import EmptyDataRawDescriptor
+>>>>>>> set multi_device to word_cloud
 from xmodule.editing_module import MetadataOnlyEditingDescriptor
 from xmodule.raw_module import EmptyDataRawDescriptor
 from xmodule.x_module import XModule
@@ -234,6 +239,7 @@ class WordCloudModule(WordCloudFields, XModule):
                 'error': 'Unknown Command!'
             })
 
+    @XBlock.supports("multi_device")
     def student_view(self, context):
         """
         Renders the output that a student will see.
