@@ -1,12 +1,8 @@
 """
 django admin pages for certificates models
 """
-<<<<<<< HEAD
-=======
-from django.contrib import admin
-from django import forms
+
 from django.contrib import messages
->>>>>>> Make Certificate html view configuration editable
 from config_models.admin import ConfigurationModelAdmin
 from django import forms
 from django.contrib import admin

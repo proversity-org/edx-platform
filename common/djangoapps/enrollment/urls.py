@@ -5,17 +5,12 @@ URLs for the Enrollment API
 from django.conf import settings
 from django.conf.urls import patterns, url
 
-<<<<<<< HEAD
-from .views import EnrollmentCourseDetailView, EnrollmentListView, EnrollmentView
-=======
 from .views import (
     EnrollmentView,
     EnrollmentListView,
     EnrollmentCourseDetailView,
     EnrollmentCoursePassedView
 )
-
->>>>>>> get student progress in a course
 
 urlpatterns = patterns(
     'enrollment.views',

@@ -753,17 +753,9 @@ def course_about(request, course_id):
         # - Student is already registered for course
         # - Course is already full
         # - Student cannot enroll in course
-<<<<<<< HEAD
-        active_reg_button = not (registered or is_course_full or not can_enroll)
-=======
         # - Student is not old enough to register
         active_reg_button = not(registered or is_course_full or not can_enroll or not is_old_enough)
-<<<<<<< HEAD
->>>>>>> course enrollment age minimum
 
-=======
-        
->>>>>>> add age verification pop up
         is_shib_course = uses_shib(course)
 
         # get prerequisite courses display names

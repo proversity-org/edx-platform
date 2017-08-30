@@ -1,11 +1,8 @@
 """
 Forms to support third-party to first-party OAuth 2.0 access token exchange
 """
-<<<<<<< HEAD
 import provider.constants
-=======
 import requests
->>>>>>> authenticate to linkedin mobile in login
 from django.contrib.auth.models import User
 from django.forms import CharField, BooleanField
 from edx_oauth2_provider.constants import SCOPE_NAMES
@@ -116,32 +113,18 @@ class AccessTokenExchangeForm(ScopeMixin, OAuthForm):
         user = None
         access_token = self.cleaned_data.get("access_token")
         try:
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
             user = backend.do_auth(access_token, allow_inactive_user=True)
-=======
-            if (self.cleaned_data.get('is_mobile', False)):
-                user = authenticate_to_linkedin_using_msdk(self.cleaned_data.get("access_token"), self.cleaned_data.get("username"))
-=======
-            log.info(self.cleaned_data)
-            log.info("====================================================")
-=======
->>>>>>> add logs
+
             if (self.cleaned_data.get('is_linkedin_mobile', False)):
                 user =\
                     self.authenticate_to_linkedin_using_msdk(
                         self.cleaned_data.get("access_token"),
                         self.cleaned_data.get("email")
                     )
-<<<<<<< HEAD
->>>>>>> update authentication to linkedin thorugh authorization header
-=======
                 log.error(user)
->>>>>>> replace username for email in query
             else:
                 user = backend.do_auth(self.cleaned_data.get("access_token"), allow_inactive_user=True)
->>>>>>> authenticate to linkedin mobile in login
+
         except (HTTPError, AuthException):
             pass
         if user and isinstance(user, User):

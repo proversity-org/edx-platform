@@ -12,17 +12,12 @@ from opaque_keys.edx.keys import CourseKey
 from contentstore.tests.utils import AjaxEnabledTestClient, parse_json
 from student.roles import CourseInstructorRole, CourseStaffRole
 from student.tests.factories import UserFactory
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 from util.organizations_helpers import add_organization, get_course_organizations
-=======
+
 from student.tests.factories import OrganizationFactory
 from student.tests.factories import OrganizationUserFactory
-=======
->>>>>>> force and lock organization for org users in studio
-from contentstore.tests.utils import AjaxEnabledTestClient, parse_json
-from datetime import datetime
->>>>>>> Added organization field to student profile model
+
 from xmodule.course_module import CourseFields
 from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.django import modulestore

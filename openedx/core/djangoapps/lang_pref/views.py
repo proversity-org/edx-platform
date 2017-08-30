@@ -9,12 +9,9 @@ from django.http import HttpResponse
 from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-<<<<<<< HEAD
-from openedx.core.djangoapps.lang_pref import COOKIE_DURATION, LANGUAGE_KEY
-=======
 from openedx.core.djangoapps.lang_pref import LANGUAGE_KEY, COOKIE_DURATION
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
->>>>>>> get LANGUAGE_CODE from configuration helper
+
 
 
 @ensure_csrf_cookie

@@ -43,9 +43,6 @@ class LoginSessionView(APIView):
 
     @method_decorator(ensure_csrf_cookie)
     def get(self, request):
-<<<<<<< HEAD
-        return HttpResponse(get_login_session_form().to_json(), content_type="application/json")
-=======
         """Return a description of the login form.
 
         This decouples clients from the API definition:
@@ -110,7 +107,7 @@ class LoginSessionView(APIView):
         )
 
         return HttpResponse(form_desc.to_json(), content_type="application/json")
->>>>>>> Login with username (#420)
+        
 
     @method_decorator(require_post_params(["email", "password"]))
     @method_decorator(csrf_protect)

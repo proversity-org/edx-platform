@@ -19,12 +19,10 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.utils.timezone import UTC
 from opaque_keys.edx.keys import CourseKey, UsageKey
-<<<<<<< HEAD
-=======
 from organizations.models import OrganizationUser
 
 from util import milestones_helpers as milestones_helpers
->>>>>>> fix organizational course mapping for insights
+
 from xblock.core import XBlock
 
 from courseware.access_response import (

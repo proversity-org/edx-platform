@@ -2,13 +2,10 @@
 Middleware that checks user standing for the purpose of keeping users with
 disabled accounts from accessing the site.
 """
-<<<<<<< HEAD
-from django.conf import settings
-=======
+
 import re
 from django.conf import settings
 
->>>>>>> Added organization field to student profile model
 from django.http import HttpResponseForbidden
 from django.utils.translation import ugettext as _
 

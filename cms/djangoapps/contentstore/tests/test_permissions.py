@@ -8,16 +8,10 @@ from django.contrib.auth.models import User
 from contentstore.tests.utils import AjaxEnabledTestClient
 from contentstore.utils import reverse_course_url, reverse_url
 from student import auth
-<<<<<<< HEAD
-<<<<<<< HEAD
 from student.roles import CourseInstructorRole, CourseStaffRole, OrgInstructorRole, OrgStaffRole
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
-=======
 from student.tests.factories import OrganizationFactory
 from student.tests.factories import OrganizationUserFactory
->>>>>>> Added organization field to student profile model
-=======
->>>>>>> force and lock organization for org users in studio
 
 
 class TestCourseAccess(ModuleStoreTestCase):

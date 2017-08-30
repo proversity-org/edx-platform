@@ -38,12 +38,9 @@ import instructor_analytics.csvs
 import instructor_analytics.distributions
 import lms.djangoapps.instructor.enrollment as enrollment
 import lms.djangoapps.instructor_task.api
-from bulk_email.models import BulkEmailFlag, CourseEmail
 from certificates import api as certs_api
 from certificates.models import CertificateInvalidation, CertificateStatuses, CertificateWhitelist, GeneratedCertificate
 from courseware.access import has_access
-<<<<<<< HEAD
-from courseware.courses import get_course_by_id, get_course_with_access
 from courseware.models import StudentModule
 from django_comment_client.utils import (
     has_forum_access,
@@ -51,11 +48,10 @@ from django_comment_client.utils import (
     get_group_name,
     get_group_id_for_user
 )
-=======
 from courseware.courses import get_course_with_access, get_course_by_id, get_course
 from django.contrib.auth.models import User
 from django_comment_client.utils import has_forum_access
->>>>>>> send email to specific learners
+
 from django_comment_common.models import (
     Role,
     FORUM_ROLE_ADMINISTRATOR,
@@ -112,7 +108,6 @@ from student.models import (
 )
 from student.roles import CourseFinanceAdminRole, CourseSalesAdminRole
 from submissions import api as sub_api  # installed from the edx-submissions repository
-<<<<<<< HEAD
 from util.file import (
     FileValidationException,
     UniversalNewlineIterator,
@@ -122,14 +117,8 @@ from util.file import (
 from util.json_request import JsonResponse, JsonResponseBadRequest
 from util.views import require_global_staff
 from xmodule.modulestore.django import modulestore
-=======
-
-from certificates import api as certs_api
-from certificates.models import CertificateWhitelist, GeneratedCertificate, CertificateStatuses, CertificateInvalidation
 
 from bulk_email.models import CourseEmail, CourseEmailTemplate, BulkEmailFlag
-from student.models import get_user_by_username_or_email
->>>>>>> send email to specific learners
 
 from .tools import (
     dump_module_extensions,
@@ -150,21 +139,13 @@ from django.core.mail.message import forbid_multi_line_headers
 
 log = logging.getLogger(__name__)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 TASK_SUBMISSION_OK = 'created'
 
 SUCCESS_MESSAGE_TEMPLATE = _("The {report_type} report is being created. "
                              "To view the status of the report, see Pending Tasks below.")
 
-=======
-from django.conf import settings
-from django.http import HttpResponse
 from django.template import Context
 from django.template.loader import get_template
->>>>>>> xhtml2pdf working, need to show pdf in view, successfully created though
-=======
->>>>>>> clean code, need to refactor some
 
 def common_exceptions_400(func):
     """
@@ -2665,24 +2646,6 @@ def send_email(request, course_id):
         # us to find the correct template to use here.
         template_name = template_name.get(course_overview.display_org_with_default)
 
-<<<<<<< HEAD
-    # Create the CourseEmail object.  This is saved immediately, so that
-    # any transaction that has been pending up to this point will also be
-    # committed.
-    try:
-        email = CourseEmail.create(
-            course_id,
-            request.user,
-            targets,
-            subject, message,
-            template_name=template_name,
-            from_addr=from_addr
-        )
-    except ValueError as err:
-        log.exception(u'Cannot create course email for course %s requested by user %s for targets %s',
-                      course_id, request.user, targets)
-        return HttpResponseBadRequest(repr(err))
-=======
     if len(targets) > 0 and targets[0] == 'specific_learners':
         send_email_to_specific_learners(course, specific_learners, template_name, from_addr, subject, message)
         response_payload = {
@@ -2705,26 +2668,18 @@ def send_email(request, course_id):
                 from_addr=from_addr
             )
         except ValueError as err:
+            log.exception(u'Cannot create course email for course %s requested by user %s for targets %s',
+                      course_id, request.user, targets)
             return HttpResponseBadRequest(repr(err))
->>>>>>> send email to specific learners
 
         # Submit the task, so that the correct InstructorTask object gets created (for monitoring purposes)
         lms.djangoapps.instructor_task.api.submit_bulk_course_email(request, course_id, email.id)
 
-<<<<<<< HEAD
-    response_payload = {
-        'course_id': course_id.to_deprecated_string(),
-        'success': True,
-    }
-
-    return JsonResponse(response_payload)
-=======
         response_payload = {
             'course_id': course_id.to_deprecated_string(),
             'success': True,
         }
         return JsonResponse(response_payload)
->>>>>>> send email to specific learners
 
 
 @require_POST
@@ -3522,18 +3477,16 @@ def _get_boolean_param(request, param_name):
     values to boolean values.
     """
     return request.POST.get(param_name, False) in ['true', 'True', True]
-<<<<<<< HEAD
 
-
-<<<<<<< HEAD
-<<<<<<< HEAD
+    
 def _create_error_response(request, msg):
     """
     Creates the appropriate error response for the current request,
     in JSON form.
     """
     return JsonResponse({"error": _(msg)}, 400)
-=======
+
+    
 @csrf_protect
 def generate_pdf(request, course_id): 
 
@@ -3552,8 +3505,3 @@ def generate_pdf(request, course_id):
         print response       
         return response
 
->>>>>>> xhtml2pdf working, need to show pdf in view, successfully created though
-=======
->>>>>>> stating to clean up code, sort our pagination asap
-=======
->>>>>>> clean code, need to refactor some

@@ -155,13 +155,9 @@ class CourseModeModelTest(TestCase):
         modes = CourseMode.modes_for_course(self.course_key)
         self.assertEqual([expired_mode_value, mode1], modes)
 
-<<<<<<< HEAD
-        modes = CourseMode.modes_for_course(CourseLocator('TestOrg', 'TestCourse', 'TestRun'))
-        self.assertEqual([CourseMode.DEFAULT_MODE], modes)
-=======
         modes = CourseMode.modes_for_course(SlashSeparatedCourseKey('TestOrg', 'TestCourse', 'TestRun'))
         self.assertEqual([CourseMode.get_default_course_mode()], modes)
->>>>>>> display default checkout currency correctly
+
 
     def test_verified_mode_for_course(self):
         self.create_mode('verified', 'Verified Certificate', 10)

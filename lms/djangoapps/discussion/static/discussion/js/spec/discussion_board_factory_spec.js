@@ -44,12 +44,9 @@ define(
                         is_discussion_division_enabled: false,
                         allow_anonymous: false,
                         allow_anonymous_to_peers: false,
-<<<<<<< HEAD
                         groups: [],
-=======
                         allow_private_to_peers: false,
                         cohorts: [],
->>>>>>> add support for private to staff forum posts
                         category_map: {}
                     }
                 });

@@ -77,11 +77,8 @@ from util.milestones_helpers import (
     remove_prerequisite_course,
     set_prerequisite_courses
 )
-<<<<<<< HEAD
 from util.organizations_helpers import add_organization_course, get_organization_by_short_name, organizations_enabled
-=======
 from organizations.models import Organization, OrganizationUser
->>>>>>> Added organization field to student profile model
 from util.string_utils import _has_non_ascii_characters
 from xblock_django.api import deprecated_xblocks
 from xmodule.contentstore.content import StaticContent
@@ -397,10 +394,6 @@ def _accessible_courses_summary_iter(request, org=None):
     return courses_summary, in_process_course_actions
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-def _accessible_courses_iter(request):
-=======
 def _get_user_org(user):
     """
     Gets the organization associated with this user.
@@ -425,10 +418,8 @@ def _user_in_same_org(user, course_id):
 
     return user_org['id'] == course_org['id']
 
-=======
->>>>>>> add disable library creation feature flag
+
 def _accessible_courses_list(request):
->>>>>>> Added organization field to student profile model
     """
     List all courses available to the logged in user by iterating through all the courses.
     This method is only used by tests.
@@ -532,13 +523,9 @@ def course_listing(request):
     org = request.GET.get('org', '') if optimization_enabled else None
     courses_iter, in_process_course_actions = get_courses_accessible_to_user(request, org)
     user = request.user
-<<<<<<< HEAD
-    libraries = _accessible_libraries_iter(request.user, org) if LIBRARIES_ENABLED else []
-=======
 
     user_has_permission = user.is_active and (user.is_staff or CourseCreatorRole().has_user(user))
     libraries = _accessible_libraries_list(request.user) if LIBRARIES_ENABLED and user_has_permission else []
->>>>>>> add disable library creation feature flag
 
     def format_in_process_course_view(uca):
         """
@@ -583,22 +570,7 @@ def course_listing(request):
     edit_org = 'disabled' if not (request.user.is_superuser or request.user.is_staff) else ''
     org_short_name = user_org['short_name'] if user_org else ''
 
-<<<<<<< HEAD
-    return render_to_response(u'index.html', {
-        u'courses': active_courses,
-        u'archived_courses': archived_courses,
-        u'in_process_course_actions': in_process_course_actions,
-        u'libraries_enabled': LIBRARIES_ENABLED,
-        u'libraries': [format_library_for_view(lib) for lib in libraries],
-        u'show_new_library_button': get_library_creator_status(user),
-        u'user': user,
-        u'request_course_creator_url': reverse(u'contentstore.views.request_course_creator'),
-        u'course_creator_status': _get_course_creator_status(user),
-        u'rerun_creator_status': GlobalStaff().has_user(user),
-        u'allow_unicode_course_id': settings.FEATURES.get(u'ALLOW_UNICODE_COURSE_ID', False),
-        u'allow_course_reruns': settings.FEATURES.get(u'ALLOW_COURSE_RERUNS', True),
-        u'optimization_enabled': optimization_enabled
-=======
+
     return render_to_response('index.html', {
         'user': request.user,
         'courses': courses,
@@ -614,13 +586,9 @@ def course_listing(request):
         'rerun_creator_status': GlobalStaff().has_user(user),
         'allow_unicode_course_id': settings.FEATURES.get('ALLOW_UNICODE_COURSE_ID', False),
         'allow_course_reruns': settings.FEATURES.get('ALLOW_COURSE_RERUNS', True),
-<<<<<<< HEAD
->>>>>>> Added organization field to student profile model
-=======
         'library_creator_status': _get_library_creator_status(user),
         'org_editable': org_editable,
         'org_short_name': org_short_name,
->>>>>>> add disable library creation feature flag
     })
 
 

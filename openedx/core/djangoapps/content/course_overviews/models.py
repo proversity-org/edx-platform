@@ -73,14 +73,9 @@ class CourseOverview(TimeStampedModel):
     certificates_show_before_end = BooleanField(default=False)
     cert_html_view_enabled = BooleanField(default=False)
     has_any_active_web_certificate = BooleanField(default=False)
-<<<<<<< HEAD
-    cert_name_short = TextField()
-    cert_name_long = TextField()
     certificate_available_date = DateTimeField(default=None, null=True)
-=======
     cert_name_short = TextField(null=True, blank=True)
     cert_name_long = TextField(null=True, blank=True)
->>>>>>> course overviews update required fields admin
 
     # Grading
     lowest_passing_grade = DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)

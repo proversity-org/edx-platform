@@ -109,19 +109,16 @@ from lms.envs.common import (
 
     CONTACT_EMAIL,
 
-<<<<<<< HEAD
     DISABLE_ACCOUNT_ACTIVATION_REQUIREMENT_SWITCH,
     # Video Image settings
     VIDEO_IMAGE_SETTINGS,
-=======
+
     # Setting for PAID_COURSE_REGISTRATION, DOES NOT AFFECT VERIFIED STUDENTS
-<<<<<<< HEAD
-    PAID_COURSE_REGISTRATION_CURRENCY
->>>>>>> display default checkout currency correctly
-=======
     PAID_COURSE_REGISTRATION_CURRENCY,
-	ENABLE_DOG
->>>>>>> ENH: adding setting for datadog and removing log suppresion
+    
+    # Setting fro ENABLE_DOG, turns on the log sync to datadog
+	  ENABLE_DOG
+
 )
 from path import Path as path
 from warnings import simplefilter

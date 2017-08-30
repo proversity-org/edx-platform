@@ -6,11 +6,7 @@ import datetime
 import json
 import logging
 import uuid
-<<<<<<< HEAD
-=======
-import json
 import requests
->>>>>>> add requests
 import warnings
 from collections import defaultdict, namedtuple
 from urlparse import parse_qs, urlsplit, urlunsplit
@@ -89,7 +85,7 @@ from openedx.core.djangoapps.programs.utils import ProgramProgressMeter
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.core.djangoapps.theming import helpers as theming_helpers
 from openedx.core.djangoapps.user_api.preferences import api as preferences_api
-<<<<<<< HEAD
+
 from openedx.core.djangolib.markup import HTML
 from openedx.features.course_experience import course_home_url_name
 from openedx.features.enterprise_support.api import get_dashboard_consent_notification
@@ -135,8 +131,7 @@ from util.json_request import JsonResponse
 from util.milestones_helpers import get_pre_requisite_courses_not_completed
 from util.password_policy_validators import validate_password_length, validate_password_strength
 from xmodule.modulestore.django import modulestore
-=======
->>>>>>> Added logic for new microsite themes (#417)
+
 
 log = logging.getLogger("edx.student")
 AUDIT_LOG = logging.getLogger("audit")
@@ -1837,36 +1832,23 @@ def _do_create_account(form, custom_form=None):
     return (user, profile, registration)
 
 
-<<<<<<< HEAD
 def _create_or_set_user_attribute_created_on_site(user, site):
     # Create or Set UserAttribute indicating the microsite site the user account was created on.
     # User maybe created on 'courses.edx.org', or a white-label site
     if site:
         UserAttribute.set_user_attribute(user, 'created_on_site', site.domain)
-=======
+
 def authenticate_to_linkedin_using_msdk(access_token, user):
     fields = ':(email-address,first-name,headline,id,industry,last-name,location,specialties,summary)'
     params = {'format': 'json'}
     headers = {'x-li-src': 'msdk', 'Authorization': 'Bearer ' + access_token}
     url = 'https://api.linkedin.com/v1/people/~%s' % fields
     r = requests.get(url, params=params, headers=headers)
-<<<<<<< HEAD
-    log.info('===================================')
-    log.info('authenticate_to_linkedin_using_msdk_in_registration')
-    log.info(r.json())
-    log.info(r.status_code)
-    log.info('===================================')
-<<<<<<< HEAD
-    return user
->>>>>>> sso to linkedin for mobile
-=======
-=======
->>>>>>> inject csrf token to form
+
     if r.status_code == 200:
         return user
     else:
         return None
->>>>>>> update authentication to linkedin thorugh authorization header
 
 
 def create_account_with_params(request, params):

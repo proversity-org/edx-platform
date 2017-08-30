@@ -6,15 +6,10 @@ from contentstore.tests.utils import AjaxEnabledTestClient
 from contentstore.utils import delete_course, reverse_url
 from courseware.tests.factories import UserFactory
 from student.models import CourseEnrollment
-<<<<<<< HEAD
-<<<<<<< HEAD
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
-=======
 from student.tests.factories import OrganizationFactory
 from student.tests.factories import OrganizationUserFactory
->>>>>>> Added organization field to student profile model
-=======
->>>>>>> force and lock organization for org users in studio
+
 
 
 class TestUsersDefaultRole(ModuleStoreTestCase):

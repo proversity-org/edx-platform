@@ -13,12 +13,8 @@ from django.utils.timezone import UTC
 from opaque_keys.edx.keys import CourseKey
 from opaque_keys.edx.locations import i4xEncoder
 
-<<<<<<< HEAD
 import pystache_custom as pystache
-from courseware import courses
-=======
 from courseware import courses, tabs
->>>>>>> respect visibility status of discussion panel
 from courseware.access import has_access
 from django_comment_client.constants import TYPE_ENTRY, TYPE_SUBCATEGORY
 from django_comment_client.permissions import check_permissions_by_view, get_team, has_permission

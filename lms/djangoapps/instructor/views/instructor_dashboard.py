@@ -5,40 +5,26 @@ Instructor Dashboard Views
 import datetime
 import logging
 import uuid
-<<<<<<< HEAD
 
-import pytz
 from django.conf import settings
-=======
 import pytz
-<<<<<<< HEAD
 from openedx.core.lib.xblock_builtin import get_css_dependencies, get_js_dependencies
->>>>>>> try add recap js directly using url, should load in instructor dash
-=======
->>>>>>> clean code, need to refactor some
+
 from django.contrib.auth.decorators import login_required
-<<<<<<< HEAD
-=======
+
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext as _, ugettext_noop
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.cache import cache_control
-from edxmako.shortcuts import render_to_response
->>>>>>> tidy code
+
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseServerError
 from django.utils.html import escape
-from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_noop
 from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 from mock import patch
-<<<<<<< HEAD
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
-=======
 
 from openedx.core.lib.xblock_utils import wrap_xblock
 from openedx.core.lib.url_utils import quote_slashes

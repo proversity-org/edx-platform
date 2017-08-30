@@ -4,11 +4,9 @@ from fractions import Fraction
 
 import nltk
 from nltk.tree import Tree
-<<<<<<< HEAD
 from pyparsing import Literal, OneOrMore, ParseException, StringEnd
-=======
 from nltk import CFG
->>>>>>> fix chemcalc for new nltk syntax
+
 
 ARROWS = ('<->', '->')
 

@@ -18,16 +18,9 @@ from markupsafe import escape
 from mock import Mock, patch
 from nose.plugins.attrib import attr
 
-<<<<<<< HEAD
-from bulk_email.models import BulkEmailFlag, Optout
-from bulk_email.tasks import _get_course_email_context, _get_source_address
-=======
 from bulk_email.models import Optout, BulkEmailFlag
 from bulk_email.tasks import _get_source_address, _get_course_email_context
 
-from openedx.core.djangoapps.course_groups.models import CourseCohort
-from openedx.core.djangoapps.course_groups.cohorts import add_user_to_cohort
->>>>>>> enable bulk email to cohorts
 from course_modes.models import CourseMode
 from courseware.tests.factories import InstructorFactory, StaffFactory
 from enrollment.api import update_enrollment

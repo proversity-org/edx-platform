@@ -49,8 +49,6 @@ from xmodule.modulestore.xml_exporter import export_course_to_xml
 from xmodule.modulestore.xml_importer import import_course_from_xml, perform_xlint
 from xmodule.seq_module import SequenceDescriptor
 
-<<<<<<< HEAD
-=======
 from contentstore.utils import delete_course_and_groups, reverse_url, reverse_course_url
 from django_comment_common.utils import are_permissions_roles_seeded
 
@@ -65,8 +63,6 @@ from course_action_state.managers import CourseActionStateItemNotFoundError
 from xmodule.contentstore.content import StaticContent
 from xmodule.modulestore.django import modulestore
 
-
->>>>>>> Added organization field to student profile model
 TEST_DATA_CONTENTSTORE = copy.deepcopy(settings.CONTENTSTORE)
 TEST_DATA_CONTENTSTORE['DOC_STORE_CONFIG']['db'] = 'test_xcontent_%s' % uuid4().hex
 

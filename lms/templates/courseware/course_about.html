@@ -19,15 +19,11 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
 </%block>
 
 <%block name="js_extra">
-<<<<<<< HEAD
-  <script type="text/javascript">
-=======
   ## CourseTalk widget js script
   % if show_coursetalk_widget:
       <script src="//d3q6qq2zt8nhwv.cloudfront.net/s/js/widgets/coursetalk-read-reviews.js"></script>
   % endif
 <script type="text/javascript">
->>>>>>> add localStorage for age verification pop up
   (function() {
 
     var course_id = '${course.id}';

@@ -8,15 +8,11 @@ from ccx_keys.locator import CCXBlockUsageLocator, CCXLocator
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from opaque_keys.edx.locator import LibraryLocator
-<<<<<<< HEAD
-=======
-from ccx_keys.locator import CCXLocator, CCXBlockUsageLocator
 
-from organizations.models import Organization
+from organizations.models import Organization, OrganizationUser
 from student.roles import GlobalStaff, CourseCreatorRole, CourseStaffRole, CourseInstructorRole, CourseRole, \
     CourseBetaTesterRole, OrgInstructorRole, OrgStaffRole, LibraryUserRole, OrgLibraryUserRole
-<<<<<<< HEAD
->>>>>>> force and lock organization for org users in studio
+
 
 from student.roles import (
     CourseBetaTesterRole,
@@ -30,10 +26,6 @@ from student.roles import (
     OrgLibraryUserRole,
     OrgStaffRole
 )
-=======
-
-from organizations.models import OrganizationUser
->>>>>>> add disable library creation feature flag
 
 # Studio permissions:
 STUDIO_EDIT_ROLES = 8

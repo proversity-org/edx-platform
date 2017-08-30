@@ -9,22 +9,14 @@ the SessionMiddleware.
 """
 from django.conf import settings
 from django.utils.translation import LANGUAGE_SESSION_KEY
-<<<<<<< HEAD
 from django.utils.translation.trans_real import parse_accept_lang_header
-=======
 from django.utils.translation import activate
->>>>>>> respect default language code
 
 from openedx.core.djangoapps.dark_lang import DARK_LANGUAGE_KEY
 from openedx.core.djangoapps.dark_lang.models import DarkLangConfig
-<<<<<<< HEAD
 from openedx.core.djangoapps.user_api.preferences.api import get_user_preference
-=======
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
-from openedx.core.djangoapps.user_api.preferences.api import (
-    get_user_preference
-)
->>>>>>> get LANGUAGE_CODE from configuration helper
+
 
 # If django 1.7 or higher is used, the right-side can be updated with new-style codes.
 CHINESE_LANGUAGE_CODE_MAP = {

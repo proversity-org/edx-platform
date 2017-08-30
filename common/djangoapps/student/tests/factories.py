@@ -3,23 +3,21 @@ import random
 from datetime import datetime
 from uuid import uuid4
 
-<<<<<<< HEAD
+
 import factory
-=======
 from student.models import (User, UserProfile, Registration,
                             CourseEnrollmentAllowed, CourseEnrollment,
                             PendingEmailChange, UserStanding,
                             CourseAccessRole)
 
 from course_modes.models import CourseMode
->>>>>>> force and lock organization for org users in studio
 from django.contrib.auth.models import AnonymousUser, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from factory import lazy_attribute
 from factory.django import DjangoModelFactory
 from opaque_keys.edx.keys import CourseKey
 from pytz import UTC
-<<<<<<< HEAD
+
 
 from course_modes.models import CourseMode
 from student.models import (
@@ -32,10 +30,10 @@ from student.models import (
     UserProfile,
     UserStanding
 )
-=======
+
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from organizations.models import Organization, OrganizationUser
->>>>>>> Added organization field to student profile model
+
 
 # Factories are self documenting
 # pylint: disable=missing-docstring
@@ -74,8 +72,6 @@ class UserProfileFactory(DjangoModelFactory):
     allow_certificate = True
 
 
-<<<<<<< HEAD
-=======
 class CourseModeFactory(DjangoModelFactory):
     class Meta(object):
         model = CourseMode
@@ -116,7 +112,6 @@ class OrganizationUserFactory(DjangoModelFactory):
     organization_id = 1
 
 
->>>>>>> Added organization field to student profile model
 class RegistrationFactory(DjangoModelFactory):
     class Meta(object):
         model = Registration

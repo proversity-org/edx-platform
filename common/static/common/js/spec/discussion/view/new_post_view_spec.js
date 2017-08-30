@@ -53,14 +53,11 @@
                     },
                     allow_anonymous: false,
                     allow_anonymous_to_peers: false,
-<<<<<<< HEAD
                     is_discussion_division_enabled: true,
-                    groups: [
-=======
+                    groups: [],
                     allow_private_to_peers: false,
                     is_cohorted: true,
                     cohorts: [
->>>>>>> add support for private to staff forum posts
                         {
                             id: 1,
                             name: 'Cohort1'
@@ -129,18 +126,13 @@
                         children: [],
                         entries: {}
                     },
-<<<<<<< HEAD
                     allow_anonymous: false,
                     allow_anonymous_to_peers: false,
                     is_discussion_division_enabled: true,
-                    groups: [
-=======
-                    'allow_anonymous': false,
-                    'allow_anonymous_to_peers': false,
+                    groups: [],
                     'allow_private_to_peers': false,
                     'is_cohorted': true,
                     'cohorts': [
->>>>>>> add support for private to staff forum posts
                         {
                             id: 1,
                             name: 'Cohort1'

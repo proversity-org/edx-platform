@@ -158,13 +158,8 @@
                         }
 
                         if (key) {
-<<<<<<< HEAD
-                            validation = this.validate(elements[i]);
-                            if (validation.isValid) {
-=======
                             test = this.validate(elements[i]);
                             if (test.isValid || $el.attr('id') == 'login-email') {
->>>>>>> Login with username (#420)
                                 obj[key] = $el.attr('type') === 'checkbox' ? $el.is(':checked') : $el.val();
                                 $el.removeClass('error');
                                 $label.removeClass('error');
