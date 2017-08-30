@@ -31,7 +31,6 @@ from openedx.core.lib.url_utils import quote_slashes
 from xmodule.html_module import HtmlDescriptor
 from xmodule.modulestore.django import modulestore
 from xmodule.tabs import CourseTab
->>>>>>> try add recap js directly using url, should load in instructor dash
 from xblock.field_data import DictFieldData
 from xblock.fields import ScopeIds
 

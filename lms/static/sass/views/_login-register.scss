@@ -296,13 +296,10 @@
                 display: inline;
             }
 
-<<<<<<< HEAD
-=======
             &.error {
                 color: $red;
             }
 
->>>>>>> remove all the css importants
             &[for="register-data_sharing_consent"],
             &[for="register-honor_code"],
             &[for="register-terms_of_service"] {

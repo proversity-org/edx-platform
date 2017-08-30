@@ -25,6 +25,7 @@
                     data = {},
                     analytics,
                     courseId = $.url('?course_id');
+                   
 
                 // If there is a course ID in the query string param,
                 // send that to the server as well so it can be included

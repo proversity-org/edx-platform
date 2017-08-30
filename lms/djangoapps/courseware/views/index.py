@@ -34,7 +34,6 @@ from openedx.features.course_experience import COURSE_OUTLINE_PAGE_FLAG, default
 from openedx.features.course_experience.views.course_sock import CourseSockFragmentView
 from openedx.features.enterprise_support.api import data_sharing_consent_required
 
-from openedx.features.course_experience import UNIFIED_COURSE_VIEW_FLAG
 from request_cache.middleware import RequestCache
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from shoppingcart.models import CourseRegistrationCode

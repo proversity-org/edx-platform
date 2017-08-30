@@ -158,7 +158,7 @@
                         }
 
                         if (key) {
-                            test = this.validate(elements[i]);
+                            var test = this.validate(elements[i]);
                             if (test.isValid || $el.attr('id') == 'login-email') {
                                 obj[key] = $el.attr('type') === 'checkbox' ? $el.is(':checked') : $el.val();
                                 $el.removeClass('error');
@@ -214,7 +214,10 @@
                 },
 
                 submitForm: function(event) {
+                    console.log("jakjasjkaskjas")
                     var data = this.getFormData();
+                    
+                    console.log(data)
 
                     if (!_.isUndefined(event)) {
                         event.preventDefault();

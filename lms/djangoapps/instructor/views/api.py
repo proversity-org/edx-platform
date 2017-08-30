@@ -3486,22 +3486,4 @@ def _create_error_response(request, msg):
     """
     return JsonResponse({"error": _(msg)}, 400)
 
-    
-@csrf_protect
-def generate_pdf(request, course_id): 
-
-    print 'I AM CALLING THIS FUNCTION'
-    print 'I AM CALLING THIS FUNCTION'
-
-
-    data = ''
-    if request.method == 'POST':
-        #template = get_template('recap.html')
-        data = request.POST.get('recap_answers', None)
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'    
-        #pisa.CreatePDF(data, response,
-        #   encoding='utf-8')
-        print response       
-        return response
 
