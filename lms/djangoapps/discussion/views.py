@@ -21,6 +21,12 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_http_methods
 from opaque_keys.edx.keys import CourseKey
 from rest_framework import status
+
+from openedx.core.djangoapps.course_groups.cohorts import (
+    is_course_cohorted,
+    get_course_cohorts,
+)
+
 from web_fragments.fragment import Fragment
 
 import django_comment_client.utils as utils
