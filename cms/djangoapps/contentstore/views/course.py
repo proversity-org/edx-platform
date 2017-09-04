@@ -525,7 +525,7 @@ def course_listing(request):
     user = request.user
 
     user_has_permission = user.is_active and (user.is_staff or CourseCreatorRole().has_user(user))
-    libraries = _accessible_libraries_list(request.user) if LIBRARIES_ENABLED and user_has_permission else []
+    libraries = _accessible_libraries_iter(request.user) if LIBRARIES_ENABLED and user_has_permission else []
 
     def format_in_process_course_view(uca):
         """
@@ -573,7 +573,8 @@ def course_listing(request):
 
     return render_to_response('index.html', {
         'user': request.user,
-        'courses': courses,
+        'courses': active_courses,
+        'archived_courses': archived_courses,
         'in_process_course_actions': in_process_course_actions,
         'libraries_enabled': LIBRARIES_ENABLED,
         'libraries': [format_library_for_view(lib) for lib in libraries],
