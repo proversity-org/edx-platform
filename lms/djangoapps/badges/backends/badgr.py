@@ -35,26 +35,25 @@ class BadgrBackend(BadgeBackend):
         """
         Base URL for all API requests.
         """
-        return "{}/v1/issuer/issuers/{}".format(settings.BADGR_BASE_URL, settings.BADGR_ISSUER_SLUG)
+        return "{}/v1/issuer/issuers".format(settings.BADGR_BASE_URL)
 
-    @lazy
-    def _badge_create_url(self):
+    def _badge_create_url(self, issuer):
         """
         URL for generating a new Badge specification
         """
-        return "{}/badges".format(self._base_url)
+        return "{}/{}/badges".format(self._base_url, issuer)
 
-    def _badge_url(self, slug):
+    def _badge_url(self, issuer, slug):
         """
         Get the URL for a course's badge in a given mode.
         """
-        return "{}/{}".format(self._badge_create_url, slug)
+        return "{}/{}".format(self._badge_create_url(issuer), slug)
 
-    def _assertion_url(self, slug):
+    def _assertion_url(self, issuer, slug):
         """
         URL for generating a new assertion.
         """
-        return "{}/assertions".format(self._badge_url(slug))
+        return "{}/assertions".format(self._badge_url(issuer, slug))
 
     def _slugify(self, badge_class):
         """
@@ -107,8 +106,9 @@ class BadgrBackend(BadgeBackend):
             'slug': self._slugify(badge_class),
             'description': badge_class.description,
         }
+
         result = requests.post(
-            self._badge_create_url, headers=self._get_headers(), data=data, files=files,
+            self._badge_create_url(badge_class.issuing_component), headers=self._get_headers(), data=data, files=files,
             timeout=settings.BADGR_TIMEOUT
         )
         self._log_if_raised(result, data)
@@ -141,7 +141,7 @@ class BadgrBackend(BadgeBackend):
             'evidence': evidence_url,
         }
         response = requests.post(
-            self._assertion_url(badge_class.slug), headers=self._get_headers(), data=data,
+            self._assertion_url(badge_class.issuing_component, badge_class.slug), headers=self._get_headers(), data=data,
             timeout=settings.BADGR_TIMEOUT
         )
         self._log_if_raised(response, data)
@@ -169,7 +169,7 @@ class BadgrBackend(BadgeBackend):
         if slug in BadgrBackend.badges:
             return
 
-        response = requests.get(self._badge_url(badge_class.slug), headers=self._get_headers(), timeout=settings.BADGR_TIMEOUT)
+        response = requests.get(self._badge_url(badge_class.issuing_component, badge_class.slug), headers=self._get_headers(), timeout=settings.BADGR_TIMEOUT)
         if response.status_code != 200:
             self._create_badge(badge_class)
         BadgrBackend.badges.append(slug)
