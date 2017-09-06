@@ -5,7 +5,6 @@ from fractions import Fraction
 import nltk
 from nltk.tree import Tree
 from pyparsing import Literal, OneOrMore, ParseException, StringEnd
-from nltk import CFG
 
 
 ARROWS = ('<->', '->')
@@ -54,7 +53,7 @@ grammar = """
 
   suffixed -> unsuffixed | unsuffixed suffix
 """
-parser = nltk.ChartParser(CFG.fromstring(grammar))
+parser = nltk.ChartParser(nltk.parse_cfg(grammar))
 
 
 def _clean_parse_tree(tree):
