@@ -1,6 +1,69 @@
 <%page expression_filter="h"/>
 <%! from django.utils.translation import ugettext as _ %>
 
+<style>
+    .svg-container {
+
+        display: inline-block;
+        position: relative;
+        width: 360px;
+        vertical-align: top;
+        
+    }
+
+    @media (max-width: 1440px) {
+
+        .svg-container {
+
+            width: 360px;
+
+        }
+
+    }
+
+    @media (max-width: 1024px) {
+
+        .svg-container {
+
+            width: 360px;
+
+        }
+
+    }
+
+    @media (max-width: 768px) {
+
+        .svg-container {
+
+            width: 360px;
+
+        }
+
+    }
+
+    @media (max-width: 736px) {
+
+        .svg-container {
+
+            width: 360px;
+
+        }
+
+    }
+
+    @media (max-width: 414px) {
+
+        .svg-container {
+
+            width: 360px;
+            height: 60vh;
+
+        }
+
+    }
+    
+</style>
+
 <div
     id="word_cloud_${element_id}"
     class="${element_class}"
@@ -42,7 +105,7 @@
     </div>
 
     <div id="result_cloud_section_${element_id}" class="result_cloud_section">
-        <div class="word_cloud"></div>
+        <div class="word_cloud svg-container"></div>
         <p class="total_num_words"></p>
         <p>${_('Your words were:')}</p>
         <ul class="your_words"></ul>
