@@ -34,6 +34,95 @@
          *
          * @param {jQuery} el DOM element where the word cloud will be processed and created.
          */
+
+        /* Set box width according to the width of the screen */
+
+        var screenWidth = function (screenSize) {
+
+            switch (screenSize) {
+
+                case 1920:
+
+                    return 1140;
+                    break;
+
+                case 1440:
+
+                    return 1140;
+                    break;
+
+                case 1024:
+
+                    return 940;
+                    break;
+
+                case 414:
+
+                    return 360;
+                    break;
+
+                case 375:
+
+                    return 310;
+                    break;
+
+                case 320:
+
+                    return 310;
+                    break;
+
+                default:
+
+                    return 1140;
+
+            }
+
+        }
+
+        /* Set box height relative to the width of the screen */
+
+        var screenHeight = function (screenSize) {
+
+            switch (screenSize) {
+
+                case 1920:
+
+                    return 500;
+                    break;
+
+                case 1440:
+
+                    return 500;
+                    break;
+
+                case 1024:
+
+                    return 500;
+                    break;
+
+                case 414:
+
+                    return 500;
+                    break;
+
+                case 375:
+
+                    return 400;
+                    break;
+
+                case 320:
+
+                    return 300;
+                    break;
+
+                default:
+
+                    return 500;
+
+            }
+
+        }
+
         var WordCloudMain = function(el) {
             var _this = this;
 
@@ -43,8 +132,9 @@
             this.ajax_url = this.wordCloudEl.data('ajax-url');
 
             // Dimensions of the box where the word cloud will be drawn.
-            this.width = 635;
-            this.height = 635;
+
+            this.width = screenWidth(window.innerWidth);
+            this.height = screenHeight(window.innerWidth);
 
             // Hide WordCloud container before Ajax request done
             this.wordCloudEl.hide();

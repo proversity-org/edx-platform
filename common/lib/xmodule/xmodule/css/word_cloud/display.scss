@@ -1,14 +1,40 @@
+
+.svg-container {
+
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; 
+    vertical-align: middle; 
+    overflow: hidden;
+
+}
+
+.svg-content {
+
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    
+}
+
 .input-cloud {
+
     margin: ($baseline/4);
+
 }
 
 .result_cloud_section {
+
     display: none;
     width: 0px;
     height: 0px;
+
 }
 
 .result_cloud_section.active {
+
     display: block;
     width: 100%;
     height: auto;
@@ -17,8 +43,11 @@
     h3 {
         font-size: 100%;
     }
+
 }
 .your_words{
+
     font-size: 0.85em;
     display: block;
+
 }
