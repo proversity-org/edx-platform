@@ -54,7 +54,7 @@ grammar = """
 
   suffixed -> unsuffixed | unsuffixed suffix
 """
-parser = nltk.ChartParser(nltk.parse_cfg(grammar))
+parser = nltk.ChartParser(CFG.fromstring(grammar))
 
 
 def _clean_parse_tree(tree):
