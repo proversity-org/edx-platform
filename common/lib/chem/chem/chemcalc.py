@@ -5,6 +5,7 @@ from fractions import Fraction
 import nltk
 from nltk.tree import Tree
 from pyparsing import Literal, OneOrMore, ParseException, StringEnd
+from nltk import CFG
 
 
 ARROWS = ('<->', '->')
