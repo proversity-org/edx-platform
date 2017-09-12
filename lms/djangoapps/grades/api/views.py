@@ -148,7 +148,8 @@ class UserGradeView(GradeViewMixin, GenericAPIView):
         * percent: A float representing the overall grade for the course
 
         * letter_grade: A letter grade as defined in grading_policy (e.g. 'A' 'B' 'C' for 6.002x) or None
-
+        
+        * section_scores: A dictionary representing the float/percentage earned for a graded section in the course
 
     **Example GET Response**
 
@@ -158,6 +159,11 @@ class UserGradeView(GradeViewMixin, GenericAPIView):
             "passed": false,
             "percent": 0.03,
             "letter_grade": None,
+            "section_scores": {
+                "section 1 name": 85%,
+                "section 2 name": 65%,
+                "section 3 name": 72%
+            }
         }]
 
     """
@@ -186,13 +192,28 @@ class UserGradeView(GradeViewMixin, GenericAPIView):
 
         prep_course_for_grading(course, request)
         course_grade = CourseGradeFactory().create(grade_user, course)
-        return Response([{
+        courseware_summary = course_grade.chapter_grades.values()
+        grade_summary = course_grade.summary
+
+        grades_schema = {}
+        for chapter in courseware_summary:
+            for section in chapter['sections']:
+                earned = section.all_total.earned
+                total = section.all_total.possible
+                name = section.display_name
+                if len(section.problem_scores.values()) > 0:
+                    if total > 0:
+                        grades_schema[str(name)] = "{0:.0%}".format( float(earned)/total) 
+
+
+        return Response({
             'username': grade_user.username,
             'course_key': course_id,
             'passed': course_grade.passed,
             'percent': course_grade.percent,
             'letter_grade': course_grade.letter_grade,
-        }])
+            'section_scores': grades_schema
+        })
 
 
 class CourseGradingPolicy(GradeViewMixin, ListAPIView):
