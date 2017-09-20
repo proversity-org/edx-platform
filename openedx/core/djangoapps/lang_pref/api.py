@@ -55,7 +55,7 @@ def released_languages():
 
     site_languages = configuration_helpers.get_value('LANGUAGE_LIST', None)
 
-    if own_languages is not None:
+    if site_languages is not None:
         released_language_codes = site_languages
 
     if default_language_code not in released_language_codes:
