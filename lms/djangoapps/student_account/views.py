@@ -599,12 +599,40 @@ def account_settings_context(request):
 
 
 def display_provider(state):
+    """
+    Configures which social providers to show on account settings
+    """
+
     provider = state.provider
-    return provider.display_for_login or state.has_account or provider.backend_name == 'linkedin-oauth2'
+    use_linkedin_profile = False
+    features = settings.FEATURES
+    extend_profile_with_linkedin =\
+        features.get("EXTEND_PROFILE_WITH_LINKEDIN", False)
+
+    if extend_profile_with_linkedin:
+        use_linkedin_profile = provider.backend_name == 'linkedin-oauth2'
+
+    return provider.display_for_login or state.has_account or \
+        use_linkedin_profile
 
 
 def provider_redirect_url(provider):
-    return reverse('linkedin_profile' if provider.backend_name == 'linkedin-oauth2' else 'account_settings')
+    """
+    Configures the redirect url when linking a social account
+    """
+
+    backend_name = provider.backend_name
+    features = settings.FEATURES
+    extend_profile_with_linkedin =\
+        features.get("EXTEND_PROFILE_WITH_LINKEDIN", False)
+
+    use_linkedin_profile =\
+        extend_profile_with_linkedin and backend_name == "linkedin-oauth2"
+
+    return \
+        reverse(
+            'linkedin_profile' if use_linkedin_profile else 'account_settings'
+        )
 
 
 class RecoverPasswordView(ViewSet):
@@ -655,8 +683,17 @@ class RecoverPasswordView(ViewSet):
 
 
 class LinkedInProfile(ViewSet):
-
     """
+    Retrieves the LinkedIn profile of the authenticated user and stores it
+    on user profile meta.
+
+    Render the current user's account settings page.
+
+    Returns:
+        HttpResponse: 200 if the page was sent successfully
+
+    Example usage:
+        GET /account/linkedin-profile
     """
 
     authentication_classes = (OAuth2Authentication, SessionAuthentication,)
@@ -670,7 +707,7 @@ class LinkedInProfile(ViewSet):
                 if auth.provider == 'linkedin-oauth2':
                     access_token = auth.extra_data.get("access_token", None)
                     if access_token:
-                        fields = ':(email-address,first-name,headline,id,industry,last-name,location,specialties,summary)'
+                        fields = settings.FEATURES.get("LINKEDIN_FIELDS", "")
                         params = {'format': 'json'}
                         headers = {'Authorization': 'Bearer ' + access_token}
                         url = 'https://api.linkedin.com/v1/people/~%s' % fields
@@ -679,7 +716,11 @@ class LinkedInProfile(ViewSet):
                             user_profile = UserProfile.objects.get(user=user)
                             if len(user_profile.meta) > 0:
                                 previous_meta = json.loads(user_profile.meta)
-                                new_meta = {key: value for (key, value) in (previous_meta.items() + r.json().items())}
+                                mixed_dicts =\
+                                    (previous_meta.items() + r.json().items())
+                                new_meta =\
+                                    {key: value for (key, value) in mixed_dicts}
+                                    
                             else:
                                 new_meta = r.json()
                             user_profile.meta = json.dumps(new_meta)
