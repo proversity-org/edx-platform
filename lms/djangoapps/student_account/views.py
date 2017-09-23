@@ -55,6 +55,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_oauth.authentication import OAuth2Authentication
 
 from social_django.models import UserSocialAuth
+from student.models import UserProfile
 import requests
 
 AUDIT_LOG = logging.getLogger("audit")
@@ -675,7 +676,14 @@ class LinkedInProfile(ViewSet):
                         url = 'https://api.linkedin.com/v1/people/~%s' % fields
                         r = requests.get(url, params=params, headers=headers)
                         if r.status_code == 200:
-                            print(r.json())
+                            user_profile = UserProfile.objects.get(user=user)
+                            if len(user_profile.meta) > 0:
+                                previous_meta = json.loads(user_profile.meta)
+                                new_meta = {key: value for (key, value) in (previous_meta.items() + r.json().items())}
+                            else:
+                                new_meta = r.json()
+                            user_profile.meta = json.dumps(new_meta)
+                            user_profile.save()
         except Exception as e:
             # log error
             print(e)
