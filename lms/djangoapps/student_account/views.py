@@ -54,6 +54,9 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_oauth.authentication import OAuth2Authentication
 
+from social_django.models import UserSocialAuth
+import requests
+
 AUDIT_LOG = logging.getLogger("audit")
 log = logging.getLogger(__name__)
 User = get_user_model()  # pylint:disable=invalid-name
@@ -571,7 +574,6 @@ def account_settings_context(request):
         context['duplicate_provider'] = pipeline.get_duplicate_provider(messages.get_messages(request))
 
         auth_states = pipeline.get_provider_user_states(user)
-
         context['auth']['providers'] = [{
             'id': state.provider.provider_id,
             'name': state.provider.name,  # The name of the provider e.g. Facebook
@@ -582,7 +584,7 @@ def account_settings_context(request):
                 state.provider.provider_id,
                 pipeline.AUTH_ENTRY_ACCOUNT_SETTINGS,
                 # The url the user should be directed to after the auth process has completed.
-                redirect_url=reverse('account_settings'),
+                redirect_url=provider_redirect_url(state.provider),
             ),
             'accepts_logins': state.provider.accepts_logins,
             # If the user is connected, sending a POST request to this url removes the connection
@@ -590,9 +592,19 @@ def account_settings_context(request):
             'disconnect_url': pipeline.get_disconnect_url(state.provider.provider_id, state.association_id),
             # We only want to include providers if they are either currently available to be logged
             # in with, or if the user is already authenticated with them.
-        } for state in auth_states if state.provider.display_for_login or state.has_account]
+        } for state in auth_states if display_provider(state)]
 
     return context
+
+
+def display_provider(state):
+    provider = state.provider
+    return provider.display_for_login or state.has_account or provider.backend_name == 'linkedin-oauth2'
+
+
+def provider_redirect_url(provider):
+    return reverse('linkedin_profile' if provider.backend_name == 'linkedin-oauth2' else 'account_settings')
+
 
 class RecoverPasswordView(ViewSet):
 
@@ -639,3 +651,34 @@ class RecoverPasswordView(ViewSet):
 
         else:
             return Response({"error": "Provide an email to recover your password."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LinkedInProfile(ViewSet):
+
+    """
+    """
+
+    authentication_classes = (OAuth2Authentication, SessionAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, format=None):
+        user = request.user
+        try:
+            social_auths = UserSocialAuth.objects.filter(user__id=user.id)
+            for auth in social_auths:
+                if auth.provider == 'linkedin-oauth2':
+                    access_token = auth.extra_data.get("access_token", None)
+                    if access_token:
+                        fields = ':(email-address,first-name,headline,id,industry,last-name,location,specialties,summary)'
+                        params = {'format': 'json'}
+                        headers = {'Authorization': 'Bearer ' + access_token}
+                        url = 'https://api.linkedin.com/v1/people/~%s' % fields
+                        r = requests.get(url, params=params, headers=headers)
+                        if r.status_code == 200:
+                            print(r.json())
+        except Exception as e:
+            # log error
+            print(e)
+
+        return redirect('account_settings')
+        
