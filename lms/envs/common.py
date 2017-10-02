@@ -61,6 +61,9 @@ LMS_ROOT_URL = "http://localhost:8000"
 
 # Features
 FEATURES = {
+    'EXTEND_PROFILE_WITH_LINKEDIN': True,
+    'LINKEDIN_FIELDS': """:(email-address,first-name,headline,id,industry,last-name,
+        location,specialties,summary)""",
     'DISPLAY_DEBUG_INFO_TO_STAFF': True,
     'DISPLAY_HISTOGRAMS_TO_STAFF': False,  # For large courses this slows down courseware access for staff.
 

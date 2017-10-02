@@ -710,6 +710,7 @@ class AccountSettingsViewTest(ThirdPartyAuthTestMixin, TestCase, ProgramsApiConf
         # For these tests, two third party auth providers are enabled by default:
         self.configure_google_provider(enabled=True, visible=True)
         self.configure_facebook_provider(enabled=True, visible=True)
+        self.configure_linkedin_provider(enabled=True, visible=False)
 
         # Python-social saves auth failure notifcations in Django messages.
         # See pipeline.get_duplicate_provider() for details.
@@ -740,6 +741,7 @@ class AccountSettingsViewTest(ThirdPartyAuthTestMixin, TestCase, ProgramsApiConf
         self.assertEqual(context['duplicate_provider'], 'facebook')
         self.assertEqual(context['auth']['providers'][0]['name'], 'Facebook')
         self.assertEqual(context['auth']['providers'][1]['name'], 'Google')
+        self.assertEqual(context['auth']['providers'][2]['name'], 'LinkedIn')
 
     def test_view(self):
         """
