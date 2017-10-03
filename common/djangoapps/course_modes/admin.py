@@ -30,6 +30,9 @@ from lms.djangoapps.verify_student import models as verification_models
 
 COURSE_MODE_SLUG_CHOICES = [(mode_slug, mode_slug) for mode_slug in settings.COURSE_ENROLLMENT_MODES]
 
+import logging
+log = logging.getLogger(__name__)
+
 
 class CourseModeForm(forms.ModelForm):
     """
@@ -155,22 +158,26 @@ class CourseModeForm(forms.ModelForm):
         Save the form data.
         """
         # Trigger validation so we can access cleaned data
-        if self.is_valid():
-            course = self.cleaned_data.get("course")
-            verification_deadline = self.cleaned_data.get("verification_deadline")
-            mode_slug = self.cleaned_data.get("mode_slug")
+        try:
+            if self.is_valid():
+                course = self.cleaned_data.get("course")
+                verification_deadline = self.cleaned_data.get("verification_deadline")
+                mode_slug = self.cleaned_data.get("mode_slug")
 
-            # Since the verification deadline is stored in a separate model,
-            # we need to handle saving this ourselves.
-            # Note that verification deadline can be `None` here if
-            # the deadline is being disabled.
-            if course is not None and mode_slug in CourseMode.VERIFIED_MODES:
-                verification_models.VerificationDeadline.set_deadline(
-                    course.id,
-                    verification_deadline
-                )
+                # Since the verification deadline is stored in a separate model,
+                # we need to handle saving this ourselves.
+                # Note that verification deadline can be `None` here if
+                # the deadline is being disabled.
+                if course is not None and mode_slug in CourseMode.VERIFIED_MODES:
+                    verification_models.VerificationDeadline.set_deadline(
+                        course.id,
+                        verification_deadline
+                    )
 
-        return super(CourseModeForm, self).save(commit=commit)
+            return super(CourseModeForm, self).save(commit=commit)
+        except Exception as e:
+            log.error(e);
+            raise forms.ValidationError(e)
 
 
 class CourseModeAdmin(admin.ModelAdmin):
