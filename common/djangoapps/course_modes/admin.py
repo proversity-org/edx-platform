@@ -154,6 +154,7 @@ class CourseModeForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
+        log.error('getting to the save method in course mode')
         """
         Save the form data.
         """
