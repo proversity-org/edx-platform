@@ -10,6 +10,7 @@ from student.models import CourseEnrollment
 from course_modes.models import CourseMode, get_cosmetic_verified_display_price
 from courseware.date_summary import VerifiedUpgradeDeadlineDate
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 
 
 class CourseSockFragmentView(EdxFragmentView):
@@ -21,7 +22,12 @@ class CourseSockFragmentView(EdxFragmentView):
         Render the course's sock fragment.
         """
         context = self.get_verification_context(request, course)
-        html = render_to_string('course_experience/course-sock-fragment.html', context)
+        
+        if configuration_helpers.get_value('custom_fragments', False):
+            html = render_to_string('course_experience/course-sock-fragment-proversity.html', context)
+        else:
+            html = render_to_string('course_experience/course-sock-fragment.html', context)
+
         return Fragment(html)
 
     def get_verification_context(self, request, course):
