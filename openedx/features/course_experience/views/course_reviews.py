@@ -82,7 +82,7 @@ class CourseReviewsModuleFragmentView(EdxFragmentView):
     """
 
     def render_to_fragment(self, request, course=None, **kwargs):
-      """
+        """
         Renders the configured template as a module.
 
         There are two relevant configuration settings:
