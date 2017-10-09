@@ -17,6 +17,7 @@ from web_fragments.fragment import Fragment
 
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
 from openedx.features.course_experience import CourseHomeMessages
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 
 
 class CourseHomeMessageFragmentView(EdxFragmentView):
@@ -72,7 +73,11 @@ class CourseHomeMessageFragmentView(EdxFragmentView):
             'image_src': image_src,
         }
 
-        html = render_to_string('course_experience/course-messages-fragment.html', context)
+        if configuration_helpers.get_value('custom_fragments', False):
+            html = render_to_string('course_experience/course-messages-fragment-proversity.html', context)
+        else:
+            html = render_to_string('course_experience/course-messages-fragment.html', context)
+
         return Fragment(html)
 
     @staticmethod
