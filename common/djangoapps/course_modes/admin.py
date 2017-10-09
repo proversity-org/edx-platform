@@ -93,7 +93,6 @@ class CourseModeForm(forms.ModelForm):
             raise forms.ValidationError("Cannot make a valid CourseKey from id {}!".format(course_id))
 
         if not modulestore().has_course(course_key):
-            print("if")
             raise forms.ValidationError("Cannot find course with id {} in the modulestore".format(course_id))
 
         return course_key
@@ -156,7 +155,6 @@ class CourseModeForm(forms.ModelForm):
         """
         # Trigger validation so we can access cleaned data
         if self.is_valid():
-            print("is valid")
             course = self.cleaned_data.get("course")
             verification_deadline = self.cleaned_data.get("verification_deadline")
             mode_slug = self.cleaned_data.get("mode_slug")
