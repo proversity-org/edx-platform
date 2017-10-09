@@ -7,6 +7,8 @@ from cStringIO import StringIO
 from datetime import datetime, timedelta
 import dateutil.parser
 
+from django.conf import settings
+
 import requests
 from lazy import lazy
 from lxml import etree
@@ -683,7 +685,7 @@ class CourseFields(object):
             "of three values: 'both' (show in catalog and allow access to about page), 'about' (only allow access "
             "to about page), 'none' (do not show in catalog and do not allow access to an about page)."
         ),
-        default=CATALOG_VISIBILITY_CATALOG_AND_ABOUT,
+        default=settings.DEFAULT_COURSE_VISIBILITY_IN_CATALOG,
         scope=Scope.settings,
         values=[
             {"display_name": _("Both"), "value": CATALOG_VISIBILITY_CATALOG_AND_ABOUT},
