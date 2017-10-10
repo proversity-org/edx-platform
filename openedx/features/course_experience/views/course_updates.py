@@ -16,7 +16,6 @@ from courseware.courses import get_course_info_section_module, get_course_with_a
 from lms.djangoapps.courseware.views.views import CourseTabView
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
 from openedx.features.course_experience import default_course_url_name
-from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 
 STATUS_VISIBLE = 'visible'
 STATUS_DELETED = 'deleted'
@@ -97,10 +96,8 @@ class CourseUpdatesFragmentView(EdxFragmentView):
             'disable_courseware_js': True,
             'uses_pattern_library': True,
         }
-        if configuration_helpers.get_value('custom_fragments', False):
-            html = render_to_string('course_experience/course-updates-fragment-proversity.html', context)
-        else:
-            html = render_to_string('course_experience/course-updates-fragment.html', context)
+
+        html = render_to_string('course_experience/course-updates-fragment.html', context)
 
         return Fragment(html)
 
