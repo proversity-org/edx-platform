@@ -11,9 +11,6 @@
 <div class="vert-mod">
 % for idx, item in enumerate(items):
   <div class="vert vert-${idx}" data-id="${item['id']}">
-    % if item['display_name']:
-        <h3 class="hd hd-2">${item['display_name']}</h3>
-    % endif
     ${HTML(item['content'])}
   </div>
 % endfor
