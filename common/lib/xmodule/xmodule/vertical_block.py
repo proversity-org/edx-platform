@@ -64,10 +64,10 @@ class VerticalBlock(SequenceFields, XModuleFields, StudioEditableBlock, XmlParse
         for child in self.get_display_items():
             rendered_child = child.render(STUDENT_VIEW, child_context)
             fragment.add_frag_resources(rendered_child)
-
             contents.append({
                 'id': child.location.to_deprecated_string(),
-                'content': rendered_child.content
+                'content': rendered_child.content,
+                'display_name': child.display_name if "html+block" in child.location.to_deprecated_string() else None
             })
 
         fragment.add_content(self.system.render_template('vert_module.html', {
