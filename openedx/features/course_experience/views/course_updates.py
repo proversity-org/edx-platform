@@ -96,7 +96,9 @@ class CourseUpdatesFragmentView(EdxFragmentView):
             'disable_courseware_js': True,
             'uses_pattern_library': True,
         }
+
         html = render_to_string('course_experience/course-updates-fragment.html', context)
+
         return Fragment(html)
 
     @classmethod

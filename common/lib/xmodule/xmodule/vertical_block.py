@@ -64,7 +64,6 @@ class VerticalBlock(SequenceFields, XModuleFields, StudioEditableBlock, XmlParse
         for child in self.get_display_items():
             rendered_child = child.render(STUDENT_VIEW, child_context)
             fragment.add_frag_resources(rendered_child)
-
             contents.append({
                 'id': child.location.to_deprecated_string(),
                 'content': rendered_child.content

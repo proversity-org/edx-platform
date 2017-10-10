@@ -33,5 +33,7 @@ class CourseOutlineFragmentView(EdxFragmentView):
             'course': course_overview,
             'blocks': course_block_tree,
         }
+        
         html = render_to_string('course_experience/course-outline-fragment.html', context)
+
         return Fragment(html)

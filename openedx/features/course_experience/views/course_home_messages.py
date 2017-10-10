@@ -73,6 +73,7 @@ class CourseHomeMessageFragmentView(EdxFragmentView):
         }
 
         html = render_to_string('course_experience/course-messages-fragment.html', context)
+
         return Fragment(html)
 
     @staticmethod
