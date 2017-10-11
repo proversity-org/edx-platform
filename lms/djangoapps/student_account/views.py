@@ -54,10 +54,6 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_oauth.authentication import OAuth2Authentication
 
-from social_django.models import UserSocialAuth
-from student.models import UserProfile
-import requests
-
 AUDIT_LOG = logging.getLogger("audit")
 log = logging.getLogger(__name__)
 User = get_user_model()  # pylint:disable=invalid-name
@@ -575,6 +571,7 @@ def account_settings_context(request):
         context['duplicate_provider'] = pipeline.get_duplicate_provider(messages.get_messages(request))
 
         auth_states = pipeline.get_provider_user_states(user)
+
         context['auth']['providers'] = [{
             'id': state.provider.provider_id,
             'name': state.provider.name,  # The name of the provider e.g. Facebook
@@ -585,7 +582,7 @@ def account_settings_context(request):
                 state.provider.provider_id,
                 pipeline.AUTH_ENTRY_ACCOUNT_SETTINGS,
                 # The url the user should be directed to after the auth process has completed.
-                redirect_url=provider_redirect_url(state.provider),
+                redirect_url=reverse('account_settings'),
             ),
             'accepts_logins': state.provider.accepts_logins,
             # If the user is connected, sending a POST request to this url removes the connection
@@ -593,47 +590,9 @@ def account_settings_context(request):
             'disconnect_url': pipeline.get_disconnect_url(state.provider.provider_id, state.association_id),
             # We only want to include providers if they are either currently available to be logged
             # in with, or if the user is already authenticated with them.
-        } for state in auth_states if display_provider(state)]
+        } for state in auth_states if state.provider.display_for_login or state.has_account]
 
     return context
-
-
-def display_provider(state):
-    """
-    Configures which social providers to show on account settings
-    """
-
-    provider = state.provider
-    use_linkedin_profile = False
-    features = settings.FEATURES
-    extend_profile_with_linkedin =\
-        features.get("EXTEND_PROFILE_WITH_LINKEDIN", False)
-
-    if extend_profile_with_linkedin:
-        use_linkedin_profile = provider.backend_name == 'linkedin-oauth2'
-
-    return provider.display_for_login or state.has_account or \
-        use_linkedin_profile
-
-
-def provider_redirect_url(provider):
-    """
-    Configures the redirect url when linking a social account
-    """
-
-    backend_name = provider.backend_name
-    features = settings.FEATURES
-    extend_profile_with_linkedin =\
-        features.get("EXTEND_PROFILE_WITH_LINKEDIN", False)
-
-    use_linkedin_profile =\
-        extend_profile_with_linkedin and backend_name == "linkedin-oauth2"
-
-    return \
-        reverse(
-            'linkedin_profile' if use_linkedin_profile else 'account_settings'
-        )
-
 
 class RecoverPasswordView(ViewSet):
 
@@ -680,54 +639,3 @@ class RecoverPasswordView(ViewSet):
 
         else:
             return Response({"error": "Provide an email to recover your password."}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class LinkedInProfile(ViewSet):
-    """
-    Retrieves the LinkedIn profile of the authenticated user and stores it
-    on user profile meta.
-
-    Render the current user's account settings page.
-
-    Returns:
-        HttpResponse: 200 if the page was sent successfully
-
-    Example usage:
-        GET /account/linkedin-profile
-    """
-
-    authentication_classes = (OAuth2Authentication, SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, format=None):
-        user = request.user
-        try:
-            social_auths = UserSocialAuth.objects.filter(user__id=user.id)
-            for auth in social_auths:
-                if auth.provider == 'linkedin-oauth2':
-                    access_token = auth.extra_data.get("access_token", None)
-                    if access_token:
-                        fields = settings.FEATURES.get("LINKEDIN_FIELDS", "")
-                        params = {'format': 'json'}
-                        headers = {'Authorization': 'Bearer ' + access_token}
-                        url = 'https://api.linkedin.com/v1/people/~%s' % fields
-                        r = requests.get(url, params=params, headers=headers)
-                        if r.status_code == 200:
-                            user_profile = UserProfile.objects.get(user=user)
-                            if len(user_profile.meta) > 0:
-                                previous_meta = json.loads(user_profile.meta)
-                                mixed_dicts =\
-                                    (previous_meta.items() + r.json().items())
-                                new_meta =\
-                                    {key: value for (key, value) in mixed_dicts}
-                                    
-                            else:
-                                new_meta = r.json()
-                            user_profile.meta = json.dumps(new_meta)
-                            user_profile.save()
-        except Exception as e:
-            # log error
-            print(e)
-
-        return redirect('account_settings')
-        

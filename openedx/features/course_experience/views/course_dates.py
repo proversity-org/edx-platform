@@ -24,7 +24,5 @@ class CourseDatesFragmentView(EdxFragmentView):
         context = {
             'course_date_blocks': course_date_blocks
         }
-        
         html = render_to_string('course_experience/course-dates-fragment.html', context)
-
         return Fragment(html)

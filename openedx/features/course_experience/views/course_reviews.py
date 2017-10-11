@@ -67,7 +67,6 @@ class CourseReviewsFragmentView(EdxFragmentView):
         }
 
         html = render_to_string('course_experience/course-reviews-fragment.html', context)
-
         return Fragment(html)
 
 

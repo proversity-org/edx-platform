@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.conf.urls import patterns, url
-from .views import RecoverPasswordView, LinkedInProfile
+from .views import RecoverPasswordView
 
 
 urlpatterns = []
@@ -16,5 +16,4 @@ urlpatterns += patterns(
     'student_account.views',
     url(r'^finish_auth$', 'finish_auth', name='finish_auth'),
     url(r'^settings$', 'account_settings', name='account_settings'),
-    url(r'^linkedin-profile$', LinkedInProfile.as_view({'get': 'get'}), name='linkedin_profile'),
 )

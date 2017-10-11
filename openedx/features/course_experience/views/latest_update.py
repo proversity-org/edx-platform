@@ -35,9 +35,7 @@ class LatestUpdateFragmentView(EdxFragmentView):
         context = {
             'update_html': update_html,
         }
-
         html = render_to_string('course_experience/latest-update-fragment.html', context)
-
         return Fragment(html)
 
     @classmethod

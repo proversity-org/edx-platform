@@ -175,7 +175,5 @@ class CourseHomeFragmentView(EdxFragmentView):
             'disable_courseware_js': True,
             'uses_pattern_library': True,
         }
-        
         html = render_to_string('course_experience/course-home-fragment.html', context)
-
         return Fragment(html)

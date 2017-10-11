@@ -21,9 +21,7 @@ class CourseSockFragmentView(EdxFragmentView):
         Render the course's sock fragment.
         """
         context = self.get_verification_context(request, course)
-        
         html = render_to_string('course_experience/course-sock-fragment.html', context)
-
         return Fragment(html)
 
     def get_verification_context(self, request, course):
