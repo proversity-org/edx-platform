@@ -12,37 +12,37 @@ jobs:
     steps:
       - run:
           name: apt-get update
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y update'
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y update'
       - run:
           name: install software-properties-common
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common'
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common'
       - run:
           name: set ppa
-          command: 'add-apt-repository ppa:ubuntu-toolchain-r/test'
+          command: 'sudo add-apt-repository ppa:ubuntu-toolchain-r/test'
       - run:
           name: apt-get update
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y update'
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y update'
       - run:
           name: install git
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y install git'
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install git'
       - run:
           name: install needed apt packages
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get install -q -y $(cat requirements/system/ubuntu/apt-packages.txt)'
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y $(cat requirements/system/ubuntu/apt-packages.txt)'
       - run:
           name: install nodejs
           command: |
             curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh
             bash nodesource_setup.sh
-            apt-get -y install nodejs
+            sudo apt-get -y install nodejs
       - run:
           name: do a apt-get upgrade
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y upgrade'
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y upgrade'
       - run:
           name: nmp install
           command: 'npm install'
       - run:
            name: set new compilers
-           command: 'update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 50 && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 50'
+           command: 'sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 50 && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 50'
       - run:
            name: install pip
            command: 'easy_install pip'
