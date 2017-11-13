@@ -12,7 +12,7 @@ jobs:
     steps:
       - run:
           name: check working directory
-          command: 'sudo ls -lasp'
+          command: 'sudo ls -lasp ~/edx-platform'
       - run:
           name: apt-get update
           command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y update'
