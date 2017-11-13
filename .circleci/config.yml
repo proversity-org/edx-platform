@@ -45,11 +45,13 @@ jobs:
           name: nmp install
           command: 'npm install'
       - run:
-           name: set new compilers
-           command: 'sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 50 && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 50'
+          name: set new compilers
+          command: |
+            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 50 
+            sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 50
       - run:
-           name: install pip
-           command: 'easy_install pip'
+          name: install pip
+          command: 'easy_install pip'
       - run:
           name: pip install setuptools
           command: 'pip install setuptools'
