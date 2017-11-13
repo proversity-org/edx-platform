@@ -43,7 +43,7 @@ jobs:
           command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y upgrade'
       - run:
           name: nmp install
-          command: 'cd edx-platform && npm install'
+          command: 'npm install'
       - run:
            name: set new compilers
            command: 'sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 50 && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 50'
