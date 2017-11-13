@@ -11,6 +11,9 @@ jobs:
       - "test_root/log"
     steps:
       - run:
+          name: check working directory
+          command: 'sudo ls -lasp'
+      - run:
           name: apt-get update
           command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y update'
       - run:
@@ -27,7 +30,7 @@ jobs:
           command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install git'
       - run:
           name: install needed apt packages
-          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y $(cat requirements/system/ubuntu/apt-packages.txt)'
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y $(cat edx-platform/requirements/system/ubuntu/apt-packages.txt)'
       - run:
           name: install nodejs
           command: |
@@ -39,7 +42,7 @@ jobs:
           command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y upgrade'
       - run:
           name: nmp install
-          command: 'npm install'
+          command: 'cd edx-platform && npm install'
       - run:
            name: set new compilers
            command: 'sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 50 && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 50'
@@ -51,34 +54,34 @@ jobs:
           command: 'pip install setuptools'
       - run:
           name: install pre requirements
-          command: 'pip install --exists-action w -r requirements/edx/pre.txt'
+          command: 'pip install --exists-action w -r edx-platform/requirements/edx/pre.txt'
       - run:
           name: install github requirements
-          command: 'pip install --exists-action w -r requirements/edx/github.txt'
+          command: 'pip install --exists-action w -r edx-platform/requirements/edx/github.txt'
       - run:
           name: install local requirements
-          command: 'pip install --exists-action w -r requirements/edx/local.txt'
+          command: 'pip install --exists-action w -r edx-platform/requirements/edx/local.txt'
       - run:
           name: pip install Django.txt
-          command: 'pip install --exists-action w -r requirements/edx/django.txt'
+          command: 'pip install --exists-action w -r edx-platform/requirements/edx/django.txt'
       - run:
           name: install base requirements
-          command: 'pip install --exists-action w -r requirements/edx/base.txt'
+          command: 'pip install --exists-action w -r edx-platform/requirements/edx/base.txt'
       - run:
           name: pip install paver.txt
-          command: 'pip install --exists-action w -r requirements/edx/paver.txt'
+          command: 'pip install --exists-action w -r edx-platform/requirements/edx/paver.txt'
       - run:
           name: install development requirements
-          command: 'pip install --exists-action w -r requirements/edx/development.txt'
+          command: 'pip install --exists-action w -r edx-platform/requirements/edx/development.txt'
       - run:
           name: install testing requirements
-          command: 'pip install --exists-action w -r requirements/edx/testing.txt'
+          command: 'pip install --exists-action w -r edx-platform/requirements/edx/testing.txt'
       - run:
           name: install pbr
           command: 'pip install  --exists-action w pbr'
       - run:
           name: install post if required
-          command: 'if [ -e requirements/edx/post.txt ]; then pip install --exists-action w -r requirements/edx/post.txt ; fi'
+          command: 'if [ -e edx-platform/requirements/edx/post.txt ]; then pip install --exists-action w -r edx-platform/requirements/edx/post.txt ; fi'
       - run:
           name: install coveralls
           command: 'pip install coveralls==1.0'
