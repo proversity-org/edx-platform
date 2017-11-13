@@ -42,7 +42,7 @@ jobs:
           name: do a apt-get upgrade
           command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y upgrade'
       - run:
-          name: nmp install
+          name: npm install
           command: 'npm install'
       - run:
           name: set new compilers
@@ -94,9 +94,9 @@ jobs:
       - run:
           name: set mongo bindaddress
           command: |
-            apt-get install --reinstall sed
-            sed -i -e 's/127.0.0.1/0.0.0.0/g' /etc/mongodb.conf
-            service mongodb restart
+            sudo apt-get install --reinstall sed
+            sudo sed -i -e 's/127.0.0.1/0.0.0.0/g' /etc/mongodb.conf
+            sudo service mongodb restart
       - run:
           name: run all tests
           command: '/bin/bash ./scripts/all-tests.sh'
