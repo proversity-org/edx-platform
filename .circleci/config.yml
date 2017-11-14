@@ -29,6 +29,9 @@ jobs:
       - run:
           name: install git
           command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install git'
+      - run: 
+          name: install gettext
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gettext'
       - run:
           name: install needed apt packages
           command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y $(cat ./requirements/system/ubuntu/apt-packages.txt)'
