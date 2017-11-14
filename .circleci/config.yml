@@ -5,7 +5,7 @@ jobs:
       python:
         version: 2.7.12
     working_directory: ~/edx-platform
-    parallelism: 1
+    parallelism: 4
     artifacts:
       - "reports"
       - "test_root/log"
