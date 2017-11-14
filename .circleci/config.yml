@@ -9,6 +9,9 @@ jobs:
       - "reports"
       - "test_root/log"
     steps:
+      - run:
+          name: install git
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install git'
       - checkout
       - run:
           name: check working directory
@@ -24,10 +27,7 @@ jobs:
           command: 'sudo add-apt-repository ppa:ubuntu-toolchain-r/test'
       - run:
           name: apt-get update
-          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y update'
-      - run:
-          name: install git
-          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install git'
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y update'      
       - run: 
           name: install gettext
           command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gettext'
