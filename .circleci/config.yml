@@ -10,6 +10,12 @@ jobs:
       - "test_root/log"
     steps:
       - run:
+          name: set ppa
+          command: 'add-apt-repository ppa:ubuntu-toolchain-r/test'
+      - run:
+          name: apt-get update
+          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y update'   
+      - run:
           name: install git
           command: 'DEBIAN_FRONTEND=noninteractive apt-get -y install git'
       - checkout
@@ -17,17 +23,8 @@ jobs:
           name: check working directory
           command: 'ls -lasp ~/edx-platform'
       - run:
-          name: apt-get update
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y update'
-      - run:
           name: install software-properties-common
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common'
-      - run:
-          name: set ppa
-          command: 'add-apt-repository ppa:ubuntu-toolchain-r/test'
-      - run:
-          name: apt-get update
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y update'      
+          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common'         
       - run: 
           name: install gettext
           command: 'DEBIAN_FRONTEND=noninteractive apt-get -y install gettext'
