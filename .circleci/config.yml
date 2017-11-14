@@ -3,7 +3,7 @@ jobs:
   build:
     machine:
       python:
-        version: 2.7.10
+        version: 2.7.12
     working_directory: ~/edx-platform
     parallelism: 1
     artifacts:
@@ -97,11 +97,6 @@ jobs:
             sudo apt-get install --reinstall sed
             sudo sed -i -e 's/127.0.0.1/0.0.0.0/g' /etc/mongodb.conf
             sudo service mongodb restart
-      - run:
-          name: test binary locations
-          command: |
-            which python
-            which django-admin.py
       - run:
           name: run all tests
           command: '/bin/bash ./scripts/all-tests.sh'
