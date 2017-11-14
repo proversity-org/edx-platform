@@ -1,9 +1,8 @@
 version: 2
 jobs:
   build:
-    machine:
-      python:
-        version: 2.7.12
+    docker:
+      - image: ubuntu:xenial
     working_directory: ~/edx-platform
     parallelism: 4
     artifacts:
