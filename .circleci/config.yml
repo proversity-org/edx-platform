@@ -1,56 +1,55 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: ubuntu:xenial
+    machine: true
     working_directory: ~/edx-platform
     parallelism: 4
     artifacts:
       - "reports"
       - "test_root/log"
     steps:
-      - run:
-          name: apt-get update
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y update'   
-      - run:
-          name: install git
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y install git'
       - checkout
       - run:
           name: check working directory
-          command: 'ls -lasp ~/edx-platform'
-      - run:
-          name: install software-properties-common
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common' 
-      - run:
-          name: set ppa
-          command: 'add-apt-repository ppa:ubuntu-toolchain-r/test'
+          command: 'sudo ls -lasp ~/edx-platform'
       - run:
           name: apt-get update
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y update'
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y update'
+      - run:
+          name: install software-properties-common
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common'
+      - run:
+          name: set ppa
+          command: 'sudo add-apt-repository ppa:ubuntu-toolchain-r/test'
+      - run:
+          name: apt-get update
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y update'
+      - run:
+          name: install git
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install git'
       - run: 
           name: install gettext
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y install gettext'
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gettext'
       - run:
           name: install needed apt packages
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get install -q -y $(cat ./requirements/system/ubuntu/apt-packages.txt)'
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y $(cat ./requirements/system/ubuntu/apt-packages.txt)'
       - run:
           name: install nodejs
           command: |
-            curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh
-            bash nodesource_setup.sh
-            apt-get -y install nodejs
+            sudo curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh
+            sudo bash nodesource_setup.sh
+            sudo apt-get -y install nodejs
       - run:
           name: do a apt-get upgrade
-          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y upgrade'
+          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y upgrade'
       - run:
           name: npm install
           command: 'npm install'
       - run:
           name: set new compilers
           command: |
-            update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 50 
-            update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 50
+            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 50 
+            sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 50
       - run:
           name: install pip
           command: 'easy_install pip'
@@ -83,7 +82,7 @@ jobs:
           command: 'pip install --exists-action w -r ./requirements/edx/testing.txt'
       - run:
           name: install pbr
-          command: 'pip install  --exists-action w pbr'
+          command: 'pip install --exists-action w pbr'
       - run:
           name: install post if required
           command: 'if [ -e ./requirements/edx/post.txt ]; then pip install --exists-action w -r ./requirements/edx/post.txt ; fi'
@@ -96,9 +95,9 @@ jobs:
       - run:
           name: set mongo bindaddress
           command: |
-            apt-get install --reinstall sed
-            sed -i -e 's/127.0.0.1/0.0.0.0/g' /etc/mongodb.conf
-            service mongodb restart
+            sudo apt-get install --reinstall sed
+            sudo sed -i -e 's/127.0.0.1/0.0.0.0/g' /etc/mongodb.conf
+            sudo service mongodb restart
       - run:
           name: run all tests
           command: '/bin/bash ./scripts/all-tests.sh'
