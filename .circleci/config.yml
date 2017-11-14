@@ -11,46 +11,46 @@ jobs:
     steps:
       - run:
           name: install git
-          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install git'
+          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y install git'
       - checkout
       - run:
           name: check working directory
-          command: 'sudo ls -lasp ~/edx-platform'
+          command: 'ls -lasp ~/edx-platform'
       - run:
           name: apt-get update
-          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y update'
+          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y update'
       - run:
           name: install software-properties-common
-          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common'
+          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common'
       - run:
           name: set ppa
-          command: 'sudo add-apt-repository ppa:ubuntu-toolchain-r/test'
+          command: 'add-apt-repository ppa:ubuntu-toolchain-r/test'
       - run:
           name: apt-get update
-          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y update'      
+          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y update'      
       - run: 
           name: install gettext
-          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y install gettext'
+          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y install gettext'
       - run:
           name: install needed apt packages
-          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y $(cat ./requirements/system/ubuntu/apt-packages.txt)'
+          command: 'DEBIAN_FRONTEND=noninteractive apt-get install -q -y $(cat ./requirements/system/ubuntu/apt-packages.txt)'
       - run:
           name: install nodejs
           command: |
-            sudo curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh
-            sudo bash nodesource_setup.sh
-            sudo apt-get -y install nodejs
+            curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh
+            bash nodesource_setup.sh
+            apt-get -y install nodejs
       - run:
           name: do a apt-get upgrade
-          command: 'sudo DEBIAN_FRONTEND=noninteractive apt-get -y upgrade'
+          command: 'DEBIAN_FRONTEND=noninteractive apt-get -y upgrade'
       - run:
           name: npm install
           command: 'npm install'
       - run:
           name: set new compilers
           command: |
-            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 50 
-            sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 50
+            update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 50 
+            update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 50
       - run:
           name: install pip
           command: 'easy_install pip'
@@ -96,9 +96,9 @@ jobs:
       - run:
           name: set mongo bindaddress
           command: |
-            sudo apt-get install --reinstall sed
-            sudo sed -i -e 's/127.0.0.1/0.0.0.0/g' /etc/mongodb.conf
-            sudo service mongodb restart
+            apt-get install --reinstall sed
+            sed -i -e 's/127.0.0.1/0.0.0.0/g' /etc/mongodb.conf
+            service mongodb restart
       - run:
           name: run all tests
           command: '/bin/bash ./scripts/all-tests.sh'
