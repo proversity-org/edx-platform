@@ -1323,11 +1323,11 @@ class ProgressPageTests(ProgressPageBaseTests):
         CreditCourse.objects.create(course_key=course.id, enabled=True)
 
         # Configure a credit provider for the course
-        CreditProvider.objects.create(
-            provider_id="ASU",
-            enable_integration=True,
-            provider_url="https://credit.example.com/request"
-        )
+        # CreditProvider.objects.create(
+        #     provider_id="ASU",
+        #     enable_integration=True,
+        #     provider_url="https://credit.example.com/request"
+        # )
 
         requirements = [{
             "namespace": "grade",

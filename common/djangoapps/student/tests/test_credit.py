@@ -53,12 +53,12 @@ class CreditCourseDashboardTest(ModuleStoreTestCase):
         CreditCourse.objects.create(course_key=self.course.id, enabled=True)  # pylint: disable=no-member
 
         # Configure a credit provider
-        CreditProvider.objects.create(
-            provider_id=self.PROVIDER_ID,
-            display_name=self.PROVIDER_NAME,
-            provider_status_url=self.PROVIDER_STATUS_URL,
-            enable_integration=True,
-        )
+        # CreditProvider.objects.create(
+        #     provider_id=self.PROVIDER_ID,
+        #     display_name=self.PROVIDER_NAME,
+        #     provider_status_url=self.PROVIDER_STATUS_URL,
+        #     enable_integration=True,
+        # )
 
         # Configure a single credit requirement (minimum passing grade)
         credit_api.set_credit_requirements(

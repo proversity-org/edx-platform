@@ -575,7 +575,7 @@ class TestCourseGrader(TestSubmittingProblems):
         """
         Check that answering incorrectly is graded properly.
         """
-        self.basic_setup(reset=True)        
+        self.basic_setup(reset=True)
         self.submit_question_answer('p1', {'2_1': 'Correct'})
         self.submit_question_answer('p2', {'2_1': 'Correct'})
         self.submit_question_answer('p3', {'2_1': 'Incorrect'})
@@ -725,11 +725,11 @@ class TestCourseGrader(TestSubmittingProblems):
         CreditCourse.objects.create(course_key=self.course.id, enabled=True)
 
         # Configure a credit provider for the course
-        CreditProvider.objects.create(
-            provider_id="ASU",
-            enable_integration=True,
-            provider_url="https://credit.example.com/request",
-        )
+        # CreditProvider.objects.create(
+        #     provider_id="ASU",
+        #     enable_integration=True,
+        #     provider_url="https://credit.example.com/request",
+        # )
 
         requirements = [{
             "namespace": "grade",
