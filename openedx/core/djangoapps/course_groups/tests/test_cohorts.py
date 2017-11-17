@@ -53,11 +53,12 @@ class TestCohortSignals(TestCase):
         self.assertFalse(mock_tracker.called)
 
         # Add non-cohort group
-        CourseUserGroup.objects.create(
-            name="TestOtherGroupType",
-            course_id=self.course_key,
-            group_type="dummy"
-        )
+        # CourseUserGroup.objects.create(
+        #     name="TestOtherGroupType",
+        #     course_id=self.course_key,
+        #     group_type="dummy"
+        # )
+
         self.assertFalse(mock_tracker.called)
 
     def test_cohort_membership_changed(self, mock_tracker):
