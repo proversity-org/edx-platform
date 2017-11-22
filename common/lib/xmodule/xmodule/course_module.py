@@ -31,6 +31,15 @@ CATALOG_VISIBILITY_CATALOG_AND_ABOUT = "both"
 CATALOG_VISIBILITY_ABOUT = "about"
 CATALOG_VISIBILITY_NONE = "none"
 
+DEFAULT_COURSE_VISIBILITY_IN_CATALOG =\
+    getattr(
+        settings,
+        'DEFAULT_COURSE_VISIBILITY_IN_CATALOG',
+        CATALOG_VISIBILITY_CATALOG_AND_ABOUT
+    )
+
+DEFAULT_MOBILE_AVAILABLE = getattr(settings, 'DEFAULT_MOBILE_AVAILABLE', False)
+
 
 class StringOrDate(Date):
     def from_json(self, value):
