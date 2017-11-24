@@ -324,12 +324,37 @@ def course_info(request, course_id):
         # Decide whether or not to show the reviews link in the course tools bar
         show_reviews_link = CourseReviewsModuleFragmentView.is_configured()
 
+        course_homepage_invert_title =\
+            configuration_helpers.get_value(
+                'COURSE_HOMEPAGE_INVERT_TITLE',
+                False
+            )
+
+        course_homepage_show_subtitle =\
+            configuration_helpers.get_value(
+                'COURSE_HOMEPAGE_SHOW_SUBTITLE',
+                True
+            )
+
+        course_homepage_show_org =\
+            configuration_helpers.get_value('COURSE_HOMEPAGE_SHOW_ORG', True)
+
+        course_title = course.display_number_with_default
+        course_subtitle = course.display_name_with_default
+        if course_homepage_invert_title:
+            course_title = course.display_name_with_default
+            course_subtitle = course.display_number_with_default
+
         context = {
             'request': request,
             'masquerade_user': user,
             'course_id': course_key.to_deprecated_string(),
             'cache': None,
             'course': course,
+            'course_title': course_title,
+            'course_subtitle': course_subtitle,
+            'show_subtitle': course_homepage_show_subtitle,
+            'show_org': course_homepage_show_org,
             'staff_access': staff_access,
             'masquerade': masquerade,
             'supports_preview_menu': True,
