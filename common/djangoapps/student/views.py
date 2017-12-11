@@ -2705,9 +2705,7 @@ def password_reset_confirm_wrapper(request, uidb36=None, token=None):
                 'err_msg': error_message,
             }
             context.update(platform_name)
-            return TemplateResponse(
-                request, 'registration/password_reset_confirm.html', context
-            )
+            return render_to_response('registration/password_reset_confirm.html', context)
 
         # remember what the old password hash is before we call down
         old_password_hash = user.password
@@ -2739,16 +2737,16 @@ def password_reset_confirm_wrapper(request, uidb36=None, token=None):
             entry.create(updated_user)
 
     else:
-        response = password_reset_confirm(
+        reset_response = password_reset_confirm(
             request, uidb64=uidb64, token=token, extra_context=platform_name
         )
 
-        response_was_successful = response.context_data.get('validlink')
+        response_was_successful = reset_response.context_data.get('validlink')
         if response_was_successful and not user.is_active:
             user.is_active = True
             user.save()
 
-    return response
+    return render_to_response('registration/password_reset_confirm.html', reset_response.context_data)
 
 
 def reactivation_email_for_user(user):
