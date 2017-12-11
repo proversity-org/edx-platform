@@ -18,6 +18,7 @@ from jwkest.jwk import RSAKey
 from oauth2_provider import models as dot_models  # django-oauth-toolkit
 from oauth2_provider import views as dot_views
 
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.core.djangoapps.auth_exchange import views as auth_exchange_views
 from openedx.core.lib.token_utils import JwtBuilder
 
@@ -143,8 +144,9 @@ class RevokeTokenView(_DispatchingView):
 
 class ProviderInfoView(View):
     def get(self, request, *args, **kwargs):
+        jwt_auth = configuration_helpers.get_value('JWT_AUTH', settings.JWT_AUTH)
         data = {
-            'issuer': settings.JWT_AUTH['JWT_ISSUER'],
+            'issuer': jwt_auth['JWT_ISSUER'],
             'authorization_endpoint': request.build_absolute_uri(reverse('authorize')),
             'token_endpoint': request.build_absolute_uri(reverse('access_token')),
             'end_session_endpoint': request.build_absolute_uri(reverse('logout')),

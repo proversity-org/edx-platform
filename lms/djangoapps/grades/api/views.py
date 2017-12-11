@@ -1,6 +1,7 @@
-""" API v0 views. """
 import logging
-import urllib 
+import urllib
+from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.http import Http404
@@ -18,41 +19,121 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import exception_handler
 from courseware.access import has_access
-#from lms.djangoapps.ccx.utils import prep_course_for_grading
+from openedx.core.djangoapps.content.block_structure.api import get_course_in_cache
 from lms.djangoapps.courseware import courses
 from lms.djangoapps.courseware.exceptions import CourseAccessRedirect
 from lms.djangoapps.grades.api.serializers import GradingPolicySerializer, GradeBulkAPIViewSerializer
 from lms.djangoapps.grades.course_grade_factory import CourseGradeFactory
 from openedx.core.lib.api.view_utils import DeveloperErrorViewMixin, view_auth_classes
 from openedx.core.lib.api.permissions import IsStaffOrOwner
+from student.models import CourseEnrollment
 from student.roles import CourseStaffRole
 
+from lms.djangoapps.courseware.courses import get_course
 log = logging.getLogger(__name__)
 USER_MODEL = get_user_model()
 
-def get_user_grades(grade_user, course, course_grade):
-        
+from django.apps import apps
+
+from lms.djangoapps.grades.tasks import compute_grades_for_course, get_user_course_response_task
+
+def generate_error_response(string):
+    """
+    Generate Response with error message about missing request data
+    """
+    return Response(
+        {"error": "{} is None, please add to request body.".format(string)},
+        status=status.HTTP_400_BAD_REQUEST
+    )
+
+def generate_xblock_structure_url(course_str, block_key, user):
+    """
+    Generate url/link to JSON representation of xblock
+    """
+    xblock_structure_url = '{}/api/courses/v1/blocks/?course_id={}&block_id={}&username={}'.format(
+        settings.LMS_ROOT_URL,
+        urllib.quote_plus(str(course_str)),
+        block_key,
+        user.username
+    )
+
+    return xblock_structure_url
+
+def get_user_grades(user, course, course_str, course_grade):
+    """
+    Get a single user's grades for  course. 
+    """ 
+    course_structure = get_course_in_cache(course.id)
     courseware_summary = course_grade.chapter_grades.values()
     grade_summary = course_grade.summary
     grades_schema = {}
-    subsection_schema = {}
-    for chapter in courseware_summary: 
-        for section in chapter['sections']: 
-            earned = section.all_total.earned
-            total = section.all_total.possible
-            name = section.display_name
-            section_id = str(section.location)
-            sections_scores  = {}
-            i = 0
-            problem_scores_dictionary_keys = section.problem_scores_with_keys.items()
-            if len(section.problem_scores_with_keys.values()) > 0:
-                for score in section.problem_scores_with_keys.values():
-                    sections_scores[problem_scores_dictionary_keys[i][0]] = \
-                        [float(score.earned),float(score.possible)]
-                    i += 1
-                if total > 0:
-                    grades_schema[section_id] = sections_scores
-    return grades_schema
+    courseware_summary = course_grade.chapter_grades.items()
+    chapter_schema = {}
+    for key, chapter in courseware_summary:
+        subsection_schema = {}
+        for section in chapter['sections']:
+            section_children = course_structure.get_children(section.location)
+            verticals = course_structure.get_children(section.location)
+            vertical_schema = {}
+            for vertical_key in verticals:
+                sections_scores  = {}
+                problem_keys = course_structure.get_children(vertical_key)
+                for problem_key in problem_keys:
+                    if problem_key in section.problem_scores:
+                        problem_score = section.problem_scores[problem_key]
+                        xblock_content_url = reverse(
+                            'courseware.views.views.render_xblock',
+                            kwargs={'usage_key_string': unicode(problem_key)},
+                        )
+                        xblock_structure_url = generate_xblock_structure_url(course_str, problem_key, user)
+                        sections_scores[str(problem_key)] = {
+                           "date" : problem_score.first_attempted if problem_score.first_attempted is not None else "Not attempted",
+                           "earned" :problem_score.earned,
+                           "possible" :problem_score.possible,
+                           "xblock_content_url": "{}{}".format(settings.LMS_ROOT_URL, xblock_content_url),
+                           "xblock_structure_url": "{}{}".format(settings.LMS_ROOT_URL,xblock_structure_url)
+                        }
+                    else:
+                        sections_scores[str(problem_key)] = "This block has no grades"
+                vertical_structure_url = generate_xblock_structure_url(course_str, vertical_key, user)
+                vertical_schema[str(vertical_key)] = {'problem_blocks': sections_scores, "vertical_structure_url": vertical_structure_url}
+            subsection_structure_url = generate_xblock_structure_url(course_str, section.location, user)
+            subsection_schema[str(section.location)] =  {
+                "verticals": vertical_schema,
+                "section_score": course_grade.score_for_module(section.location),
+                "subsection_structure_url": subsection_structure_url
+            }
+        chapter_structure_url = generate_xblock_structure_url(course_str, key, user)
+        chapter_schema[str(key)] = {
+            "sections": subsection_schema,
+            "chapter_structure_url": chapter_structure_url
+        }
+
+    return chapter_schema
+
+def get_user_course_response(course, users, course_str, depth):
+    """
+    Get a list of users grades' for a course
+    """
+    user_grades = {}
+    grades_schema = {}
+
+    for user in users:
+        course_grade = CourseGradeFactory().update(user, course)
+        if depth=="all":
+            grades_schema = get_user_grades(user, course, course_str, course_grade)
+        else:
+            grades_schema = "Showing course grade summary, specify depth=all in query params."
+        user_grades[user.username] = {
+           'name': "{} {}".format(user.first_name, user.last_name),
+           'email': user.email,
+           'start_date':course.start,
+           'end_date': course.end if not None else "This course has no end date.",
+           'all_grades': grades_schema,
+           "passed": course_grade.passed,
+           "percent": course_grade.percent
+        }
+    return user_grades
 
 
 def _build_emails(identifiers, email_extension):
@@ -315,15 +396,22 @@ class GradesBulkAPIView(ListAPIView):
         try:
             email_extension = request.data['email_extension']
         except KeyError:
-            email_extension = None      
+            email_extension = None
+        try:
+            callback_url = request.data['callback_url']
+        except KeyError:
+            callback_url = None     
 
         # compile list of email adresses
     
-        if email_extension is not None:
-            list_of_emails_or_usernames =\
-                _build_emails(usernames, email_extension)
+        if email_extension is not None and usernames is not None:
+            list_of_emails_or_usernames =_build_emails(usernames, email_extension)
         else:
             list_of_emails_or_usernames = usernames
+
+
+        if course_ids is None and email_extension is None:
+            return generate_error_response('email_extention')
 
         # Set up a dictionaries/list to contain the user grades and course grades
         # catching the incorrect courses in a "course_failure" list
@@ -332,48 +420,50 @@ class GradesBulkAPIView(ListAPIView):
         course_failure = []
         user_grades = {}
 
-        for course_str in course_ids:
-            try:
+        if course_ids is None:
+            user_list = USER_MODEL.objects.filter(
+                Q(username__in=usernames) |
+                Q(email__in=list_of_emails_or_usernames),
+            )
+    
+            user_courses = CourseEnrollment.objects.filter(user__in=user_list)
+            for course_enrollment in user_courses:
+                course_str = str(course_enrollment.course_id)
+                course = get_course(course_enrollment.course_id)
                 course_key = CourseKey.from_string(str(course_str))
-                course = courses.get_course(course_key)
-
-                # query database for all users holding these emails
-                # Django's "filter" takes care of "User not found"
-                user_list = USER_MODEL.objects.filter(
-                    Q(username__in=usernames) |
-                    Q(email__in=list_of_emails_or_usernames),
-                    courseenrollment__course_id=CourseKey.from_string(course_str)
-                ).order_by('username').select_related('profile')
-                for user in user_list:
-                    try:
-                        course_grade = CourseGradeFactory().update(user, course)
-                        if depth == 'all':
-                            grades_schema =  get_user_grades(user, course, course_grade)
-                        else:
-                            grades_schema = 'Specify depth=all in query parameters.'
-                        user_grades[user.username] = {
-                            'name': "{} {}".format(user.first_name, user.last_name),
-                            'email': user.email,
-                            'passed': course_grade.passed,
-                            'percent': course_grade.percent,
-                            'all_grades': grades_schema
-                        }
-                    except Exception as e:
-                        log.error(e)
-                        pass
-
+                user_grades = get_user_course_response(course, user_list, course_str, depth)
                 course_success[course_str] = user_grades
-                user_grades = {}
-                            
-            except InvalidKeyError:
-                log.error('Invalid key, {} does not exist'.format(course_str))
-                course_failure.append("{} does not exist".format(course_str))
-                pass
-            except ValueError:
-                log.error('Value error, {} could not be found.'.format(course_str))
-                course_failure.append("{} does not exist".format(course_str))
 
-                pass
+        if course_ids is not None:
+            for course_str in course_ids:
+                if usernames is not None:
+                    user_list = USER_MODEL.objects.filter(
+                        Q(username__in=usernames) |
+                        Q(email__in=list_of_emails_or_usernames),
+                        courseenrollment__course_id=CourseKey.from_string(course_str)
+                    ).order_by('username').select_related('profile')
+                else:
+                    # Get all users enrolled given a course key
+                    user_list = USER_MODEL.objects.filter(courseenrollment__course_id=CourseKey.from_string(course_str)).order_by('username').select_related('profile')
+                try:
+                    course_key = CourseKey.from_string(str(course_str))
+                    course = courses.get_course(course_key)
+                    user_grades = get_user_course_response(course, user_list, course_str, depth)
+                    course_success[course_str] = user_grades
+                    user_grades = {}
+                except Exception as e:
+                    log.error(e)
+                    pass
+                    user_grades = {}                    
+                except InvalidKeyError:
+                    log.error('Invalid key, {} does not exist'.format(course_str))
+                    course_failure.append("{} does not exist".format(course_str))
+                    pass
+                except ValueError:
+                    log.error('Value error, {} could not be found.'.format(course_str))
+                    course_failure.append("{} does not exist".format(course_str))
+
+
         course_results["successes"] = course_success
         course_results["failures"] = course_failure
             

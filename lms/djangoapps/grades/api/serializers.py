@@ -5,7 +5,6 @@ from collections import defaultdict
 
 from rest_framework import serializers
 
-
 # pylint: disable=abstract-method
 class GradingPolicySerializer(serializers.Serializer):
     """

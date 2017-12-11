@@ -26,7 +26,6 @@ from request_cache import get_cache
 
 import events
 
-
 log = logging.getLogger(__name__)
 
 
@@ -620,3 +619,4 @@ class PersistentSubsectionGradeOverride(models.Model):
 def prefetch(user, course_key):
     PersistentSubsectionGradeOverride.prefetch(user.id, course_key)
     VisibleBlocks.bulk_read(course_key)
+

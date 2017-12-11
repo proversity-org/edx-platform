@@ -27,7 +27,7 @@ from django.core.validators import ValidationError, validate_email
 from django.db import IntegrityError, transaction
 from django.db.models.signals import post_save
 from django.dispatch import Signal, receiver
-from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
+from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.encoding import force_bytes, force_text
@@ -2737,16 +2737,19 @@ def password_reset_confirm_wrapper(request, uidb36=None, token=None):
             entry.create(updated_user)
 
     else:
-        reset_response = password_reset_confirm(
+        response = password_reset_confirm(
             request, uidb64=uidb64, token=token, extra_context=platform_name
         )
 
-        response_was_successful = reset_response.context_data.get('validlink')
+        response_was_successful = response.context_data.get('validlink')
         if response_was_successful and not user.is_active:
             user.is_active = True
             user.save()
 
-    return render_to_response('registration/password_reset_confirm.html', reset_response.context_data)
+    if not isinstance(response, HttpResponseRedirect):
+        return render_to_response('registration/password_reset_confirm.html', response.context_data)
+    else:
+        return response
 
 
 def reactivation_email_for_user(user):

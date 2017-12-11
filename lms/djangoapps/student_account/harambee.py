@@ -123,4 +123,4 @@ class HarambeeOAuth2(BaseOAuth2):
         return user
         
     def revoke_token_params(self, token, uid):
-        return {'access_token': token}
+        return {'id_token_hint': token, 'state': self.get_session_state(), 'post_logout_redirect_uri': 'https://learn.harambeecloud.com'}
