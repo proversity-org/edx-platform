@@ -2145,6 +2145,9 @@ INSTALLED_APPS = [
     # Bulk Enrollment API
     'bulk_enroll',
 
+    # Bulk Reset Attempts API
+    'bulk_reset_attempts',
+
     # Student Identity Verification
     'lms.djangoapps.verify_student',
 
@@ -3346,7 +3349,7 @@ COURSE_ENROLLMENT_MODES = {
 # This set the user course enrollment api order by
 #
 # Options:
-# created: order by course creation 
+# created: order by course creation
 # created_reverse: order by course creation and then reverse
 # course_name: order by course display name
 # course_name_reverse: order by course display name and then reverse
@@ -3375,6 +3378,11 @@ ACE_CHANNEL_SAILTHRU_API_KEY = None
 ACE_CHANNEL_SAILTHRU_API_SECRET = None
 
 ACE_ROUTING_KEY = LOW_PRIORITY_QUEUE
+
+############## Settings for Bibblio ####################################
+
+BIBBLIO_CLIENT_ID = 'bibblio_client_id'
+BIBBLIO_CLIENT_SECRET = 'bibblio_client_secret'
 
 EDX_PLATFORM_REVISION = os.environ.get('EDX_PLATFORM_REVISION')
 if not EDX_PLATFORM_REVISION:

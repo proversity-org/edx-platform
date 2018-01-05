@@ -121,16 +121,21 @@ from lms.envs.common import (
 
     # Setting for PAID_COURSE_REGISTRATION, DOES NOT AFFECT VERIFIED STUDENTS
     PAID_COURSE_REGISTRATION_CURRENCY,
-    
+
     # Setting fro ENABLE_DOG, turns on the log sync to datadog
-	  ENABLE_DOG,
-    
+	ENABLE_DOG,
+
     # Settings for ANALYTICA_TOKEN
     ANALITICA_TRACK_URL,
     ANALITICA_ACTIVE,
-    ANALITICA_TOKEN
+    ANALITICA_TOKEN,
+
+    # Pipeline Assets
+    PIPELINE_JS,
+    PIPELINE_CSS
 
 )
+
 from path import Path as path
 from warnings import simplefilter
 
@@ -661,7 +666,7 @@ PIPELINE_UGLIFYJS_BINARY = 'node_modules/.bin/uglifyjs'
 
 from openedx.core.lib.rooted_paths import rooted_glob
 
-PIPELINE_CSS = {
+PIPELINE_CSS.update({
     'style-vendor': {
         'source_filenames': [
             'css/vendor/normalize.css',
@@ -730,7 +735,7 @@ PIPELINE_CSS = {
         ],
         'output_filename': 'css/cms-style-xmodule-annotations.css',
     },
-}
+})
 
 base_vendor_js = [
     'js/src/utility.js',
@@ -759,7 +764,7 @@ base_vendor_js = [
 
 # test_order: Determines the position of this chunk of javascript on
 # the jasmine test page
-PIPELINE_JS = {
+PIPELINE_JS.update({
     'base_vendor': {
         'source_filenames': base_vendor_js,
         'output_filename': 'js/cms-base-vendor.js',
@@ -773,7 +778,7 @@ PIPELINE_JS = {
         'output_filename': 'js/cms-modules.js',
         'test_order': 1
     },
-}
+})
 
 PIPELINE_COMPILERS = (
     'pipeline.compilers.coffee.CoffeeScriptCompiler',

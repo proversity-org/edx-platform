@@ -401,6 +401,10 @@ class CoursewareIndex(View):
                 table_of_contents['previous_of_active_section'],
                 table_of_contents['next_of_active_section'],
             )
+
+            if 'blockusage_id' in request.GET:
+                section_context['blockusage_id'] = request.GET['blockusage_id']
+
             courseware_context['fragment'] = self.section.render(STUDENT_VIEW, section_context)
             if self.section.position and self.section.has_children:
                 display_items = self.section.get_display_items()

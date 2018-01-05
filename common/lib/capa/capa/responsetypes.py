@@ -3902,6 +3902,21 @@ class ChoiceTextResponse(LoncapaResponse):
 # FIXME: To be replaced by auto-registration
 
 # pylint: disable=invalid-all-object
+
+
+try:
+    from bibblio import BibblioXBlock
+except ImportError:
+    pass
+try:
+    from recap import RecapXBlock
+except ImportError:
+    pass
+try:
+    from agnosticconentxblock import AgnosticContentXBlock
+except ImportError:
+    pass
+
 __all__ = [
     CodeResponse,
     NumericalResponse,
