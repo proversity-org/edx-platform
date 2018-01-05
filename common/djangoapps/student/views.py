@@ -27,7 +27,7 @@ from django.core.validators import ValidationError, validate_email
 from django.db import IntegrityError, transaction
 from django.db.models.signals import post_save
 from django.dispatch import Signal, receiver
-from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
+from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.encoding import force_bytes, force_text
@@ -131,7 +131,6 @@ from util.json_request import JsonResponse
 from util.milestones_helpers import get_pre_requisite_courses_not_completed
 from util.password_policy_validators import validate_password_length, validate_password_strength
 from xmodule.modulestore.django import modulestore
-
 
 log = logging.getLogger("edx.student")
 AUDIT_LOG = logging.getLogger("audit")
@@ -888,6 +887,12 @@ def dashboard(request):
             reverse=True
         )
 
+
+    subscription_courses = frozenset(
+        enrollment.course_id for enrollment in course_enrollments
+        if modulestore().get_course(enrollment.course_id).subscription_catalog_id
+    )
+
     context = {
         'enterprise_message': enterprise_message,
         'enrollment_message': enrollment_message,
@@ -925,6 +930,7 @@ def dashboard(request):
         'disable_courseware_js': True,
         'display_course_modes_on_dashboard': enable_verified_certificates and display_course_modes_on_dashboard,
         'display_sidebar_on_dashboard': display_sidebar_on_dashboard,
+        'subscription_courses': subscription_courses
     }
 
     ecommerce_service = EcommerceService()
@@ -2737,16 +2743,19 @@ def password_reset_confirm_wrapper(request, uidb36=None, token=None):
             entry.create(updated_user)
 
     else:
-        reset_response = password_reset_confirm(
+        response = password_reset_confirm(
             request, uidb64=uidb64, token=token, extra_context=platform_name
         )
 
-        response_was_successful = reset_response.context_data.get('validlink')
+        response_was_successful = response.context_data.get('validlink')
         if response_was_successful and not user.is_active:
             user.is_active = True
             user.save()
 
-    return render_to_response('registration/password_reset_confirm.html', reset_response.context_data)
+    if not isinstance(response, HttpResponseRedirect):
+        return render_to_response('registration/password_reset_confirm.html', response.context_data)
+    else:
+        return response
 
 
 def reactivation_email_for_user(user):

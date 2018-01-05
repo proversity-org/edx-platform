@@ -136,6 +136,12 @@ from openedx.core.djangolib.markup import HTML
                       revision: "${context_course.location.revision | n, js_escaped_string}",
                       self_paced: ${context_course.self_paced | n, dump_js_escaped_json}
                   });
+              % elif context_library:
+                window.course = new Course({
+                  name: "${context_library.display_name_with_default | n, js_escaped_string}",
+                  revision: "${context_library.location.revision | n, js_escaped_string}",
+                  self_paced: true
+                })
               % endif
               % if user.is_authenticated():
                   require(['js/sock']);

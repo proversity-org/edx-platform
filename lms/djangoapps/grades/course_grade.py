@@ -292,6 +292,20 @@ class CourseGrade(CourseGradeBase):
         """
         return round(grader_result['percent'] * 100 + 0.05) / 100
 
+
+    def _compute_course_grade_total_raw(self):
+        """
+        Computes and returns the raw grade earned and total for a course
+        """
+        course_total_earned = 0.0
+        course_total_possible = 0.0
+        for chapter_key in self.chapter_grades.keys():
+            chapter_score = self.score_for_chapter(chapter_key)
+            course_total_earned += chapter_score[0]
+            course_total_possible += chapter_score[1]
+        return course_total_earned, course_total_possible
+   
+
     @staticmethod
     def _compute_letter_grade(grade_cutoffs, percent):
         """

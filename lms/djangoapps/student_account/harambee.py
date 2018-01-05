@@ -5,8 +5,10 @@ from social_core.backends.oauth import BaseOAuth2
 from django.contrib.auth.models import User
 import uuid
 import logging
+import social_django
 
 log = logging.getLogger(__name__)
+
 class HarambeeOAuth2(BaseOAuth2):
     """
     Harambee OAuth2 authentication backend
@@ -38,12 +40,22 @@ class HarambeeOAuth2(BaseOAuth2):
     # The order of the default scope is important
     DEFAULT_SCOPE = ['openid', 'profile']
 
+
+    def extra_data(self, user, uid, response, details=None, *args, **kwargs):
+        """
+        Return access_token and extra defined names to store in extra_data field
+        """
+        data = super(HarambeeOAuth2, self).extra_data(user, uid, response, details, *args, **kwargs)
+        data['id_token'] = kwargs['request_id_token']
+        return data
+
+
     def auth_params(self, state=None):
         client_id, client_secret = self.get_key_and_secret()
         
         uri = self.get_redirect_uri(state)
         if self.REDIRECT_IS_HTTPS:
-          uri = uri.replace('http://', 'https://')
+            uri = uri.replace('http://', 'https://')
         
         params = {
             'client_id': client_id,
@@ -57,11 +69,12 @@ class HarambeeOAuth2(BaseOAuth2):
         params['response_mode'] = 'form_post'
         return params
 
+
     def auth_complete_params(self, state=None):
         client_id, client_secret = self.get_key_and_secret()
         uri = self.get_redirect_uri(state)
         if self.REDIRECT_IS_HTTPS:
-          uri = uri.replace('http://', 'https://')
+            uri = uri.replace('http://', 'https://')
         return {
             'grant_type': 'authorization_code',  # request auth code
             'code': self.data.get('code', ''),  # server response code
@@ -71,10 +84,8 @@ class HarambeeOAuth2(BaseOAuth2):
         }
 
     def get_user_details(self, response):
-
         data = jwt.decode(response.get('id_token'), verify=False)
-
-        return {'username': data.get('CandidateGUID'),
+        return {'username': data.get('CandidateGUID')[0:-6],
                 'email': "{g}@harambeecloud.com".format(g=data.get('CandidateGUID')),
                 'fullname': "{f} {l}".format(f=data.get('Firstname'), l=data.get('Lastname')),
                 'first_name': data.get('Firstname'),
@@ -85,7 +96,7 @@ class HarambeeOAuth2(BaseOAuth2):
     def user_data(self, access_token, *args, **kwargs):
         """Loads user data from service. Implement in subclass"""
         data = jwt.decode(access_token, verify=False)
-        return {'username': data.get('CandidateGUID'),
+        return {'username': data.get('CandidateGUID')[0:-6],
                 'email': "{g}@harambeecloud.com".format(g=data.get('CandidateGUID')),
                 'fullname': "{f} {l}".format(f=data.get('Firstname'), l=data.get('Lastname')),
                 'first_name': data.get('Firstname'),
@@ -99,12 +110,14 @@ class HarambeeOAuth2(BaseOAuth2):
         add the incomming guid as a username field to the meta field on the user profile
         """
         out = self.run_pipeline(pipeline, pipeline_index, *args, **kwargs)
+        
         if not isinstance(out, dict):
             return out
+
         user = out.get('user')
 
         user_profile = user.profile
-        new_meta = {'username': user.email.split('@')[0]}
+        new_meta = {'username': user.email.split('@')[0][0:-6]}
 
         if len(user_profile.meta) > 0:
             previous_meta = json.loads(user_profile.meta)
@@ -122,5 +135,10 @@ class HarambeeOAuth2(BaseOAuth2):
 
         return user
         
+
     def revoke_token_params(self, token, uid):
-        return {'access_token': token}
+        social_user = social_django.models.DjangoStorage.user.get_social_auth(provider=self.name, uid=uid)
+        return {
+            'id_token_hint': social_user.extra_data['id_token'],
+            'state': self.get_session_state()
+        }
