@@ -67,6 +67,7 @@ class HarambeeOAuth2(BaseOAuth2):
             params['response_type'] = self.RESPONSE_TYPE
         params['nonce'] = str(uuid.uuid4().hex) + str(uuid.uuid4().hex)
         params['response_mode'] = 'form_post'
+        params['prompt'] = 'login'
         return params
 
 
