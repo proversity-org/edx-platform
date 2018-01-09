@@ -211,8 +211,9 @@ def library_blocks_view(library, user, response_format):
     can_edit = has_studio_write_access(user, library.location.library_key)
 
     xblock_info = create_xblock_info(library, include_ancestor_info=False, graders=[])
-    component_templates = get_component_templates(library, library=True) if can_edit else []
+    component_templates = get_component_templates(library) if can_edit else []
 
+        
     return render_to_response('library.html', {
         'can_edit': can_edit,
         'context_library': library,

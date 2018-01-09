@@ -45,6 +45,26 @@ class LibraryRoot(XBlock):
     has_children = True
     has_author_view = True
 
+    advanced_modules = [
+        "agnosticcontentxblock",
+        "google-document",
+        "google-calendar",
+        "drag-and-drop-v2",
+        "problem-builder",
+        "word_cloud",
+        "survey",
+        "done",
+        "annotatable",
+        "bibblio",
+        "inline-dropdown",
+        "freetextresponse",
+        "recap",
+        "badger",
+        "edx_sga",
+        "library_content",
+        "poll"
+    ]
+
     def __unicode__(self):
         return u"Library: {}".format(self.display_name)
 

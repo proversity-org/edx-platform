@@ -24,6 +24,9 @@ from xmodule.x_module import STUDENT_VIEW, XModule
 from .mako_module import MakoModuleDescriptor
 from .xml_module import XmlDescriptor
 
+import logging
+log = logging.getLogger(__name__)
+
 # Make '_' a no-op so we can scrape strings. Using lambda instead of
 #  `django.utils.translation.ugettext_noop` because Django cannot be imported in this file
 _ = lambda text: text
@@ -43,6 +46,9 @@ def _get_capa_types():
     Gets capa types tags and labels
     """
     capa_types = {tag: _get_human_name(registry.get_class_for_tag(tag)) for tag in registry.registered_tags()}
+
+    capa_types['recap'] = 'RecapXBlock'
+    capa_types['agnosticcontentxblock'] = 'AgnosticContentXBlock'
 
     return [{'value': ANY_CAPA_TYPE_VALUE, 'display_name': _('Any Type')}] + sorted([
         {'value': capa_type, 'display_name': caption}
@@ -253,7 +259,7 @@ class LibraryContentModule(LibraryContentFields, XModule, StudioEditableModule):
                 added=format_block_keys(block_keys['added'])
             )
 
-    def selected_children(self):
+    def selected_children(self, context={}):
         """
         Returns a set() of block_ids indicating which of the possible children
         have been selected to display to the current user.
@@ -268,7 +274,15 @@ class LibraryContentModule(LibraryContentFields, XModule, StudioEditableModule):
             # Already done:
             return self._selected_set  # pylint: disable=access-member-before-definition
 
-        block_keys = self.make_selection(self.selected, self.children, self.max_count, "random")  # pylint: disable=no-member
+        if 'blockusage_id' in context:
+            block_keys = {
+                'selected': set([(c.block_type, c.block_id) for c in self.children if c.block_id == context['blockusage_id']]),
+                'invalid': {},
+                'overlimit': {},
+                'added': {}
+            }
+        else:
+            block_keys = self.make_selection(self.selected, self.children, self.max_count, self.mode)  # pylint: disable=no-member
 
         # Publish events for analytics purposes:
         lib_tools = self.runtime.service(self, 'library_tools')
@@ -287,12 +301,12 @@ class LibraryContentModule(LibraryContentFields, XModule, StudioEditableModule):
 
         return selected
 
-    def _get_selected_child_blocks(self):
+    def _get_selected_child_blocks(self, context={}):
         """
         Generator returning XBlock instances of the children selected for the
         current user.
         """
-        for block_type, block_id in self.selected_children():
+        for block_type, block_id in self.selected_children(context):
             yield self.runtime.get_block(self.location.course_key.make_usage_key(block_type, block_id))
 
     def student_view(self, context):
@@ -300,7 +314,7 @@ class LibraryContentModule(LibraryContentFields, XModule, StudioEditableModule):
         contents = []
         child_context = {} if not context else copy(context)
 
-        for child in self._get_selected_child_blocks():
+        for child in self._get_selected_child_blocks(context):
             for displayable in child.displayable_items():
                 rendered_child = displayable.render(STUDENT_VIEW, child_context)
                 fragment.add_frag_resources(rendered_child)

@@ -41,7 +41,7 @@ urlpatterns = (
 
 	# Submissions api
     url(r'^api/submissions/', include('submissions.urls')),
-	
+
     # Event tracking endpoints
     url(r'', include('track.urls')),
 
@@ -831,6 +831,10 @@ if configuration_helpers.get_value('ENABLE_BULK_ENROLLMENT_VIEW',
         url(r'^api/bulk_enroll/v1/', include('bulk_enroll.urls')),
     )
 
+urlpatterns += (
+    url(r'^api/bulk_reset_attempts/v1/', include('bulk_reset_attempts.urls')),
+)
+
 
 # Shopping cart
 urlpatterns += (
@@ -1056,3 +1060,7 @@ if settings.FEATURES.get('ENABLE_FINANCIAL_ASSISTANCE_FORM'):
             name='submit_financial_assistance_request'
         )
     )
+
+urlpatterns += (
+    url(r'^subscription/', include('subscription_content.urls')),
+)

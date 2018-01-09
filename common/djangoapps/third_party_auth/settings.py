@@ -42,6 +42,7 @@ def apply_settings(django_settings):
     # Inject our customized auth pipeline. All auth backends must work with
     # this pipeline.
     django_settings.SOCIAL_AUTH_PIPELINE = [
+        'third_party_auth.pipeline.get_id_token',
         'third_party_auth.pipeline.parse_query_params',
         'social_core.pipeline.social_auth.social_details',
         'social_core.pipeline.social_auth.social_uid',

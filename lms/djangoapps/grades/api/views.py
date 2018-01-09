@@ -87,11 +87,11 @@ def get_user_grades(user, course, course_str, course_grade):
                         )
                         xblock_structure_url = generate_xblock_structure_url(course_str, problem_key, user)
                         sections_scores[str(problem_key)] = {
-                           "date" : problem_score.first_attempted if problem_score.first_attempted is not None else "Not attempted",
-                           "earned" :problem_score.earned,
-                           "possible" :problem_score.possible,
-                           "xblock_content_url": "{}{}".format(settings.LMS_ROOT_URL, xblock_content_url),
-                           "xblock_structure_url": "{}{}".format(settings.LMS_ROOT_URL,xblock_structure_url)
+                            "date" : problem_score.first_attempted if problem_score.first_attempted is not None else "Not attempted",
+                            "earned" :problem_score.earned,
+                            "possible" :problem_score.possible,
+                            "xblock_content_url": "{}{}".format(settings.LMS_ROOT_URL, xblock_content_url),
+                            "xblock_structure_url": "{}{}".format(settings.LMS_ROOT_URL,xblock_structure_url)
                         }
                     else:
                         sections_scores[str(problem_key)] = "This block has no grades"
@@ -106,7 +106,8 @@ def get_user_grades(user, course, course_str, course_grade):
         chapter_structure_url = generate_xblock_structure_url(course_str, key, user)
         chapter_schema[str(key)] = {
             "sections": subsection_schema,
-            "chapter_structure_url": chapter_structure_url
+            "chapter_structure_url": chapter_structure_url,
+            "chapter_score": course_grade.score_for_module(key)
         }
 
     return chapter_schema
@@ -131,10 +132,12 @@ def get_user_course_response(course, users, course_str, depth):
            'end_date': course.end if not None else "This course has no end date.",
            'all_grades': grades_schema,
            "passed": course_grade.passed,
-           "percent": course_grade.percent
+           "percent": course_grade.percent,
+           "total_course_grade_raw": course_grade._compute_course_grade_total_raw(),
+           "enrollment_date": str(CourseEnrollment.get_enrollment(user, course.id).created)
+
         }
     return user_grades
-
 
 def _build_emails(identifiers, email_extension):
     """
@@ -408,7 +411,6 @@ class GradesBulkAPIView(ListAPIView):
             list_of_emails_or_usernames =_build_emails(usernames, email_extension)
         else:
             list_of_emails_or_usernames = usernames
-
 
         if course_ids is None and email_extension is None:
             return generate_error_response('email_extention')

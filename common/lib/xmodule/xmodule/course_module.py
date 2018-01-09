@@ -894,6 +894,14 @@ class CourseFields(object):
         ),
         scope=Scope.settings, default=0.0
     )
+    subscription_catalog_id = String(
+        display_name=_("Subscription Catalog ID"),
+        help=_(
+            "Enter the Bibblio Catalog ID relevant to the subscription content for this course."
+            "If a value is given this course will be treated as a Subscription content product."
+        ),
+        scope=Scope.settings, default=""
+    )
 
 
 class CourseModule(CourseFields, SequenceModule):  # pylint: disable=abstract-method

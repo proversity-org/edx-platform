@@ -132,7 +132,6 @@ from util.milestones_helpers import get_pre_requisite_courses_not_completed
 from util.password_policy_validators import validate_password_length, validate_password_strength
 from xmodule.modulestore.django import modulestore
 
-
 log = logging.getLogger("edx.student")
 AUDIT_LOG = logging.getLogger("audit")
 ReverifyInfo = namedtuple('ReverifyInfo', 'course_id course_name course_number date status display')  # pylint: disable=invalid-name
@@ -888,6 +887,12 @@ def dashboard(request):
             reverse=True
         )
 
+
+    subscription_courses = frozenset(
+        enrollment.course_id for enrollment in course_enrollments
+        if modulestore().get_course(enrollment.course_id).subscription_catalog_id
+    )
+
     context = {
         'enterprise_message': enterprise_message,
         'enrollment_message': enrollment_message,
@@ -925,6 +930,7 @@ def dashboard(request):
         'disable_courseware_js': True,
         'display_course_modes_on_dashboard': enable_verified_certificates and display_course_modes_on_dashboard,
         'display_sidebar_on_dashboard': display_sidebar_on_dashboard,
+        'subscription_courses': subscription_courses
     }
 
     ecommerce_service = EcommerceService()

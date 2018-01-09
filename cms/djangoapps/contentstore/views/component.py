@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import logging
+import re
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -10,14 +11,15 @@ from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_GET
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.asides import AsideUsageKeyV1, AsideUsageKeyV2
-from opaque_keys.edx.keys import UsageKey
+from opaque_keys.edx.keys import UsageKey, CourseKey
 from xblock.core import XBlock
 from xblock.django.request import django_to_webob_request, webob_to_django_response
 from xblock.exceptions import NoSuchHandlerError
 from xblock.plugin import PluginMissingError
 from xblock.runtime import Mixologist
+from xblock import runtime
 
-from contentstore.utils import get_lms_link_for_item, get_xblock_aside_instance, reverse_course_url
+from contentstore.utils import get_lms_link_for_item, get_xblock_aside_instance, reverse_course_url, reverse_library_url
 from contentstore.views.helpers import get_parent_xblock, is_unit, xblock_type_display_name
 from contentstore.views.item import StudioEditModuleRuntime, add_container_page_publishing_info, create_xblock_info
 from edxmako.shortcuts import render_to_response
@@ -101,7 +103,98 @@ def container_handler(request, usage_key_string):
         html: returns the HTML page for editing a container
         json: not currently supported
     """
-    if 'text/html' in request.META.get('HTTP_ACCEPT', 'text/html'):
+    if "lib-block-v1" in usage_key_string:
+
+        try:
+            usage_key = UsageKey.from_string(usage_key_string)
+        except InvalidKeyError:
+            raise Http404
+
+        try:
+            library_key_string = re.sub('lib-block-v1:(.*)\+type@.*', 'library-v1:\\1', usage_key_string)
+            log.error("LIBRARY_KEY_STRING: %s", str(library_key_string))
+            library_key = CourseKey.from_string(library_key_string)
+            log.error("LIBRARY_KEY: %s", str(library_key))
+            library = modulestore().get_library(library_key)
+        except InvalidKeyError:
+            raise Http404
+
+        xblock = modulestore().get_item(usage_key)
+        is_unit_page = is_unit(xblock)
+        xblock_info = create_xblock_info(xblock, include_ancestor_info=False, graders=[])
+        #lms_link = xblock.location
+        #preview_lms_link = get_lms_link_for_item(xblock.location, preview=True)
+        component_templates = get_component_templates(library)
+        ancestor_xblocks = []
+        parent = get_parent_xblock(xblock)
+        action = request.GET.get('action', 'view')
+        is_unit_page = is_unit(xblock)
+        unit = xblock if is_unit_page else None
+        while parent and parent.category != 'course':
+            if unit is None and is_unit(parent):
+                unit = parent
+            ancestor_xblocks.append(parent)
+            parent = get_parent_xblock(parent)
+        ancestor_xblocks.reverse()
+
+        #assert unit is not None, "Could not determine unit page"
+        #subsection = get_parent_xblock(unit)
+        #assert subsection is not None, "Could not determine parent subsection from unit " + unicode(unit.location)
+        #section = get_parent_xblock(subsection)
+        #assert section is not None, "Could not determine ancestor section from unit " + unicode(unit.location)
+        # Fetch the XBlock info for use by the container page. Note that it includes information
+        # about the block's ancestors and siblings for use by the Unit Outline.
+        xblock_info = create_xblock_info(xblock, include_ancestor_info=is_unit_page)
+        if is_unit_page:
+            add_container_page_publishing_info(xblock, xblock_info)
+        # need to figure out where this item is in the list of children as the
+        # preview will need this
+        index = 1
+        # for child in subsection.get_children():
+        #     if child.location == unit.location:
+        #         break
+        #     index += 1
+
+        # from xmodule.studio_editable import StudioEditableModule
+        # child = runtime.get_block(usage_key)
+        # child_view_name = StudioEditableModule.get_preview_view_name(child)
+
+        # if unicode(child.location) == force_render:
+        #     child_context['show_preview'] = True
+
+        # if child_context['show_preview']:
+        #     rendered_child = runtime.render_child(child, child_view_name, child_context)
+        # else:
+        #     rendered_child = runtime.render_child_placeholder(child, child_view_name, child_context)
+        #     fragment.add_frag_resources(rendered_child)
+
+        # contents.append({
+        #     'id': unicode(child.location),
+        #     'content': rendered_child.content,
+        # })
+
+        return render_to_response('library_advanced_component.html', {
+            #'context_course': course,  # Needed only for display of menus at top of page.
+            'context_library': library,
+            'action': action,
+            'xblock': xblock,
+            'xblock_locator': xblock.location,
+            'unit': unit,
+            #'is_unit_page': is_unit_page,
+            #'subsection': subsection,
+            #'section': section,
+            'new_unit_category': 'vertical',
+            'outline_url': '{url}?format=concise'.format(url=reverse_library_url('library_handler', library_key)),
+            'ancestor_xblocks': ancestor_xblocks,
+            'component_templates': component_templates,
+            'xblock_info': xblock_info,
+            #'draft_preview_link': preview_lms_link,
+            #'published_preview_link': lms_link,
+            'templates': CONTAINER_TEMPLATES
+        })
+
+
+    elif 'text/html' in request.META.get('HTTP_ACCEPT', 'text/html'):
 
         try:
             usage_key = UsageKey.from_string(usage_key_string)
@@ -137,7 +230,6 @@ def container_handler(request, usage_key_string):
             # Fetch the XBlock info for use by the container page. Note that it includes information
             # about the block's ancestors and siblings for use by the Unit Outline.
             xblock_info = create_xblock_info(xblock, include_ancestor_info=is_unit_page)
-
             if is_unit_page:
                 add_container_page_publishing_info(xblock, xblock_info)
 
@@ -249,15 +341,14 @@ def get_component_templates(courselike, library=False):
     # by the components in the order listed in COMPONENT_TYPES.
     component_types = COMPONENT_TYPES[:]
 
-    # Libraries do not support discussions
+    # # Libraries do not support discussions
     if library:
         component_types = [component for component in component_types if component != 'discussion']
 
-    component_types = _filter_disabled_blocks(component_types)
+    # component_types = _filter_disabled_blocks(component_types)
 
     # Content Libraries currently don't allow opting in to unsupported xblocks/problem types.
     allow_unsupported = getattr(courselike, "allow_unsupported_xblocks", False)
-
     for category in component_types:
         authorable_variations = authorable_xblocks(allow_unsupported=allow_unsupported, name=category)
         support_level_without_template = component_support_level(authorable_variations, category)
@@ -304,7 +395,7 @@ def get_component_templates(courselike, library=False):
 
         # Add any advanced problem types. Note that these are different xblocks being stored as Advanced Problems,
         # currently not supported in libraries .
-        if category == 'problem' and not library:
+        if category == 'problem':
             disabled_block_names = [block.name for block in disabled_xblocks()]
             advanced_problem_types = [advanced_problem_type for advanced_problem_type in ADVANCED_PROBLEM_TYPES
                                       if advanced_problem_type['component'] not in disabled_block_names]
@@ -343,21 +434,44 @@ def get_component_templates(courselike, library=False):
         })
 
     # Libraries do not support advanced components at this time.
-    if library:
-        return component_templates
+    #if library:
+    #    return component_templates
 
     # Check if there are any advanced modules specified in the course policy.
     # These modules should be specified as a list of strings, where the strings
     # are the names of the modules in ADVANCED_COMPONENT_TYPES that should be
     # enabled for the course.
     course_advanced_keys = courselike.advanced_modules
+    advanced_component_types = _advanced_component_types(allow_unsupported)
+
+    if library:
+        course_advanced_keys = [
+            "agnosticcontentxblock",
+            "google-document",
+            "google-calendar",
+            "drag-and-drop-v2",
+            "problem-builder",
+            "word_cloud",
+            "survey",
+            "done",
+            "annotatable",
+            "bibblio",
+            "inline-dropdown",
+            "freetextresponse",
+            "recap",
+            "badger",
+            "edx_sga",
+            "library_content",
+            "poll"
+        ]
+
     advanced_component_templates = {
         "type": "advanced",
         "templates": [],
         "display_name": _("Advanced"),
         "support_legend": create_support_legend_dict()
     }
-    advanced_component_types = _advanced_component_types(allow_unsupported)
+    #advanced_component_types = _advanced_component_types(allow_unsupported)
     # Set component types according to course policy file
     if isinstance(course_advanced_keys, list):
         for category in course_advanced_keys:
@@ -388,9 +502,9 @@ def get_component_templates(courselike, library=False):
             "Improper format for course advanced keys! %s",
             course_advanced_keys
         )
-    if len(advanced_component_templates['templates']) > 0:
-        component_templates.insert(0, advanced_component_templates)
-
+    # if len(advanced_component_templates['templates']) > 0:
+    #     component_templates.insert(0, advanced_component_templates)
+    component_templates.insert(0, advanced_component_templates)
     return component_templates
 
 
