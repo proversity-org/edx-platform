@@ -198,7 +198,9 @@ def jump_to_id(request, course_id, module_id):
 def jump_to(_request, course_id, location):
     """
     Show the page that contains a specific location.
+
     If the location is invalid or not in any class, return a 404.
+
     Otherwise, delegates to the index view to figure out whether this user
     has access, and what they should see.
     """
@@ -223,6 +225,7 @@ def jump_to(_request, course_id, location):
 def course_info(request, course_id):
     """
     Display the course's info.html, or 404 if there is no such course.
+
     Assumes the course_id is in a valid format.
     """
     def get_last_accessed_courseware(course, request, user):
@@ -551,6 +554,7 @@ def _should_display_planning_prompt(request, course):
     """
     A planning prompt is enabled in the experiment for all enrollments whose
     content availability date is less than 14 days from today.
+
     The content availability date is defined as either the course start date
     or the enrollment date, whichever was most recent.
     """
@@ -569,6 +573,7 @@ def _should_display_planning_prompt(request, course):
 def syllabus(request, course_id):
     """
     Display the course's syllabus.html, or 404 if there is no such course.
+
     Assumes the course_id is in a valid format.
     """
 
@@ -651,12 +656,15 @@ def get_course_prices(course, verified_only=False):
 class EnrollStaffView(View):
     """
     Displays view for registering in the course to a global staff user.
+
     User can either choose to 'Enroll' or 'Don't Enroll' in the course.
       Enroll: Enrolls user in course and redirects to the courseware.
       Don't Enroll: Redirects user to course about page.
+
     Arguments:
      - request    : HTTP request
      - course_id  : course id
+
     Returns:
      - RedirectResponse
     """
@@ -882,7 +890,9 @@ def progress(request, course_id, student_id=None):
 def _progress(request, course_key, student_id):
     """
     Unwrapped version of "progress".
+
     User progress. We show the grade bar and every problem score.
+
     Course staff are allowed to see the progress of students in their class.
     """
 
@@ -968,6 +978,7 @@ def _progress(request, course_key, student_id):
 
 def _get_cert_data(student, course, course_key, is_active, enrollment_mode):
     """Returns students course certificate related data.
+
     Arguments:
         student (User): Student for whom certificate to retrieve.
         course (Course): Course object for which certificate data to retrieve.
@@ -1073,11 +1084,14 @@ def _get_cert_data(student, course, course_key, is_active, enrollment_mode):
 
 def _credit_course_requirements(course_key, student):
     """Return information about which credit requirements a user has satisfied.
+
     Arguments:
         course_key (CourseKey): Identifier for the course.
         student (User): Currently logged in user.
+
     Returns: dict if the credit eligibility enabled and it is a credit course
     and the user is enrolled in either verified or credit mode, and None otherwise.
+
     """
     # If credit eligibility is not enabled or this is not a credit course,
     # short-circuit and return `None`.  This indicates that credit requirements
@@ -1239,13 +1253,16 @@ def get_static_tab_fragment(request, course, tab):
 def get_course_lti_endpoints(request, course_id):
     """
     View that, given a course_id, returns the a JSON object that enumerates all of the LTI endpoints for that course.
+
     The LTI 2.0 result service spec at
     http://www.imsglobal.org/lti/ltiv2p0/uml/purl.imsglobal.org/vocab/lis/v2/outcomes/Result/service.html
     says "This specification document does not prescribe a method for discovering the endpoint URLs."  This view
     function implements one way of discovering these endpoints, returning a JSON array when accessed.
+
     Arguments:
         request (django request object):  the HTTP request object that triggered this view function
         course_id (unicode):  id associated with the course
+
     Returns:
         (django response object):  HTTP response.  404 if course is not found, otherwise 200 with JSON body.
     """
@@ -1321,11 +1338,13 @@ def course_survey(request, course_id):
 def is_course_passed(course, grade_summary=None, student=None, request=None):
     """
     check user's course passing status. return True if passed
+
     Arguments:
         course : course object
         grade_summary (dict) : contains student grade details.
         student : user object
         request (HttpRequest)
+
     Returns:
         returns bool value
     """
@@ -1343,19 +1362,23 @@ def is_course_passed(course, grade_summary=None, student=None, request=None):
 @require_POST
 def generate_user_cert(request, course_id):
     """Start generating a new certificate for the user.
+
     Certificate generation is allowed if:
     * The user has passed the course, and
     * The user does not already have a pending/completed certificate.
+
     Note that if an error occurs during certificate generation
     (for example, if the queue is down), then we simply mark the
     certificate generation task status as "error" and re-run
     the task with a management command.  To students, the certificate
     will appear to be "generating" until it is re-run.
+
     Args:
         request (HttpRequest): The POST request to this view.
         course_id (unicode): The identifier for the course.
     Returns:
         HttpResponse: 200 on success, 400 if a new certificate cannot be generated.
+
     """
 
     if not request.user.is_authenticated():
@@ -1397,9 +1420,11 @@ def generate_user_cert(request, course_id):
 def _track_successful_certificate_generation(user_id, course_id):  # pylint: disable=invalid-name
     """
     Track a successful certificate generation event.
+
     Arguments:
         user_id (str): The ID of the user generting the certificate.
         course_id (CourseKey): Identifier for the course.
+
     Returns:
         None
     """
