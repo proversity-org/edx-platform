@@ -985,6 +985,7 @@ def _get_cert_data(student, course, course_key, is_active, enrollment_mode):
         course_key (CourseKey): Course identifier for course.
         is_active (Bool): Boolean value to check if course is active.
         enrollment_mode (String): Course mode in which student is enrolled.
+
     Returns:
         returns dict if course certificate is available else None.
     """
@@ -1376,6 +1377,7 @@ def generate_user_cert(request, course_id):
     Args:
         request (HttpRequest): The POST request to this view.
         course_id (unicode): The identifier for the course.
+
     Returns:
         HttpResponse: 200 on success, 400 if a new certificate cannot be generated.
 
@@ -1427,6 +1429,7 @@ def _track_successful_certificate_generation(user_id, course_id):  # pylint: dis
 
     Returns:
         None
+        
     """
     if settings.LMS_SEGMENT_KEY:
         event_name = 'edx.bi.user.certificate.generate'
