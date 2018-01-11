@@ -6,6 +6,8 @@ import logging
 from cStringIO import StringIO
 from datetime import datetime, timedelta
 
+from django.conf import settings
+
 import requests
 from lazy import lazy
 from lxml import etree
@@ -37,8 +39,6 @@ DEFAULT_COURSE_VISIBILITY_IN_CATALOG =\
         'DEFAULT_COURSE_VISIBILITY_IN_CATALOG',
         CATALOG_VISIBILITY_CATALOG_AND_ABOUT
     )
-
-DEFAULT_MOBILE_AVAILABLE = getattr(settings, 'DEFAULT_MOBILE_AVAILABLE', False)
 
 
 class StringOrDate(Date):
