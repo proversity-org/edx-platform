@@ -122,8 +122,6 @@ def container_handler(request, usage_key_string):
         xblock = modulestore().get_item(usage_key)
         is_unit_page = is_unit(xblock)
         xblock_info = create_xblock_info(xblock, include_ancestor_info=False, graders=[])
-        #lms_link = xblock.location
-        #preview_lms_link = get_lms_link_for_item(xblock.location, preview=True)
         component_templates = get_component_templates(library)
         ancestor_xblocks = []
         parent = get_parent_xblock(xblock)
@@ -137,11 +135,7 @@ def container_handler(request, usage_key_string):
             parent = get_parent_xblock(parent)
         ancestor_xblocks.reverse()
 
-        #assert unit is not None, "Could not determine unit page"
-        #subsection = get_parent_xblock(unit)
-        #assert subsection is not None, "Could not determine parent subsection from unit " + unicode(unit.location)
-        #section = get_parent_xblock(subsection)
-        #assert section is not None, "Could not determine ancestor section from unit " + unicode(unit.location)
+
         # Fetch the XBlock info for use by the container page. Note that it includes information
         # about the block's ancestors and siblings for use by the Unit Outline.
         xblock_info = create_xblock_info(xblock, include_ancestor_info=is_unit_page)
@@ -150,28 +144,6 @@ def container_handler(request, usage_key_string):
         # need to figure out where this item is in the list of children as the
         # preview will need this
         index = 1
-        # for child in subsection.get_children():
-        #     if child.location == unit.location:
-        #         break
-        #     index += 1
-
-        # from xmodule.studio_editable import StudioEditableModule
-        # child = runtime.get_block(usage_key)
-        # child_view_name = StudioEditableModule.get_preview_view_name(child)
-
-        # if unicode(child.location) == force_render:
-        #     child_context['show_preview'] = True
-
-        # if child_context['show_preview']:
-        #     rendered_child = runtime.render_child(child, child_view_name, child_context)
-        # else:
-        #     rendered_child = runtime.render_child_placeholder(child, child_view_name, child_context)
-        #     fragment.add_frag_resources(rendered_child)
-
-        # contents.append({
-        #     'id': unicode(child.location),
-        #     'content': rendered_child.content,
-        # })
 
         return render_to_response('library_advanced_component.html', {
             #'context_course': course,  # Needed only for display of menus at top of page.
@@ -180,16 +152,11 @@ def container_handler(request, usage_key_string):
             'xblock': xblock,
             'xblock_locator': xblock.location,
             'unit': unit,
-            #'is_unit_page': is_unit_page,
-            #'subsection': subsection,
-            #'section': section,
             'new_unit_category': 'vertical',
             'outline_url': '{url}?format=concise'.format(url=reverse_library_url('library_handler', library_key)),
             'ancestor_xblocks': ancestor_xblocks,
             'component_templates': component_templates,
             'xblock_info': xblock_info,
-            #'draft_preview_link': preview_lms_link,
-            #'published_preview_link': lms_link,
             'templates': CONTAINER_TEMPLATES
         })
 
