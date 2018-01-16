@@ -214,10 +214,7 @@
                 },
 
                 submitForm: function(event) {
-                    console.log("jakjasjkaskjas")
                     var data = this.getFormData();
-                    
-                    console.log(data)
 
                     if (!_.isUndefined(event)) {
                         event.preventDefault();
