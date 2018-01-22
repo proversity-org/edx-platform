@@ -26,6 +26,7 @@ from certificates.models import (
 )
 from certificates.queue import XQueueCertInterface
 from eventtracking import tracker
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 from openedx.core.djangoapps.xmodule_django.models import CourseKeyField
 from util.organizations_helpers import get_course_organization_id
@@ -100,10 +101,25 @@ def get_certificates_for_user(username):
     ]
 
     """
-    return [
-        format_certificate_for_user(username, cert)
-        for cert in GeneratedCertificate.eligible_certificates.filter(user__username=username).order_by("course_id")
-    ]
+    course_org_filter =\
+        configuration_helpers.get_value('course_org_filter', None)
+        
+    if course_org_filter:
+        organization_courses =\
+            CourseOverview.objects.filter(org=course_org_filter)
+
+        certs = []
+        for course in organization_courses:
+            for cert in GeneratedCertificate.eligible_certificates.filter(
+                user__username=username, course_id=course.id
+            ):
+                certs.append(username, cert)
+        return certs
+    else:
+        return [
+            format_certificate_for_user(username, cert)
+            for cert in GeneratedCertificate.eligible_certificates.filter(user__username=username).order_by("course_id")
+        ]
 
 
 def get_certificate_for_user(username, course_key):
