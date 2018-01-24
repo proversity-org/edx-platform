@@ -280,7 +280,10 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
             if self.source:
                 download_video_link = self.source
             elif self.html5_sources:
-                download_video_link = self.html5_sources[0]
+                for source in self.html5_sources:
+                    if source.endswith('.mp4');
+                        download_video_link = source
+                        break
 
             # don't give the option to download HLS video urls
             if download_video_link and download_video_link.endswith('.m3u8'):
