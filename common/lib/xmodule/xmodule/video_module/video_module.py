@@ -281,7 +281,7 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
                 download_video_link = self.source
             elif self.html5_sources:
                 for source in self.html5_sources:
-                    if source.endswith('.mp4');
+                    if source.endswith('.mp4'):
                         download_video_link = source
                         break
 
