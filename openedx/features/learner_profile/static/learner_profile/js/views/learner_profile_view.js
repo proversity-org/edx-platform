@@ -64,42 +64,63 @@
                         $('.learner-achievements').addClass('is-hidden');
                     }
 
-                    if (this.showFullProfile() && (this.options.accountSettingsModel.get('accomplishments_shared'))) {
-                        tabs = [
-                            {view: this.sectionTwoView, title: gettext('About Me'), url: 'about_me'},
-                            {
-                                view: this.options.badgeListContainer,
-                                title: gettext('Accomplishments'),
-                                url: 'accomplishments'
+                    if (this.showFullProfile()) {
+                        var accomplishmentsShared = this.options.accountSettingsModel.get('accomplishments_shared');
+                        var showLinkedInProfile = this.options.showLinkedInProfile;
+
+                        if (this.options.showLinkedInProfile) {
+                            tabs = [
+                                {view: this.sectionTwoView, title: gettext('About Me'), url: 'about_me'},
+                                {view: this.options.linkedInProfileContainer, title: gettext('LinkedIn Profile'), url: 'linkedin_profile'}
+                            ];
+
+                            if (accomplishmentsShared) {
+                                tabs.push({
+                                    view: this.options.badgeListContainer,
+                                    title: gettext('Accomplishments'),
+                                    url: 'accomplishments'
+                                })
                             }
-                        ];
+                        } else if (accomplishmentsShared) {
+                            tabs = [
+                                {view: this.sectionTwoView, title: gettext('About Me'), url: 'about_me'},
+                                {
+                                    view: this.options.badgeListContainer,
+                                    title: gettext('Accomplishments'),
+                                    url: 'accomplishments'
+                                }
+                            ];
+                        }
 
-                        // Build the accomplishments Tab and fill with data
-                        this.options.badgeListContainer.collection.fetch().done(function() {
-                            self.options.badgeListContainer.render();
-                        }).error(function() {
-                            self.options.badgeListContainer.renderError();
-                        });
+                        if (tabs && tabs.length > 0) {
+                            // Build the accomplishments Tab and fill with data
+                            this.options.badgeListContainer.collection.fetch().done(function() {
+                                self.options.badgeListContainer.render();
+                            }).error(function() {
+                                self.options.badgeListContainer.renderError();
+                            });
 
-                        this.tabbedView = new TabbedView({
-                            tabs: tabs,
-                            router: this.router,
-                            viewLabel: gettext('Profile')
-                        });
+                            this.tabbedView = new TabbedView({
+                                tabs: tabs,
+                                router: this.router,
+                                viewLabel: gettext('Profile')
+                            });
 
-                        this.tabbedView.render();
-                        this.$el.find('.account-settings-container').append(this.tabbedView.el);
+                            this.$el.find('.wrapper-profile-bio').html(this.tabbedView.render().el);
 
-                        if (this.firstRender) {
-                            this.router.on('route:loadTab', _.bind(this.setActiveTab, this));
-                            Backbone.history.start();
-                            this.firstRender = false;
-                            // Load from history.
-                            this.router.navigate((Backbone.history.getFragment() || 'about_me'), {trigger: true});
+                            if (this.firstRender) {
+                                this.router.on('route:loadTab', _.bind(this.setActiveTab, this));
+                                Backbone.history.start();
+                                this.firstRender = false;
+                                // Load from history.
+                                this.router.navigate((Backbone.history.getFragment() || 'about_me'), {trigger: true});
+                            } else {
+                                // Restart the router so the tab will be brought up anew.
+                                Backbone.history.stop();
+                                Backbone.history.start();
+                            }
                         } else {
-                            // Restart the router so the tab will be brought up anew.
-                            Backbone.history.stop();
-                            Backbone.history.start();
+                            this.$el.find('.wrapper-profile-bio').html(this.sectionTwoView.render().el);
                         }
                     } else {
                         // xss-lint: disable=javascript-jquery-html
