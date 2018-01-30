@@ -328,6 +328,9 @@ FEATURES = {
     # Course discovery feature
     'ENABLE_COURSE_DISCOVERY': False,
 
+    # Filter course catalogue by user language preference
+    'ENABLE_FILTER_COURSES_BY_USER_LANG': False,
+
     # Setting for overriding default filtering facets for Course discovery
     # COURSE_DISCOVERY_FILTERS = ["org", "language", "modes"]
 

@@ -84,6 +84,7 @@ from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
 from openedx.core.djangoapps.programs.utils import ProgramMarketingDataExtender
 from openedx.core.djangoapps.self_paced.models import SelfPacedConfiguration
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+from openedx.core.djangoapps.user_api.preferences.api import get_user_preferences
 from openedx.core.djangoapps.util.user_messages import PageLevelMessages
 from openedx.core.djangolib.markup import HTML, Text
 from openedx.features.course_experience import UNIFIED_COURSE_TAB_FLAG, course_home_url_name
@@ -217,6 +218,12 @@ def courses(request):
 
     # Add marketable programs to the context.
     programs_list = get_programs_with_type(request.site, include_hidden=False)
+
+
+    if configuration_helpers.get_value("ENABLE_FILTER_COURSES_BY_USER_LANG",
+                                       settings.FEATURES.get('ENABLE_FILTER_COURSES_BY_USER_LANG')):
+        user_prefered_lang = get_user_preferences(request.user)['pref-lang']
+        courses_list = filter(lambda x: x.language == user_prefered_lang, courses_list)
 
     return render_to_response(
         "courseware/courses.html",
