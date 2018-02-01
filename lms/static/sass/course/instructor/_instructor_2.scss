@@ -312,6 +312,24 @@
   }
 }
 
+.data-disclaimer-modal {
+  color:#555 !important;
+  background-color: #fff !important;
+  padding: 20px !important;
+  line-height: 1.9;
+
+  .inner-wrapper {
+    background-color: #fafafa;
+    border: none;
+  }
+}
+
+.modal_close {
+  position: absolute;
+  display: block;
+  z-index: 2;
+}
+
 // elements - general
 // --------------------
 .idash-section {
