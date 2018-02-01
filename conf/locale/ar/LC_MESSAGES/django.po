@@ -10759,7 +10759,7 @@ msgstr "تذكُّر بياناتي"
 #. below a field meant to hold the user's email address.
 #: openedx/core/djangoapps/user_api/api.py
 msgid "This is what you will use to login."
-msgstr ""
+msgstr "هذا هو ما سوف تستخدمه لتسجيل الدخول"
 
 #. Translators: This label appears above a field on the registration form
 #. meant to confirm the user's email address.
@@ -10778,7 +10778,7 @@ msgstr ""
 #. below a field meant to hold the user's full name.
 #: openedx/core/djangoapps/user_api/api.py
 msgid "This name will be used on any certificates that you earn."
-msgstr ""
+msgstr "سيتم استخدام هذا الاسم في أي شهادات تحصل عليها"
 
 #: cms/templates/register.html lms/templates/register-form.html
 #: lms/templates/register-shib.html lms/templates/signup_modal.html
@@ -10793,7 +10793,7 @@ msgstr "اسم المستخدم"
 #: openedx/core/djangoapps/user_api/api.py
 msgid ""
 "The name that will identify you in your courses. It cannot be changed later."
-msgstr ""
+msgstr "الاسم الذي سيتم تعريفك به في الدورات التدريبية. لا يمكن تغييره لاحقًا"
 
 #. Translators: This example username is used as a placeholder in
 #. a field on the registration form meant to hold the user's username.
@@ -10857,14 +10857,14 @@ msgstr "الشركة"
 #. form used to select the country in which the user lives.
 #: openedx/core/djangoapps/user_api/api.py
 msgid "Country or Region of Residence"
-msgstr ""
+msgstr "بلد أو منطقة الإقامة"
 
 #. Translators: These instructions appear on the registration form,
 #. immediately
 #. below a field meant to hold the user's country.
 #: openedx/core/djangoapps/user_api/api.py
 msgid "The country or region where you live."
-msgstr ""
+msgstr "حدد بلد أو منطقة إقامتك. البلد أو منطقة الإقامة هي المكان الذي تعيش فيه."
 
 #: openedx/core/djangoapps/user_api/api.py
 msgid "Review the Honor Code"
@@ -11058,6 +11058,8 @@ msgstr ""
 #: lms/templates/navigation/bootstrap/navbar-not-authenticated.html
 #: lms/templates/support/contact_us.html
 #: themes/edx.org/lms/templates/header.html
+#: lms/templates/login.html
+#: lms/templates/student_account/register.underscore
 msgid "Sign in"
 msgstr "تسجيل الدخول"
 
@@ -14771,6 +14773,7 @@ msgid "time"
 msgstr "الوقت"
 
 #: lms/templates/ccx/schedule.html lms/templates/support/contact_us.html
+#: lms/static/js/student_account/views/FormView.js
 msgid "(Optional)"
 msgstr "(اختياري)"
 
@@ -19980,8 +19983,9 @@ msgid "Got it!"
 msgstr ""
 
 #: lms/templates/widgets/cookie-consent.html
+#: lms/templates/course.html
 msgid "Learn more"
-msgstr ""
+msgstr "أعرف أكثر"
 
 #: lms/templates/wiki/includes/article_menu.html
 msgid "{span_start}(active){span_end}"
@@ -24627,3 +24631,358 @@ msgstr "طور مهاراتك"
 #: lms/templates/index.html
 msgid "Doroob's programs provide the skills you need to succeed"
 msgstr "يوفر دروب البرامج التي تحتاجها للنجاح"
+
+#: lms/templates/navigation/navbar-logo-header.html
+msgid "Menu"
+msgstr "قائمة طعام"
+
+#: lms/templates/login.html
+msgid "First time here? Create an account"
+msgstr "المرة الأولى هنا؟ إنشاء حساب"
+
+#: lms/templates/index.html
+msgid "Access courses on the go"
+msgstr "الوصول للدورات بالضغط على ‎الذهاب"
+
+#: lms/templates/index.html
+msgid ""
+"Download the app and access your courses wherever you are. Sync videos to "
+"your device and watch offline, at a time that suits you."
+msgstr "حمل التطبيق وتمتع بالوصول إلى الدورات الخاصة بك أينما كنت.‎‏ كما قم بمزامنة الفيديوهات بالجهاز الخاص بك لمشاهدة الفيديوهات دون الحاجة للاتصال بشبكة الإنترنت وفي أي وقت يناسبك."
+
+#: lms/templates/student_account/register.underscore
+msgid "Already have an %(platformName) account?"
+msgstr "لديك بالفعل حساب ‎على ‏%(platformName)؟ تسجيل الدخول"
+
+#: lms/templates/footer.html
+msgid "Cookie Policy"
+msgstr "سياسة ملفات تعريف الارتباط"
+
+#: lms/templates/courseware/course_about.html
+msgid "Enrol now"
+msgstr "سجل الآن"
+
+#: lms/templates/courseware/course_about.html
+msgid "Or explore other courses"
+msgstr "أو اكتشف المزيد عن الدورات الأخرى"
+
+#: lms/templates/courseware/course_about.html
+msgid "Enrolment in this course is by invitation only"
+msgstr "يتم التسجيل في هذه الدورة بالدعوة فقط"
+
+#: lms/templates/static_templates/cookies.html
+msgid "COOKIE POLICY"
+msgstr "سياسة ملفات تعريف الارتباط"
+
+#: lms/templates/static_templates/cookies.html
+msgid "1. What Are Cookies"
+msgstr "1. ماهية ملفات تعريف الارتباط"
+
+#: lms/templates/static_templates/cookies.html
+msgid ""
+"As is common practice with almost all professional websites this site uses "
+"cookies, which are tiny files that are downloaded to your computer, to "
+"improve your experience. This page describes what information they gather, "
+"how we use it and why we sometimes need to store these cookies. We will also "
+"share how you can prevent these cookies from being stored however this may "
+"downgrade or 'break' certain elements of the sites functionality"
+msgstr "من الممارسات الشائعة في جميع المواقع المهنية تقريبًا، يستخدم هذا الموقع ملفات تعريف ارتباط، وهي ملفات صغيرة يتم تنزيلها على جهاز الكمبيوتر الخاص بك لتحسين تجربتك. وتبين هذه الصفحة المعلومات التي تجمعها وكيف نستخدمها ولماذا نحتاج أحيانًا إلى تخزين ملفات تعريف الارتباط هذه. وسوف نشارك أيضًا كيف يمكنك منع تخزين ملفات تعريف الارتباط، ولكن هذا قد يُقلل أو 'يُعطِّل' بعض عناصر وظائف الموقع."
+
+#: lms/templates/static_templates/cookies.html
+msgid "2. How We Use Cookies"
+msgstr "2. كيف نستخدم ملفات تعريف الارتباط"
+
+#: lms/templates/static_templates/cookies.html
+msgid ""
+"We use cookies for a variety of reasons detailed below. Unfortunately in "
+"most cases there are no industry standard options for disabling cookies "
+"without completely disabling the functionality and features they add to this "
+"site. It is recommended that you leave on all cookies if you are not sure "
+"whether you need them or not in case they are used to provide a service that "
+"you use"
+msgstr "نحن نستخدم ملفات تعريف الارتباط لمجموعة متنوعة من الأسباب نفصلها في السطور التالية. وللأسف لا توجد في معظم الحالات خيارات قياسية مستخدمة في هذا المجال لتعطيل ملفات تعريف الارتباط دون التعطيل الكامل للوظائف والميزات التي تضيفها إلى هذا الموقع. ويوصى بأن تترك جميع ملفات تعريف الارتباط إذا لم تكن متأكدًا هل تحتاج إليها أم لا في حالة استخدامها لتوفير خدمة تستخدمها."
+
+#: lms/templates/static_templates/cookies.html
+msgid "3. Disabling Cookies"
+msgstr "3. تعطيل ملفات تعريف الارتباط"
+
+#: lms/templates/static_templates/cookies.html
+msgid ""
+"You can prevent the setting of cookies by adjusting the settings on your "
+"browser (see your browser Help for how to do this). Be aware that disabling "
+"cookies will affect the functionality of this and many other websites that "
+"you visit. Disabling cookies will usually result in also disabling certain "
+"functionality and features of the this site. Therefore it is recommended "
+"that you do not disable cookies"
+msgstr "يمكنك منع وضع ملفات تعريف الارتباط عن طريق ضبط الإعدادات في المتصفح (راجع قسم المساعدة بمتصفحك للتعرف على كيفية إجراء ذلك). ولتعلم أن تعطيل ملفات تعريف الارتباط سيؤثر على وظائف هذا الموقع والعديد من المواقع الإلكترونية الأخرى التي تزورها. ويؤدي تعطيل ملفات تعريف الارتباط عادةً إلى تعطيل وظائف وميزات معينة في هذا الموقع. ولذلك يوصى بأن لا تُعطِّل ملفات تعريف الارتباط."
+
+#: lms/templates/static_templates/cookies.html
+msgid "4. The Cookies We Set"
+msgstr "4. ملفات تعريف الارتباط التي نضعها"
+
+#: lms/templates/static_templates/cookies.html
+msgid ""
+"If you create an account with us then we will use cookies for the management "
+"of the signup process and general administration. These cookies will usually "
+"be deleted when you log out however in some cases they may remain afterwards "
+"to remember your site preferences when logged out"
+msgstr "إذا قمت بإنشاء حساب لدينا فسوف نستخدم ملفات تعريف ارتباط لإدارة عملية الاشتراك والإدارة العامة. وعادة ما يتم حذف ملفات تعريف الارتباط هذه عند تسجيل الخروج ولكن في بعض الحالات قد تبقى بعد ذلك لتذكر تفضيلاتك للموقع عند تسجيل الخروج."
+
+#: lms/templates/static_templates/cookies.html
+msgid ""
+"We use cookies when you are logged in so that we can remember this fact. "
+"This prevents you from having to log in every single time you visit a new "
+"page. These cookies are typically removed or cleared when you log out to "
+"ensure that you can only access restricted features and areas when logged in"
+msgstr "ونحن نستخدم ملفات تعريف الارتباط عند تسجيلك الدخول حتى نتذكر هذا. وهذا يمنع من أن تُضطر إلى تسجيل الدخول في كل مرة تزور فيها صفحة جديدة. وعادةً ما يتم حذف أو إزالة ملفات تعريف الارتباط هذه عند تسجيلك الخروج للتأكد من أنه لا يمكنك الدخول إلى الميزات والمساحات المقيدة إلا عند تسجيل الدخول."
+
+#: lms/templates/static_templates/cookies.html
+msgid ""
+"When you submit data to through a form such as those found on contact pages "
+"or comment forms cookies may be set to remember your user details for future "
+"correspondence"
+msgstr "وعند إدخالك لبيانات من خلال نموذج مثل الموجود على صفحات بيانات الاتصال أو نماذج التعليقات قد يتم تعيين ملفات تعريف ارتباط لتذكر بيانات المستخدم للمراسلات المستقبلية."
+
+#: lms/templates/static_templates/cookies.html
+msgid ""
+"In order to provide you with a great experience on this site we provide the "
+"functionality to set your preferences for how this site runs when you use "
+"it. In order to remember your preferences we need to set cookies so that "
+"this information can be called whenever you interact with a page is affected "
+"by your preferences"
+msgstr "ولتوفير تجربة رائعة لك على هذا الموقع، نحن نوفر وظائف لتعيين تفضيلاتك لكيفية تشغيل هذا الموقع عندما تستخدمه. ولتذكر تفضيلاتك نحن بحاجة إلى تعيين ملفات تعريف ارتباط حتى يمكن استدعاء هذه المعلومات عندما تتفاعل مع صفحة تتأثر بتفضيلاتك."
+
+#: lms/templates/static_templates/cookies.html
+msgid "5. Third Party Cookies"
+msgstr "5. ملفات تعريف الارتباط الخاصة بجهات خارجية"
+
+#: lms/templates/static_templates/cookies.html
+msgid ""
+"In some special cases we also use cookies provided by trusted third parties. "
+"The following section details which third party cookies you might encounter "
+"through this site"
+msgstr "نستخدم أيضًا في بعض الحالات الخاصة ملفات تعريف ارتباط توفرها جهات خارجية (الغير) موثوق بها. ويعرض القسم التالي ملفات تعريف الارتباط الخاصة بجهات خارجية التي قد تقابلها خلال هذا الموقع."
+
+#: lms/templates/static_templates/cookies.html
+msgid ""
+"This site uses Google Analytics which is one of the most widespread and "
+"trusted analytics solution on the web for helping us to understand how you "
+"use the site and ways that we can improve your experience. These cookies may "
+"track things such as how long you spend on the site and the pages that you "
+"visit so we can continue to produce engaging content. For more information "
+"on Google Analytics cookies, see the official"
+msgstr "يستخدم هذا الموقع Google Analytics (تحليلات جوجل) التي تعد أحد أكثر حلول التحليلات انتشارًا وموثوقة على الويب لمساعدتنا في فهم كيفية استخدامك للموقع والطرق التي تمكننا من تحسين تجربتك. وقد تتَبع ملفات تعريف الارتباط هذه أمورًا مثل المدة التي تقضيها على الموقع والصفحات التي تزورها حتى نتمكن من الاستمرار في إنتاج محتوى جذاب. وللمزيد من المعلومات حول ملفات تعريف الارتباط التي تخص Google Analytics (تحليلات جوجل)، راجع"
+
+#: lms/templates/static_templates/cookies.html
+msgid "Google Analytics documentation"
+msgstr "وثائق Google Analytics (تحليلات جوجل) الرسمية"
+
+#: lms/templates/static_templates/cookies.html
+msgid ""
+"In some cases we may provide you with custom content based on what you tell "
+"us about yourself either directly or indirectly by linking a social media "
+"account. These types of cookies simply allow us to provide you with content "
+"that we feel may be of interest to you"
+msgstr "قد نوفر لك في بعض الحالات محتوى مخصصًا استنادًا إلى ما تخبرنا به عن نفسك سواء بشكل مباشر أو غير مباشر عن طريق الربط بحساب في مواقع التواصل الاجتماعي. فهذه الأنواع من ملفات تعريف الارتباط تتيح لنا ببساطة أن نقدم لك المحتوى الذي نشعر أنك تهتم به."
+
+#: lms/templates/static_templates/cookies.html
+msgid "6. More Information"
+msgstr "6. المزيد من المعلومات"
+
+#: lms/templates/static_templates/cookies.html
+msgid ""
+"Hopefully that has clarified things for you and as was previously mentioned "
+"if there is something that you aren't sure whether you need or not it's "
+"usually safer to leave cookies enabled in case it does interact with one of "
+"the features you use on our site. However if you are still looking for more "
+"information then you can contact us through one of our preferred contact "
+"methods"
+msgstr "نأمل أن يكون ذلك قد أوضح لك الأمور، وكما سبق أن ذكرنا إن كان ثمة ما لست متأكدًا من حاجتك إليه فعادةً ما يكون ترك ملفات تعريف الارتباط ممكنة أكثر أمانًا إذ قد تتفاعل مع إحدى الميزات التي تستخدمها على موقعنا. ومع ذلك إذا كنت لا تزال تبحث عن المزيد من المعلومات فيمكنك التواصل معنا بإحدى وسائل الاتصال المفضلة لدينا"
+
+#: lms/templates/static_templates/cookies.html
+msgid "Print Cookie Policy"
+msgstr "طباعة سياسة ملفات تعريف الارتباط"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "TERMS OF SERVICE"
+msgstr "شروط الخدمة"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "1. Description Of"
+msgstr "1. وصف"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "2. Rules For Online Conduct"
+msgstr "2. قواعد السلوك على الإنترنت"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "2.1. The following list of items is strictly prohibited on the site:"
+msgstr "2.1. قائمة العناصر التالية محظورة حظرًا صارمًا على 'الموقع':"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "3. User Accounts and Authority"
+msgstr "3. حسابات وصلاحيات المستخدمين"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "4. Your Right To Use Content On The Site"
+msgstr "4. حقك في استخدام المحتوى الموجود على الموقع"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "5. User Postings"
+msgstr "5. منشورات المستخدم"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "5.1. User Postings Representations and Warranties"
+msgstr "5.1. بيانات وضمانات منشورات المستخدم"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "5.2. License Grant to"
+msgstr "5.2. منح الترخيص إلى"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "5.3. License Grant to"
+msgstr "5.3. منح الترخيص إلى"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "5.4. Professional Certification and Application for Employer Roles"
+msgstr "5.4. الشهادة المهنية والتقدم لأدوار أصحاب العمل"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "6. Trademarks"
+msgstr "6. العلامات التجارية"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "6.1. Use of  , Trademarks and Service Marks"
+msgstr "6.1. استخدام             للعلامات التجارية وعلامات الخدمات"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "6.2. Copyright Infringement"
+msgstr "6.2. انتهاك حقوق الطبع والنشر"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "7. Disclaimers Of Warranty / Limitations Of Liabilities"
+msgstr "7. إخلاء المسؤولية من الضمانات وحدود المسؤولية"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "7.1. User Postings Disclaimer"
+msgstr "7.1. إخلاء المسؤولية المتعلقة بمنشورات المستخدم"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "7.2. Links to Other Sites"
+msgstr "7.2. الارتباطات إلى المواقع الأخرى"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "8. Indemnification"
+msgstr "8. التعويض"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "9. Miscellaneous"
+msgstr "9. شروط متنوعة"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "9.1. Termination Rights / Discontinuation of Courses and Content"
+msgstr "9.1. حقوق الإنهاء /  إيقاف الدورات (الكورسات) والمحتوى"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "9.2. Entire Agreement"
+msgstr "9.2. كامل الاتفاق"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "9.3. Waiver and Severability of TOS"
+msgstr "9.3. التنازل وانفصال شروط الخدمة"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "9.4. Choice of Law/Forum Selection"
+msgstr "9.4. اختيار القانون/ دائرة الاختصاص"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "HONOR CODE"
+msgstr "ميثاق الشرف"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "1. Collaboration Policy"
+msgstr "1. سياسة التعاون"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "2. Honor Pledge"
+msgstr "2. عهد الشرف"
+
+#: lms/templates/static_templates/honor.html
+#: lms/templates/static_templates/tos.html
+msgid "3. Changing the Honor Code"
+msgstr "3. تغيير ميثاق الشرف"
+
+#: lms/templates/static_templates/privacy.html
+msgid "PRIVACY POLICY"
+msgstr "سياسة الخصوصية"
+
+#: lms/templates/static_templates/privacy.html
+msgid "1. Usernames And Postings"
+msgstr "1. أسماء المستخدم والمنشورات"
+
+#: lms/templates/static_templates/privacy.html
+msgid "2. Consent To Processing Outside Home Country"
+msgstr "2. الموافقة على المعالجة خارج البلد الأم"
+
+#: lms/templates/static_templates/privacy.html
+msgid "3. Personal Information"
+msgstr "3. المعلومات الشخصية"
+
+#: lms/templates/static_templates/privacy.html
+msgid "4. Information We Collect And How We Use It"
+msgstr "4. المعلومات التي نجمعها وكيف نستخدمها"
+
+#: lms/templates/static_templates/privacy.html
+msgid "5. Use And Disclosure To Third Parties"
+msgstr "5. الاستخدام والإفصاح لجهات خارجية"
+
+#: lms/templates/static_templates/privacy.html
+msgid "6. Use For Personalization And Pedagogical Improvements"
+msgstr "6. الاستخدام لإضفاء الطابع الشخصي والتحسينات التعليمية"
+
+#: lms/templates/static_templates/privacy.html
+msgid "7. Links To Other Websites"
+msgstr "7. الارتباطات إلى المواقع الإلكترونية الأخرى"
+
+#: lms/templates/static_templates/privacy.html
+msgid "8. Security"
+msgstr "8. الأمان"
+
+#: lms/templates/static_templates/privacy.html
+msgid "9. Changing Our Policy"
+msgstr "9. تغيير سياستنا"
+
+#: lms/templates/static_templates/privacy.html
+msgid "10. Minors"
+msgstr "10. الأطفال القُصَّر"
+
+#: lms/templates/static_templates/privacy.html
+msgid "11. Privacy Concerns"
+msgstr "11. شواغل الخصوصية"
+

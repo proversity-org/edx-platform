@@ -3508,14 +3508,14 @@ msgstr ""
 
 #: lms/static/js/discussions_management/views/discussions.js
 msgid "Cohorts"
-msgstr ""
+msgstr "الأفواج"
 
 #: lms/static/js/discussions_management/views/discussions.js
 msgid ""
 "Use cohorts as the basis for dividing discussions. All learners, regardless "
 "of cohort, see the same discussion topics, but within divided topics, only "
 "members of the same cohort see and respond to each others’ posts. "
-msgstr ""
+msgstr "استخدم مسارات التسجيل كأساس لتقسيم المناقشات. يشاهد جميع المتعلمين -- بغض النظر عن مسار التسجيل -- موضوعات المناقشة نفسها؛ لكن في الموضوعات المقسمة، لا يمكن لغير المتعلمين من مسار التسجيل نفسه مشاهدة منشورات غيرهم من الزملاء والرد عليها. "
 
 #: lms/static/js/discussions_management/views/discussions.js
 msgid "Discussion topics in the course are not divided."
@@ -8124,15 +8124,15 @@ msgstr "التسجيل من خلال edX"
 
 #: lms/templates/student_account/login.underscore
 msgid "First time here?"
-msgstr ""
+msgstr "المرة الأولى هنا؟"
 
 #: lms/templates/student_account/login.underscore
 msgid "Create an Account."
-msgstr ""
+msgstr "إنشاء حساب"
 
 #: lms/templates/student_account/login.underscore
 msgid "Sign In"
-msgstr ""
+msgstr "تسجيل الدخول"
 
 #: lms/templates/student_account/login.underscore
 msgid ""
@@ -8190,7 +8190,7 @@ msgstr ""
 
 #: lms/templates/student_account/register.underscore
 msgid "Create an Account"
-msgstr ""
+msgstr "إنشاء حساب"
 
 #: lms/templates/student_account/register.underscore
 msgid "Create an account using"
