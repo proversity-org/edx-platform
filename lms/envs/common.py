@@ -417,6 +417,9 @@ FEATURES = {
     # See https://cookieconsent.insites.com/ for more.
     'ENABLE_COOKIE_CONSENT': False,
 
+    # Show feedback when email does not exists when resetting password.
+    'SHOW_FORGOT_PASSWORD_EMAIL_ERROR': False,
+
 }
 
 # Settings for the course reviews tool template and identification key, set either to None to disable course reviews
