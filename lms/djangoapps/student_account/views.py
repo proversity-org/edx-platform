@@ -216,12 +216,6 @@ def password_change_request_handler(request):
     email = user.email if user.is_authenticated() else request.POST.get('email')
 
     if email:
-        invalid_email = False
-        show_forgot_password_email_error = configuration_helpers.get_value(
-            'SHOW_FORGOT_PASSWORD_EMAIL_ERROR',
-            settings.FEATURES['SHOW_FORGOT_PASSWORD_EMAIL_ERROR']
-        )
-
         try:
             request_password_change(email, request.is_secure())
             user = user if user.is_authenticated() else User.objects.get(email=email)
@@ -230,15 +224,10 @@ def password_change_request_handler(request):
             AUDIT_LOG.info("Invalid password reset attempt")
             # Increment the rate limit counter
             limiter.tick_bad_request_counter(request)
-            invalid_email = True
 
-        if not show_forgot_password_email_error or not invalid_email:
-            return HttpResponse(status=200)
-
-        return HttpResponseBadRequest(_("That e-mail address doesn't have an "
-            "associated user account. Are you sure you've registered?"))
+        return HttpResponse(status=200)
     else:
-        return HttpResponseBadRequest(_("No email address provided.")) 
+        return HttpResponseBadRequest(_("No email address provided."))
 
 
 def update_context_for_enterprise(request, context):
