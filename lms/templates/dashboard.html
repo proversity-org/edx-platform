@@ -104,22 +104,6 @@ from openedx.core.djangolib.markup import HTML, Text
 <main id="main" aria-label="Content" tabindex="-1">
     <div class="container dashboard" id="dashboard-main">
 
-      % if subscription_courses:
-      <div id="subscription-content" style="margin-bottom:20px">
-        <div>
-          <span class="icon fa fa-spinner fa-pulse fa-spin" aria-hidden="true"></span>
-          <span>${_("Loading subscription content...")}</span>
-        </div>
-      </div>
-      <script type="text/javascript">
-        jQuery(document).ready(function($){
-          $("#subscription-content").load("${reverse('subscription_dashboard')}", function(){
-            console.log("Subscription content loaded.")
-          })
-        });
-      </script>
-      % endif
-
       <div class="my-courses" id="my-courses">
         <%include file="learner_dashboard/_dashboard_navigation_courses.html"/>
 
