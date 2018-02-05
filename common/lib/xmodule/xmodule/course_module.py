@@ -894,13 +894,19 @@ class CourseFields(object):
         ),
         scope=Scope.settings, default=0.0
     )
-    subscription_catalog_id = String(
-        display_name=_("Subscription Catalog ID"),
+    subscription_content_settings = Dict(
+        display_name=_("Subscription Content Settings"),
         help=_(
-            "Enter the Bibblio Catalog ID relevant to the subscription content for this course."
+            "Enter the Bibblio Catalog IDs by Course Mode relevant to the subscription content for this course."
             "If a value is given this course will be treated as a Subscription content product."
+            "For example: {example_format}"
         ),
-        scope=Scope.settings, default=""
+        help_format_args=dict(
+            example_format=(
+                '{"audit": [ "a77b86b6-50ad-49dd-af02-1440122ce021" ], "verified": [ "a77b86b6-50ad-49dd-af02-1440122ce021" ]}'
+            ),
+        ),
+        scope=Scope.settings, default=None
     )
 
 

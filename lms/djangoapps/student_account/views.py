@@ -216,6 +216,12 @@ def password_change_request_handler(request):
     email = user.email if user.is_authenticated() else request.POST.get('email')
 
     if email:
+        invalid_email = False
+        show_forgot_password_email_error = configuration_helpers.get_value(
+            'SHOW_FORGOT_PASSWORD_EMAIL_ERROR',
+            settings.FEATURES['SHOW_FORGOT_PASSWORD_EMAIL_ERROR']
+        )
+
         try:
             request_password_change(email, request.is_secure())
             user = user if user.is_authenticated() else User.objects.get(email=email)
@@ -224,10 +230,15 @@ def password_change_request_handler(request):
             AUDIT_LOG.info("Invalid password reset attempt")
             # Increment the rate limit counter
             limiter.tick_bad_request_counter(request)
+            invalid_email = True
 
-        return HttpResponse(status=200)
+        if not show_forgot_password_email_error or not invalid_email:
+            return HttpResponse(status=200)
+
+        return HttpResponseBadRequest(_("That e-mail address doesn't have an "
+            "associated user account. Are you sure you've registered?"))
     else:
-        return HttpResponseBadRequest(_("No email address provided."))
+        return HttpResponseBadRequest(_("No email address provided.")) 
 
 
 def update_context_for_enterprise(request, context):
@@ -715,15 +726,16 @@ class LinkedInProfile(ViewSet):
                         r = requests.get(url, params=params, headers=headers)
                         if r.status_code == 200:
                             user_profile = UserProfile.objects.get(user=user)
+                            linkedin_profile = {"linkedin_profile": r.json()}
                             if len(user_profile.meta) > 0:
                                 previous_meta = json.loads(user_profile.meta)
                                 mixed_dicts =\
-                                    (previous_meta.items() + r.json().items())
+                                    (previous_meta.items() + linkedin_profile.items())
                                 new_meta =\
                                     {key: value for (key, value) in mixed_dicts}
                                     
                             else:
-                                new_meta = r.json()
+                                new_meta = linkedin_profile
                             user_profile.meta = json.dumps(new_meta)
                             user_profile.save()
         except Exception as e:

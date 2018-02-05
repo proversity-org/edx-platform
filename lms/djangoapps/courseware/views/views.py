@@ -84,6 +84,7 @@ from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
 from openedx.core.djangoapps.programs.utils import ProgramMarketingDataExtender
 from openedx.core.djangoapps.self_paced.models import SelfPacedConfiguration
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+from openedx.core.djangoapps.user_api.preferences.api import get_user_preferences
 from openedx.core.djangoapps.util.user_messages import PageLevelMessages
 from openedx.core.djangolib.markup import HTML, Text
 from openedx.features.course_experience import UNIFIED_COURSE_TAB_FLAG, course_home_url_name
@@ -217,6 +218,12 @@ def courses(request):
 
     # Add marketable programs to the context.
     programs_list = get_programs_with_type(request.site, include_hidden=False)
+
+
+    if configuration_helpers.get_value("ENABLE_FILTER_COURSES_BY_USER_LANG",
+                                       settings.FEATURES.get('ENABLE_FILTER_COURSES_BY_USER_LANG')):
+        user_prefered_lang = get_user_preferences(request.user)['pref-lang']
+        courses_list = filter(lambda x: x.language == user_prefered_lang, courses_list)
 
     return render_to_response(
         "courseware/courses.html",
@@ -387,7 +394,7 @@ def course_info(request, course_id):
         if course_homepage_invert_title:
             course_title = course.display_name_with_default
             course_subtitle = course.display_number_with_default
-            
+
         context = {
             'request': request,
             'masquerade_user': user,
@@ -831,9 +838,9 @@ def course_about(request, course_id):
                 needs_to_verify_age = not hasattr(request.user, 'profile') or bool(int(course.minimum_age) - request.user.profile.age == 1)
                 display_age = int(course.minimum_age)
             elif needs_to_set_age is True:
-                needs_to_verify_age = False      
+                needs_to_verify_age = False
                 display_age = int(course.minimum_age)
-        
+
         is_old_enough = bool(not course.minimum_age or not hasattr(request.user, 'profile') or not request.user.profile.age) or \
             bool(request.user.profile.age >= course.minimum_age)
 

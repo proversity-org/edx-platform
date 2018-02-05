@@ -302,6 +302,12 @@
                     message: this.helpMessage
                 }));
                 this.delegateEvents();
+
+                if (this.options.isLinkedInProfile) {
+                    this.$el.css({ 'white-space': 'white-space: pre-wrap;' });
+                    console.log(this.$el);
+                }
+                
                 return this;
             },
 

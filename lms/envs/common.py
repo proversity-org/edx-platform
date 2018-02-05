@@ -67,6 +67,7 @@ FEATURES = {
     'EXTEND_PROFILE_WITH_LINKEDIN': True,
     'LINKEDIN_FIELDS': """:(email-address,first-name,headline,id,industry,last-name,
         location,specialties,summary)""",
+    'SHOW_LINKEDIN_PROFILE': False,
     'DISPLAY_DEBUG_INFO_TO_STAFF': True,
     'DISPLAY_HISTOGRAMS_TO_STAFF': False,  # For large courses this slows down courseware access for staff.
 
@@ -328,6 +329,9 @@ FEATURES = {
     # Course discovery feature
     'ENABLE_COURSE_DISCOVERY': False,
 
+    # Filter course catalogue by user language preference
+    'ENABLE_FILTER_COURSES_BY_USER_LANG': False,
+
     # Setting for overriding default filtering facets for Course discovery
     # COURSE_DISCOVERY_FILTERS = ["org", "language", "modes"]
 
@@ -416,6 +420,9 @@ FEATURES = {
     # Enable footer banner for cookie consent.
     # See https://cookieconsent.insites.com/ for more.
     'ENABLE_COOKIE_CONSENT': False,
+
+    # Show feedback when email does not exists when resetting password.
+    'SHOW_FORGOT_PASSWORD_EMAIL_ERROR': False,
 
 }
 

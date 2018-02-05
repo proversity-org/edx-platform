@@ -1,5 +1,6 @@
 """ Views for a student's profile information. """
 
+import json
 from badges.utils import badges_enabled
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -46,7 +47,13 @@ def learner_profile(request, username):
         GET /account/profile
     """
     try:
-        context = learner_profile_context(request, username, request.user.is_staff)
+        show_linkedin_profile =\
+            configuration_helpers.get_value(
+                'SHOW_LINKEDIN_PROFILE',
+                settings.FEATURES.get('SHOW_LINKEDIN_PROFILE', False)
+            )
+            
+        context = learner_profile_context(request, username, request.user.is_staff, show_linkedin_profile)
         # TODO: LEARNER-2554: 09/2017: Remove message and cookie logic when we no longer want this message
         message_viewed = False
         if (context['own_profile'] and
@@ -77,7 +84,7 @@ def learner_profile(request, username):
         raise Http404
 
 
-def learner_profile_context(request, profile_username, user_is_staff):
+def learner_profile_context(request, profile_username, user_is_staff, show_linkedin_profile=False):
     """Context for the learner profile page.
 
     Args:
@@ -138,10 +145,45 @@ def learner_profile_context(request, profile_username, user_is_staff):
         'show_program_listing': ProgramsApiConfig.is_enabled(),
         'show_dashboard_tabs': True,
         'disable_courseware_js': True,
-        'nav_hidden': True,
+        'nav_hidden': True
     }
+
+    if show_linkedin_profile:
+        meta = json.loads(profile_user.profile.meta)
+        if "linkedin_profile" in meta:
+            linkedin_profile = meta["linkedin_profile"]
+            context["data"]["account_settings_data"]["linkedin_profile"] = build_linkedin_profile(linkedin_profile)
 
     if badges_enabled():
         context['data']['badges_api_url'] = reverse("badges_api:user_assertions", kwargs={'username': profile_username})
 
     return context
+
+def build_linkedin_profile(linkedin_profile):
+    text = ""
+    try:
+        if "headline" in linkedin_profile:
+            text = u"{}{}".format(text, unicode(linkedin_profile["headline"]))
+    except Exception as e:
+        pass
+
+    try:
+        if "industry" in linkedin_profile:
+            text = u"{} ({})".format(text, unicode(linkedin_profile["industry"]))
+    except Exception as e:
+        pass
+
+    try:
+        if "location" in linkedin_profile:
+            if "name" in linkedin_profile["location"]:
+                text = u"{}. {}.\n\n".format(text, unicode(linkedin_profile["location"]["name"]))
+    except Exception as e:
+        pass
+
+    try:
+        if "summary" in linkedin_profile:
+            text = u"{}{}\n\n".format(text, unicode(linkedin_profile["summary"]))
+    except Exception as e:
+        pass
+
+    return text

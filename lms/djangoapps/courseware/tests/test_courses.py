@@ -166,7 +166,7 @@ class CoursesTest(ModuleStoreTestCase):
                     get_courses(user, filter_=filter_)
                 },
                 expected_courses,
-                "testing get_courses with filter_={}".format(filter_),
+                "testing get_courses with language filter_={}".format(filter_),
             )
 
     def test_get_current_child(self):

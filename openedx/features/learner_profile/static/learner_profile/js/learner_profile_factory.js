@@ -24,12 +24,12 @@
                 BadgeListContainer, AccountSettingsFieldViews, MessageBannerView) {
         return function(options) {
             var $learnerProfileElement = $('.wrapper-profile');
-
             // TODO: LEARNER-2554: 09/2017: Remove this hiding logic when the message is removed.
             $('.action-dismiss').click(function() {
                 $('.user-messages').hide();
             });
 
+            var showLinkedInProfile = options.account_settings_data.linkedin_profile;
             var accountSettingsModel = new AccountSettingsModel(
                 _.extend(
                     options.account_settings_data,
@@ -60,6 +60,7 @@
                 badgeCollection,
                 badgeListContainer,
                 learnerProfileView,
+                linkedInProfileContainer,
                 getProfileVisibility,
                 showLearnerProfileView;
 
@@ -193,6 +194,16 @@
                 }
             });
 
+            linkedInProfileContainer = new FieldsView.ReadonlyFieldView({
+                model: accountSettingsModel,
+                editable: editable,
+                showMessages: false,
+                title: "",
+                // eslint-disable-next-line max-len
+                valueAttribute: 'linkedin_profile',
+                isLinkedInProfile: true
+            })
+
             learnerProfileView = new LearnerProfileView({
                 el: $learnerProfileElement,
                 ownProfile: options.own_profile,
@@ -206,6 +217,8 @@
                 sectionOneFieldViews: sectionOneFieldViews,
                 sectionTwoFieldViews: sectionTwoFieldViews,
                 badgeListContainer: badgeListContainer,
+                linkedInProfileContainer: linkedInProfileContainer,
+                showLinkedInProfile: showLinkedInProfile,
                 platformName: options.platform_name
             });
 

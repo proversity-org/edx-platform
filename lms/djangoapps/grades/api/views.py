@@ -52,7 +52,7 @@ def generate_xblock_structure_url(course_str, block_key, user):
     """
     xblock_structure_url = '{}/api/courses/v1/blocks/?course_id={}&block_id={}&username={}'.format(
         settings.LMS_ROOT_URL,
-        urllib.quote_plus(str(course_str)),
+        urllib.quote_plus(unicode(course_str)),
         block_key,
         user.username
     )
@@ -86,7 +86,7 @@ def get_user_grades(user, course, course_str, course_grade):
                             kwargs={'usage_key_string': unicode(problem_key)},
                         )
                         xblock_structure_url = generate_xblock_structure_url(course_str, problem_key, user)
-                        sections_scores[str(problem_key)] = {
+                        sections_scores[unicode(problem_key)] = {
                             "date" : problem_score.first_attempted if problem_score.first_attempted is not None else "Not attempted",
                             "earned" :problem_score.earned,
                             "possible" :problem_score.possible,
@@ -94,17 +94,17 @@ def get_user_grades(user, course, course_str, course_grade):
                             "xblock_structure_url": "{}{}".format(settings.LMS_ROOT_URL,xblock_structure_url)
                         }
                     else:
-                        sections_scores[str(problem_key)] = "This block has no grades"
+                        sections_scores[unicode(problem_key)] = "This block has no grades"
                 vertical_structure_url = generate_xblock_structure_url(course_str, vertical_key, user)
-                vertical_schema[str(vertical_key)] = {'problem_blocks': sections_scores, "vertical_structure_url": vertical_structure_url}
+                vertical_schema[unicode(vertical_key)] = {'problem_blocks': sections_scores, "vertical_structure_url": vertical_structure_url}
             subsection_structure_url = generate_xblock_structure_url(course_str, section.location, user)
-            subsection_schema[str(section.location)] =  {
+            subsection_schema[unicode(section.location)] =  {
                 "verticals": vertical_schema,
                 "section_score": course_grade.score_for_module(section.location),
                 "subsection_structure_url": subsection_structure_url
             }
         chapter_structure_url = generate_xblock_structure_url(course_str, key, user)
-        chapter_schema[str(key)] = {
+        chapter_schema[unicode(key)] = {
             "sections": subsection_schema,
             "chapter_structure_url": chapter_structure_url,
             "chapter_score": course_grade.score_for_module(key)
@@ -134,7 +134,7 @@ def get_user_course_response(course, users, course_str, depth):
            "passed": course_grade.passed,
            "percent": course_grade.percent,
            "total_course_grade_raw": course_grade._compute_course_grade_total_raw(),
-           "enrollment_date": str(CourseEnrollment.get_enrollment(user, course.id).created)
+           "enrollment_date": unicode(CourseEnrollment.get_enrollment(user, course.id).created)
 
         }
     return user_grades
@@ -304,7 +304,7 @@ class UserGradeView(GradeViewMixin, GenericAPIView):
                 name = section.display_name
                 if len(section.problem_scores.values()) > 0:
                     if total > 0:
-                        grades_schema[str(name)] = "{0:.0%}".format( float(earned)/total) 
+                        grades_schema[unicode(name)] = "{0:.0%}".format( float(earned)/total) 
 
 
         return Response({
@@ -430,9 +430,9 @@ class GradesBulkAPIView(ListAPIView):
     
             user_courses = CourseEnrollment.objects.filter(user__in=user_list)
             for course_enrollment in user_courses:
-                course_str = str(course_enrollment.course_id)
+                course_str = unicode(course_enrollment.course_id)
                 course = get_course(course_enrollment.course_id)
-                course_key = CourseKey.from_string(str(course_str))
+                course_key = CourseKey.from_string(unicode(course_str))
                 user_grades = get_user_course_response(course, user_list, course_str, depth)
                 course_success[course_str] = user_grades
 
@@ -448,7 +448,7 @@ class GradesBulkAPIView(ListAPIView):
                     # Get all users enrolled given a course key
                     user_list = USER_MODEL.objects.filter(courseenrollment__course_id=CourseKey.from_string(course_str)).order_by('username').select_related('profile')
                 try:
-                    course_key = CourseKey.from_string(str(course_str))
+                    course_key = CourseKey.from_string(unicode(course_str))
                     course = courses.get_course(course_key)
                     user_grades = get_user_course_response(course, user_list, course_str, depth)
                     course_success[course_str] = user_grades

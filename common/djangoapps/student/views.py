@@ -191,6 +191,11 @@ def index(request, extra_context=None, user=AnonymousUser()):
     else:
         courses = sort_by_announcement(courses)
 
+    if configuration_helpers.get_value("ENABLE_FILTER_COURSES_BY_USER_LANG",
+                                       settings.FEATURES.get('ENABLE_FILTER_COURSES_BY_USER_LANG')):
+        user_prefered_lang = request.LANGUAGE_CODE
+        courses = filter(lambda x: x.language == user_prefered_lang, courses)
+
     context = {'courses': courses}
 
     context['homepage_overlay_html'] = configuration_helpers.get_value('homepage_overlay_html')
@@ -887,11 +892,13 @@ def dashboard(request):
             reverse=True
         )
 
-
-    subscription_courses = frozenset(
-        enrollment.course_id for enrollment in course_enrollments
-        if modulestore().get_course(enrollment.course_id).subscription_catalog_id
-    )
+    if configuration_helpers.get_value("ENABLE_FILTER_COURSES_BY_USER_LANG",
+                                       settings.FEATURES.get('ENABLE_FILTER_COURSES_BY_USER_LANG')):
+        user_prefered_lang = preferences_api.get_user_preferences(request.user)['pref-lang']
+        for enrollment in course_enrollments[:]:
+            course_language = modulestore().get_course(enrollment.course_id).language
+            if course_language != user_prefered_lang:
+                course_enrollments.remove(enrollment)
 
     context = {
         'enterprise_message': enterprise_message,
@@ -929,8 +936,7 @@ def dashboard(request):
         'show_dashboard_tabs': True,
         'disable_courseware_js': True,
         'display_course_modes_on_dashboard': enable_verified_certificates and display_course_modes_on_dashboard,
-        'display_sidebar_on_dashboard': display_sidebar_on_dashboard,
-        'subscription_courses': subscription_courses
+        'display_sidebar_on_dashboard': display_sidebar_on_dashboard
     }
 
     ecommerce_service = EcommerceService()

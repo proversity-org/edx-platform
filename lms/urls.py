@@ -1061,6 +1061,8 @@ if settings.FEATURES.get('ENABLE_FINANCIAL_ASSISTANCE_FORM'):
         )
     )
 
+
+# include URL patterns for subscription content views
 urlpatterns += (
-    url(r'^subscription/', include('subscription_content.urls')),
+    url(r'^subscription/', include('agnosticcontentxblock.urls')),
 )
