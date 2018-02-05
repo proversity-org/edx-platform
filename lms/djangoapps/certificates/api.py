@@ -113,7 +113,7 @@ def get_certificates_for_user(username):
             for cert in GeneratedCertificate.eligible_certificates.filter(
                 user__username=username, course_id=course.id
             ):
-                certs.append(username, cert)
+                certs.append(format_certificate_for_user(username, cert))
         return certs
     else:
         return [
