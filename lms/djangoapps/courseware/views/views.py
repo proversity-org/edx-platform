@@ -394,7 +394,7 @@ def course_info(request, course_id):
         if course_homepage_invert_title:
             course_title = course.display_name_with_default
             course_subtitle = course.display_number_with_default
-            
+
         context = {
             'request': request,
             'masquerade_user': user,
@@ -838,9 +838,9 @@ def course_about(request, course_id):
                 needs_to_verify_age = not hasattr(request.user, 'profile') or bool(int(course.minimum_age) - request.user.profile.age == 1)
                 display_age = int(course.minimum_age)
             elif needs_to_set_age is True:
-                needs_to_verify_age = False      
+                needs_to_verify_age = False
                 display_age = int(course.minimum_age)
-        
+
         is_old_enough = bool(not course.minimum_age or not hasattr(request.user, 'profile') or not request.user.profile.age) or \
             bool(request.user.profile.age >= course.minimum_age)
 

@@ -900,11 +900,6 @@ def dashboard(request):
             if course_language != user_prefered_lang:
                 course_enrollments.remove(enrollment)
 
-    subscription_courses = frozenset(
-        enrollment.course_id for enrollment in course_enrollments
-        if modulestore().get_course(enrollment.course_id).subscription_catalog_id
-    )
-
     context = {
         'enterprise_message': enterprise_message,
         'enrollment_message': enrollment_message,
@@ -941,8 +936,7 @@ def dashboard(request):
         'show_dashboard_tabs': True,
         'disable_courseware_js': True,
         'display_course_modes_on_dashboard': enable_verified_certificates and display_course_modes_on_dashboard,
-        'display_sidebar_on_dashboard': display_sidebar_on_dashboard,
-        'subscription_courses': subscription_courses
+        'display_sidebar_on_dashboard': display_sidebar_on_dashboard
     }
 
     ecommerce_service = EcommerceService()
