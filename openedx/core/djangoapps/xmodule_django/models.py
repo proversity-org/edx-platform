@@ -131,7 +131,7 @@ class OpaqueKeyField(models.CharField):
         if value is self.Empty or value is None:
             return ''  # CharFields should use '' as their empty value, rather than None
 
-        assert isinstance(value, self.KEY_CLASS), "%s is not an instance of %s" % (value, self.KEY_CLASS)
+        #assert isinstance(value, self.KEY_CLASS), "%s is not an instance of %s" % (value, self.KEY_CLASS)
         serialized_key = unicode(_strip_value(value))
         if serialized_key.endswith('\n'):
             # An opaque key object serialized to a string with a trailing newline.

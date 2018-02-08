@@ -1005,6 +1005,10 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
         Returns the VAL data for the requested video profiles for the given course.
         """
         return edxval_api.get_video_info_for_course_and_profiles(unicode(course_id), video_profile_names)
+        
+    @XBlock.supports("multi_device")
+    def student_view(self, context):
+        return super(VideoDescriptor, self).student_view(context)
 
     def student_view_data(self, context=None):
         """
