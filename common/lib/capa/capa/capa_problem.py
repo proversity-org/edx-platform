@@ -214,6 +214,45 @@ class LoncapaProblem(object):
 
             self.extracted_tree = self._extract_html(self.tree)
 
+    def get_question_answer_text(self):
+        """
+        Get answer text from ChoiceResponse and MultipleChoiceResponse
+        types 
+        """
+        answer = ''
+        try:
+            if isinstance(self.responders.values()[0], responsetypes.ChoiceResponse):
+                for elem in self.responders.values()[0].get_choices():
+                    for val in self.student_answers.values():
+                        for k in val:
+                            if k == elem.get('name'):      
+                                answer += "<div>{}</div>".format(elem.text)
+            elif isinstance(self.responders.values()[0], responsetypes.MultipleChoiceResponse):
+                for elem in self.responders.values()[0].get_choices():
+                    for val in self.student_answers.values():
+                        if val == elem.get('name'):      
+                            answer += elem.text
+            return answer
+        except Exception as e:
+            log.error(str(e))
+
+
+    def get_question_from_p_tag(self):
+        """
+        Get question text embedded in a <p> tag from xml element tree
+        """
+        root = self.tree
+        question = ''
+        try:
+            for paragraph in root.iter('p'):
+                question += "<p>{}</p>".format(paragraph.text)
+            return question
+        except Exception as e:
+            log.error(str(e))
+
+
+
+
     def make_xml_compatible(self, tree):
         """
         Adjust tree xml in-place for compatibility before creating
@@ -479,6 +518,7 @@ class LoncapaProblem(object):
 
         log.debug('answer_map = %s', answer_map)
         return answer_map
+            
 
     def get_answer_ids(self):
         """

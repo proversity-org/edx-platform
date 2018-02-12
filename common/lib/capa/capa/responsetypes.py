@@ -28,7 +28,6 @@ import xml.sax.saxutils as saxutils
 from collections import namedtuple
 from datetime import datetime
 from sys import float_info
-
 import html5lib
 import numpy
 import requests
@@ -694,7 +693,6 @@ class ChoiceResponse(LoncapaResponse):
         """
         Initialize name attributes in <choice> tags for this response.
         """
-
         for index, choice in enumerate(self.get_choices()):
             choice.set("name", "choice_" + str(index))
             # If a choice does not have an id, assign 'A' 'B', .. used by CompoundHint
@@ -1008,6 +1006,7 @@ class MultipleChoiceResponse(LoncapaResponse):
 
         # define correct choices (after calling secondary setup)
         xml = self.xml
+        self.assign_choice_names()
         cxml = xml.xpath('//*[@id=$id]//choice', id=xml.get('id'))
 
         # contextualize correct attribute and then select ones for which
@@ -1029,6 +1028,22 @@ class MultipleChoiceResponse(LoncapaResponse):
                 for choice in cxml
                 if contextualize_text(choice.get('correct'), self.context).lower() == 'partial'
             ]
+
+
+    def get_choices(self):
+        """Returns this response's XML choice elements."""
+        return self.xml.xpath('//*[@id=$id]//choice', id=self.xml.get('id'))
+
+    def assign_choice_names(self):
+        """
+        Initialize name attributes in <choice> tags for this response.
+        """
+
+        for index, choice in enumerate(self.get_choices()):
+            choice.set("name", "choice_" + str(index))
+            # If a choice does not have an id, assign 'A' 'B', .. used by CompoundHint
+            if not choice.get('id'):
+                choice.set("id", chr(ord("A") + index))
 
     def get_extended_hints(self, student_answer_dict, new_cmap):
         """
