@@ -36,6 +36,11 @@ from openedx.core.djangolib.markup import HTML, Text
 
 log = logging.getLogger("edx.courseware")
 
+try:
+    from submissions import api as sub_api
+except ImportError:
+    sub_api = None 
+
 # Make '_' a no-op so we can scrape strings. Using lambda instead of
 #  `django.utils.translation.ugettext_noop` because Django cannot be imported in this file
 _ = lambda text: text
@@ -46,6 +51,7 @@ NUM_RANDOMIZATION_BINS = 20
 MAX_RANDOMIZATION_BINS = 1000
 
 FEATURES = getattr(settings, 'FEATURES', {})
+
 
 
 def randomization_bin(seed, problem_id):
@@ -185,6 +191,7 @@ class CapaFields(object):
                        scope=Scope.user_state, default={})
     input_state = Dict(help=_("Dictionary for maintaining the state of inputtypes"), scope=Scope.user_state)
     student_answers = Dict(help=_("Dictionary with the current student responses"), scope=Scope.user_state)
+    student_answers_text = String(help=_("Text of the current student answers"), scope=Scope.user_state, default="")
 
     # enforce_type is set to False here because this field is saved as a dict in the database.
     score = ScoreField(help=_("Dictionary with the current student score"), scope=Scope.user_state, enforce_type=False)
@@ -258,6 +265,7 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
         # Need the problem location in openendedresponse to send out.  Adding
         # it to the system here seems like the least clunky way to get it
         # there.
+        self.student_answers_text = 'No data available'
         self.runtime.set('location', self.location.to_deprecated_string())
 
         try:
@@ -1160,6 +1168,23 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
         return {'grade': self.score.raw_earned, 'max_grade': self.score.raw_possible}
 
     # pylint: disable=too-many-statements
+
+    def student_item_key(self):
+        """ Get the student_item_dict required for the submissions API """
+        try:
+            user =  self.runtime.get_real_user(self.runtime.anonymous_student_id)
+            location = self.location.replace(branch=None, version=None)  # Standardize the key in case it isn't already
+            student_item = dict(
+                student_id=user.id,
+                course_id=unicode(location.course_key),
+                item_id=unicode(location),
+                item_type=self.scope_ids.block_type,
+            )
+        except AttributeError:
+            logger.error('If you are using Studio, you do not have access to self.runtime.get_real_user')
+            student_item = None
+        return student_item
+
     def submit_problem(self, data, override_time=False):
         """
         Checks whether answers to a problem are correct
@@ -1309,6 +1334,16 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
         # Withhold success indicator if hiding correctness
         if not self.correctness_available():
             success = 'submitted'
+
+       
+        try:
+            submission = self.lcp.get_question_answer_text()
+            self.student_answers_text = submission
+            if sub_api and self.runtime.get_real_user:
+                sub_api.create_submission(self.student_item_key(), submission)
+        except Exception as e:
+            log.error(str(e))
+
 
         return {
             'success': success,
@@ -1700,3 +1735,4 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
         """
         lcp_score = self.lcp.calculate_score()
         return Score(raw_earned=lcp_score['score'], raw_possible=lcp_score['total'])
+
