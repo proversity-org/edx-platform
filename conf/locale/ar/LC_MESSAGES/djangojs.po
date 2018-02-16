@@ -4508,7 +4508,7 @@ msgstr "الرسالة:"
 
 #: lms/static/js/instructor_dashboard/util.js
 msgid "No tasks currently running."
-msgstr "لا توجد مهام جارية حاليًّا."
+msgstr "لا توجد مهام جارية الآن."
 
 #: lms/static/js/instructor_dashboard/util.js
 msgid "File Name"
@@ -4723,7 +4723,7 @@ msgstr "معلومات الحساب الأساسية"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "These settings include basic information about your account."
-msgstr ""
+msgstr "تتمضن هذه الإعدادات المعلومات الأساسية حول حسابك"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid ""
@@ -4745,7 +4745,7 @@ msgid ""
 "{bold_start}Full Profile{bold_end} for profile visibility. Make sure to "
 "enter your name exactly as it appears on your photo ID, including any non-"
 "Roman characters."
-msgstr ""
+msgstr "الاسم المستخدم في الشهادات هو تماماً كما هو اسمك في الهوية. وبإمكان الدارسين  في حال ظهور اسمهم {bold_start}Full Profile{bold_end} مراجعة الملف الشخصي لتعديل اسمهم الكامل. يرجى التأكد من كتابة الاسم كما هو في الهوية الشخصية حرفياً. "
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 #: lms/templates/student_account/account.underscore
@@ -4776,11 +4776,11 @@ msgstr ""
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Country or Region of Residence"
-msgstr ""
+msgstr "الدولة أو منطقة الإقامة"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "The country or region where you live."
-msgstr ""
+msgstr "الدولة أو المنطقة التي تعيش فيها"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Time Zone"
@@ -4827,13 +4827,13 @@ msgstr "اللغة المفضّلة"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Social Media Links"
-msgstr ""
+msgstr "روابط لمنصات التواصل الاجتماعي"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid ""
 "Optionally, link your personal accounts to the social media icons on your "
 "edX profile."
-msgstr ""
+msgstr "وإن أحببت يمكنك ربط حساباتك على منصات التواصل الاجتماعي مع الأيقونات على ملفك الشخصي في edX"
 
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid " Link"
@@ -5207,7 +5207,7 @@ msgstr "النتيجة الكلية"
 
 #: openedx/features/course_bookmarks/static/course_bookmarks/js/views/bookmark_button.js
 msgid "Bookmark this page"
-msgstr ""
+msgstr "إضافة الصفحة للمفضلة"
 
 #: openedx/features/course_experience/static/course_experience/js/CourseGoals.js
 msgid "Thank you for setting your course goal!"
@@ -5233,7 +5233,7 @@ msgstr[5] ""
 
 #: openedx/features/learner_profile/static/learner_profile/js/learner_profile_factory.js
 msgid "Profile Visibility:"
-msgstr ""
+msgstr "إمكانية عرض الملف الشخصي"
 
 #: openedx/features/learner_profile/static/learner_profile/js/learner_profile_factory.js
 msgid "Limited Profile"
@@ -5241,37 +5241,37 @@ msgstr ""
 
 #: openedx/features/learner_profile/static/learner_profile/js/learner_profile_factory.js
 msgid "Full Profile"
-msgstr ""
+msgstr "الملف الشخصي الكامل"
 
 #: openedx/features/learner_profile/static/learner_profile/js/learner_profile_factory.js
 msgid "Joined"
-msgstr ""
+msgstr "انضم بتاريخ"
 
 #: openedx/features/learner_profile/static/learner_profile/js/learner_profile_factory.js
 msgid "Joined Date"
-msgstr ""
+msgstr "انضم بتاريخ"
 
 #: openedx/features/learner_profile/static/learner_profile/js/learner_profile_factory.js
 msgid "Location"
-msgstr ""
+msgstr "الموقع"
 
 #: openedx/features/learner_profile/static/learner_profile/js/learner_profile_factory.js
 msgid "Add Country"
-msgstr ""
+msgstr "إضافة بلد"
 
 #: openedx/features/learner_profile/static/learner_profile/js/learner_profile_factory.js
 msgid "Add language"
-msgstr ""
+msgstr "إضافة لغة"
 
 #: openedx/features/learner_profile/static/learner_profile/js/learner_profile_factory.js
 msgid "About me"
-msgstr ""
+msgstr "نبذة عني"
 
 #: openedx/features/learner_profile/static/learner_profile/js/learner_profile_factory.js
 msgid ""
 "Tell other learners a little about yourself: where you live, what your "
 "interests are, why you're taking courses, or what you hope to learn."
-msgstr ""
+msgstr "عرّف نفسك أمام زملائك: أين تعيش، ما هي اهتماماتك، لماذا تدرس هذه المساقات، وماذا تحب أن تتعلم؟"
 
 #: openedx/features/learner_profile/static/learner_profile/js/views/badge_list_container.js
 msgid "Accomplishments Pagination"
@@ -5302,12 +5302,8 @@ msgid "Profile image for {username}"
 msgstr ""
 
 #: openedx/features/learner_profile/static/learner_profile/js/views/learner_profile_view.js
-msgid "About Me"
-msgstr ""
-
-#: openedx/features/learner_profile/static/learner_profile/js/views/learner_profile_view.js
 msgid "Accomplishments"
-msgstr ""
+msgstr "إنجازات"
 
 #: openedx/features/learner_profile/static/learner_profile/js/views/learner_profile_view.js
 msgid "Profile"
@@ -6765,11 +6761,11 @@ msgstr "كافّة المجموعات "
 #: common/static/common/templates/discussion/thread-edit.underscore
 msgid ""
 "Add a clear and descriptive title to encourage participation. (Required)"
-msgstr ""
+msgstr "ضع عنواناً وشرحاً واضحاً للتشجيع على المشاركة (مطلوب)"
 
 #: common/static/common/templates/discussion/new-post.underscore
 msgid "Your question or idea (required)"
-msgstr ""
+msgstr "سؤالك أو فكرتك (مطلوب)"
 
 #: common/static/common/templates/discussion/new-post.underscore
 msgid "follow this post"
@@ -6984,7 +6980,7 @@ msgstr "منطقة الموضوع"
 
 #: common/static/common/templates/discussion/topic.underscore
 msgid "Add your post to a relevant topic to help others find it. (Required)"
-msgstr ""
+msgstr "أضف مشاركتك إلى موضوع ذي صلة لمساعدة الآخرين في العثور عليه. (مطلوب)"
 
 #: lms/djangoapps/discussion/static/discussion/templates/discussion-home.underscore
 msgid "Discussion Home"
@@ -7600,7 +7596,7 @@ msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/certificate-bulk-white-list.underscore
 msgid "Upload a CSV file"
-msgstr "ارفع ملف CSV"
+msgstr "تحميل ملف CSV"
 
 #: lms/templates/instructor/instructor_dashboard_2/certificate-bulk-white-list.underscore
 #: lms/templates/instructor/instructor_dashboard_2/certificate-white-list-editor.underscore
@@ -7653,7 +7649,7 @@ msgid ""
 "Enter the username or email address of each learner that you want to add as "
 "an exception."
 msgstr ""
-"أدخل اسم المستخدم أو عنوان البريد الإلكتروني لكل متعلّم ترعب بإضافته "
+"أدخل اسم المستخدم أو عنوان البريد الإلكتروني لكل متعلّم ترغب بإضافته "
 "كاستثناء."
 
 #: lms/templates/instructor/instructor_dashboard_2/certificate-white-list-editor.underscore
@@ -7850,15 +7846,15 @@ msgstr "%(cohort_name)s (%(user_count)s)"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid "Enable Cohorts"
-msgstr "فعّل الشُعب"
+msgstr "تفعيل المجموعات"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid "Select a cohort to manage"
-msgstr "يُرجى اختيار شعبة لإدارتها."
+msgstr "يُرجى اختيار مجموعة لإدارتها."
 
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid "View Cohort"
-msgstr "مشاهدة الشعبة"
+msgstr "مشاهدة المجموعة"
 
 #: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
 msgid "Assign learners to cohorts by uploading a CSV file"
@@ -7877,7 +7873,7 @@ msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/divided-discussions-course-wide.underscore
 msgid "Course-Wide Discussion Topics"
-msgstr "مواضيع نقاش على نطاق المساق"
+msgstr "مواضيع نقاش داخل نطاق الدورة"
 
 #: lms/templates/instructor/instructor_dashboard_2/divided-discussions-course-wide.underscore
 msgid "Select the course-wide discussion topics that you want to divide."
@@ -7905,7 +7901,7 @@ msgstr "لا توجد أي مواضيع نقاش خاصة بالمحتوى."
 
 #: lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
 msgid "Used"
-msgstr "مستخدَم"
+msgstr "مُستخدَم"
 
 #: lms/templates/instructor/instructor_dashboard_2/enrollment-code-lookup-links.underscore
 msgid "Valid"
@@ -7922,11 +7918,11 @@ msgstr ""
 
 #: lms/templates/learner_dashboard/course_enroll.underscore
 msgid "View Archived Course"
-msgstr "استعراض المساق"
+msgstr "استعراض الدورة"
 
 #: lms/templates/learner_dashboard/course_enroll.underscore
 msgid "View Course"
-msgstr "استعرض المساق "
+msgstr "استعرض الدورة "
 
 #: lms/templates/learner_dashboard/course_enroll.underscore
 msgid "Choose a course run:"
@@ -10377,3 +10373,11 @@ msgstr ""
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Use Current Transcript"
 msgstr "استخدم النص الحالي"
+
+
+#: lms/djangoapps/courseware/views/views.py
+msgid ""
+"You are enrolled in the audit track for this course. The audit track does "
+"not include a certificate."
+msgstr ""
+"أنت الآن مسجل في مسار التدقيق لهذه الدورة. لا يتضمن مسار التدقيق شهادة."

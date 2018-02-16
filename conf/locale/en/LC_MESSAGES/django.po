@@ -23175,3 +23175,8 @@ msgstr ""
 #: lms/templates/static_templates/privacy.html
 msgid "11. Privacy Concerns"
 msgstr ""
+
+
+#: lms/templates/courseware/courses.html
+msgid "Find your course"
+msgstr ""
