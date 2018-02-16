@@ -67,6 +67,10 @@ else:
             ${Text(_("Your certificate was not issued because you do not have a current verified identity with {platform_name}. ")).format(platform_name=settings.PLATFORM_NAME)}
             <a href="${reverify_link}"> ${Text(_("Verify your identity now."))}</a>
           </p>
+        % elif cert_status['status'] == 'unavailable':
+          <p class="message-copy">
+            ${Text(_("Complete the course to receive a certificate"))}
+          </p>
         % endif
 
       </p>

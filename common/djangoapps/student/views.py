@@ -384,7 +384,7 @@ def _cert_info(user, course_overview, cert_status, course_mode):  # pylint: disa
     }
 
     certificate_earned_but_not_available_status = 'certificate_earned_but_not_available'
-    default_status = 'processing'
+    default_status = 'unavailable'
 
     default_info = {
         'status': default_status,
