@@ -1068,6 +1068,8 @@ try:
     urlpatterns += (
         url(r'^api/', include('genesys.urls')),
     )
-except:
+except Exception as e:
+    logger.error(str(e))
+
     logger.error('Genesys urls could not be loaded, make sure GenesysXBlock is installed')
     
