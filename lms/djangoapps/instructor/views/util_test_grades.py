@@ -9,17 +9,21 @@ from courseware import courses
 from opaque_keys.edx.keys import CourseKey
 
 
-def services_grade(course_id):
-    course_key = CourseKey.from_string(course_id)
-    course = courses.get_course_by_id(course_key)
-    students = CourseEnrollment.objects.users_enrolled_in(course_key)
+class ServiceGrades(object):
 
-    course_grades = []
-    for student in students:
-        course_grade = CourseGradeFactory().create(student, course)
-        gradeset = course_grade.summary
-        gradeset["student"] = student.profile.name.title()
-        gradeset["username"] = student.username
-        course_grades.append(gradeset)
+    def __init__(self, course_id):
+        course_key = CourseKey.from_string(course_id)
+        self.course = courses.get_course_by_id(course_key)
+        self.students = CourseEnrollment.objects.users_enrolled_in(course_key)
 
-    return course_grades
+    def by_section(self):
+        course_grades = []
+        for student in self.students:
+            course_grade = CourseGradeFactory().create(student, self.course)
+            gradeset = course_grade.summary
+            gradeset["username"] = student.username
+            gradeset["fullname"] = "{} {}".format(student.first_name, student.last_name)
+            course_grades.append(gradeset)
+
+        return course_grades
+
