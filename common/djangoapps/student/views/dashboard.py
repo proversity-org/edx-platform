@@ -733,9 +733,11 @@ def student_dashboard(request):
                                     settings.FEATURES.get('ENABLE_FILTER_COURSES_BY_USER_LANG')):
         user_prefered_lang = request.LANGUAGE_CODE
         for enrollment in course_enrollments[:]:
-            course_language = modulestore().get_course(enrollment.course_id).language
-            if course_language != user_prefered_lang:
-                course_enrollments.remove(enrollment)
+            my_course = modulestore().get_course(enrollment.course_id)
+            if my_course is not None:
+                course_language = my_course.language
+                if course_language != user_prefered_lang:
+                    course_enrollments.remove(enrollment)
 
 
     context = {
