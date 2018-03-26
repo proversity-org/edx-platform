@@ -3522,6 +3522,12 @@ EDX_PLATFORM_REVISION = 'unknown'
 # (0.0 = 0%, 1.0 = 100%)
 COMPLETION_VIDEO_COMPLETE_PERCENTAGE = 0.95
 
+############### Settings for Retirement #####################
+RETIRED_USERNAME_FMT = 'retired__user_{}'
+RETIRED_EMAIL_FMT = 'retired__user_{}@retired.invalid'
+RETIRED_USER_SALTS = ['abc', '123']
+RETIREMENT_SERVICE_WORKER_USERNAME = 'RETIREMENT_SERVICE_USER'
+
 ############### Settings for django-fernet-fields ##################
 FERNET_KEYS = [
     'DUMMY KEY CHANGE BEFORE GOING TO PRODUCTION',

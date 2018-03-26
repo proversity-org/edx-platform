@@ -3,6 +3,7 @@ Permissions classes for User accounts API views.
 """
 from __future__ import unicode_literals
 
+from django.conf import settings
 from rest_framework import permissions
 
 

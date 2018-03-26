@@ -47,6 +47,7 @@ from opaque_keys.edx.keys import CourseKey
 from pytz import UTC
 from six import text_type
 from slumber.exceptions import HttpClientError, HttpServerError
+from user_util import user_util
 
 import dogstats_wrapper as dog_stats_api
 import lms.lib.comment_client as cc
@@ -157,9 +158,9 @@ def anonymous_id_for_user(user, course_id, save=True):
     # include the secret key as a salt, and to make the ids unique across different LMS installs.
     hasher = hashlib.md5()
     hasher.update(settings.SECRET_KEY)
-    hasher.update(unicode(user.id))
+    hasher.update(text_type(user.id))
     if course_id:
-        hasher.update(unicode(course_id).encode('utf-8'))
+        hasher.update(text_type(course_id).encode('utf-8'))
     digest = hasher.hexdigest()
 
     if not hasattr(user, '_anonymous_id'):
@@ -289,6 +290,7 @@ def get_potentially_retired_user_by_username_and_hash(username, hashed_username)
 
     if hashed_username not in locally_hashed_usernames:
         raise Exception('Mismatched hashed_username, bad salt?')
+
 
     locally_hashed_usernames.append(username)
     return User.objects.get(username__in=locally_hashed_usernames)
@@ -1383,7 +1385,7 @@ class CourseEnrollment(models.Model):
         Also emits relevant events for analytics purposes.
         """
         if mode is None:
-            mode = _default_course_mode(unicode(course_key))
+            mode = _default_course_mode(text_type(course_key))
         # All the server-side checks for whether a user is allowed to enroll.
         try:
             course = CourseOverview.get_from_id(course_key)
@@ -1391,7 +1393,7 @@ class CourseEnrollment(models.Model):
             # This is here to preserve legacy behavior which allowed enrollment in courses
             # announced before the start of content creation.
             if check_access:
-                log.warning(u"User %s failed to enroll in non-existent course %s", user.username, unicode(course_key))
+                log.warning(u"User %s failed to enroll in non-existent course %s", user.username, text_type(course_key))
                 raise NonExistentCourseError
 
         if check_access:
@@ -1544,7 +1546,7 @@ class CourseEnrollment(models.Model):
         assert isinstance(course_id_partial, CourseKey)
         assert not course_id_partial.run  # None or empty string
         course_key = CourseKey.from_string('/'.join([course_id_partial.org, course_id_partial.course, '']))
-        querystring = unicode(course_key)
+        querystring = text_type(course_key)
         try:
             return cls.objects.filter(
                 user=user,
@@ -1935,7 +1937,7 @@ class CourseEnrollment(models.Model):
         Returns:
             Unicode cache key
         """
-        return cls.COURSE_ENROLLMENT_CACHE_KEY.format(user_id, unicode(course_key))
+        return cls.COURSE_ENROLLMENT_CACHE_KEY.format(user_id, text_type(course_key))
 
     @classmethod
     def _get_enrollment_state(cls, user, course_key):
@@ -2012,7 +2014,7 @@ def invalidate_enrollment_mode_cache(sender, instance, **kwargs):  # pylint: dis
 
     cache_key = CourseEnrollment.cache_key_name(
         instance.user.id,
-        unicode(instance.course_id)
+        text_type(instance.course_id)
     )
     cache.delete(cache_key)
 
@@ -2440,7 +2442,7 @@ class LinkedInAddToProfileConfiguration(ConfigurationModel):
         return (
             u"{partner}-{course_key}_{cert_mode}-{target}".format(
                 partner=self.trk_partner_name,
-                course_key=unicode(course_key),
+                course_key=text_type(course_key),
                 cert_mode=cert_mode,
                 target=target
             )
