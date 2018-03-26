@@ -27,7 +27,12 @@ class ServiceGrades(object):
 
     def by_section(self):
         gradeset = self.get_grades()
+        by_section = {}
         for grade in gradeset:
-            grade.pop("grade")
-            grade.pop("grade_breakdown")
-        return gradeset
+            by_section[grade["username"]] = {
+                "username": grade["username"],
+                "grade": grade["percent"]
+            }
+            for section in grade["section_breakdown"]:
+                by_section[grade["username"]].update({section["label"]: section["percent"] })
+        return by_section
