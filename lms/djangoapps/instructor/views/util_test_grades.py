@@ -6,24 +6,11 @@ from django.contrib.auth.models import User
 
 from student.models import CourseEnrollment
 from lms.djangoapps.grades.new.course_grade_factory import CourseGradeFactory
+from lms.djangoapps.gating.api import get_entrance_exam_usage_key
+
 from courseware import courses
 
 from opaque_keys.edx.keys import CourseKey, UsageKey
-
-
-class Dummy(object):
-
-    def __init__(self):
-        self.is_staff = True
-
-    def user(self):
-        return User.objects.get(username="staff").is_staff
-
-    def is_staff(self):
-        return True
-
-    def has_user(self):
-        return True
 
 
 class ServiceGrades(object):
@@ -36,37 +23,31 @@ class ServiceGrades(object):
     def get_grades(self):
         course_grades = []
         for student in self.students:
-            course_grade = CourseGradeFactory().create(student, self.course)
-            gradeset = course_grade.summary
-            sections = course_grade.chapter_grades
-            gradeset["username"] = student.username
+            course_grade_factory = CourseGradeFactory().create(student, self.course)
+            gradeset = course_grade_factory.summary
+            gradeset["username"] = course_grade_factory.user
             gradeset["fullname"] = "{} {}".format(student.first_name, student.last_name)
             course_grades.append(gradeset)
 
-        # We return a dict to access to these objects without iterate.
-        response = {
-            'course_grades': course_grades,
-            'sections': sections
-        }
-        return response
+        return course_grades
 
     def by_section(self):
-        gradeset = self.get_grades()
-        grades = gradeset['course_grades']
-        sections = gradeset['sections']        
-        by_section = {}
-    
-        for grade in grades:
-            by_section[grade["username"]] = {
-                "fullname": grade["fullname"]
-            }
-            for section in grade["section_breakdown"]:
-                if section.has_key('prominent'):
-                    if section['prominent'] == True:
-                        for chapter in sections.items():
-                            section_name = chapter[1]['display_name']
-                            by_section[grade["username"]].update({section_name: section['percent']})
-        return by_section
+        course_grade = self.get_grades()
+        score_by_section = []
+        for student in course_grade:
+            course_grade_factory = CourseGradeFactory().create(student["username"], self.course)
+            sections = course_grade_factory.chapter_grades
+            by_section = {}
+            location_sections = []
+            for section in sections.items():
+                by_section["username"] = course_grade_factory.user.username
+                score = course_grade_factory.score_for_chapter(section[0])
+                location_sections.append({"name": section[1]["display_name"], "scores": score})
+                by_section["sections"] = location_sections
+            
+            score_by_section.append(by_section)
+
+        return score_by_section
 
     def by_assignment_type(self):
         gradeset = self.get_grades()
