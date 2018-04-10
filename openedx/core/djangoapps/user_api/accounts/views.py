@@ -24,6 +24,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from six import text_type
 from social_django.models import UserSocialAuth
+import pytz
 
 from entitlements.models import CourseEntitlement
 from openedx.core.djangoapps.profile_images.images import remove_profile_images
@@ -46,6 +47,11 @@ from student.models import (
     is_username_retired
 )
 from student.views.login import AuthFailedError, LoginFailures
+    User,
+    get_retired_email_by_email,
+    get_potentially_retired_user_by_username_and_hash,
+    get_potentially_retired_user_by_username
+)
 
 from ..errors import AccountUpdateError, AccountValidationError, UserNotAuthorized, UserNotFound
 from ..models import RetirementState, RetirementStateError, UserOrgTag, UserRetirementStatus
@@ -452,13 +458,13 @@ class AccountRetirementStatusView(ViewSet):
     Provides API endpoints for managing the user retirement process.
     """
     authentication_classes = (JwtAuthentication,)
-    permission_classes = (permissions.IsAuthenticated, CanRetireUser,)
-    parser_classes = (MergePatchParser,)
+    permission_classes = (permissions.IsAuthenticated, CanRetireUser, )
+    parser_classes = (MergePatchParser, )
     serializer_class = UserRetirementStatusSerializer
 
     def retirement_queue(self, request):
         """
-        GET /api/user/v1/accounts/retirement_queue/
+        GET /api/user/v1/accounts/accounts_to_retire/
         {'cool_off_days': 7, 'states': ['PENDING', 'COMPLETE']}
 
         Returns the list of RetirementStatus users in the given states that were
@@ -511,7 +517,7 @@ class AccountRetirementStatusView(ViewSet):
         except (UserRetirementStatus.DoesNotExist, User.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @request_requires_username
+
     def partial_update(self, request):
         """
         PATCH /api/user/v1/accounts/update_retirement_status/
@@ -646,3 +652,4 @@ class AccountRetirementView(ViewSet):
         """
         for entitlement in CourseEntitlement.objects.filter(user_id=user.id):
             entitlement.courseentitlementsupportdetail_set.all().update(comments='')
+

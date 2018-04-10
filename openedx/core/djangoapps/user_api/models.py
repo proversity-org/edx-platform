@@ -15,8 +15,20 @@ from opaque_keys.edx.django.models import CourseKeyField
 # but currently the rest of the system assumes that "student" defines
 # certain models.  For now we will leave the models in "student" and
 # create an alias in "user_api".
-from student.models import PendingEmailChange, Registration, UserProfile  # pylint: disable=unused-import
+
+# pylint: disable=unused-import
+from student.models import (
+    PendingEmailChange,
+    Registration,
+    UserProfile,
+    get_retired_email_by_email,
+    get_retired_username_by_username
+)
 from util.model_utils import emit_setting_changed_event, get_changed_fields_dict
+
+class RetirementStateError(Exception):
+    pass
+
 
 class RetirementStateError(Exception):
     pass
@@ -113,7 +125,8 @@ class UserCourseTag(models.Model):
 
 
 class UserOrgTag(TimeStampedModel):
-    """ Per-Organization user tags.
+    """
+    Per-Organization user tags.
 
     Allows settings to be configured at an organization level.
 

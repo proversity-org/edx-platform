@@ -47,7 +47,6 @@ RETIREMENT_POST = AccountRetirementView.as_view({
     'post': 'post',
 })
 
-
 urlpatterns = [
     url(
         r'^v1/me$',
@@ -100,11 +99,14 @@ urlpatterns = [
         name='accounts_retirement_queue'
     ),
     url(
+<<<<<<< HEAD
         r'^v1/accounts/retire/$',
         RETIREMENT_POST,
         name='accounts_retire'
     ),
     url(
+=======
+>>>>>>> 63dcaa4695... Add a model and associated API to help control the user retirement flow
         r'^v1/accounts/update_retirement_status/$',
         RETIREMENT_UPDATE,
         name='accounts_retirement_update'
