@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import json
-
 from django.conf import settings
 from django.contrib.auth.models import User
 
@@ -50,13 +48,17 @@ class ServiceGrades(object):
         return score_by_section
 
     def by_assignment_type(self):
-        gradeset = self.get_grades()
-        by_section = {}
-        for grade in gradeset:
-            by_section[grade["username"]] = {
-                "username": grade["username"],
-                "grade": grade["percent"]
-            }
-            for section in grade["section_breakdown"]:
-                by_section[grade["username"]].update({section["label"]: section["percent"] })
-        return by_section
+        course_grade = self.get_grades()
+        assignment_type_grades = []
+        for student in course_grade:
+            results = {}
+            results['username'] = student['username'].username
+            scores_list = []
+            for assignment_type in student["section_breakdown"]:
+                if assignment_type.has_key('prominent') and assignment_type['prominent'] == True:
+                    scores_list.append({assignment_type['category']: assignment_type['percent']})
+                    results['assignment_type'] = scores_list
+
+            assignment_type_grades.append(results)
+
+        return assignment_type_grades
