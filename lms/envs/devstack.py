@@ -239,7 +239,7 @@ if FEATURES.get('ENABLE_THIRD_PARTY_AUTH') and 'third_party_auth.dummy.DummyBack
     AUTHENTICATION_BACKENDS = ['third_party_auth.dummy.DummyBackend'] + list(AUTHENTICATION_BACKENDS)
 
 ############## ECOMMERCE API CONFIGURATION SETTINGS ###############
-ECOMMERCE_PUBLIC_URL_ROOT = "http://localhost:8002"
+ECOMMERCE_PUBLIC_URL_ROOT = "http://0.0.0.0:8002"
 
 CREDENTIALS_INTERNAL_SERVICE_URL = 'http://localhost:8008'
 CREDENTIALS_PUBLIC_SERVICE_URL = 'http://localhost:8008'
@@ -282,9 +282,9 @@ Ld/IRK0DgpGP5EJRwpKsDYe/UQ==
 -----END PRIVATE KEY-----"""
 
 JWT_AUTH.update({
-    'JWT_SECRET_KEY': 'lms-secret',
+    'JWT_SECRET_KEY': 'ecommerce-secret',
     'JWT_ISSUER': 'http://127.0.0.1:8000/oauth2',
-    'JWT_AUDIENCE': 'lms-key',
+    'JWT_AUDIENCE': 'ecommerce-key',
 })
 
 #####################################################################

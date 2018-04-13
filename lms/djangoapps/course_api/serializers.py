@@ -76,6 +76,8 @@ class CourseSerializer(serializers.Serializer):  # pylint: disable=abstract-meth
     minimum_age = serializers.SerializerMethodField()
     hidden = serializers.SerializerMethodField()
     invitation_only = serializers.BooleanField()
+    is_subscription = serializers.BooleanField()
+    subscription_plan_name = serializers.CharField()
 
     # 'course_id' is a deprecated field, please use 'id' instead.
     course_id = serializers.CharField(source='id', read_only=True)

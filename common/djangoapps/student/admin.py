@@ -223,8 +223,8 @@ class CourseEnrollmentAllowedAdmin(admin.ModelAdmin):
 
 class LoginFailuresAdmin(admin.ModelAdmin):
     """ Admin interface for the LoginFailures model """
-    list_display = ('user', 'failure_count', 'lockout_until')
-    search_fields = ('user')
+    list_display = ('user', 'failure_count', 'lockout_until',)
+    search_fields = ('user',)
     
     class Meta(object):
         model = LoginFailures

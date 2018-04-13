@@ -920,6 +920,26 @@ class CourseFields(object):
         scope=Scope.settings, default=None
      )
 
+    subscription_plan_name = String(
+        display_name=_("Subscription Plan Name"),
+        help=_(
+            "Defines the access permissions for showing the course in the course catalog. This can be set to one "
+            "of three values: 'both' (show in catalog and allow access to about page), 'about' (only allow access "
+            "to about page), 'none' (do not show in catalog and do not allow access to an about page)."
+        ),
+        default='',
+        scope=Scope.settings,
+    )
+
+    is_subscription = Boolean(
+        display_name=_("Is this a subscription product"),
+        help=_(
+            "Specify whether this is a subscription product", 
+        ),
+        default=False,
+        scope=Scope.settings,
+    )
+
 
 class CourseModule(CourseFields, SequenceModule):  # pylint: disable=abstract-method
     """

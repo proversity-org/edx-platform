@@ -105,6 +105,23 @@ class EcommerceService(object):
             skus=urlencode({'sku': skus}, doseq=True),
         )
 
+    def get_unsubscribe_url(self, *username):
+        """ Construct the URL to the ecommerce unsubscribe view.
+
+        Args:
+            username: username to be unsubscribe from view
+
+        Returns:
+            Absolute path to the ecommerce subscribe
+
+        Example:
+            http://localhost:8002/unsubscribe?username=staff
+        """
+        return '{susubscribe_path}?{username}'.format(
+            unsubscribe_path=self.get_absolute_ecommerce_url(),
+            username=urlencode({'username': username}),
+        )    
+
     def upgrade_url(self, user, course_key):
         """
         Returns the URL for the user to upgrade, or None if not applicable.

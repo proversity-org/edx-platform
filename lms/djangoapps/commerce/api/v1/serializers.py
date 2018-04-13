@@ -12,6 +12,9 @@ from xmodule.modulestore.django import modulestore
 
 from .models import Course
 
+from courseware.courses import get_course
+from xmodule.modulestore.django import modulestore
+
 
 class CourseModeSerializer(serializers.ModelSerializer):
     """ CourseMode serializer. """
@@ -62,6 +65,8 @@ class CourseSerializer(serializers.Serializer):
     name = serializers.CharField(read_only=True)
     verification_deadline = serializers.DateTimeField(format=None, allow_null=True, required=False)
     modes = CourseModeSerializer(many=True)
+    is_subscription = serializers.BooleanField()
+    subscription_plan_name = serializers.CharField(allow_null=True)
 
     def validate(self, attrs):
         """ Ensure the verification deadline occurs AFTER the course mode enrollment deadlines. """
@@ -91,16 +96,28 @@ class CourseSerializer(serializers.Serializer):
         course = Course(
             validated_data["id"],
             self._new_course_mode_models(validated_data["modes"]),
-            verification_deadline=validated_data["verification_deadline"]
+            verification_deadline=validated_data["verification_deadline"],
+            is_subscription = validated_data["is_subscription"],
+            subscription_plan_name = validated_data["subscription_plan_name"]
         )
+        course_key = CourseKey.from_string(unicode(course.id))
+        course_descriptor = course = modulestore().get_course(course_key)
+        course_descriptor.is_subscription = validated_data["is_subscription"],
+        course_descriptor.subscription_plan_name = validated_data["subscription_plan_name"]
+        course_descriptor.save()
         course.save()
         return course
 
     def update(self, instance, validated_data):
         """Update course modes for an existing course. """
         validated_data["modes"] = self._new_course_mode_models(validated_data["modes"])
-
         instance.update(validated_data)
+        instance.is_subscription = validated_data['is_subscription']
+        instance.subscription_plan_name = validated_data['subscription_plan_name']
+        course_key = CourseKey.from_string(unicode(instance.id))
+        course_descriptor = get_course(course_key)
+        course_descriptor.is_subscription = validated_data["is_subscription"]
+        course_descriptor.subscription_plan_name = validated_data["subscription_plan_name"]
         instance.save()
         return instance
 

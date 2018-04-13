@@ -789,6 +789,7 @@ def course_about(request, course_id):
     with modulestore().bulk_operations(course_key):
         permission = get_permission_for_course_about()
         course = get_course_with_access(request.user, permission, course_key)
+        print "COURSE ABOUT", course, type(course)
         course_details = CourseDetails.populate(course)
         modes = CourseMode.modes_for_course_dict(course_key)
 
@@ -919,6 +920,7 @@ def course_about(request, course_id):
             'show_courseware_link': show_courseware_link,
             'is_course_full': is_course_full,
             'can_enroll': can_enroll,
+            'is_subscription': course.is_subscription,
             'invitation_only': invitation_only,
             'is_old_enough': is_old_enough,
             'needs_to_set_age': needs_to_set_age,

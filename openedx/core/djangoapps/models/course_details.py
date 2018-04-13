@@ -73,6 +73,8 @@ class CourseDetails(object):
         self.learning_info = []
         self.instructor_info = []
         self.minimum_age = 0
+        #self.is_subscription = False
+        #self.subscription_plan_name = None
 
     @classmethod
     def fetch_about_attribute(cls, course_key, attribute):
@@ -121,6 +123,8 @@ class CourseDetails(object):
         course_details.learning_info = course_descriptor.learning_info
         course_details.instructor_info = course_descriptor.instructor_info
         course_details.minimum_age = course_descriptor.minimum_age
+        course_details.is_subscription = course_descriptor.is_subscription
+        course_details.subscription_plan_name = course_descriptor.subscription_plan_name
 
         # Default course license is "All Rights Reserved"
         course_details.license = getattr(course_descriptor, "license", "all-rights-reserved")
