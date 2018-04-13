@@ -3520,6 +3520,21 @@ EDX_PLATFORM_REVISION = 'unknown'
 # Once a user has watched this percentage of a video, mark it as complete:
 # (0.0 = 0%, 1.0 = 100%)
 COMPLETION_VIDEO_COMPLETE_PERCENTAGE = 0.95
+COMPLETION_BY_VIEWING_DELAY_MS = 5000
+
+############### Settings for Django Rate limit #####################
+RATELIMIT_ENABLE = True
+RATELIMIT_RATE = '120/m'
+
+############### Settings for Retirement #####################
+RETIRED_USERNAME_PREFIX = 'retired__user_'
+RETIRED_EMAIL_PREFIX = 'retired__user_'
+RETIRED_EMAIL_DOMAIN = 'retired.invalid'
+RETIRED_USERNAME_FMT = lambda settings: settings.RETIRED_USERNAME_PREFIX + '{}'
+RETIRED_EMAIL_FMT = lambda settings: settings.RETIRED_EMAIL_PREFIX + '{}@' + settings.RETIRED_EMAIL_DOMAIN
+derived('RETIRED_USERNAME_FMT', 'RETIRED_EMAIL_FMT')
+RETIRED_USER_SALTS = ['abc', '123']
+RETIREMENT_SERVICE_WORKER_USERNAME = 'RETIREMENT_SERVICE_USER'
 
 ############### Settings for django-fernet-fields ##################
 FERNET_KEYS = [

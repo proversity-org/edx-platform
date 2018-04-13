@@ -1142,6 +1142,18 @@ COMPLETION_VIDEO_COMPLETE_PERCENTAGE = ENV_TOKENS.get(
 ############### Settings for django-fernet-fields ##################
 FERNET_KEYS = AUTH_TOKENS.get('FERNET_KEYS', FERNET_KEYS)
 
+################# Settings for the maintenance banner #################
+MAINTENANCE_BANNER_TEXT = ENV_TOKENS.get('MAINTENANCE_BANNER_TEXT', None)
+
+############### Settings for Retirement #####################
+RETIRED_USERNAME_PREFIX = ENV_TOKENS.get('RETIRED_USERNAME_PREFIX', RETIRED_USERNAME_PREFIX)
+RETIRED_EMAIL_PREFIX = ENV_TOKENS.get('RETIRED_EMAIL_PREFIX', RETIRED_EMAIL_PREFIX)
+RETIRED_EMAIL_DOMAIN = ENV_TOKENS.get('RETIRED_EMAIL_DOMAIN', RETIRED_EMAIL_DOMAIN)
+RETIREMENT_SERVICE_WORKER_USERNAME = ENV_TOKENS.get(
+    'RETIREMENT_SERVICE_WORKER_USERNAME',
+    RETIREMENT_SERVICE_WORKER_USERNAME
+)
+
 ############################### Plugin Settings ###############################
 
 from openedx.core.djangoapps.plugins import plugin_settings, constants as plugin_constants
