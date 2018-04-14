@@ -13,6 +13,9 @@ from courseware import courses
 from opaque_keys.edx.keys import CourseKey, UsageKey
 
 from openedx.core.djangoapps.content.course_structures.models import CourseStructure
+from opaque_keys.edx.locator import CourseLocator, Locator, BlockLocatorBase
+
+# from contentstore.views.helpers import get_parent_xblock, is_unit, xblock_type_display_name
 
 
 class ServiceGrades(object):
@@ -60,53 +63,52 @@ class ServiceGrades(object):
 
     def by_assignment_type(self):
         course_grade = self.get_grades()
-        structure_course = CourseStructure.objects.get(course_id=self.course_key).structure_json
-        structure_course = json.loads(structure_course)
-
-        headers = []
-        assignment_type_grades = []
-
-        # We use by_section method to get grades and chapters names and add it to the headers
-        # but first we need to proccess this result deleting the username key, due values of usernames
-        # will be the rows and not the headers.
-        chapters = self.by_section()
-        for chapter in chapters:
-            del chapter['username']
-        
-        # Build the initial rows for CSV
-        chapter_results = {}
-        for chapter_name, chapter_grade in chapter.items():
-            chapter_results[chapter_name] = chapter_grade
-            assignment_type_grades.append(chapter_results)
-            headers.append(chapter_name)
-
-
+        headers = ['username']
         for student in course_grade:
             course_grade_factory = CourseGradeFactory().create(student["username"], self.course)
             sections = course_grade_factory.chapter_grades
+            summary = course_grade_factory.graded_subsections_by_format
 
+            for section in sections.items():
+                chapter_name = section[1]['display_name']
+                headers.append(chapter_name)
+                sequentials = section[1]['sections']
+
+                for sequential in sequentials:
+                    headers.append('{} - {}'.format(chapter_name, sequential.format))
+            
             results = {}
             results['username'] = student['username'].username
-            scores_list = []
+
             for assignment_type in student["section_breakdown"]:
                 if assignment_type.has_key('prominent') and assignment_type['prominent'] == True:
-                    # scores_list.append({assignment_type['category']: assignment_type['percent']})
-                    # results['assignment_type'] = scores_list
-                    results[assignment_type['category']] = assignment_type['percent']
+                    scores_list.append({assignment_type['category']: assignment_type['percent']})
+                    results['assignment_type'] = scores_list
+                    key = '{} - {}'.format(chapter_name, sequential.format)
+                    results[key] = assignment_type['percent']
 
             assignment_type_grades.append(results)
 
-        for section in sections:
-            chapter_key = section.to_deprecated_string()
-            section_block = structure_course['blocks'][chapter_key]
-            display_name = section_block['display_name']
-            subsections = section_block['children']
-            for sequential_key in subsections:
-                assignment_type = structure_course['blocks'][sequential_key]['format']
-                headers.append("{} - {}".format(display_name, assignment_type))
-        
         return assignment_type_grades
 
+    def enhanced_problem_grade(self):
+        course_grade = self.get_grades()
+        headers = []
+        rows = []
+        for student in course_grade:
+            course_grade_factory = CourseGradeFactory().create(student["username"], self.course)
+            sections = course_grade_factory.chapter_grades
+            for section in sections.items():
+                for sequentials in section[1]["sections"]:
+                    scores = {}
+                    for problem in sequentials.problem_scores.items():
+                        key = "{} - {}".format(section[1]['display_name'], problem[0])
+                        headers.append(key)
+                        scores[key] = problem[1].earned
+                        rows.append(scores)
+
+        self.build_csv('enhanced_problem_grade.csv', headers, rows)
+        return rows
 
     def build_csv(self, csv_name, header_rows, rows):
         """
