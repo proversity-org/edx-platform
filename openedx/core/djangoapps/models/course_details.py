@@ -73,8 +73,6 @@ class CourseDetails(object):
         self.learning_info = []
         self.instructor_info = []
         self.minimum_age = 0
-        #self.is_subscription = False
-        #self.subscription_plan_name = None
 
     @classmethod
     def fetch_about_attribute(cls, course_key, attribute):

@@ -789,7 +789,6 @@ def course_about(request, course_id):
     with modulestore().bulk_operations(course_key):
         permission = get_permission_for_course_about()
         course = get_course_with_access(request.user, permission, course_key)
-        print "COURSE ABOUT", course, type(course)
         course_details = CourseDetails.populate(course)
         modes = CourseMode.modes_for_course_dict(course_key)
 

@@ -64,10 +64,6 @@ class Course(object):
 
         # Override the verification deadline for the course (not the individual modes)
         VerificationDeadline.set_deadline(self.id, self.verification_deadline, is_explicit=True)
-        print "SAVING", self
-
-
-        print "MODEL SAVE", self.is_subscription, self.subscription_plan_name
 
         for mode in self.modes:
             mode.course_id = self.id
@@ -87,9 +83,6 @@ class Course(object):
     def update(self, attrs):
         """ Update the model with external data (usually passed via API call). """
 
-        print "I am here now"
-        print "the attributes", attrs
-        print self, type(self)
         self.verification_deadline = attrs.get('verification_deadline')
         self.is_subscription = attrs.get('is_subscription')
         self.subscription_plan_name = attrs.get('subscription_plan_name')
@@ -98,9 +91,6 @@ class Course(object):
         course_descriptor = modulestore().get_course(course_id)
         course_descriptor.is_subscription = self.is_subscription
         course_descriptor.subscription_plan_name = self.subscription_plan_name
-        
-
-        print "SAVING THE UPDATE IN MODEL"
         existing_modes = {mode.mode_slug: mode for mode in self.modes}
         merged_modes = set()
         merged_mode_keys = set()
