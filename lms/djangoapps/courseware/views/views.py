@@ -60,6 +60,13 @@ from courseware.model_data import FieldDataCache
 from courseware.models import BaseStudentModuleHistory, StudentModule
 from courseware.url_helpers import get_redirect_url
 from courseware.user_state_client import DjangoXBlockUserStateClient
+from student.helpers import (
+    AccountValidationError,
+    auth_pipeline_urls,
+    create_or_set_user_attribute_created_on_site,
+    generate_activation_email_context,
+    get_next_url_for_login_page
+)
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import AnonymousUser, User
@@ -122,7 +129,7 @@ from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.exceptions import ItemNotFoundError, NoPathToItem
 from xmodule.tabs import CourseTabList
 from xmodule.x_module import STUDENT_VIEW
-
+from third_party_auth import pipeline, provider
 from ..entrance_exams import user_can_skip_entrance_exam
 from ..module_render import get_module, get_module_by_usage_id, get_module_for_descriptor
 
@@ -897,7 +904,10 @@ def course_about(request, course_id):
 
         # Embed the course reviews tool
         reviews_fragment_view = CourseReviewsModuleFragmentView().render_to_fragment(request, course=course)
-
+        
+        third_party_auth_error = None
+        redirect_to = get_next_url_for_login_page(request)
+        
         context = {
             'account_settings_url': reverse('account_settings'),
             'course': course,
@@ -933,6 +943,12 @@ def course_about(request, course_id):
             'pre_requisite_courses': pre_requisite_courses,
             'course_image_urls': overview.image_urls,
             'reviews_fragment_view': reviews_fragment_view,
+            'third_party_auth_error': third_party_auth_error,
+            'platform_name': configuration_helpers.get_value('platform_name', settings.PLATFORM_NAME),
+            'pipeline_url': auth_pipeline_urls(pipeline.AUTH_ENTRY_LOGIN, redirect_url=redirect_to),
+            'pipeline_running': 'true' if pipeline.running(request) else 'false',
+            'login_redirect_url': redirect_to,
+            
         }
 
         return render_to_response('courseware/course_about.html', context)
