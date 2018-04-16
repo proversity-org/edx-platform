@@ -1386,7 +1386,6 @@ def advanced_settings_handler(request, course_key_string):
                             return JsonResponseBadRequest(response_message)
 
                         # now update mongo
-                        
                         modulestore().update_item(course_module, request.user.id)
 
                         return JsonResponse(updated_data)

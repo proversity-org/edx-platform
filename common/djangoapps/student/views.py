@@ -1441,7 +1441,6 @@ def change_enrollment(request, check_access=True):
         # Otherwise, there is only one mode available (the default)
         return HttpResponse()
     elif action == "unenroll":
-        
         enrollment = CourseEnrollment.get_enrollment(user, course_id)
         if not enrollment:
             return HttpResponseBadRequest(_("You are not enrolled in this course"))
@@ -1453,14 +1452,12 @@ def change_enrollment(request, check_access=True):
         CourseEnrollment.unenroll(user, course_id)
 
         # Check if the course is a subscription course
-        ecommerce_service = EcommerceService()
-        if course.is_subscription == True:
-            ecommerce_service.get_unsubscribe_url(user.username)
-             
-            
-        else: #refund the paid for course
+        # ecommerce_service = EcommerceService()
+        # if course.is_subscription == True:
+        #     ecommerce_service.get_unsubscribe_url(user.username)
+        # else: #refund the paid for course
 
-            REFUND_ORDER.send(sender=None, course_enrollment=enrollment)
+        REFUND_ORDER.send(sender=None, course_enrollment=enrollment)
         return HttpResponse()
     else:
         return HttpResponseBadRequest(_("Enrollment action is invalid"))

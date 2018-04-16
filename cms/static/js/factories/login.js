@@ -21,7 +21,6 @@ define(['jquery.cookie', 'utility', 'common/js/components/utils/view_utils'], fu
         });
 
         $('form#login_form').submit(function(event) {
-            console.log('I AM HERE')
             event.preventDefault();
             var $submitButton = $('#submit'),
                 deferred = new $.Deferred(),
