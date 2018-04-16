@@ -101,8 +101,8 @@ class CourseSerializer(serializers.Serializer):
             subscription_plan_name = validated_data["subscription_plan_name"]
         )
         course_key = CourseKey.from_string(unicode(course.id))
-        course_descriptor = course = modulestore().get_course(course_key)
-        course_descriptor.is_subscription = validated_data["is_subscription"],
+        course_descriptor = modulestore().get_course(course_key)
+        course_descriptor.is_subscription = validated_data["is_subscription"]
         course_descriptor.subscription_plan_name = validated_data["subscription_plan_name"]
         course_descriptor.save()
         course.save()
