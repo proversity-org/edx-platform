@@ -118,6 +118,7 @@ class CourseSerializer(serializers.Serializer):
         course_descriptor = get_course(course_key)
         course_descriptor.is_subscription = validated_data["is_subscription"]
         course_descriptor.subscription_plan_name = validated_data["subscription_plan_name"]
+        course_descriptor.save()
         instance.save()
         return instance
 
