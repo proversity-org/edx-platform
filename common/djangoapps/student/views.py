@@ -1454,7 +1454,7 @@ def change_enrollment(request, check_access=True):
         # Check if the course is a subscription course
         # ecommerce_service = EcommerceService()
         # if course.is_subscription == True:
-        #     ecommerce_service.get_unsubscribe_url(user.username)
+        #     ecommerce_service.get_unsubscribe_url(user.username, course.id)
         # else: #refund the paid for course
 
         REFUND_ORDER.send(sender=None, course_enrollment=enrollment)
