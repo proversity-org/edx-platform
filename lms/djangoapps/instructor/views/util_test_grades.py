@@ -10,12 +10,7 @@ from pytz import UTC
 from student.models import CourseEnrollment
 from lms.djangoapps.grades.new.course_grade_factory import CourseGradeFactory
 from courseware import courses
-from opaque_keys.edx.keys import CourseKey, UsageKey
-
-from openedx.core.djangoapps.content.course_structures.models import CourseStructure
-from opaque_keys.edx.locator import CourseLocator, Locator, BlockLocatorBase
-
-# from contentstore.views.helpers import get_parent_xblock, is_unit, xblock_type_display_name
+from opaque_keys.edx.keys import CourseKey
 
 
 class ServiceGrades(object):
@@ -39,7 +34,7 @@ class ServiceGrades(object):
     def by_section(self):
         course_grade = self.get_grades()
         score_by_section = []
-        initial_header_rows = ['username']
+        header_rows = ['username']
         for student in course_grade:
             course_grade_factory = CourseGradeFactory().create(student["username"], self.course)
             sections = course_grade_factory.chapter_grades
@@ -47,47 +42,54 @@ class ServiceGrades(object):
             for section in sections.items():
                 section_dict["username"] = course_grade_factory.user.username
                 score = course_grade_factory.score_for_chapter(section[0])
-                # Score object is a tuple: (earne, possible). We need only get earned value.
+                # Score object is a tuple: (earned, possible). We need only get earned value.
                 # import ipdb; ipdb.set_trace()
                 section_dict[section[1]["display_name"]] = score[0]
-                initial_header_rows.append(section[1]["display_name"])
+                header_rows.append(section[1]["display_name"])
 
             score_by_section.append(section_dict)
 
         # We need to remove repeated values in this array, due to in the loop above
         # is repeated for each user
-        header_rows = list(set(initial_header_rows))
+        header_rows = proccess_headers(header_rows)
         self.build_csv('section_report.csv', header_rows, score_by_section)
 
         return score_by_section
 
     def by_assignment_type(self):
         course_grade = self.get_grades()
+        section_scores = self.by_section()
         headers = ['username']
+        assignment_type_grades = []
+
         for student in course_grade:
             course_grade_factory = CourseGradeFactory().create(student["username"], self.course)
             sections = course_grade_factory.chapter_grades
-            summary = course_grade_factory.graded_subsections_by_format
+            assignment_type_dict = {}
 
             for section in sections.items():
+                assignment_type_dict['username'] = course_grade_factory.user.username
                 chapter_name = section[1]['display_name']
                 headers.append(chapter_name)
                 sequentials = section[1]['sections']
 
                 for sequential in sequentials:
-                    headers.append('{} - {}'.format(chapter_name, sequential.format))
-            
-            results = {}
-            results['username'] = student['username'].username
-
-            for assignment_type in student["section_breakdown"]:
-                if assignment_type.has_key('prominent') and assignment_type['prominent'] == True:
-                    scores_list.append({assignment_type['category']: assignment_type['percent']})
-                    results['assignment_type'] = scores_list
                     key = '{} - {}'.format(chapter_name, sequential.format)
-                    results[key] = assignment_type['percent']
+                    assignment_type_dict[key] = course_grade_factory.score_for_module(sequential.location)[0]
+                    headers.append('{} - {}'.format(chapter_name, sequential.format))
 
-            assignment_type_grades.append(results)
+            assignment_type_grades.append(assignment_type_dict)
+
+        
+        # Merge two list of dicts: Array of section grades using by_section method
+        # and array of assignment type grades.
+        for assignment_type in assignment_type_grades:
+            for section in section_scores:
+                if assignment_type['username'] == section['username']:
+                    assignment_type.update(section)
+
+        headers = proccess_headers(headers)
+        self.build_csv('assignment_type_report.csv', headers, assignment_type_grades)
 
         return assignment_type_grades
 
@@ -95,12 +97,23 @@ class ServiceGrades(object):
         course_grade = self.get_grades()
         headers = []
         rows = []
+        problem_scores = []
         for student in course_grade:
             course_grade_factory = CourseGradeFactory().create(student["username"], self.course)
             sections = course_grade_factory.chapter_grades
             for section in sections.items():
                 for sequentials in section[1]["sections"]:
                     scores = {}
+                    # If a unit has more than one problem, we need to store it
+                    # as a different object in the dict.
+                    """
+                    if len(sequentials.problem_scores) > 1:
+                        for problem in sequentials.problem_scores.items():
+                            key = "{} - {}".format(section[1]['display_name'], problem[0])
+                            headers.append(key)
+                            scores[key] = problem[1].earned
+                            rows.append(scores)
+                    """
                     for problem in sequentials.problem_scores.items():
                         key = "{} - {}".format(section[1]['display_name'], problem[0])
                         headers.append(key)
@@ -136,3 +149,7 @@ class ServiceGrades(object):
                 writer.writerow(row)
 
         return csv_file
+
+
+def proccess_headers(headers):
+    return list(set(headers))
