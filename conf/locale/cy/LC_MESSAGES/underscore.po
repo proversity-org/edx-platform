@@ -3490,17 +3490,3 @@ msgstr ""
 #, python-format
 msgid " %(username)s "
 msgstr ""
-
-#: cms/templates/login.html cms/templates/widgets/header.html
-#: themes/red-theme/cms/templates/login.html
-msgid "Sign In"
-msgstr "Mewngofnodi"
-
-msgid "First time here?"
-msgstr "Y tro cyntaf yma?"
-
-msgid "Create an Account."
-msgstr "Creu cyfrif."
-
-msgid "SIGN IN"
-msgstr "Mewngofnodi"

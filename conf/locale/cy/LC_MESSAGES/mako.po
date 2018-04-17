@@ -1197,7 +1197,7 @@ msgstr "Adnodd allanol"
 #. "total_points" is the maximum number of points achievable.
 #: lms/templates/lti.html
 msgid "{points} / {total_points} points"
-msgstr "{points} / {total_points} pwyntiau"
+msgstr "{points} / {total_points} pwynt"
 
 #. Translators: "total_points" is the maximum number of points achievable on
 #. this LTI unit
@@ -1217,7 +1217,6 @@ msgstr "Rhowch launch_url. Cliciwch ar \"Golygu\", a chwblhau'r meysydd gofynnol
 #: lms/templates/lti.html
 msgid "Feedback on your work from the grader:"
 msgstr "Adborth ar eich gwaith gan y graddiwr:"
-
 
 #: lms/templates/lti_form.html
 msgid "Press to Launch"
@@ -1384,15 +1383,15 @@ msgstr "Staff"
 
 #: lms/templates/preview_menu.html
 msgid "Learner"
-msgstr ""
+msgstr "Dysgwr"
 
 #: lms/templates/preview_menu.html
 msgid "Specific learner"
-msgstr ""
+msgstr "Myfyriwr penodol"
 
 #: lms/templates/preview_menu.html
 msgid "Learner in {content_group}"
-msgstr ""
+msgstr "Myfyriwr yn {content_group}"
 
 #: lms/templates/preview_menu.html
 msgid "Username or email:"
@@ -1639,6 +1638,9 @@ msgstr "Cytunaf i'r {link_start}Telerau Gwasanaeth{link_end}"
 #: themes/stanford-style/lms/templates/register-shib.html
 msgid "I agree to the {link_start}Honor Code{link_end}"
 msgstr "Cytunaf i'r {link_start}Côd anrhydedd{link_end}"
+
+msgid "I agree to the {platform_name} {terms_of_service}"
+msgstr "Rwy'n cytuno i {terms_of_service} {platform_name}"
 
 #: lms/templates/register-form.html lms/templates/signup_modal.html
 #: themes/stanford-style/lms/templates/register-form.html
@@ -4080,7 +4082,7 @@ msgstr "Llywio taflenni"
 
 #: lms/templates/courseware/info.html
 msgid "Course Tools"
-msgstr "Rolau tîm y cwrs"
+msgstr ""
 
 #: lms/templates/courseware/info.html
 msgid "Course Handouts"
@@ -4189,7 +4191,7 @@ msgstr "Sgorau'r problemau:"
 
 #: lms/templates/courseware/progress.html
 msgid "Practice Scores: "
-msgstr "Sgorau ymarferion:"
+msgstr "Sgorau ymarferion: "
 
 #: lms/templates/courseware/progress.html
 msgid "No problem scores in this section"
@@ -8806,7 +8808,7 @@ msgstr ""
 
 #: lms/templates/widgets/cookie-consent.html
 msgid "Got it!"
-msgstr ""
+msgstr "Wedi'i gael!"
 
 #: lms/templates/widgets/cookie-consent.html
 msgid "Learn more"
@@ -9030,19 +9032,17 @@ msgstr "Rhowch eich côd anrhydedd yma!"
 msgid "Put your Copyright Text here!"
 msgstr "Rhowch eich testun hawlfraint yma!"
 
-msgid "Already have an Proversity.io account? Sign in."
-msgstr "Oes gennych gyfrif Proversity.io eisoes? Mewngofnodi."
+msgid "Already have an {platform_name} account? Sign in."
+msgstr "Oes gennych gyfrif {platform_name} eisoes? Mewngofnodi."
 
 msgid "Create an Account"
 msgstr "Creu cyfrif"
 
 msgid "This is what you will use to login."
-msgstr "Here's what you'll use to log in."
+msgstr "Dyma beth fyddwch chi'n ei ddefnyddio i fewngofnodi."
 
 msgid "This name will be used on any certificates that you earn."
-msgstr ""
-"Bydd yr enw hwn yn cael ei ddefnyddio ar unrhyw dystysgrifau rydych chi'n eu "
-"hennill."
+msgstr "Bydd yr enw hwn yn cael ei ddefnyddio ar unrhyw dystysgrifau rydych chi'n eu ennill."
 
 msgid ""
 "The name that will identify you in your courses. It cannot be changed later."
@@ -9074,6 +9074,9 @@ msgid "I agree to the {platform_name} Terms of Service and Honour Code"
 msgstr "Rwy'n cytuno i Amodau Gwasanaeth {platform_name} a Honor Code"
 
 msgid "CREATE ACCOUNT"
+msgstr "Creu cyfrif"
+
+msgid "Create Account"
 msgstr "Creu cyfrif"
 
 msgid "E-mail (required)"

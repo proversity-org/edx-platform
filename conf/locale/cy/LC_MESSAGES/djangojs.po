@@ -337,7 +337,7 @@ msgstr[1] ""
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "%(earned)s/%(possible)s point (graded)"
 msgid_plural "%(earned)s/%(possible)s points (graded)"
-msgstr[0] ""
+msgstr[0] "pwyntiau graddio"
 msgstr[1] ""
 
 #. Translators: %(earned)s is the number of points earned. %(possible)s is the
@@ -2565,16 +2565,16 @@ msgid "Update"
 msgstr "Diweddaru"
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
-msgid "Team Name (Required) *"
-msgstr "Enw'r tîm (gofynnol) *"
+msgid "Team Name (Required) "
+msgstr "Enw'r tîm (gofynnol) "
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 msgid "A name that identifies your team (maximum 255 characters)."
 msgstr "Enw sy'n dynodi eich tîm (mwyafswm 255 o nodau/gymeriadau)."
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
-msgid "Team Description (Required) *"
-msgstr "Disgrifiad o'r tîm (gofynnol) *"
+msgid "Team Description (Required) "
+msgstr "Disgrifiad o'r tîm (gofynnol) "
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 msgid ""
@@ -2588,6 +2588,22 @@ msgstr ""
 #: lms/static/js/student_account/views/account_settings_factory.js
 msgid "Language"
 msgstr "Iaith"
+
+#: lms/djangoapps/instructor/views/api.py
+msgid "Location"
+msgstr "Lleoliad"
+
+#: openedx/features/learner_profile/static/learner_profile/js/learner_profile_factory.js
+msgid "Joined"
+msgstr "Ymunodd"
+
+#: openedx/features/learner_profile/static/learner_profile/js/learner_profile_factory.js
+msgid "Joined Date"
+msgstr "Dyddiad Ymuno"
+
+#: lms/djangoapps/instructor/views/api.py
+msgid "Birth Year"
+msgstr "Blwyddyn eni"
 
 #: lms/djangoapps/teams/static/teams/js/views/edit_team.js
 #: lms/djangoapps/teams/static/teams/templates/team-profile.underscore
@@ -7682,10 +7698,10 @@ msgstr ""
 #: test_root/staticfiles/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
 msgid ""
 "Enter email addresses and/or usernames, separated by new lines or commas, "
-"for the students you want to add. *"
+"for the students you want to add. "
 msgstr ""
 "Rhowch gyfeiriadau e-bost a/neu enwau defnyddiwr wedi'u gwahanu gan linellau "
-"newydd neu atalnod ar gyfer y myfyrwyr rydych am eu hychwanegu. *"
+"newydd neu atalnod ar gyfer y myfyrwyr rydych am eu hychwanegu. "
 
 #: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
 #: lms/templates/instructor/instructor_dashboard_2/cohort-form.underscore
@@ -8218,17 +8234,6 @@ msgstr "Dangoswch ffyrdd eraill o fewngofnodi neu gofrestru"
 msgid "Sign in with Institution/Campus Credentials"
 msgstr "Mewngofnodi gyda chymwysterau sefydliad/campws"
 
-#: cms/templates/login.html cms/templates/widgets/header.html
-#: themes/red-theme/cms/templates/login.html
-msgid "Sign In"
-msgstr "Mewngofnodi"
-
-msgid "First time here?"
-msgstr "Y tro cyntaf yma?"
-
-msgid "Create an Account."
-msgstr "Creu cyfrif."
-
 #: lms/templates/student_account/institution_login.underscore
 #: lms/templates/student_account/institution_register.underscore
 #: test_root/staticfiles/templates/student_account/institution_login.underscore
@@ -8295,6 +8300,11 @@ msgstr "Yn newydd i %(platformName)?"
 #: lms/templates/student_account/login.underscore
 #: test_root/staticfiles/templates/student_account/login.underscore
 msgid "Create an account"
+msgstr "Creu cyfrif"
+
+#: lms/templates/student_account/login.underscore
+#: test_root/staticfiles/templates/student_account/login.underscore
+msgid "Create an account."
 msgstr "Creu cyfrif"
 
 #: lms/templates/student_account/password_reset.underscore
@@ -11095,3 +11105,214 @@ msgstr "Cadwyd y drafft ar %(last_saved_date)s gan %(edit_username)s"
 
 msgid "Course Type"
 msgstr "Math y Cwrs"
+
+msgid "This is what you will use to login."
+msgstr "Dyma beth fyddwch chi'n ei ddefnyddio i fewngofnodi."
+
+msgid "This name will be used on any certificates that you earn."
+msgstr "Bydd yr enw hwn yn cael ei ddefnyddio ar unrhyw dystysgrifau rydych chi'n eu ennill."
+
+msgid ""
+"The name that will identify you in your courses. It cannot be changed later."
+msgstr ""
+"Yr enw a fydd yn eich adnabod yn eich cyrsiau. Ni ellir ei newid yn nes "
+"ymlaen."
+
+msgid "Enter a valid email address that contains at least 3 characters. "
+msgstr "Rhowch gyfeiriad e-bost dilys sy'n cynnwys o leiaf 3 nod. "
+
+msgid "Enter a valid email address that contains at least 3 characters. This is what you will use to login"
+msgstr "Rhowch gyfeiriad e-bost dilys sy'n cynnwys o leiaf 3 nod. Dyma beth fyddwch chi'n ei ddefnyddio i fewngofnodi."
+
+msgid "Enter a valid email address that contains at least {min} characters. "
+msgstr "Rhowch gyfeiriad e-bost dilys sy'n cynnwys o leiaf {min} nod. "
+
+msgid "Enter your full name. This name will be used on any certificates that you earn"
+msgstr "Rhowch eich enw llawn. Bydd yr enw hwn yn cael ei ddefnyddio ar unrhyw dystysgrifau rydych chi'n eu ennill"
+
+msgid "Enter your full name."
+msgstr "Rhowch eich enw llawn."
+
+msgid "Enter a password."
+msgstr "Rhowch gyfrinair."
+
+msgid "Country or Region of Residence"
+msgstr "Gwlad neu Ranbarth Preswyl"
+
+msgid "Password (required)"
+msgstr "Cyfrinair (gofynnol)"
+
+msgid "Country or Region of Residence (required)!"
+msgstr "Gwlad neu Ranbarth Preswyl (gofynnol)!"
+
+msgid "Select your country or region of residence."
+msgstr "Dewiswch eich gwlad neu ranbarth preswylio."
+
+msgid "(required)"
+msgstr "(gofynnol)"
+
+msgid "required"
+msgstr "gofynnol"
+
+msgid "Support education research by providing additional information"
+msgstr "Cefnogi ymchwil addysg trwy ddarparu gwybodaeth ychwanegol"
+
+msgid "I agree to the {platform_name} {terms_of_service}"
+msgstr "Rwy'n cytuno i {platform_name} {terms_of_service}"
+
+msgid "I agree to the {link_start}Terms of Service{link_end}"
+msgstr "Cytunaf i'r {link_start}Telerau Gwasanaeth{link_end}"
+
+msgid "I agree to the {link_start}Terms of Service and Honor Code{link_end}"
+msgstr "Cytunaf i'r {link_start} Telerau Gwasanaeth{link_end}"
+
+msgid "Got it!"
+msgstr "Wedi'i gael!"
+
+msgid "Pass"
+msgstr "Pasiwch"
+
+msgid "Learner's {platform_name} email address or username "
+msgstr "Cyfeiriad e-bost neu enw defnyddiwr {platform_name} y dysgwr "
+
+msgid "Location of problem in course"
+msgstr "Lleoliad y broblem yn y cwrs"
+
+msgid "For the specified problem, override the learner's score."
+msgstr ""
+"Ar gyfer y broblem benodol, dilëwch atebion a sgoriau'r dysgwr yn barhaol ac "
+"yn llwyr o'r gronfa ddata."
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"The enrolled learner profile report is being created. To view the status of "
+"the report, see Pending Tasks below."
+msgstr ""
+"Mae adroddiad proffil dysgwyr cofrestredig yn cael ei greu. I weld statws yr "
+"adroddiad, gweler tasgau yn yr arfaeth"
+
+#: lms/templates/student_account/login.underscore
+msgid "First time here?"
+msgstr "Y tro cyntaf yma?"
+
+#: lms/templates/student_account/login.underscore
+msgid "Create an Account."
+msgstr "Creu cyfrif."
+
+msgid "Sign In"
+msgstr "Mewngofnodi"
+
+msgid "Score Override"
+msgstr "sgôr diweddaru"
+
+#: lms/templates/dashboard/_dashboard_course_listing.html
+#, python-format
+msgid ""
+"Are you sure you want to unenroll from the purchased course %(course_name)s "
+"(%(course_number)s)?"
+msgstr ""
+"Ydych chi'n siŵr eich bod am ddadgofrestru o'r cwrs a brynoch "
+"%(course_name)s (%(course_number)s)?"
+
+#: lms/templates/dashboard/_dashboard_course_listing.html
+#, python-format
+msgid ""
+"Are you sure you want to unenroll from %(course_name)s (%(course_number)s)?"
+msgstr ""
+"Ydych chi'n siŵr eich bod am ddadgofrestru o %(course_name)s "
+"(%(course_number)s)?"
+
+#, fuzzy, python-format
+msgid ""
+"Are you sure you want to unenroll from the verified %(cert_name_long)s track "
+"of %(course_name)s (%(course_number)s)?"
+msgstr ""
+"Ydych chi'n siŵr eich bod am ddadgofrestru o lwybr gwiriedig %(course_name)s "
+"(%(course_number)s)?"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Course Home Sidebar"
+msgstr "Enw bar ochr hafan y cwrs"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Course Home Sidebar Name"
+msgstr "Enw bar ochr hafan y cwrs"
+
+msgid "Course Tools"
+msgstr "Rolau tîm y cwrs"
+
+#: lms/static/js/student_account/views/account_settings_factory.js
+msgid "The name that identifies you on {platform_name}. You cannot change your username."
+msgstr "Yr enw sy'n eich adnabod chi ar {platform_name}. Ni allwch newid eich enw defnyddiwr."
+
+msgid "The name that is used for ID verification and that appears on your certificates."
+msgstr "Yr enw a ddefnyddir ar gyfer gwirio pwy ydych chi ac sy'n ymddangos ar eich tystysgrifau"
+
+msgid "Check your email account for instructions to reset your password."
+msgstr "Gwiriwch eich cyfrif e-bost am gyfarwyddiadau i ailosod eich cyfrinair."
+
+msgid "The language used throughout this site. This site is currently available in a "
+"limited number of languages. Changing the value of this field will cause the page to refresh."
+msgstr "Yr iaith a ddefnyddiwyd trwy gydol y safle hwn. Mae'r safle hwn ar gael ar "
+"hyn o bryd mewn nifer cyfyngedig o ieithoedd. Bydd newid gwerth y maes hwn yn achosi'r dudalen i adnewyddu."
+
+msgid ""
+"Optionally, link your personal accounts to the social media icons on your "
+"edX profile."
+msgstr ""
+"Yn ddewisol, cysylltwch eich cyfrifon personol i'r eiconau cyfryngau "
+"cymdeithasol ar eich proffil edX."
+
+msgid "Enter your "
+msgstr "Rhowch eich"
+
+msgid "Twitter"
+msgstr "Twitter"
+
+msgid "Facebook"
+msgstr "Facebook"
+
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+msgid " username or the URL to your "
+msgstr " enw defnyddiwr neu'r URL i chi "
+
+msgid " page. Delete the URL to remove the link."
+msgstr " tudalen. Dileu'r URL i gael gwared ar y ddolen."
+
+msgid "Course Certificates"
+msgstr "Tystysgrifau'r cwrs"
+
+#: openedx/features/learner_profile/static/learner_profile/js/learner_profile_factory.js
+msgid "Profile Visibility:"
+msgstr "Gwelededd Proffil:"
+
+msgid "Create Account"
+msgstr "Creu cyfrif"
+
+msgid "Already have an {platformName} account?"
+msgstr "Eisoes sydd â {platformName} nghyfrif?"
+
+#: lms/templates/student_account/register.underscore
+msgid "Sign in."
+msgstr "Mewngofnodi."
+
+msgid "You receive messages from {platform_name} and course teams at this address."
+msgstr "Rydych chi'n derbyn negeseuon gan {platform_name} a thimau cwrs yn y cyfeiriad hwn."
+
+msgid "The country or region where you live."
+msgstr "Y wlad neu'r rhanbarth lle rydych chi'n byw."
+
+msgid "Select your country or region of residence. The country or region where you live."
+msgstr "Dewiswch eich gwlad neu ranbarth preswylio. Y wlad neu'r rhanbarth lle rydych chi'n byw."
+
+#. Translators: This string is appended to optional field labels on the
+#. student login, registration, and
+#. profile forms.
+#: lms/static/js/student_account/views/FormView.js
+msgid "(optional)"
+msgstr "(dewisol)"
+
+msgid "Select the highest level of education you have completed."
+msgstr "Dewiswch y lefel uchaf o addysg yr ydych wedi'i gwblhau."

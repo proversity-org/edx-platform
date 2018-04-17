@@ -2786,10 +2786,6 @@ msgid "Enter the names of the advanced modules to use in your course."
 msgstr "Rhowch enwau'r modiwlau uwch i'w defnyddio yn eich y cwrs."
 
 #: common/lib/xmodule/xmodule/course_module.py
-msgid "Course Home Sidebar Name"
-msgstr "Enw bar ochr hafan y cwrs"
-
-#: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Enter the heading that you want students to see above your course handouts "
 "on the Course Home page. Your course handouts appear in the right panel of "
@@ -2801,6 +2797,17 @@ msgstr ""
 #: lms/templates/courseware/info.html
 msgid "Course Handouts"
 msgstr "Taflenni'r cwrs"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Course Home Sidebar"
+msgstr "Enw bar ochr hafan y cwrs"
+
+#: common/lib/xmodule/xmodule/course_module.py
+msgid "Course Home Sidebar Name"
+msgstr "Enw bar ochr hafan y cwrs"
+
+msgid "Course Tools"
+msgstr "Rolau tîm y cwrs"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
@@ -5255,7 +5262,7 @@ msgid ""
 "{platform_name} {certificate_type} Certificate of Completion in "
 msgstr ""
 "wedi'i gwblhau'n llwyddiannus, derbyniwyd gradd llwyddo, a dyfarnwyd "
-"{certificate_type} {platform_name} Tystysgrif Cwblhau"
+"{platform_name} {certificate_type} Tystysgrif Cwblhau "
 
 #. Translators: This text describes the purpose (and therefore, value) of a
 #. course certificate
@@ -10452,6 +10459,9 @@ msgstr "Cyfeiriad post"
 msgid "Tell us why you're interested in {platform_name}"
 msgstr "Dywedwch wrthym pam fod gennych ddiddordeb yn {platform_name}"
 
+msgid "Select the highest level of education you have completed."
+msgstr "Dewiswch y lefel uchaf o addysg yr ydych wedi'i gwblhau."
+
 #. Translators: This label appears above a field on the registration form
 #. which allows the user to input the State/Province/Region in which they
 #. live.
@@ -10504,7 +10514,7 @@ msgstr "Adolygu Telerau Gwasanaeth a Chôd Anrhydedd"
 #: openedx/core/djangoapps/user_api/views.py
 #, python-brace-format
 msgid "I agree to the {platform_name} {terms_of_service}"
-msgstr "Rwy'n cytuno i {terms_of_service} {platform_name}"
+msgstr "Rwy'n cytuno i {platform_name} {terms_of_service}"
 
 #. Translators: "Terms of Service" is a legal document users must agree to
 #. in order to register a new account.
@@ -10513,7 +10523,7 @@ msgstr "Rwy'n cytuno i {terms_of_service} {platform_name}"
 #: openedx/core/djangoapps/user_api/views.py
 #, python-brace-format
 msgid "You must agree to the {platform_name} {terms_of_service}"
-msgstr "Rhaid i chi gytuno i {terms_of_service} {platform_name}"
+msgstr "Rhaid i chi gytuno i {platform_name} {terms_of_service}"
 
 #: openedx/core/djangoapps/user_api/views.py
 msgid "Review the Terms of Service"
@@ -11390,10 +11400,6 @@ msgstr "Cyfrif"
 msgid "Help"
 msgstr "Help"
 
-#: openedx/features/course_experience/templates/course_experience/course-home-fragment.html
-msgid "Start Course"
-msgstr "Cychwyn Cwrs"
-
 #: cms/templates/widgets/sock.html
 #: themes/edx.org/cms/templates/widgets/sock.html
 msgid "Looking for help with {studio_name}?"
@@ -12146,6 +12152,12 @@ msgstr "Mewngofnodi gyda {provider_name}"
 msgid "External resource"
 msgstr "Adnodd allanol"
 
+#. Translators: "points" is the student's achieved score on this LTI unit, and
+#. "total_points" is the maximum number of points achievable.
+#: lms/templates/lti.html
+msgid "{points} / {total_points} points"
+msgstr "{points} / {total_points} pwynt"
+
 #. Translators: "total_points" is the maximum number of points achievable on
 #. this LTI unit
 #: lms/templates/lti.html
@@ -12318,7 +12330,7 @@ msgstr "Gweld y cwrs hwn fel:"
 #: lms/templates/preview_menu.html
 #, fuzzy
 msgid "Learner"
-msgstr "Pob dysgwr"
+msgstr "Dysgwr"
 
 #: lms/templates/preview_menu.html
 #, fuzzy
@@ -14841,11 +14853,19 @@ msgstr ""
 "Cofrestrwch nawr!{link_end}"
 
 #: lms/templates/courseware/info.html
-msgid "Welcome to {org}'s {course_name}!"
-msgstr "Croeso i {course_name} {org}'s!"
+msgid "Welcome to {org}'s {course_name}"
+msgstr "Croeso i {org}'s {course_name}"
+
+#: lms/templates/courseware/info.html
+msgid "Welcome to {org}'s {course_title}"
+msgstr "Croeso i {org}'s {course_title}"
 
 #: lms/templates/courseware/info.html
 msgid "Resume Course"
+msgstr "Parhau â'r cwrs"
+
+#: lms/templates/courseware/info.html
+msgid "Start Course"
 msgstr "Parhau â'r cwrs"
 
 #: lms/templates/courseware/info.html
@@ -14876,11 +14896,6 @@ msgstr "Y diweddaraf am y cwrs a newyddion"
 #: lms/templates/courseware/info.html
 msgid "Handout Navigation"
 msgstr "Llywio taflenni"
-
-#: lms/templates/courseware/info.html
-#: openedx/features/course_experience/templates/course_experience/course-home-fragment.html
-msgid "Course Tools"
-msgstr "Rolau tîm y cwrs"
 
 #: lms/templates/courseware/news.html
 msgid "News - MITx 6.002x"
@@ -14979,25 +14994,18 @@ msgid "{earned} of {total} possible points"
 msgstr "{earned} o'r {total} pwyntiau sy'n bosib"
 
 #: lms/templates/courseware/progress.html
+#, fuzzy
+msgid "Problem Scores: "
+msgstr "Sgorau'r problemau:"
+
+#: lms/templates/courseware/progress.html
+#, fuzzy
+msgid "Practice Scores: "
+msgstr "Sgorau ymarferion: "
+
+#: lms/templates/courseware/progress.html
 msgid "No problem scores in this section"
 msgstr "Dim sgorau sy'n broblem yn yr adran hon"
-
-#: lms/templates/courseware/progress.html
-msgid "Problem Scores: "
-msgstr "Sgoriau broblem:"
-
-#: lms/templates/courseware/progress.html
-msgid "Practice Scores: "
-msgstr "Sgoriau arfer:"
-
-#: lms/templates/lti.html
-msgid "{points} / {total_points} points"
-msgstr "{points} / {total_points} pwyntiau"
-
-
-#: lms/templates/login.html
-msgid "First time here? Create an account"
-msgstr "Y ttro cyntaf yma? Creu cyfrif"
 
 #: lms/templates/courseware/syllabus.html
 msgid "{course.display_number_with_default} Course Info"
@@ -16860,15 +16868,15 @@ msgstr "Cynhyrchu adroddiad o ganlyniadau'r arolwg"
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid ""
 "To generate a CSV file that lists all student answers to a given problem, "
-"enter the location of the problem (from its Staff Debug Info)."
+"enter the location of the problem (from its Staff Debug Info). "
 msgstr ""
 "I gynhyrchu ffeil CSV sy'n rhestru holl atebion y myfyrwyr i broblem "
-"benodol, rhowch leoliad y broblem (o'r wybodaeth dadfygio staff)."
+"benodol, rhowch leoliad y broblem (o'r wybodaeth dadfygio staff). "
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 #, fuzzy
 msgid "Problem location: "
-msgstr "Lleoliad y broblem:"
+msgstr "Lleoliad y broblem: "
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid "Download a CSV of problem responses"
@@ -19398,7 +19406,9 @@ msgstr "Dychwelyd i'ch dangosfwrdd"
 msgid ""
 "This website uses cookies to ensure you get the best experience on our "
 "website."
-msgstr "Mae'r wefan hon yn defnyddio cwcis i sicrhau eich bod yn cael y profiad gorau ar ein gwefan."
+msgstr ""
+"Mae'r wefan hon yn defnyddio cwcis i sicrhau eich bod yn cael y profiad gorau ar" 
+"ein gwefan"
 
 #: lms/templates/widgets/cookie-consent.html
 msgid "Got it!"
@@ -22149,6 +22159,9 @@ msgstr "Eich dewis iaith"
 msgid "I agree to the {a_start} Terms of Service {a_end}"
 msgstr "Cytunaf i'r {a_start} telerau gwasanaeth {a_end}"
 
+msgid "I agree to the {link_start}Terms of Service and Honor Code{link_end}"
+msgstr "Cytunaf i'r {link_start} Telerau Gwasanaeth{link_end}"
+
 #: cms/templates/register.html
 msgid "Create My Account &amp; Start Authoring Courses"
 msgstr "Creu fy nghyfrif &amp; Dechrau awduro cyrsiau"
@@ -24050,9 +24063,6 @@ msgstr ""
 "gorau ar ein gwefan. Os ydych chi'n parhau i bori'r wefan hon, rydym yn "
 "deall eich bod chi'n derbyn y defnydd o gwcis."
 
-msgid "Got It!"
-msgstr "Got It!"
-
 msgid "First time here? Create an Account."
 msgstr "Y tro cyntaf yma? Creu cyfrif."
 
@@ -24069,7 +24079,7 @@ msgstr "Cyfeiriad e-bost neu enw defnyddiwr {platform_name} y dysgwr *"
 
 #, fuzzy
 msgid "Location of problem in course"
-msgstr "Lleoliad y broblem yn y cwrs *"
+msgstr "Lleoliad y broblem yn y cwrs"
 
 #, fuzzy
 msgid "For the specified problem, override the learner's score."
@@ -24416,3 +24426,73 @@ msgstr "Hidlydd..."
 
 msgid "Cookie Policy"
 msgstr "Polisi Cwci"
+
+msgid "Enter your full name. This name will be used on any certificates that you earn."
+msgstr "Rhowch eich enw llawn. Bydd yr enw hwn yn cael ei ddefnyddio ar unrhyw dystysgrifau rydych chi'n eu ennill."
+
+msgid "Already have an {platform_name} account? "
+msgstr "Oes gennych gyfrif {platform_name} eisoes? "
+
+msgid "Enter a valid email address that contains at least 3 characters. "
+msgstr "Rhowch gyfeiriad e-bost dilys sy'n cynnwys o leiaf 3 nod. "
+
+msgid "Enter a valid email address that contains at least 3 characters. This is what you will use to login"
+msgstr "Rhowch gyfeiriad e-bost dilys sy'n cynnwys o leiaf 3 nod. Dyma beth fyddwch chi'n ei ddefnyddio i fewngofnodi."
+
+msgid "Enter a valid email address that contains at least {min} characters. "
+msgstr "Rhowch gyfeiriad e-bost dilys sy'n cynnwys o leiaf {min} nod. "
+
+msgid "Create an Account"
+msgstr "Creu cyfrif"
+
+msgid "This is what you will use to login."
+msgstr "Dyma beth fyddwch chi'n ei ddefnyddio i fewngofnodi."
+
+msgid "Username must be between {min} and {max} characters long."
+msgstr "Rhaid i'r enw defnyddiwr fod rhwng {min} a {max} cymeriadau yn hir"
+
+msgid "Username must be between {min} and {max} characters long. The name that will identify you in your courses. It cannot be changed later"
+msgstr "Rhaid i'r enw defnyddiwr fod rhwng {min} a {max} cymeriadau yn hir Yr enw a fydd yn nodi pwy ydych chi yn eich cyrsiau ni ellir ei newid yn ddiweddarach" 
+
+msgid ""
+"The name that will identify you in your courses. It cannot be changed later."
+msgstr ""
+"Yr enw a fydd yn eich adnabod yn eich cyrsiau. Ni ellir ei newid yn nes "
+"ymlaen."
+
+msgid "Enter a password."
+msgstr "Rhowch gyfrinair."
+
+msgid "Score Override"
+msgstr "sgôr diweddaru"
+
+#: openedx/features/learner_profile/templates/learner_profile/learner_profile.html
+msgid "Build out your profile to personalize your identity on {platform_name}."
+msgstr "Adeiladu eich proffil i bersonoli'ch hunaniaeth ar {platform_name} "
+
+#: openedx/features/learner_profile/templates/learner_profile/learner-achievements-fragment.html
+msgid "You haven't earned any certificates yet."
+msgstr "Nid ydych chi wedi ennill unrhyw dystysgrifau eto."
+
+msgid "Create Account"
+msgstr "Creu cyfrif"
+
+#: openedx/features/course_experience/views/course_home_messages.py
+#, python-brace-format
+msgid "Welcome to {course_display_name}"
+msgstr "Croeso i {course_display_name}"
+
+msgid "Country or Region of Residence (required)!"
+msgstr "Gwlad neu Ranbarth Preswyl (gofynnol)!"
+
+msgid "Select your country or region of residence."
+msgstr "Dewiswch eich gwlad neu ranbarth preswylio."
+
+msgid "Country or Region of Residence"
+msgstr "Gwlad neu Ranbarth Preswyl"
+
+msgid "The country or region where you live."
+msgstr "Y wlad neu'r rhanbarth lle rydych chi'n byw."
+
+msgid "Select your country or region of residence. The country or region where you live."
+msgstr "Dewiswch eich gwlad neu ranbarth preswylio. Y wlad neu'r rhanbarth lle rydych chi'n byw."

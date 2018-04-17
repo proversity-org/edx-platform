@@ -1445,7 +1445,7 @@ msgstr ""
 
 #: cms/templates/howitworks.html
 msgid "Already have a {studio_name} Account? Sign In"
-msgstr ""
+msgstr "Gennych gyfrif {studio_name} eisoes? Mewngofnodi"
 
 #: cms/templates/howitworks.html
 msgid "Outlining Your Course"
@@ -2229,7 +2229,7 @@ msgstr ""
 
 #: cms/templates/register.html
 msgid "Already have a {studio_name} Account? Sign in"
-msgstr ""
+msgstr "Gennych gyfrif {studio_name} eisoes? Mewngofnodi"
 
 #: cms/templates/register.html
 msgid ""

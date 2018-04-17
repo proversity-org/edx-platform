@@ -10412,7 +10412,7 @@ msgid "Enter a valid email address that contains at least {min} characters."
 msgstr "أدخل عنوان بريد إلكتروني صالح يتضمن على الأقل (min3) حروف"
 
 msgid "Enter your full name."
-msgstr "Enter your full name"
+msgstr "أدخل اسمك بالكامل."
 
 msgid "Select your country or region of residence."
 msgstr ""
