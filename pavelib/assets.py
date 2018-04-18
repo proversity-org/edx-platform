@@ -12,6 +12,8 @@ from datetime import datetime
 from functools import wraps
 from threading import Timer
 
+from django.conf import settings as django_settings
+
 from paver import tasks
 from paver.easy import call_task, cmdopts, consume_args, needs, no_help, path, sh, task
 from watchdog.events import PatternMatchingEventHandler
@@ -695,7 +697,7 @@ def restart_django_servers():
     ))
 
 
-def collect_assets(systems, settings, **kwargs):
+def collect_assets(args, **kwargs):
     """
     Collect static assets, including Django pipeline processing.
     `systems` is a list of systems (e.g. 'lms' or 'studio' or both)
@@ -723,11 +725,19 @@ def collect_assets(systems, settings, **kwargs):
         '--ignore "{}"'.format(pattern) for pattern in ignore_patterns
     )
 
+    systems = args.system
+    settings = args.settings
+
+    extra_command = '--no-post-process' if not args.post_process else ''
+
+    print("this is extra_command {}".format(extra_command))
+
     for sys in systems:
         collectstatic_stdout_str = _collect_assets_cmd(sys, **kwargs)
-        sh(django_cmd(sys, settings, "collectstatic {ignore_args} --noinput {logfile_str}".format(
+        sh(django_cmd(sys, settings, "collectstatic {ignore_args} --noinput {logfile_str} {extra_command}".format(
             ignore_args=ignore_args,
-            logfile_str=collectstatic_stdout_str
+            logfile_str=collectstatic_stdout_str,
+            extra_command=extra_command
         )))
         print("\t\tFinished collecting {} assets.".format(sys))
 
@@ -955,6 +965,10 @@ def update_assets(args):
         '--wait', type=float, default=0.1,
         help="How long to pause between filesystem scans"
     )
+    parser.add_argument(
+            '--no-post-process', action='store_false', dest='post_process', default=True,
+            help="Do NOT post process collected files.",
+    )
     args = parser.parse_args(args)
     collect_log_args = {}
 
@@ -975,7 +989,7 @@ def update_assets(args):
         if args.collect_log_dir:
             collect_log_args.update({COLLECTSTATIC_LOG_DIR_ARG: args.collect_log_dir})
 
-        collect_assets(args.system, args.settings, **collect_log_args)
+        collect_assets(args, **collect_log_args)
 
     if args.watch:
         call_task(
