@@ -9,13 +9,17 @@ from django.contrib.auth.models import User
 from pytz import UTC
 
 from student.models import CourseEnrollment
+
 from lms.djangoapps.grades.new.course_grade_factory import CourseGradeFactory
+from lms.djangoapps.grades.new.course_grade import CourseGrade
+from lms.djangoapps.grades.new.course_data import CourseData
+
 from courseware import courses
 from opaque_keys.edx.keys import CourseKey
 
-
 from lms.djangoapps.grades.context import grading_context_for_course
-from lms.djangoapps.grades.new.course_data import CourseData
+
+from lms.djangoapps.ccx.views import ccx_grades_csv
 
 
 class DictList(dict):
@@ -45,7 +49,6 @@ class ServiceGrades(object):
             course_grade_factory = CourseGradeFactory().create(student, self.course)
             gradeset = course_grade_factory.summary
             gradeset["username"] = course_grade_factory.user
-            gradeset["fullname"] = "{} {}".format(student.first_name, student.last_name)
             course_grades.append(gradeset)
 
         return course_grades
@@ -53,13 +56,15 @@ class ServiceGrades(object):
     def by_section(self):
         course_grade = self.get_grades()
         score_by_section = []
-        header_rows = ['username']
+        header_rows = ['username', 'general_grade', 'fullname']
         for student in course_grade:
             course_grade_factory = CourseGradeFactory().create(student["username"], self.course)
             sections = course_grade_factory.chapter_grades
             section_dict = {}
+            section_dict['username'] = student['username'].username
+            section_dict["fullname"] = student['username'].get_full_name()
+            section_dict["general_grade"] = student['percent']
             for section in sections.items():
-                section_dict["username"] = course_grade_factory.user.username
                 score = course_grade_factory.score_for_chapter(section[0])
                 # Score object is a tuple: (earned, possible). We need only get earned value.
                 section_dict[section[1]["display_name"]] = score[0]
@@ -77,7 +82,7 @@ class ServiceGrades(object):
     def by_assignment_type(self):
         course_grade = self.get_grades()
         section_scores = self.by_section()
-        headers = ['username']
+        headers = ['username', 'fullname']
         assignment_type_grades = []
 
         for student in course_grade:
@@ -86,7 +91,8 @@ class ServiceGrades(object):
             # In the case when a chapter has more than two subsequentials with the same assignment type
             # we need to store the grades in a list using DictList class.
             assignment_type_dict = DictList()
-            assignment_type_dict['username'] = course_grade_factory.user.username
+            assignment_type_dict['username'] = student['username'].username
+            assignment_type_dict["fullname"] = student['username'].get_full_name()
 
             for section in sections.items():
                 chapter_name = section[1]['display_name']
@@ -112,7 +118,10 @@ class ServiceGrades(object):
         for assignment_type in assignment_type_grades:
             for section in section_scores:
                 if assignment_type['username'] == section['username']:
-                    assignment_type.update(section)
+                    # Using by_section object bring us general_grade key
+                    # we need to delete it since is not neccesary in this report. 
+                    del section['general_grade']
+                    assignment_type.update(section)                    
 
         headers = proccess_headers(headers)
         self.build_csv('assignment_type_report.csv', headers, assignment_type_grades)
@@ -129,9 +138,11 @@ class ServiceGrades(object):
             course_grade_factory = CourseGradeFactory().create(student["username"], self.course)
             sections = course_grade_factory.chapter_grades
             problem_score_dict = {}
+            problem_score_dict['username'] = student['username'].username
+            problem_score_dict['fullname'] = student['username'].get_full_name()
 
             for section in sections.items():
-                problem_score_dict['username'] = course_grade_factory.user.username
+                # problem_score_dict['username'] = course_grade_factory.user.username
                 chapter_name = section[1]['display_name']
                 sequentials = section[1]['sections']
 
@@ -150,7 +161,7 @@ class ServiceGrades(object):
             rows.append(problem_score_dict)
 
         flatten_headers = [item for sublist in headers for item in sublist if sublist]
-        headers = ['username'] + flatten_headers
+        headers = ['username', 'fullname'] + flatten_headers
         headers = proccess_headers(headers)
 
         self.build_csv('problem_grade_report.csv', headers, rows)
