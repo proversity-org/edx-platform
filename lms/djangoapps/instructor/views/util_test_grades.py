@@ -18,6 +18,20 @@ from lms.djangoapps.grades.context import grading_context_for_course
 from lms.djangoapps.grades.new.course_data import CourseData
 
 
+class DictList(dict):
+    """
+    Modify the behavior of a dict allowing has a list of values
+    when there are more than one same key.
+    """
+    def __setitem__(self, key, value):
+        try:
+            self[key].append(value) 
+        except KeyError:
+            super(DictList, self).__setitem__(key, value)
+        except AttributeError:
+            super(DictList, self).__setitem__(key, [self[key], value])
+
+
 class ServiceGrades(object):
 
     def __init__(self, course_id):
@@ -54,7 +68,7 @@ class ServiceGrades(object):
             score_by_section.append(section_dict)
 
         # We need to remove repeated values in this array, due to in the loop above
-        # is repeated for each user
+        # is repeated for each user.
         header_rows = proccess_headers(header_rows)
         self.build_csv('section_report.csv', header_rows, score_by_section)
 
@@ -69,18 +83,27 @@ class ServiceGrades(object):
         for student in course_grade:
             course_grade_factory = CourseGradeFactory().create(student["username"], self.course)
             sections = course_grade_factory.chapter_grades
-            assignment_type_dict = {}
+            # In the case when a chapter has more than two subsequentials with the same assignment type
+            # we need to store the grades in a list using DictList class.
+            assignment_type_dict = DictList()
+            assignment_type_dict['username'] = course_grade_factory.user.username
 
             for section in sections.items():
-                assignment_type_dict['username'] = course_grade_factory.user.username
                 chapter_name = section[1]['display_name']
                 headers.append(chapter_name)
                 sequentials = section[1]['sections']
 
                 for sequential in sequentials:
-                    key = '{} - {}'.format(chapter_name, sequential.format)
+                    key = '{} - {}'.format(chapter_name, sequential.format)                    
                     assignment_type_dict[key] = course_grade_factory.score_for_module(sequential.location)[0]
                     headers.append('{} - {}'.format(chapter_name, sequential.format))
+
+            # Since we have a list of grades in a key when a chapter has more than two subsequentials
+            # with the same assignment type, we need to sum these values and update the dict.
+            for key, value in assignment_type_dict.items():
+                if isinstance(value, (list,)):
+                    value = sum(value)
+                    assignment_type_dict.update({key:value})
 
             assignment_type_grades.append(assignment_type_dict)
 
@@ -162,4 +185,9 @@ class ServiceGrades(object):
 
 
 def proccess_headers(headers):
-    return list(set(headers))
+    """
+    Proccess duplicated values in header rows preserving the order.
+    """
+    seen = set()
+    seen_add = seen.add
+    return [item for item in headers if not (item in seen or seen_add(item))]
