@@ -2,6 +2,7 @@
 import csv
 import json
 from datetime import datetime
+from collections import OrderedDict
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -11,6 +12,10 @@ from student.models import CourseEnrollment
 from lms.djangoapps.grades.new.course_grade_factory import CourseGradeFactory
 from courseware import courses
 from opaque_keys.edx.keys import CourseKey
+
+
+from lms.djangoapps.grades.context import grading_context_for_course
+from lms.djangoapps.grades.new.course_data import CourseData
 
 
 class ServiceGrades(object):
@@ -43,7 +48,6 @@ class ServiceGrades(object):
                 section_dict["username"] = course_grade_factory.user.username
                 score = course_grade_factory.score_for_chapter(section[0])
                 # Score object is a tuple: (earned, possible). We need only get earned value.
-                # import ipdb; ipdb.set_trace()
                 section_dict[section[1]["display_name"]] = score[0]
                 header_rows.append(section[1]["display_name"])
 
@@ -80,7 +84,6 @@ class ServiceGrades(object):
 
             assignment_type_grades.append(assignment_type_dict)
 
-        
         # Merge two list of dicts: Array of section grades using by_section method
         # and array of assignment type grades.
         for assignment_type in assignment_type_grades:
@@ -97,30 +100,37 @@ class ServiceGrades(object):
         course_grade = self.get_grades()
         headers = []
         rows = []
-        problem_scores = []
+        grading_context = grading_context_for_course(self.course_key)
+
         for student in course_grade:
             course_grade_factory = CourseGradeFactory().create(student["username"], self.course)
             sections = course_grade_factory.chapter_grades
-            for section in sections.items():
-                for sequentials in section[1]["sections"]:
-                    scores = {}
-                    # If a unit has more than one problem, we need to store it
-                    # as a different object in the dict.
-                    """
-                    if len(sequentials.problem_scores) > 1:
-                        for problem in sequentials.problem_scores.items():
-                            key = "{} - {}".format(section[1]['display_name'], problem[0])
-                            headers.append(key)
-                            scores[key] = problem[1].earned
-                            rows.append(scores)
-                    """
-                    for problem in sequentials.problem_scores.items():
-                        key = "{} - {}".format(section[1]['display_name'], problem[0])
-                        headers.append(key)
-                        scores[key] = problem[1].earned
-                        rows.append(scores)
+            problem_score_dict = {}
 
-        self.build_csv('enhanced_problem_grade.csv', headers, rows)
+            for section in sections.items():
+                problem_score_dict['username'] = course_grade_factory.user.username
+                chapter_name = section[1]['display_name']
+                sequentials = section[1]['sections']
+
+                for sequential in sequentials:
+                    for problem_score in sequential.problem_scores:
+                        for problem_name in grading_context['all_graded_blocks']:
+                            if problem_name.fields['category'] == 'problem':                                
+                                if problem_name.location.block_id == problem_score.name:
+                                    grade_tuple = course_grade_factory.score_for_module(problem_name.location)
+                                    header_name = '{} - {} - {}'.format(chapter_name, sequential.display_name, problem_name.fields['display_name'])
+                                    new_header = [header_name + " (Earned)", header_name + " (Possible)"]
+                                    problem_score_dict[new_header[0]] = grade_tuple[0]
+                                    problem_score_dict[new_header[1]] = grade_tuple[1]
+                                    headers.append(new_header)
+
+            rows.append(problem_score_dict)
+
+        flatten_headers = [item for sublist in headers for item in sublist if sublist]
+        headers = ['username'] + flatten_headers
+        headers = proccess_headers(headers)
+
+        self.build_csv('problem_grade_report.csv', headers, rows)
         return rows
 
     def build_csv(self, csv_name, header_rows, rows):
