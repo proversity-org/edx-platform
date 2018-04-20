@@ -15,11 +15,12 @@ from lms.djangoapps.grades.new.course_grade import CourseGrade
 from lms.djangoapps.grades.new.course_data import CourseData
 
 from courseware import courses
-from opaque_keys.edx.keys import CourseKey
+from opaque_keys.edx.keys import CourseKey, UsageKey
 
 from lms.djangoapps.grades.context import grading_context_for_course
 
 from lms.djangoapps.ccx.views import ccx_grades_csv
+from xmodule.modulestore.django import modulestore
 
 
 class DictList(dict):
@@ -60,23 +61,45 @@ class ServiceGrades(object):
         for student in course_grade:
             course_grade_factory = CourseGradeFactory().create(student["username"], self.course)
             sections = course_grade_factory.chapter_grades
-            section_dict = {}
-            section_dict['username'] = student['username'].username
-            section_dict["fullname"] = student['username'].get_full_name()
-            section_dict["general_grade"] = student['percent']
-            for section in sections.items():
-                score = course_grade_factory.score_for_chapter(section[0])
-                # Score object is a tuple: (earned, possible). We need only get earned value.
-                section_dict[section[1]["display_name"]] = score[0]
-                header_rows.append(section[1]["display_name"])
+            course_data = CourseData(student, course=self.course)
+            course_policy = course_data.course.grading_policy
 
-            score_by_section.append(section_dict)
+            section_grade = DictList()
+            section_grade['username'] = student['username'].username
+            section_grade["fullname"] = student['username'].get_full_name()
+            section_grade["general_grade"] = student['percent']
+
+            for student_grade in student['section_breakdown']:
+                if student_grade.has_key('subsection') and student_grade['subsection'] is not None:
+                    locator = student_grade['subsection'].location
+                    parent = modulestore().get_parent_location(locator)
+                    parent_location = modulestore().get_item(parent)
+
+                    for policy in course_policy['GRADER']:
+                        if policy['type'] == student_grade['subsection'].format:
+                            grade = student_grade['percent'] * policy['weight']
+                            chapter_name = parent_location.display_name
+
+                            student_grade.update({'weight': policy['weight']})
+                            student_grade.update({'chapter_name': chapter_name})
+                            student_grade.update({'grade': grade})
+                            header_rows.append(chapter_name)
+
+                            # We group in a list the values that has the same keys.
+                            section_grade[student_grade['chapter_name']] = grade
+
+            for key, value in section_grade.items():
+                if isinstance(value, (list,)):
+                    value = sum(value)
+                    section_grade.update({key:value})
+
+            score_by_section.append(section_grade)
 
         # We need to remove repeated values in this array, due to in the loop above
         # is repeated for each user.
         header_rows = proccess_headers(header_rows)
-        self.build_csv('section_report.csv', header_rows, score_by_section)
 
+        self.build_csv('section_report.csv', header_rows, score_by_section)
         return score_by_section
 
     def by_assignment_type(self):
@@ -124,7 +147,7 @@ class ServiceGrades(object):
                     assignment_type.update(section)                    
 
         headers = proccess_headers(headers)
-        self.build_csv('assignment_type_report.csv', headers, assignment_type_grades)
+        # self.build_csv('assignment_type_report.csv', headers, assignment_type_grades)
 
         return assignment_type_grades
 
@@ -142,7 +165,6 @@ class ServiceGrades(object):
             problem_score_dict['fullname'] = student['username'].get_full_name()
 
             for section in sections.items():
-                # problem_score_dict['username'] = course_grade_factory.user.username
                 chapter_name = section[1]['display_name']
                 sequentials = section[1]['sections']
 
