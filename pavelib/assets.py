@@ -734,10 +734,9 @@ def collect_assets(args, **kwargs):
 
     for sys in systems:
         collectstatic_stdout_str = _collect_assets_cmd(sys, **kwargs)
-        sh(django_cmd(sys, settings, "collectstatic {ignore_args} --noinput {logfile_str} {extra_command}".format(
+        sh(django_cmd(sys, settings, "collectstatic {ignore_args} --noinput {logfile_str} ".format(
             ignore_args=ignore_args,
-            logfile_str=collectstatic_stdout_str,
-            extra_command=extra_command
+            logfile_str=collectstatic_stdout_str
         )))
         print("\t\tFinished collecting {} assets.".format(sys))
 
