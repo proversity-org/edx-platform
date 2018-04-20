@@ -4,9 +4,12 @@
 
 from django.core.cache.backends.memcached import MemcachedCache
 import memcache
-from django.core.cache import cache
+import inspect
 
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
+
+import logging
+log = logging.getLogger("CUSTOM CACHE")
 
 class CustomMemcache(MemcachedCache):
 
@@ -15,22 +18,18 @@ class CustomMemcache(MemcachedCache):
         super(CustomMemcache, self).__init__(server, params)
 
         cache_version_holder = memcache.Client(['localhost:11211'], debug=0)
-
-        if not cache_version_holder.get('build_version') and not cache_version_holder.get('run_version'):
-            cache_version_holder.add('build_version', 1)
-            cache_version_holder.add('run_version', 0)
+        cache_version_holder.add('build_version', 0)
+        cache_version_holder.add('run_version', 0)
+        
+        if self._is_build_calling(inspect.stack()):
+            cache_version_holder.set('build_version', cache_version_holder.get('build_version')+1)
             self.version = cache_version_holder.get('build_version')
-            print("USING THIS VERSION MAN {}".format(self.version))
-        elif cache_version_holder.get('build_version') > cache_version_holder.get('run_version'):
-            cache_version_holder.set('run_version',cache_version_holder.get('build_version'))
+            log.error("BUILD IS CALLING USING THIS VERSION MAN {}".format(self.version))
+            cache_version_holder.set('run_version', cache_version_holder.get('build_version'))
+            log.error("INCREMENTING THE RUN VERSION MAN {}".format(cache_version_holder.get('run_version')))
+        else:
             self.version = cache_version_holder.get('run_version')
-            print("USING THIS VERSION MAN {}".format(self.version))
-        elif cache_version_holder.get('build_version') == cache_version_holder.get('run_version'):
-            cache_version_holder.set('build_version', cache_version_holder.get('build_version') + 1)
-            self.version = cache_version_holder.get('build_version')
-            print("USING THIS VERSION MAN {}".format(self.version))
-
-
+            log.error("USING THIS VERSION MAN {}".format(self.version))
 
 
     def add(self, key, value, timeout=DEFAULT_TIMEOUT, version=None):
@@ -61,5 +60,16 @@ class CustomMemcache(MemcachedCache):
 
     def delete_many(self, keys, version=None):
         return super(CustomMemcache, self).delete_many(keys, self.version)
+
+    def _is_build_calling(self, stack):
+        column_len = len(stack[0])
+        row_len = len(stack)
+        for i in range(0, row_len):
+            for j in range(column_len):
+                if j == 0:
+                    j = 1 
+                if 'collectstatic' in str(stack[i][j]):
+                    return True
+        return False
 
     
