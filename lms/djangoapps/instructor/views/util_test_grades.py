@@ -15,12 +15,13 @@ from lms.djangoapps.grades.new.course_grade import CourseGrade
 from lms.djangoapps.grades.new.course_data import CourseData
 
 from courseware import courses
-from opaque_keys.edx.keys import CourseKey, UsageKey
+from opaque_keys.edx.keys import CourseKey
 
 from lms.djangoapps.grades.context import grading_context_for_course
 
-from lms.djangoapps.ccx.views import ccx_grades_csv
 from xmodule.modulestore.django import modulestore
+
+# from common.lib.xmodule.xmodule.graders import AssignmentFormatGrader
 
 
 class DictList(dict):
@@ -70,7 +71,16 @@ class ServiceGrades(object):
             section_grade["general_grade"] = student['percent']
 
             for student_grade in student['section_breakdown']:
-                if student_grade.has_key('subsection') and student_grade['subsection'] is not None:
+                # In graders constructor, we added some additional keys
+                # in the section_breakdown json with the purpose to get the
+                # subsection's parent and be able to differentiate when a grade is
+                # calculated in a single entry. We apply this logic only if
+                # has a subsection object and discard the droppables.
+                if (student_grade.has_key('subsection') and
+                    student_grade['subsection'] is not None or
+                    student_grade.has_key('only') and not
+                    student_grade.has_key('mark')):
+
                     locator = student_grade['subsection'].location
                     parent = modulestore().get_parent_location(locator)
                     parent_location = modulestore().get_item(parent)
@@ -90,8 +100,11 @@ class ServiceGrades(object):
 
             for key, value in section_grade.items():
                 if isinstance(value, (list,)):
+                    qty = len(value)
                     value = sum(value)
-                    section_grade.update({key:value})
+                    result = value/qty
+
+                    section_grade.update({key:result})
 
             score_by_section.append(section_grade)
 
@@ -99,7 +112,7 @@ class ServiceGrades(object):
         # is repeated for each user.
         header_rows = proccess_headers(header_rows)
 
-        self.build_csv('section_report.csv', header_rows, score_by_section)
+        # self.build_csv('section_report.csv', header_rows, score_by_section)
         return score_by_section
 
     def by_assignment_type(self):
