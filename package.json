@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "dependencies": {
     "@edx/edx-bootstrap": "0.4.3",
-    "@edx/paragon": "1.7.1",
-    "@edx/studio-frontend": "0.9.0",
+    "@edx/paragon": "2.6.4",
+    "@edx/studio-frontend": "1.7.3",
     "babel-core": "6.26.0",
     "babel-loader": "6.4.1",
     "babel-plugin-transform-class-properties": "6.24.1",

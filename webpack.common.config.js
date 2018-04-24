@@ -34,6 +34,18 @@ module.exports = {
         LearnerAnalyticsDashboard: './lms/static/js/learner_analytics_dashboard/LearnerAnalyticsDashboard.jsx',
         UpsellExperimentModal: './lms/static/common/js/components/UpsellExperimentModal.jsx',
         PortfolioExperimentUpsellModal: './lms/static/common/js/components/PortfolioExperimentUpsellModal.jsx',
+        EntitlementSupportPage: './lms/djangoapps/support/static/support/jsx/entitlements/index.jsx',
+        PasswordResetConfirmation: './lms/static/js/student_account/components/PasswordResetConfirmation.jsx',
+        StudentAccountDeletion: './lms/static/js/student_account/components/StudentAccountDeletion.jsx',
+        StudentAccountDeletionInitializer: './lms/static/js/student_account/StudentAccountDeletionInitializer.js',
+
+        // Learner Dashboard
+        EntitlementFactory: './lms/static/js/learner_dashboard/course_entitlement_factory.js',
+        EntitlementUnenrollmentFactory: './lms/static/js/learner_dashboard/entitlement_unenrollment_factory.js',
+        ProgramDetailsFactory: './lms/static/js/learner_dashboard/program_details_factory.js',
+        ProgramListFactory: './lms/static/js/learner_dashboard/program_list_factory.js',
+        UnenrollmentFactory: './lms/static/js/learner_dashboard/unenrollment_factory.js',
+        ViewedEvent: './lms/static/completion/js/ViewedEvent.js',
 
         // Features
         CourseGoals: './openedx/features/course_experience/static/course_experience/js/CourseGoals.js',
