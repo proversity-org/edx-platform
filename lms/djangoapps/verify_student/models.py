@@ -33,6 +33,7 @@ from django.utils.translation import ugettext_lazy
 from model_utils import Choices
 from model_utils.models import StatusModel, TimeStampedModel
 from opaque_keys.edx.django.models import CourseKeyField
+from openedx.core.djangolib.model_mixins import DeletableByUserValue
 
 from course_modes.models import CourseMode
 from lms.djangoapps.verify_student.ssencrypt import (
@@ -92,7 +93,152 @@ def status_before_must_be(*valid_start_statuses):
     return decorator_func
 
 
-class PhotoVerification(StatusModel):
+class IDVerificationAttempt(StatusModel):
+    """
+    Each IDVerificationAttempt represents a Student's attempt to establish
+    their identity through one of several methods that inherit from this Model,
+    including PhotoVerification and SSOVerification.
+    """
+    STATUS = Choices('created', 'ready', 'submitted', 'must_retry', 'approved', 'denied')
+    user = models.ForeignKey(User, db_index=True)
+
+    # They can change their name later on, so we want to copy the value here so
+    # we always preserve what it was at the time they requested. We only copy
+    # this value during the mark_ready() step. Prior to that, you should be
+    # displaying the user's name from their user.profile.name.
+    name = models.CharField(blank=True, max_length=255)
+
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True, db_index=True)
+
+    class Meta(object):
+        app_label = "verify_student"
+        abstract = True
+        ordering = ['-created_at']
+
+    @property
+    def expiration_datetime(self):
+        """Datetime that the verification will expire. """
+        days_good_for = settings.VERIFY_STUDENT["DAYS_GOOD_FOR"]
+        return self.created_at + timedelta(days=days_good_for)
+
+    def should_display_status_to_user(self):
+        """Whether or not the status from this attempt should be displayed to the user."""
+        raise NotImplementedError
+
+    def active_at_datetime(self, deadline):
+        """Check whether the verification was active at a particular datetime.
+
+        Arguments:
+            deadline (datetime): The date at which the verification was active
+                (created before and expiration datetime is after today).
+
+        Returns:
+            bool
+
+        """
+        return (
+            self.created_at < deadline and
+            self.expiration_datetime > datetime.now(pytz.UTC)
+        )
+
+
+class IDVerificationAggregate(IDVerificationAttempt):
+    """
+    IDVerificationAggregate is the source of truth for all instances of IDVerificationAttempt. This
+    includes all types of verification, including PhotoVerification and SSOVerification. A generic
+    relation is used to refer to the appropriate Model object.
+    """
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    # override these fields so we can set the value
+    created_at = models.DateTimeField(db_index=True)
+    updated_at = models.DateTimeField(db_index=True)
+
+    class Meta(object):
+        app_label = "verify_student"
+        ordering = ['-created_at']
+
+    def __unicode__(self):
+        return 'IDVerificationAggregate for {name} - type: {type}, status: {status}'.format(
+            name=self.name,
+            type=self.content_type,
+            status=self.status,
+        )
+
+    def should_display_status_to_user(self):
+        """Whether or not the status from this attempt should be displayed to the user."""
+        return self.content_object.should_display_status_to_user()
+
+
+def post_save_id_verification(sender, instance, created, **kwargs):  # pylint: disable=unused-argument
+    """
+    Post save handler to create/update IDVerificationAttempt instances.
+    """
+    content_type = ContentType.objects.get_for_model(instance)
+    try:
+        id_verification = IDVerificationAggregate.objects.get(content_type=content_type, object_id=instance.id)
+    except IDVerificationAggregate.DoesNotExist:
+        id_verification = IDVerificationAggregate(content_type=content_type, object_id=instance.id)
+    id_verification.status = instance.status
+    id_verification.user = instance.user
+    id_verification.name = instance.name
+    id_verification.created_at = instance.created_at
+    id_verification.updated_at = instance.updated_at
+    id_verification.save()
+
+
+class SSOVerification(IDVerificationAttempt):
+    """
+    Each SSOVerification represents a Student's attempt to establish their identity
+    by signing in with SSO. ID verification through SSO bypasses the need for
+    photo verification.
+    """
+
+    OAUTH2 = 'third_party_auth.models.OAuth2ProviderConfig'
+    SAML = 'third_party_auth.models.SAMLProviderConfig'
+    LTI = 'third_party_auth.models.LTIProviderConfig'
+    IDENTITY_PROVIDER_TYPE_CHOICES = (
+        (OAUTH2, 'OAuth2 Provider'),
+        (SAML, 'SAML Provider'),
+        (LTI, 'LTI Provider'),
+    )
+
+    identity_provider_type = models.CharField(
+        max_length=100,
+        blank=False,
+        choices=IDENTITY_PROVIDER_TYPE_CHOICES,
+        default=SAML,
+        help_text=(
+            'Specifies which type of Identity Provider this verification originated from.'
+        )
+    )
+
+    identity_provider_slug = models.SlugField(
+        max_length=30, db_index=True, default='default',
+        help_text=(
+            'The slug uniquely identifying the Identity Provider this verification originated from.'
+        ))
+
+    class Meta(object):
+        app_label = "verify_student"
+
+    def __unicode__(self):
+        return 'SSOIDVerification for {name}, status: {status}'.format(
+            name=self.name,
+            status=self.status,
+        )
+
+    def should_display_status_to_user(self):
+        """Whether or not the status from this attempt should be displayed to the user."""
+        return False
+
+models.signals.post_save.connect(post_save_id_verification, sender=SSOVerification)
+
+
+class PhotoVerification(IDVerificationAttempt, DeletableByUserValue):
     """
     Each PhotoVerification represents a Student's attempt to establish
     their identity by uploading a photo of themselves and a picture ID. An
