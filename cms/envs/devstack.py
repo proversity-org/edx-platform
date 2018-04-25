@@ -43,7 +43,7 @@ ANALITICA_TOKEN = ''
 
 # Skip packaging and optimization in development
 PIPELINE_ENABLED = False
-STATICFILES_STORAGE = 'openedx.core.storage.DevelopmentStorage'
+STATICFILES_STORAGE = 'openedx.core.storage.ProductionStorage'
 
 # Revert to the default set of finders as we don't want the production pipeline
 STATICFILES_FINDERS = [
