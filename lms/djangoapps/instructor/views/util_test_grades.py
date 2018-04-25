@@ -3,6 +3,9 @@ import csv
 import json
 from datetime import datetime
 from collections import OrderedDict
+from itertools import groupby
+from operator import itemgetter
+
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -59,6 +62,7 @@ class ServiceGrades(object):
         course_grade = self.get_grades()
         score_by_section = []
         header_rows = ['username', 'general_grade', 'fullname']
+        counter_assignment_type = {}
         for student in course_grade:
             course_grade_factory = CourseGradeFactory().create(student["username"], self.course)
             sections = course_grade_factory.chapter_grades
@@ -81,38 +85,40 @@ class ServiceGrades(object):
                     student_grade.has_key('only') and not
                     student_grade.has_key('mark')):
 
+                    # Get the parent of each sequential.
                     locator = student_grade['subsection'].location
                     parent = modulestore().get_parent_location(locator)
                     parent_location = modulestore().get_item(parent)
 
+                    assignment_type = student_grade['subsection'].format
+
                     for policy in course_policy['GRADER']:
-                        if policy['type'] == student_grade['subsection'].format:
+                        if policy['type'] == assignment_type:
                             grade = student_grade['percent'] * policy['weight']
                             chapter_name = parent_location.display_name
-
-                            student_grade.update({'weight': policy['weight']})
                             student_grade.update({'chapter_name': chapter_name})
+                            # weight and grade keys are not mandatory neccesary in this dict,
+                            # we added it just for keep tracked this information.
+                            student_grade.update({'weight': policy['weight']})
                             student_grade.update({'grade': grade})
+                            # We group in a list the values that has the same keys using DictList.
+                            section_grade[chapter_name] = {assignment_type: grade}
+
+                            counter_assignment_type[assignment_type] = policy['min_count']
+
                             header_rows.append(chapter_name)
 
-                            # We group in a list the values that has the same keys.
-                            section_grade[student_grade['chapter_name']] = grade
+            merged_grades = proccess_grades_dict(section_grade, counter_assignment_type)
 
-            for key, value in section_grade.items():
-                if isinstance(value, (list,)):
-                    qty = len(value)
-                    value = sum(value)
-                    result = value/qty
-
-                    section_grade.update({key:result})
-
+            # Update the grades dict with the processed grades.
+            section_grade.update(merged_grades)
             score_by_section.append(section_grade)
 
         # We need to remove repeated values in this array, due to in the loop above
         # is repeated for each user.
         header_rows = proccess_headers(header_rows)
 
-        # self.build_csv('section_report.csv', header_rows, score_by_section)
+        self.build_csv('section_report.csv', header_rows, score_by_section)
         return score_by_section
 
     def by_assignment_type(self):
@@ -237,3 +243,27 @@ def proccess_headers(headers):
     seen = set()
     seen_add = seen.add
     return [item for item in headers if not (item in seen or seen_add(item))]
+
+
+def proccess_grades_dict(grades_dict, counter_assignment_type):
+    new_grades_dict = {}
+    for section, assignment_types in grades_dict.items():
+        if isinstance(assignment_types, (list,)):
+            group_dict = {}
+            for assignment_type in assignment_types:
+                for name, grade  in assignment_type.items():
+                    group_dict[name] = group_dict.get(name, 0) + grade
+
+            new_grades_dict[section] = group_dict
+
+    for section, assignment_types_dict in new_grades_dict.items():
+        assignment_type_list = new_grades_dict[section].keys()
+        group_grades = []
+        for item in assignment_type_list:
+            average = new_grades_dict[section][item] / counter_assignment_type[item]
+            group_grades.append(average)
+        
+        sum_grades = sum(group_grades)
+        new_grades_dict.update({section: sum_grades})
+
+    return new_grades_dict
