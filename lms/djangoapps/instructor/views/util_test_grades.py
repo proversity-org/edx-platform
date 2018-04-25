@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import division
 import csv
 import json
 from datetime import datetime
@@ -24,8 +25,6 @@ from lms.djangoapps.grades.context import grading_context_for_course
 
 from xmodule.modulestore.django import modulestore
 
-# from common.lib.xmodule.xmodule.graders import AssignmentFormatGrader
-
 
 class DictList(dict):
     """
@@ -34,11 +33,10 @@ class DictList(dict):
     """
     def __setitem__(self, key, value):
         try:
-            self[key].append(value) 
+            self[key]
         except KeyError:
-            super(DictList, self).__setitem__(key, value)
-        except AttributeError:
-            super(DictList, self).__setitem__(key, [self[key], value])
+            super(DictList, self).__setitem__(key, [])
+        self[key].append(value)
 
 
 class ServiceGrades(object):
@@ -70,9 +68,6 @@ class ServiceGrades(object):
             course_policy = course_data.course.grading_policy
 
             section_grade = DictList()
-            section_grade['username'] = student['username'].username
-            section_grade["fullname"] = student['username'].get_full_name()
-            section_grade["general_grade"] = student['percent']
 
             for student_grade in student['section_breakdown']:
                 # In graders constructor, we added some additional keys
@@ -96,30 +91,30 @@ class ServiceGrades(object):
                         if policy['type'] == assignment_type:
                             grade = student_grade['percent'] * policy['weight']
                             chapter_name = parent_location.display_name
-                            student_grade.update({'chapter_name': chapter_name})
-                            # weight and grade keys are not mandatory neccesary in this dict,
-                            # we added it just for keep tracked this information.
-                            student_grade.update({'weight': policy['weight']})
                             student_grade.update({'grade': grade})
-                            # We group in a list the values that has the same keys using DictList.
-                            section_grade[chapter_name] = {assignment_type: grade}
+                            student_grade.update({'chapter_name': chapter_name})
+                            # We group in a list the values that has the same keys using DictList
+                            # and discard the droppables.
+                            if not student_grade.has_key('mark'):
+                                section_grade[chapter_name] = {assignment_type: grade}
 
-                            counter_assignment_type[assignment_type] = policy['min_count']
-
+                            counter_assignment_type[assignment_type] = {'total_number': policy['min_count'], 'drop': policy['drop_count']}
                             header_rows.append(chapter_name)
 
-            merged_grades = proccess_grades_dict(section_grade, counter_assignment_type)
-
-            # Update the grades dict with the processed grades.
-            section_grade.update(merged_grades)
+            section_grade = proccess_grades_dict(section_grade, counter_assignment_type)
+            section_grade.update({
+                'username': student['username'].username,
+                'fullname': student['username'].get_full_name(),
+                'general_grade': student['percent']
+            })
             score_by_section.append(section_grade)
 
         # We need to remove repeated values in this array, due to in the loop above
         # is repeated for each user.
         header_rows = proccess_headers(header_rows)
-
         self.build_csv('section_report.csv', header_rows, score_by_section)
         return score_by_section
+
 
     def by_assignment_type(self):
         course_grade = self.get_grades()
@@ -142,7 +137,7 @@ class ServiceGrades(object):
                 sequentials = section[1]['sections']
 
                 for sequential in sequentials:
-                    key = '{} - {}'.format(chapter_name, sequential.format)                    
+                    key = '{} - {}'.format(chapter_name, sequential.format)
                     assignment_type_dict[key] = course_grade_factory.score_for_module(sequential.location)[0]
                     headers.append('{} - {}'.format(chapter_name, sequential.format))
 
@@ -161,9 +156,9 @@ class ServiceGrades(object):
             for section in section_scores:
                 if assignment_type['username'] == section['username']:
                     # Using by_section object bring us general_grade key
-                    # we need to delete it since is not neccesary in this report. 
+                    # we need to delete it since is not neccesary in this report.
                     del section['general_grade']
-                    assignment_type.update(section)                    
+                    assignment_type.update(section)
 
         headers = proccess_headers(headers)
         # self.build_csv('assignment_type_report.csv', headers, assignment_type_grades)
@@ -190,7 +185,7 @@ class ServiceGrades(object):
                 for sequential in sequentials:
                     for problem_score in sequential.problem_scores:
                         for problem_name in grading_context['all_graded_blocks']:
-                            if problem_name.fields['category'] == 'problem':                                
+                            if problem_name.fields['category'] == 'problem':
                                 if problem_name.location.block_id == problem_score.name:
                                     grade_tuple = course_grade_factory.score_for_module(problem_name.location)
                                     header_name = '{} - {} - {}'.format(chapter_name, sequential.display_name, problem_name.fields['display_name'])
@@ -246,24 +241,14 @@ def proccess_headers(headers):
 
 
 def proccess_grades_dict(grades_dict, counter_assignment_type):
-    new_grades_dict = {}
     for section, assignment_types in grades_dict.items():
-        if isinstance(assignment_types, (list,)):
-            group_dict = {}
-            for assignment_type in assignment_types:
-                for name, grade  in assignment_type.items():
-                    group_dict[name] = group_dict.get(name, 0) + grade
-
-            new_grades_dict[section] = group_dict
-
-    for section, assignment_types_dict in new_grades_dict.items():
-        assignment_type_list = new_grades_dict[section].keys()
         group_grades = []
-        for item in assignment_type_list:
-            average = new_grades_dict[section][item] / counter_assignment_type[item]
-            group_grades.append(average)
-        
-        sum_grades = sum(group_grades)
-        new_grades_dict.update({section: sum_grades})
+        for assignment_type in assignment_types:
+            for name, grade in assignment_type.items():
+                total_number = counter_assignment_type[name]['total_number']
+                drop = counter_assignment_type[name]['drop']
+                average = grade / (total_number - drop)
+                group_grades.append(average)
+        grades_dict.update({section: sum(group_grades)})
 
-    return new_grades_dict
+    return grades_dict
