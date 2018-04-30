@@ -45,76 +45,80 @@ class ServiceGrades(object):
         self.course_key = CourseKey.from_string(course_id)
         self.course = courses.get_course_by_id(self.course_key)
         self.students = CourseEnrollment.objects.users_enrolled_in(self.course_key)
+        self.headers = ['username', 'fullname']
 
     def get_grades(self):
         course_grades = []
+        result = []
+        counter_assignment_type = {}
+
         for student in self.students:
             course_grade_factory = CourseGradeFactory().create(student, self.course)
             gradeset = course_grade_factory.summary
             gradeset["username"] = course_grade_factory.user
             course_grades.append(gradeset)
 
-        return course_grades
-
-    def by_section(self):
-        course_grade = self.get_grades()
-        score_by_section = []
-        header_rows = ['username', 'general_grade', 'fullname']
-        counter_assignment_type = {}
-        for student in course_grade:
-            course_grade_factory = CourseGradeFactory().create(student["username"], self.course)
             sections = course_grade_factory.chapter_grades
             course_data = CourseData(student, course=self.course)
             course_policy = course_data.course.grading_policy
 
-            section_grade = DictList()
+            for grade in course_grades:
+                section_grade = DictList()
+                for student_grade in grade['section_breakdown']:
+                    # In graders constructor, we added some additional keys
+                    # in the section_breakdown json with the purpose to get the
+                    # subsection's parent and be able to differentiate when a grade is
+                    # calculated in a single entry. We apply this logic only if
+                    # has a subsection object and discard the droppables.
+                    if (student_grade.has_key('subsection') and
+                        student_grade['subsection'] is not None or
+                        student_grade.has_key('only') and not
+                        student_grade.has_key('mark')):
 
-            for student_grade in student['section_breakdown']:
-                # In graders constructor, we added some additional keys
-                # in the section_breakdown json with the purpose to get the
-                # subsection's parent and be able to differentiate when a grade is
-                # calculated in a single entry. We apply this logic only if
-                # has a subsection object and discard the droppables.
-                if (student_grade.has_key('subsection') and
-                    student_grade['subsection'] is not None or
-                    student_grade.has_key('only') and not
-                    student_grade.has_key('mark')):
+                        # Get the parent of each sequential.
+                        locator = student_grade['subsection'].location
+                        parent = modulestore().get_parent_location(locator)
+                        parent_location = modulestore().get_item(parent)
 
-                    # Get the parent of each sequential.
-                    locator = student_grade['subsection'].location
-                    parent = modulestore().get_parent_location(locator)
-                    parent_location = modulestore().get_item(parent)
-
-                    assignment_type = student_grade['subsection'].format
-
-                    for policy in course_policy['GRADER']:
-                        if policy['type'] == assignment_type:
-                            grade = student_grade['percent'] * policy['weight']
-                            chapter_name = parent_location.display_name
-                            student_grade.update({'grade': grade})
-                            student_grade.update({'chapter_name': chapter_name})
-                            # We group in a list the values that has the same keys using DictList
-                            # and discard the droppables.
-                            if not student_grade.has_key('mark'):
-                                section_grade[chapter_name] = {assignment_type: grade}
-
+                        assignment_type = student_grade['subsection'].format
+                        
+                        for policy in course_policy['GRADER']:
                             counter_assignment_type[assignment_type] = {'total_number': policy['min_count'], 'drop': policy['drop_count']}
-                            header_rows.append(chapter_name)
+                            if policy['type'] == assignment_type:
+                                grade = student_grade['percent'] * policy['weight']
+                                chapter_name = parent_location.display_name
+                                student_grade.update({'grade': grade})
+                                student_grade.update({'chapter_name': chapter_name})
+                                # We group in a list the values that has the same keys using DictList
+                                # and discard the droppables.
+                                if not student_grade.has_key('mark'):
+                                    section_grade[chapter_name] = {assignment_type: grade}
 
-            section_grade = proccess_grades_dict(section_grade, counter_assignment_type)
             section_grade.update({
-                'username': student['username'].username,
-                'fullname': student['username'].get_full_name(),
-                'general_grade': student['percent']
+                'username': student.username,
+                'username': student.get_full_name(),
             })
+            result.append(section_grade)
+
+        return result, counter_assignment_type
+
+    def by_section(self):
+        course_grade = self.get_grades()
+        student_grades = course_grade[0]
+        course_policy = course_grade[1]
+        score_by_section = []
+        counter_assignment_type = {}
+        chapter_names = []
+
+        for grades in student_grades:
+            for key, value in grades.items():
+                self.headers.append(key)
+            section_grade = proccess_grades_dict(grades, course_policy)
             score_by_section.append(section_grade)
 
-        # We need to remove repeated values in this array, due to in the loop above
-        # is repeated for each user.
-        header_rows = proccess_headers(header_rows)
+        header_rows = proccess_headers(self.headers)
         self.build_csv('section_report.csv', header_rows, score_by_section)
         return score_by_section
-
 
     def by_assignment_type(self):
         course_grade = self.get_grades()
@@ -242,13 +246,14 @@ def proccess_headers(headers):
 
 def proccess_grades_dict(grades_dict, counter_assignment_type):
     for section, assignment_types in grades_dict.items():
-        group_grades = []
-        for assignment_type in assignment_types:
-            for name, grade in assignment_type.items():
-                total_number = counter_assignment_type[name]['total_number']
-                drop = counter_assignment_type[name]['drop']
-                average = grade / (total_number - drop)
-                group_grades.append(average)
-        grades_dict.update({section: sum(group_grades)})
+        if isinstance(assignment_types, (list,)):
+            group_grades = []
+            for assignment_type in assignment_types:
+                for name, grade in assignment_type.items():
+                    total_number = counter_assignment_type[name]['total_number']
+                    drop = counter_assignment_type[name]['drop']
+                    average = grade / (total_number - drop)
+                    group_grades.append(average)
+            grades_dict.update({section: sum(group_grades)})
 
     return grades_dict
