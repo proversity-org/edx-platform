@@ -238,7 +238,7 @@ class SSOVerification(IDVerificationAttempt):
 models.signals.post_save.connect(post_save_id_verification, sender=SSOVerification)
 
 
-class PhotoVerification(IDVerificationAttempt, DeletableByUserValue):
+class PhotoVerification(IDVerificationAttempt):
     """
     Each PhotoVerification represents a Student's attempt to establish
     their identity by uploading a photo of themselves and a picture ID. An
@@ -736,6 +736,30 @@ class PhotoVerification(IDVerificationAttempt, DeletableByUserValue):
         self.reviewing_service = reviewing_service
         self.status = "must_retry"
         self.save()
+
+    @classmethod
+    def retire_user(cls, user_id):
+        """
+        Retire user as part of GDPR Phase I
+        Returns 'True' if records found
+
+        :param user_id: int
+        :return: bool
+        """
+        try:
+            user_obj = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return False
+
+        photo_objects = cls.objects.filter(
+            user=user_obj
+        ).update(
+            name='',
+            face_image_url='',
+            photo_id_image_url='',
+            photo_id_key=''
+        )
+        return photo_objects > 0
 
 
 class SoftwareSecurePhotoVerification(PhotoVerification):
