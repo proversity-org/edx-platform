@@ -394,12 +394,12 @@ class DeactivateLogoutView(APIView):
     -  Log the user out
     - Create a row in the retirement table for that user
     """
-    authentication_classes = (JwtAuthentication, )
+    authentication_classes = (SessionAuthentication, JwtAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
         """
-        POST /api/user/v1/accounts/deactivate_logout
+        POST /api/user/v1/accounts/deactivate_logout/
 
         Marks the user as having no password set for deactivation purposes,
         and logs the user out.
