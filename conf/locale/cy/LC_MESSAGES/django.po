@@ -14669,11 +14669,11 @@ msgid "Course is full"
 msgstr "Mae'r cwrs yn llawn"
 
 #: lms/templates/courseware/course_about.html
-msgid "Enrollment in this course is by invitation only"
+msgid "Enrolment in this course is by invitation only"
 msgstr "Gellir ond cofrestru ar y cwrs hwn drwy wahoddiad yn unig"
 
 #: lms/templates/courseware/course_about.html
-msgid "Enrollment is Closed"
+msgid "Enrolment is Closed"
 msgstr "Mae cofrestru wedi cau"
 
 #: lms/templates/courseware/course_about.html
@@ -14996,12 +14996,12 @@ msgstr "{earned} o'r {total} pwyntiau sy'n bosib"
 #: lms/templates/courseware/progress.html
 #, fuzzy
 msgid "Problem Scores: "
-msgstr "Sgorau'r problemau:"
+msgstr "Sgoriau problem: "
 
 #: lms/templates/courseware/progress.html
 #, fuzzy
 msgid "Practice Scores: "
-msgstr "Sgorau ymarferion: "
+msgstr "Sgoriau ymarfer: "
 
 #: lms/templates/courseware/progress.html
 msgid "No problem scores in this section"
@@ -15299,8 +15299,7 @@ msgstr "Ni fyddwch yn derbyn ad-daliad am y swm a daloch."
 msgid ""
 "Are you sure you want to unenroll from %(course_name)s (%(course_number)s)?"
 msgstr ""
-"Ydych chi'n siŵr eich bod am ddadgofrestru o %(course_name)s "
-"(%(course_number)s)?"
+"Ydych chi'n siŵr eich bod am ddadgofrestru o %(course_name)s (%(course_number)s)?"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 #, fuzzy, python-format
@@ -18068,9 +18067,8 @@ msgstr "Gweld llyfr graddau"
 msgid "View a specific learner's grades and progress"
 msgstr "Gweld graddau a chynnydd dysgwr penodol"
 
-#: lms/templates/instructor/instructor_dashboard_2/student_admin.html
-msgid "Learner's {platform_name} email address or username *"
-msgstr "Cyfeiriad e-bost neu enw defnyddiwr {platform_name} y dysgwr *"
+msgid "Learner's {platform_name} email address or username"
+msgstr "Cyfeiriad e-bost neu enw defnyddiwr {platform_name} y dysgwr"
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Learner email address or username"
@@ -18084,9 +18082,8 @@ msgstr "Gweld tudalen broffil"
 msgid "Adjust a learner's grade for a specific problem"
 msgstr "Addasu gradd dysgwr ar gyfer problem benodol"
 
-#: lms/templates/instructor/instructor_dashboard_2/student_admin.html
-msgid "Location of problem in course *"
-msgstr "Lleoliad y broblem yn y cwrs *"
+msgid "Location of problem in course"
+msgstr "Lleoliad y broblem yn y cwrs"
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Example"
@@ -24074,17 +24071,8 @@ msgid "We couldn't sign you in."
 msgstr "Ni fedrem eich mewngofnodi."
 
 #, fuzzy
-msgid "Learner's {platform_name} email address or username"
-msgstr "Cyfeiriad e-bost neu enw defnyddiwr {platform_name} y dysgwr *"
-
-#, fuzzy
-msgid "Location of problem in course"
-msgstr "Lleoliad y broblem yn y cwrs"
-
-#, fuzzy
 msgid "For the specified problem, override the learner's score."
-msgstr ""
-"Ar gyfer y broblem benodol, dilëwch atebion a sgoriau'r dysgwr yn barhaol ac "
+msgstr "Ar gyfer y broblem a nodwyd, yn diystyru sgôr y dysgwr."
 "yn llwyr o'r gronfa ddata."
 
 msgid ""
@@ -24162,14 +24150,6 @@ msgstr ""
 msgid "For technical questions, contact the support team directly below:"
 msgstr ""
 "Am gwestiynau technegol, cysylltwch â'r tîm cefnogi yn uniongyrchol isod:"
-
-#, fuzzy
-msgid ""
-"Please note: The support team is English speaking. While we will do our best "
-"to address your inquiry in any language, our responses will be in English."
-msgstr ""
-"Sylwer: Mae tîm cefnogi {platform_name} yn siarad Saesneg. Er y gwnawn ein "
-"gorau i ateb eich ymholiad mewn unrhyw iaith, bydd ein hymatebion yn Saesneg."
 
 msgid "You must consent to data sharing to register."
 msgstr "Rhaid i chi gytuno i rannu data er mwyn cofrestru."
@@ -24496,3 +24476,35 @@ msgstr "Y wlad neu'r rhanbarth lle rydych chi'n byw."
 
 msgid "Select your country or region of residence. The country or region where you live."
 msgstr "Dewiswch eich gwlad neu ranbarth preswylio. Y wlad neu'r rhanbarth lle rydych chi'n byw."
+
+msgid "Or explore other courses"
+msgstr "Neu archwilio ar gyrsiau eraill"
+
+msgid "Access courses on the go"
+msgstr "cyrsiau Mynediad ar y ewch"
+
+msgid "Download the app and access your courses wherever you are. Sync videos to your device and watch offline, at a time that suits you."
+msgstr "Lawrlwythwch yr app a mynediad eich cyrsiau lle bynnag yr ydych. Sync fideos i'ch dyfais a gwyliwch nhw all-lein, ar amser sy'n addas i chi"
+
+msgid "Learn online with CITB apprenticeships!"
+msgstr "Dysgwch-lein gyda phrentisiaethau CITB!"
+
+msgid "Stand out from the crowd - build your skills for a career in construction."
+msgstr "Sefyll allan oddi wrth y dorf - adeiladu eich sgiliau ar gyfer gyrfa yn y diwydiant adeiladu."
+
+msgid "Options"
+msgstr "Opsiynau"
+
+msgid "These settings include basic information about your account."
+msgstr "Mae'r lleoliadau hyn yn cynnwys gwybodaeth sylfaenol am eich cyfrif."
+
+msgid "Have a question about something? You can contact the support team directly:"
+msgstr "Gennych gwestiwn am rywbeth? Gallwch gysylltu â'r tîm cymorth yn uniongyrchol:"
+
+#: lms/templates/learner_dashboard/course_enroll.underscore
+#: lms/templates/learner_dashboard/course_enroll_2017.underscore
+#: test_root/staticfiles/templates/learner_dashboard/course_enroll.underscore
+#: test_root/staticfiles/templates/learner_dashboard/course_enroll_2017.underscore
+msgid "Enrol now"
+msgstr "Cofrestru nawr"
+

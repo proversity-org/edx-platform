@@ -2183,7 +2183,7 @@ msgstr "Dechrau %(start)s"
 #: lms/templates/learner_dashboard/course_enroll_2017.underscore
 #: test_root/staticfiles/templates/learner_dashboard/course_enroll.underscore
 #: test_root/staticfiles/templates/learner_dashboard/course_enroll_2017.underscore
-msgid "Enroll Now"
+msgid "Enrol now"
 msgstr "Cofrestru nawr"
 
 #: lms/templates/learner_dashboard/course_enroll.underscore

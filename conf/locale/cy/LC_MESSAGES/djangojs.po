@@ -337,7 +337,7 @@ msgstr[1] ""
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "%(earned)s/%(possible)s point (graded)"
 msgid_plural "%(earned)s/%(possible)s points (graded)"
-msgstr[0] "pwyntiau graddio"
+msgstr[0] "%(earned)s/%(possible)s pwyntiau (wedi’u graddio)"
 msgstr[1] ""
 
 #. Translators: %(earned)s is the number of points earned. %(possible)s is the
@@ -7979,7 +7979,7 @@ msgstr "Dechrau %(start)s"
 #: lms/templates/learner_dashboard/course_enroll_2017.underscore
 #: test_root/staticfiles/templates/learner_dashboard/course_enroll.underscore
 #: test_root/staticfiles/templates/learner_dashboard/course_enroll_2017.underscore
-msgid "Enroll Now"
+msgid "Enrol now"
 msgstr "Cofrestru nawr"
 
 #: lms/templates/learner_dashboard/course_enroll.underscore
@@ -10716,8 +10716,8 @@ msgid ""
 "{\"one\"=>\"%(earned)s/%(possible)s point (graded)\", \"other\"=>"
 "\"%(earned)s/%(possible)s points (graded)\"}"
 msgstr ""
-"{\"one\"=>\"%(earned)s/%(possible)s pwynt (graded)\", \"other\"=>"
-"\"%(earned)s/%(possible)s pwynt (graded)\"}"
+"{\"one\"=>\"%(earned)s/%(possible)s pwyntiau (wedi’u graddio)\", \"other\"=>"
+"\"%(earned)s/%(possible)s pwyntiau (wedi’u graddio)\"}"
 
 msgid ""
 "{\"one\"=>\"%(earned)s/%(possible)s point (ungraded)\", \"other\"=>"
@@ -11178,9 +11178,11 @@ msgstr "Cyfeiriad e-bost neu enw defnyddiwr {platform_name} y dysgwr "
 msgid "Location of problem in course"
 msgstr "Lleoliad y broblem yn y cwrs"
 
+msgid "Location of problem in course *"
+msgstr "Lleoliad y broblem yn y cwrs *"
+
 msgid "For the specified problem, override the learner's score."
-msgstr ""
-"Ar gyfer y broblem benodol, dilëwch atebion a sgoriau'r dysgwr yn barhaol ac "
+msgstr "Ar gyfer y broblem a nodwyd, yn diystyru sgôr y dysgwr."
 "yn llwyr o'r gronfa ddata."
 
 #: lms/djangoapps/instructor/views/api.py
@@ -11194,7 +11196,6 @@ msgstr ""
 #: lms/templates/student_account/login.underscore
 msgid "First time here?"
 msgstr "Y tro cyntaf yma?"
-
 #: lms/templates/student_account/login.underscore
 msgid "Create an Account."
 msgstr "Creu cyfrif."
@@ -11219,8 +11220,7 @@ msgstr ""
 msgid ""
 "Are you sure you want to unenroll from %(course_name)s (%(course_number)s)?"
 msgstr ""
-"Ydych chi'n siŵr eich bod am ddadgofrestru o %(course_name)s "
-"(%(course_number)s)?"
+"Ydych chi'n siŵr eich bod am ddadgofrestru o %(course_name)s (%(course_number)s)?"
 
 #, fuzzy, python-format
 msgid ""
@@ -11316,3 +11316,58 @@ msgstr "(dewisol)"
 
 msgid "Select the highest level of education you have completed."
 msgstr "Dewiswch y lefel uchaf o addysg yr ydych wedi'i gwblhau."
+
+msgid "Or explore other courses"
+msgstr "Neu archwilio ar gyrsiau eraill"
+
+msgid "Options"
+msgstr "Opsiynau"
+
+msgid "Learn more"
+msgstr "Dysgu mwy"
+
+msgid "Enrolment in this course is by invitation only"
+msgstr "Gellir ond cofrestru ar y cwrs hwn drwy wahoddiad yn unig"
+
+msgid "Problem Scores: "
+msgstr "Sgoriau problem: "
+
+msgid "Practice Scores: "
+msgstr "Sgoriau ymarfer: "
+
+msgid "Learner's {platform_name} email address or username *"
+msgstr "Cyfeiriad e-bost neu enw defnyddiwr {platform_name} y dysgwr *"
+
+msgid "Learner's {platform_name} email address or username"
+msgstr "Cyfeiriad e-bost neu enw defnyddiwr {platform_name} y dysgwr"
+
+msgid ""
+"To generate a CSV file that lists all student answers to a given problem, "
+"enter the location of the problem (from its Staff Debug Info). "
+msgstr ""
+"I gynhyrchu ffeil CSV sy'n rhestru holl atebion y myfyrwyr i broblem "
+"benodol, rhowch leoliad y broblem (o'r wybodaeth dadfygio staff). "
+
+msgid "Problem location: "
+msgstr "Lleoliad y broblem: "
+
+msgid "Certificate exceptions group selection"
+msgstr "Hanes cynhyrchu tystysgrifau"
+
+msgid "These settings include basic information about your account."
+msgstr "Mae'r lleoliadau hyn yn cynnwys gwybodaeth sylfaenol am eich cyfrif."
+
+msgid "Email Address (Sign In)"
+msgstr "Cyfeiriad E-bost (Mewngofnodwch)"
+
+msgid ""
+"Please note: The {platform_name} support team is English speaking. While we "
+"will do our best to address your inquiry in any language, our responses will"
+" be in English."
+msgstr ""
+"Sylwer: Mae tîm cefnogi {platform_name} yn siarad Saesneg. Er y gwnawn ein "
+"gorau i ateb eich ymholiad mewn unrhyw iaith, bydd ein hymatebion yn "
+"Saesneg."
+
+msgid "To generate a CSV file that lists all student answers to a given problem, enter the location of the problem (from its Staff Debug Info)."
+msgstr "I greu ffeil CSV sy'n rhestru'r holl atebion i fyfyrwyr i broblem benodol, fynd i mewn i'r lleoliad y broblem (o'i Debug Staff info)."

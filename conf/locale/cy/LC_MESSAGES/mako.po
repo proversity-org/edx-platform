@@ -4187,11 +4187,11 @@ msgstr "{earned} o'r {total} pwyntiau sy'n bosib"
 
 #: lms/templates/courseware/progress.html
 msgid "Problem Scores: "
-msgstr "Sgorau'r problemau:"
+msgstr "Sgoriau problem: "
 
 #: lms/templates/courseware/progress.html
 msgid "Practice Scores: "
-msgstr "Sgorau ymarferion: "
+msgstr "Sgoriau ymarfer: "
 
 #: lms/templates/courseware/progress.html
 msgid "No problem scores in this section"
@@ -6126,7 +6126,7 @@ msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid "Problem location: "
-msgstr "Lleoliad y broblem:"
+msgstr "Lleoliad y broblem: "
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid "Download a CSV of problem responses"
@@ -7386,6 +7386,9 @@ msgstr "Addasu gradd dysgwr ar gyfer problem benodol"
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Location of problem in course *"
 msgstr "Lleoliad y broblem yn y cwrs *"
+
+msgid "Location of problem in course"
+msgstr "Lleoliad y broblem yn y cwrs"
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
@@ -9289,3 +9292,5 @@ msgstr "Gorchmynion wedi'u gosod"
 
 msgid "TOTAL"
 msgstr "CYFANSWM"
+
+
