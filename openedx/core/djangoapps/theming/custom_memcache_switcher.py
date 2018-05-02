@@ -49,7 +49,7 @@ class CustomCachedFilesMixin(HashedFilesMixin):
         except InvalidCacheBackendError:
             # Use the default backend
             self.hashed_files = _MappingCache(default_cache)
-            log.error("SInvalid backends provided, check the CACHES setting in the *.env.json files. staticfiles_1 and staticfiles_2")
+            log.error("Invalid backends provided, check the CACHES setting in the *.env.json files. staticfiles_1 and staticfiles_2")
 
     def hash_key(self, name):
         key = hashlib.md5(force_bytes(self.clean_name(name))).hexdigest()
@@ -80,7 +80,6 @@ class CustomCachedFilesMixin(HashedFilesMixin):
         if settings.ROOT_URLCONF == 'cms.urls':
             cache_version_holder.set('has_cms_ran', 'yes')
         if cache_version_holder.get('has_lms_ran') == 'yes' and cache_version_holder.get('has_lms_ran') == 'yes':
-            print("BOTH HAS RAN")
             cache_version_holder.set('has_lms_ran', 'no')
             cache_version_holder.set('has_cms_ran', 'no')
             return True
