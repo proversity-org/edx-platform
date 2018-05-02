@@ -571,7 +571,7 @@ class ProgramDataExtender(object):
 
         if is_learner_eligible_for_one_click_purchase:
             courses = self.data['courses']
-            if not self.user.is_anonymous():
+            if not self.user.is_anonymous:
                 courses = self._filter_out_courses_with_enrollments(courses)
                 courses = self._filter_out_courses_with_entitlements(courses)
 
@@ -604,7 +604,8 @@ class ProgramDataExtender(object):
         if skus:
             try:
                 api_user = self.user
-                if not self.user.is_authenticated():
+                is_anonymous = False
+                if not self.user.is_authenticated:
                     user = get_user_model()
                     service_user = user.objects.get(username=settings.ECOMMERCE_SERVICE_WORKER_USERNAME)
                     api_user = service_user
@@ -767,7 +768,7 @@ class ProgramMarketingDataExtender(ProgramDataExtender):
         pass
 
     def _attach_course_run_upgrade_url(self, run_mode):
-        if not self.user.is_anonymous():
+        if not self.user.is_anonymous:
             super(ProgramMarketingDataExtender, self)._attach_course_run_upgrade_url(run_mode)
         else:
             run_mode['upgrade_url'] = None

@@ -728,7 +728,7 @@ class FieldDataCache(object):
         """
         Add all `descriptors` to this FieldDataCache.
         """
-        if self.user.is_authenticated():
+        if self.user.is_authenticated:
             self.scorable_locations.update(desc.location for desc in descriptors if desc.has_score)
             for scope, fields in self._fields_to_cache(descriptors).items():
                 if scope not in self.cache:
@@ -815,7 +815,11 @@ class FieldDataCache(object):
         Raises: KeyError if key isn't found in the cache
         """
 
+<<<<<<< HEAD
         #if key.scope.user == UserScope.ONE and not self.user.is_anonymous():
+=======
+        if key.scope.user == UserScope.ONE and not self.user.is_anonymous:
+>>>>>>> 2556864bfb... Merge pull request #18106 from edx/efischer/is_it_this_easy
             # If we're getting user data, we expect that the key matches the
             # user we were constructed for.
             # assert key.user_id == self.user.id
@@ -843,7 +847,7 @@ class FieldDataCache(object):
         by_scope = defaultdict(dict)
         for key, value in kv_dict.iteritems():
 
-            if key.scope.user == UserScope.ONE and not self.user.is_anonymous():
+            if key.scope.user == UserScope.ONE and not self.user.is_anonymous:
                 # If we're getting user data, we expect that the key matches the
                 # user we were constructed for.
                 assert key.user_id == self.user.id
@@ -876,7 +880,7 @@ class FieldDataCache(object):
         if self.read_only:
             return
 
-        if key.scope.user == UserScope.ONE and not self.user.is_anonymous():
+        if key.scope.user == UserScope.ONE and not self.user.is_anonymous:
             # If we're getting user data, we expect that the key matches the
             # user we were constructed for.
             assert key.user_id == self.user.id
@@ -897,7 +901,7 @@ class FieldDataCache(object):
         Returns: bool
         """
 
-        #if key.scope.user == UserScope.ONE and not self.user.is_anonymous():
+        if key.scope.user == UserScope.ONE and not self.user.is_anonymous:
             # If we're getting user data, we expect that the key matches the
             # user we were constructed for.
             # assert key.user_id == self.user.id
@@ -917,7 +921,7 @@ class FieldDataCache(object):
 
         Returns: datetime if there was a modified date, or None otherwise
         """
-        if key.scope.user == UserScope.ONE and not self.user.is_anonymous():
+        if key.scope.user == UserScope.ONE and not self.user.is_anonymous:
             # If we're getting user data, we expect that the key matches the
             # user we were constructed for.
             assert key.user_id == self.user.id

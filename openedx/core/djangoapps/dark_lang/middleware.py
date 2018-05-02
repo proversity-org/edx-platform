@@ -120,7 +120,7 @@ class DarkLangMiddleware(object):
         """
         Check the user's dark language setting in the session and apply it
         """
-        auth_user = request.user.is_authenticated()
+        auth_user = request.user.is_authenticated
         preview_lang = None
 
         if 'language_default' not in request.session:

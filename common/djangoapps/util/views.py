@@ -416,7 +416,7 @@ def _get_zendesk_custom_field_context(request, **kwargs):
         return context
 
     context["course_id"] = course_id
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         return context
 
     enrollment = CourseEnrollment.get_enrollment(request.user, CourseKey.from_string(course_id))
@@ -556,7 +556,7 @@ def get_feedback_form_context(request):
 
     context["additional_info"] = {}
 
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         context["realname"] = request.user.profile.name
         context["email"] = request.user.email
         context["additional_info"]["username"] = request.user.username
@@ -605,7 +605,7 @@ def submit_feedback(request):
 
     required_fields = ["subject", "details"]
 
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         required_fields += ["name", "email"]
 
     required_field_errs = {
@@ -618,7 +618,7 @@ def submit_feedback(request):
         if field not in request.POST or not request.POST[field]:
             return build_error_response(400, field, required_field_errs[field])
 
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         try:
             validate_email(request.POST["email"])
         except ValidationError:

@@ -87,7 +87,7 @@ def login_and_registration_form(request, initial_mode="login"):
     # Determine the URL to redirect to following login/registration/third_party_auth
     redirect_to = get_next_url_for_login_page(request)
     # If we're already logged in, redirect to the dashboard
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return redirect(redirect_to)
 
     # Retrieve the form descriptions from the user API
@@ -219,7 +219,7 @@ def password_change_request_handler(request):
 
     user = request.user
     # Prefer logged-in user's email
-    email = user.email if user.is_authenticated() else request.POST.get('email')
+    email = user.email if user.is_authenticated else request.POST.get('email')
 
     if email:
         invalid_email = False
@@ -230,7 +230,7 @@ def password_change_request_handler(request):
 
         try:
             request_password_change(email, request.is_secure())
-            user = user if user.is_authenticated() else User.objects.get(email=email)
+            user = user if user.is_authenticated else User.objects.get(email=email)
             destroy_oauth_tokens(user)
         except UserNotFound:
             AUDIT_LOG.info("Invalid password reset attempt")

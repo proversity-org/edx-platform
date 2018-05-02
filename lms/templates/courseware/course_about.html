@@ -214,9 +214,8 @@ from six import string_types
           <span>${course.display_org_with_default | h}</span>
         </div>
 
-        <div class="main-cta">  
-
-        %if user.is_authenticated() and registered:
+        <div class="main-cta">
+        %if user.is_authenticated and registered:
           %if show_courseware_link and user_is_active:
             <a href="${course_target}">
           %else:
@@ -321,7 +320,7 @@ from six import string_types
           <span class="register disabled">${_("You are not old enough to enroll")}</span>
         %elif can_add_course_to_cart:
           <%
-          if user.is_authenticated():
+          if user.is_authenticated:
             reg_href = "#"
             reg_element_id = "add_to_cart_post"
           else:

@@ -17,3 +17,20 @@ class RedirectMiddleware(object):
         """
         if isinstance(exception, Redirect):
             return redirect(exception.url)
+
+
+class CacheCourseIdMiddleware(object):
+    """Middleware that adds course_id to user request session."""
+
+    def process_request(self, request):
+        """
+        Add a course_id to user request session.
+        """
+        if request.user.is_authenticated:
+            match = COURSE_REGEX.match(request.build_absolute_uri())
+            course_id = None
+            if match:
+                course_id = match.group('course_id')
+
+            if course_id and course_id != request.session.get('course_id'):
+                request.session['course_id'] = course_id

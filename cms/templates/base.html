@@ -108,7 +108,7 @@ from openedx.core.djangolib.markup import HTML
         </div>
       </main>
 
-      % if user.is_authenticated():
+      % if user.is_authenticated:
         <%include file="widgets/sock.html" args="online_help_token=online_help_token" />
       % endif
       <%include file="widgets/footer.html" />
@@ -122,7 +122,29 @@ from openedx.core.djangolib.markup import HTML
 
     <%block name="jsextra"></%block>
 
-    <script type="text/javascript">
+    % if context_course:
+      <script type="text/javascript">
+        if (typeof window.pageFactoryArguments == "undefined") {
+            window.pageFactoryArguments = {};
+        }
+
+        window.pageFactoryArguments['ContextCourse'] = {
+          id: "${context_course.id | n, js_escaped_string}",
+          name: "${context_course.display_name_with_default | n, js_escaped_string}",
+          url_name: "${context_course.location.block_id | n, js_escaped_string}",
+          org: "${context_course.location.org | n, js_escaped_string}",
+          num: "${context_course.location.course | n, js_escaped_string}",
+          display_course_number: "${context_course.display_coursenumber | n, js_escaped_string}",
+          revision: "${context_course.location.branch | n, js_escaped_string}",
+          self_paced: ${ context_course.self_paced | n, dump_js_escaped_json }
+        }
+      </script>
+    % endif
+    % if user.is_authenticated:
+      <%static:invoke_page_bundle page_name='js/sock'/>
+    % endif
+    <%block name='page_bundle'>
+      <script type="text/javascript">
       require(['js/factories/base'], function () {
           require(['js/models/course'], function(Course) {
               % if context_course:
