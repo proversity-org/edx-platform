@@ -35,6 +35,9 @@ from openedx.core.lib.api.authentication import (
 )
 from openedx.core.lib.api.parsers import MergePatchParser
 from student.models import (
+    CourseEnrollmentAllowed,
+    PendingEmailChange,
+    Registration,
     User,
     UserProfile,
     get_potentially_retired_user_by_username,
@@ -410,13 +413,22 @@ class DeactivateLogoutView(APIView):
             user = user_model.objects.get(username=username)
 
             with transaction.atomic():
-                # 1. Unlink LMS social auth accounts
-                UserSocialAuth.objects.filter(user_id=user.id).delete()
-                # 2. Change LMS password & email
-                user.email = get_retired_email_by_email(user.email)
-                user.save()
-                _set_unusable_password(user)
-                # 3. Unlink social accounts & change password on each IDA, still to be implemented
+                # Unlink LMS social auth accounts
+                UserSocialAuth.objects.filter(user_id=request.user.id).delete()
+                # Change LMS password & email
+                request.user.email = get_retired_email_by_email(request.user.email)
+                request.user.save()
+                _set_unusable_password(request.user)
+                # TODO: Unlink social accounts & change password on each IDA.
+                # Remove the activation keys sent by email to the user for account activation.
+                Registration.objects.filter(user=request.user).delete()
+                # Add user to retirement queue.
+                UserRetirementStatus.create_retirement(request.user)
+                # Log the user out.
+                logout(request)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except KeyError:
+            return Response(u'Username not specified.', status=status.HTTP_404_NOT_FOUND)
         except user_model.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         except Exception as exc:  # pylint: disable=broad-except
