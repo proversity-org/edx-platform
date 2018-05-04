@@ -13,13 +13,14 @@ from django.contrib.auth.models import User
 from pytz import UTC
 
 from student.models import CourseEnrollment
-
 from lms.djangoapps.grades.new.course_grade_factory import CourseGradeFactory
 from lms.djangoapps.grades.new.course_grade import CourseGrade
 from lms.djangoapps.grades.new.course_data import CourseData
+from openedx.core.djangoapps.content.course_structures.models import CourseStructure
+from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 
 from courseware import courses
-from opaque_keys.edx.keys import CourseKey
+from opaque_keys.edx.keys import CourseKey, UsageKey
 
 from lms.djangoapps.grades.context import grading_context_for_course
 
@@ -83,9 +84,14 @@ class ServiceGrades(object):
 
                         assignment_type = student_grade['subsection'].format
                         chapter_name = parent_location.display_name
+                        # chapter_name = parent_location
                         
                         for policy in course_policy['GRADER']:
-                            counter_assignment_type[assignment_type] = {'total_number': policy['min_count'], 'drop': policy['drop_count']}
+                            counter_assignment_type[assignment_type] = {
+                                'total_number': policy['min_count'],
+                                'drop': policy['drop_count'],
+                                'weight': policy['weight']
+                            }
                             if policy['type'] == assignment_type:
                                 grade = student_grade['percent'] * policy['weight']                                
                                 student_grade.update({'grade': grade})
@@ -96,13 +102,15 @@ class ServiceGrades(object):
                                 # and discard the droppables.
                                 if not student_grade.has_key('mark'):
                                     section_grade[chapter_name] = {assignment_type: grade}
+                                else:
+                                    section_grade[chapter_name] = {assignment_type: 0.0}
 
-            section_grade.update({'username': student})
+            # section_grade.update({'username': student})
             result.append(section_grade)
 
         return result, counter_assignment_type, sequentials
 
-    def by_section(self):
+    def by_section(self, chapter=None):
         course_grade = self.get_grades()
         section_grades = course_grade[0]
         course_policy = course_grade[1]
@@ -110,11 +118,24 @@ class ServiceGrades(object):
         counter_assignment_type = {}
         chapter_names = []
 
+        if chapter is not None:
+            self.headers.append('Up to date grade')
+            course_structure = CourseStructure.objects.get(course_id=self.course_key)
+            decoded_structure = json.loads(course_structure.structure_json)
+            location = CourseOverview.objects.get(id=self.course_key)
+            chapters_course = decoded_structure['blocks'][location.location.to_deprecated_string()]['children']
+
+            index = chapters_course.index(chapter)+1
+
         for grades in section_grades:
+            hasta_aqui = grades.keys()[index]
             for key, value in grades.items():
                 self.headers.append(key)
-            section_grade = proccess_grades_dict(grades, course_policy)
-            score_by_section.append(section_grade)
+            
+            proccessed_section_grade = proccess_grades_dict(grades, course_policy)
+            sum_up_to_date = sum(proccessed_section_grade.values()[:index])
+            proccessed_section_grade.update({'Up to date grade': sum_up_to_date})
+            score_by_section.append(proccessed_section_grade)
 
         header_rows = proccess_headers(self.headers)
         self.build_csv('section_report.csv', header_rows, score_by_section)
@@ -126,6 +147,7 @@ class ServiceGrades(object):
         section_grades = course_grade[0]
         course_policy = course_grade[1]
         subsections = course_grade[2]
+        
 
         for student in section_grades:
             total_section = proccess_grades_dict(student, course_policy)
@@ -138,7 +160,7 @@ class ServiceGrades(object):
                     key = '{} - {}'.format(chapter, sequential.format)
                     self.headers.append(chapter)
                     self.headers.append(key)
-                    assignment_type_dict[key] = course_grade_factory.score_for_module(sequential.location)[0]
+                    assignment_type_dict[sequential.format] = course_grade_factory.score_for_module(sequential.location)[0]
 
             # Since we have a list of grades in a key when a chapter has more than two subsequentials
             # with the same assignment type, we need to sum these values and update the dict.
@@ -158,8 +180,8 @@ class ServiceGrades(object):
                     # we need to delete it since is not neccesary in this report.
                     assignment_type.update(section)
 
-        headers = proccess_headers(self.headers)
-        self.build_csv('assignment_type_report.csv', headers, assignment_type_grades)
+        # headers = proccess_headers(self.headers)
+        # self.build_csv('assignment_type_report.csv', headers, assignment_type_grades)
         return assignment_type_grades
 
     def enhanced_problem_grade(self):
@@ -250,3 +272,7 @@ def proccess_grades_dict(grades_dict, counter_assignment_type):
             grades_dict.update({section: sum(group_grades)})
 
     return grades_dict
+
+
+def calculate_date_grade(self):
+    pass
