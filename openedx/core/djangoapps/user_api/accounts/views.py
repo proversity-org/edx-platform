@@ -561,9 +561,10 @@ class AccountRetirementStatusView(ViewSet):
         Updates the RetirementStatus row for the given user to the new
         status, and append any messages to the message log.
 
-        Note that this implementation is the "merge patch" implementation proposed in
-        https://tools.ietf.org/html/rfc7396. The content_type must be "application/merge-patch+json" or
-        else an error response with status code 415 will be returned.
+        Note that this implementation DOES NOT use the "merge patch"
+        implementation seen in AccountViewSet. Slumber, the project
+        we use to power edx-rest-api-client, does not currently support
+        it. The content type for this request is 'application/json'.
         """
         try:
             username = request.data['username']
