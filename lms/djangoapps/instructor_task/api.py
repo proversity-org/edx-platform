@@ -25,6 +25,7 @@ from lms.djangoapps.instructor_task.tasks import (
     calculate_grades_csv,
     calculate_may_enroll_csv,
     calculate_problem_grade_report,
+    calculate_section_grades,
     calculate_problem_responses_csv,
     calculate_students_features_csv,
     cohort_students,
@@ -318,6 +319,18 @@ def submit_calculate_grades_csv(request, course_key):
     """
     task_type = 'grade_course'
     task_class = calculate_grades_csv
+    task_input = {}
+    task_key = ""
+
+    return submit_task(request, task_type, task_class, course_key, task_input, task_key)
+
+
+def calculate_grades(request, course_key, submit_report_type):
+    """
+    AlreadyRunningError is raised if the course's grades are already being updated.
+    """
+    task_type = submit_report_type['task_name']
+    task_class = submit_report_type['task_class']
     task_input = {}
     task_key = ""
 
