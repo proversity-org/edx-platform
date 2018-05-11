@@ -18,6 +18,9 @@ from opaque_keys.edx.django.models import CourseKeyField
 from student.models import PendingEmailChange, Registration, UserProfile  # pylint: disable=unused-import
 from util.model_utils import emit_setting_changed_event, get_changed_fields_dict
 
+class RetirementStateError(Exception):
+    pass
+
 
 class UserPreference(models.Model):
     """A user's preference, stored as generic text to be processed by client"""

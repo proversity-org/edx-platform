@@ -51,6 +51,7 @@ from ..errors import AccountUpdateError, AccountValidationError, UserNotAuthoriz
 from ..models import RetirementState, RetirementStateError, UserOrgTag, UserRetirementStatus
 from .api import get_account_settings, update_account_settings
 from .permissions import CanDeactivateUser, CanRetireUser
+from .serializers import UserRetirementStatusSerializer
 from .signals import USER_RETIRE_MAILINGS
 
 log = logging.getLogger(__name__)
