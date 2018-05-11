@@ -157,20 +157,41 @@ def compute_grades_for_course(course_key, offset, batch_size, **kwargs):  # pyli
             raise result.error
 
 
-def generate_xblock_structure_url(course_str, block_key, user):
+@task(
+    bind=True,
+    time_limit=SUBSECTION_GRADE_TIMEOUT_SECONDS,
+    max_retries=2,
+    default_retry_delay=RETRY_DELAY_SECONDS,
+    routing_key=settings.POLICY_CHANGE_GRADES_ROUTING_KEY
+)
+def recalculate_course_and_subsection_grades_for_user(self, **kwargs):  # pylint: disable=unused-argument
     """
-    Generate url/link to JSON representation of xblock
+    Recalculates the course grade and all subsection grades
+    for the given ``user`` and ``course_key`` keyword arguments.
     """
-    xblock_structure_url = '{}/api/courses/v1/blocks/?course_id={}&block_id={}&username={}'.format(
-        settings.LMS_ROOT_URL,
-        urllib.quote_plus(str(course_str)),
-        block_key,
-        user.username
-    )
+    user_id = kwargs.get('user_id')
+    course_key_str = kwargs.get('course_key')
 
-    return xblock_structure_url
+    if not (user_id or course_key_str):
+        message = 'recalculate_course_and_subsection_grades_for_user missing "user" or "course_key" kwargs from {}'
+        raise Exception(message.format(kwargs))
 
+    user = User.objects.get(id=user_id)
+    course_key = CourseKey.from_string(course_key_str)
 
+    # Hotfix to address LEARNER-5123, to be removed later
+    visible_blocks_count = VisibleBlocks.objects.filter(course_id=course_key).count()
+    if visible_blocks_count > MAX_VISIBLE_BLOCKS_ALLOWED:
+        message = '{} has too many VisibleBlocks to recalculate grades for {}'
+        raise Exception(message.format(course_key_str, user_id))
+
+    previous_course_grade = CourseGradeFactory().read(user, course_key=course_key)
+    if previous_course_grade and previous_course_grade.attempted:
+        CourseGradeFactory().update(
+            user=user,
+            course_key=course_key,
+            force_update_subsections=True
+        )
 
 def get_user_grades(user_id, course_str):
     """
