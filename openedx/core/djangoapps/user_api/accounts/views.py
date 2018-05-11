@@ -26,12 +26,8 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from six import text_type
 from social_django.models import UserSocialAuth
-<<<<<<< HEAD
-import pytz
-=======
 from wiki.models import ArticleRevision
 from wiki.models.pluginbase import RevisionPluginRevision
->>>>>>> d4a338d4af... Merge pull request #18113 from edx/sofiya/ed-2802-2
 
 from entitlements.models import CourseEntitlement
 from lms.djangoapps.verify_student.models import SoftwareSecurePhotoVerification
@@ -41,7 +37,7 @@ from openedx.core.djangoapps.course_groups.models import UnregisteredLearnerCoho
 from openedx.core.djangoapps.profile_images.images import remove_profile_images
 from openedx.core.djangoapps.user_api.accounts.image_helpers import get_profile_image_names, set_has_profile_image
 from openedx.core.djangoapps.user_api.preferences.api import update_email_opt_in
-from openedx.core.djangolib.oauth2_retirement_utils import retire_dot_oauth2_models, retire_dop_oauth2_models
+from openedx.core.djangolib.oauth2_retirement_utils import retire_dop_oauth2_models, retire_dot_oauth2_models
 from openedx.core.lib.api.authentication import (
     OAuth2AuthenticationAllowInactiveUser,
     SessionAuthenticationAllowInactiveUser
@@ -444,6 +440,14 @@ class DeactivateLogoutView(APIView):
                 # 4. Add user to retirement queue
                 UserRetirementStatus.create_retirement(request.user)
                 # 5. Log the user out
+                # TODO: Unlink social accounts & change password on each IDA.
+                # Remove the activation keys sent by email to the user for account activation.
+                Registration.objects.filter(user=request.user).delete()
+                # Add user to retirement queue.
+                # Delete OAuth tokens associated with the user.
+                retire_dop_oauth2_models(request.user)
+                retire_dot_oauth2_models(request.user)
+                # Log the user out.
                 logout(request)
             return Response(status=status.HTTP_204_NO_CONTENT)
         except KeyError:
