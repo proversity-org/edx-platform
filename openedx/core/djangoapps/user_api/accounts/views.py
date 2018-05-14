@@ -13,6 +13,7 @@ from consent.models import DataSharingConsent
 from django.contrib.auth import authenticate, get_user_model, logout
 from django.core.cache import cache
 from django.db import transaction
+from django.utils.translation import ugettext as _
 from edx_rest_framework_extensions.authentication import JwtAuthentication
 from enterprise.models import EnterpriseCourseEnrollment, EnterpriseCustomerUser, PendingEnterpriseCustomerUser
 from integrated_channels.sap_success_factors.models import SapSuccessFactorsLearnerDataTransmissionAudit
@@ -47,11 +48,6 @@ from student.models import (
     is_username_retired
 )
 from student.views.login import AuthFailedError, LoginFailures
-    User,
-    get_retired_email_by_email,
-    get_potentially_retired_user_by_username_and_hash,
-    get_potentially_retired_user_by_username
-)
 
 from ..errors import AccountUpdateError, AccountValidationError, UserNotAuthorized, UserNotFound
 from ..models import RetirementState, RetirementStateError, UserOrgTag, UserRetirementStatus
@@ -239,13 +235,7 @@ class AccountViewSet(ViewSet):
         """
         GET /api/user/v1/me
         """
-        try:
-            account_settings = get_account_settings(request, [request.user.username], view=request.query_params.get('view'))
-
-        except UserNotFound:
-            return Response(status=status.HTTP_403_FORBIDDEN if request.user.is_staff else status.HTTP_404_NOT_FOUND)
-
-        return Response(account_settings[0])
+        return Response({'username': request.user.username})
 
     def list(self, request):
         """
@@ -351,7 +341,12 @@ class AccountRetireMailingsView(APIView):
 
                 # This signal allows lms' email_marketing and other 3rd party email
                 # providers to unsubscribe the user as well
-                USER_RETIRE_MAILINGS.send(sender=self.__class__, user=retirement.user)
+                USER_RETIRE_MAILINGS.send(
+                    sender=self.__class__,
+                    email=retirement.original_email,
+                    new_email=retirement.retired_email,
+                    user=retirement.user
+                )
 
             return Response(status=status.HTTP_204_NO_CONTENT)
         except UserRetirementStatus.DoesNotExist:
@@ -366,7 +361,7 @@ class DeactivateLogoutView(APIView):
     """
     POST /api/user/v1/accounts/deactivate_logout/
     {
-        "user": "example_username",
+        "password": "example_password",
     }
 
     **POST Parameters**
@@ -395,31 +390,23 @@ class DeactivateLogoutView(APIView):
     -  Change the user's password permanently to Django's unusable password
     -  Log the user out
     """
-    authentication_classes = (JwtAuthentication, )
-    permission_classes = (permissions.IsAuthenticated, CanRetireUser)
+    authentication_classes = (SessionAuthentication, JwtAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
         """
-        POST /api/user/v1/accounts/deactivate_logout
-
+        POST /api/user/v1/accounts/deactivate_logout/
         Marks the user as having no password set for deactivation purposes,
         and logs the user out.
         """
-        username = request.data.get('user', None)
-        if not username:
-            return Response(
-                status=status.HTTP_404_NOT_FOUND,
-                data={
-                    'message': u'The user was not specified.'
-                }
-            )
-
         user_model = get_user_model()
         try:
-            # make sure the specified user exists
-            user = user_model.objects.get(username=username)
-
+            # Get the username from the request and check that it exists
+            verify_user_password_response = self._verify_user_password(request)
+            if verify_user_password_response.status_code != status.HTTP_204_NO_CONTENT:
+                return verify_user_password_response
             with transaction.atomic():
+                UserRetirementStatus.create_retirement(request.user)
                 # Unlink LMS social auth accounts
                 UserSocialAuth.objects.filter(user_id=request.user.id).delete()
                 # Change LMS password & email
@@ -430,18 +417,59 @@ class DeactivateLogoutView(APIView):
                 # Remove the activation keys sent by email to the user for account activation.
                 Registration.objects.filter(user=request.user).delete()
                 # Add user to retirement queue.
-                UserRetirementStatus.create_retirement(request.user)
+                # Delete OAuth tokens associated with the user.
+                retire_dop_oauth2_models(request.user)
+                retire_dot_oauth2_models(request.user)
                 # Log the user out.
                 logout(request)
             return Response(status=status.HTTP_204_NO_CONTENT)
         except KeyError:
             return Response(u'Username not specified.', status=status.HTTP_404_NOT_FOUND)
         except user_model.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                u'The user "{}" does not exist.'.format(request.user.username), status=status.HTTP_404_NOT_FOUND
+            )
         except Exception as exc:  # pylint: disable=broad-except
             return Response(text_type(exc), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def _verify_user_password(self, request):
+        """
+        If the user is logged in and we want to verify that they have submitted the correct password
+        for a major account change (for example, retiring this user's account).
+        Args:
+            request (HttpRequest): A request object where the password should be included in the POST fields.
+        """
+        try:
+            self._check_excessive_login_attempts(request.user)
+            user = authenticate(username=request.user.username, password=request.POST['password'], request=request)
+            if user:
+                if LoginFailures.is_feature_enabled():
+                    LoginFailures.clear_lockout_counter(user)
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            else:
+                self._handle_failed_authentication(request.user)
+        except AuthFailedError as err:
+            return Response(text_type(err), status=status.HTTP_403_FORBIDDEN)
+        except Exception as err:  # pylint: disable=broad-except
+            return Response(u"Could not verify user password: {}".format(err), status=status.HTTP_400_BAD_REQUEST)
+
+    def _check_excessive_login_attempts(self, user):
+        """
+        See if account has been locked out due to excessive login failures
+        """
+        if user and LoginFailures.is_feature_enabled():
+            if LoginFailures.is_user_locked_out(user):
+                raise AuthFailedError(_('This account has been temporarily locked due '
+                                        'to excessive login failures. Try again later.'))
+
+    def _handle_failed_authentication(self, user):
+        """
+        Handles updating the failed login count, inactive user notifications, and logging failed authentications.
+        """
+        if user and LoginFailures.is_feature_enabled():
+            LoginFailures.increment_lockout_counter(user)
+
+        raise AuthFailedError(_('Email or password is incorrect.'))
 
 
 def _set_unusable_password(user):
@@ -458,8 +486,8 @@ class AccountRetirementStatusView(ViewSet):
     Provides API endpoints for managing the user retirement process.
     """
     authentication_classes = (JwtAuthentication,)
-    permission_classes = (permissions.IsAuthenticated, CanRetireUser, )
-    parser_classes = (MergePatchParser, )
+    permission_classes = (permissions.IsAuthenticated, CanRetireUser,)
+    parser_classes = (JSONParser,)
     serializer_class = UserRetirementStatusSerializer
 
     def retirement_queue(self, request):
@@ -472,10 +500,12 @@ class AccountRetirementStatusView(ViewSet):
         """
         try:
             cool_off_days = int(request.GET['cool_off_days'])
-            states = request.GET['states'].split(',')
-
             if cool_off_days < 0:
                 raise RetirementStateError('Invalid argument for cool_off_days, must be greater than 0.')
+
+            states = request.GET.getlist('states')
+            if not states:
+                raise RetirementStateError('Param "states" required with at least one state.')
 
             state_objs = RetirementState.objects.filter(state_name__in=states)
             if state_objs.count() != len(states):
@@ -517,7 +547,7 @@ class AccountRetirementStatusView(ViewSet):
         except (UserRetirementStatus.DoesNotExist, User.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-
+    @request_requires_username
     def partial_update(self, request):
         """
         PATCH /api/user/v1/accounts/update_retirement_status/
@@ -537,7 +567,7 @@ class AccountRetirementStatusView(ViewSet):
         """
         try:
             username = request.data['username']
-            retirement = UserRetirementStatus.objects.get(user__username=username)
+            retirement = UserRetirementStatus.objects.get(original_username=username)
             retirement.update_state(request.data)
             return Response(status=status.HTTP_204_NO_CONTENT)
         except UserRetirementStatus.DoesNotExist:
@@ -556,7 +586,7 @@ class AccountRetirementView(ViewSet):
     permission_classes = (permissions.IsAuthenticated, CanRetireUser,)
     parser_classes = (JSONParser,)
 
-    @request_requires_username
+    #@request_requires_username
     def post(self, request):
         """
         POST /api/user/v1/accounts/retire/
@@ -569,8 +599,11 @@ class AccountRetirementView(ViewSet):
         retiring this username, the associates email address, and
         any other PII associated with this user.
         """
+        log.error("This is the username to be set to retire")
+        log.error(request.data['username'])
         username = request.data['username']
         if is_username_retired(username):
+            log.error("user is retired")
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
@@ -578,7 +611,7 @@ class AccountRetirementView(ViewSet):
             user = retirement_status.user
             retired_username = retirement_status.retired_username or get_retired_username_by_username(username)
             retired_email = retirement_status.retired_email or get_retired_email_by_email(user.email)
-
+            log.error("did some fancy delete stuff moving on")
             self.clear_pii_from_userprofile(user)
             self.delete_users_profile_images(user)
             self.delete_users_country_cache(user)
