@@ -2744,7 +2744,9 @@ def send_email(request, course_id):
     targets = json.loads(request.POST.get("send_to"))
     subject = request.POST.get("subject")
     message = request.POST.get("message")
-    specific_learners = _split_input_list(request.POST.get("specific_learners"))
+    
+    if request.POST.get("specific_learners"):
+        specific_learners = _split_input_list(request.POST.get("specific_learners"))
 
     # allow two branding points to come from Site Configuration: which CourseEmailTemplate should be used
     # and what the 'from' field in the email should be
