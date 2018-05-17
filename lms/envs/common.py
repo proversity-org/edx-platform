@@ -3540,3 +3540,9 @@ RATELIMIT_RATE = '30/m'
 from openedx.core.djangoapps.plugins import plugin_apps, plugin_settings, constants as plugin_constants
 INSTALLED_APPS.extend(plugin_apps.get_apps(plugin_constants.ProjectType.LMS))
 plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.LMS, plugin_constants.SettingsType.COMMON)
+
+###############################################################################
+# This value allows student profile downloads from LMS instructor section.
+# Enhancement to be compliant with GDPR
+###############################################################################
+ALLOW_PROFILE_DOWNLOAD = True

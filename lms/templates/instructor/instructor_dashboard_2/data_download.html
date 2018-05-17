@@ -2,6 +2,7 @@
 <%!
 from django.utils.translation import ugettext as _
 from openedx.core.djangolib.markup import HTML, Text
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 %>
 
 <div class="data-download-container action-type-container">
@@ -28,9 +29,11 @@ from openedx.core.djangolib.markup import HTML, Text
 
     <p>${_("Please be patient and do not click these buttons multiple times. Clicking these buttons multiple times will significantly slow the generation process.")}</p>
 
-    <p>${_("Click to generate a CSV file of all students enrolled in this course, along with profile information such as email address and username:")}</p>
+    %if configuration_helpers.get_value('ALLOW_PROFILE_DOWNLOAD'):
+      <p>${_("Click to generate a CSV file of all students enrolled in this course, along with profile information such as email address and username:")}</p>
 
-    <p><input type="button" name="list-profiles-csv" value="${_("Download profile information as a CSV")}" data-endpoint="${ section_data['get_students_features_url'] }" data-csv="true"></p>
+      <p><input type="button" name="list-profiles-csv" value="${_("Download profile information as a CSV")}" data-endpoint="${ section_data['get_students_features_url'] }" data-csv="true"></p>
+    %endif
 
     <p>${_("Click to generate a CSV file that lists learners who can enroll in the course but have not yet done so.")}</p>
 
@@ -68,11 +71,13 @@ from openedx.core.djangolib.markup import HTML, Text
       <div class="issued-certificates-error request-response-error msg msg-error copy"></div>
     </div>
 
-  % if not disable_buttons:
-    <p>${_("For smaller courses, click to list profile information for enrolled students directly on this page:")}</p>
-    <p><input type="button" name="list-profiles" value="${_("List enrolled students' profile information")}" data-endpoint="${ section_data['get_students_features_url'] }"></p>
+  %if configuration_helpers.get_value('ALLOW_PROFILE_DOWNLOAD'):
+    % if not disable_buttons:
+      <p>${_("For smaller courses, click to list profile information for enrolled students directly on this page:")}</p>
+      <p><input type="button" name="list-profiles" value="${_("List enrolled students' profile information")}" data-endpoint="${ section_data['get_students_features_url'] }"></p>
+    %endif
+    <div class="data-display-table profile-data-display-table" id="data-student-profiles-table"></div>
   %endif
-  <div class="data-display-table profile-data-display-table" id="data-student-profiles-table"></div>
 
   %if settings.FEATURES.get('ALLOW_COURSE_STAFF_GRADE_DOWNLOADS') or section_data['access']['admin']:
     <p>${_("Click to generate a CSV grade report for all currently enrolled students.")}</p>

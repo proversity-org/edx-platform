@@ -1345,6 +1345,12 @@ def get_students_features(request, course_id, csv=False):  # pylint: disable=red
 
     TO DO accept requests for different attribute sets.
     """
+
+    # If profile download is not allowed, just return http forbidden response
+    # Enhancement to be compliant with GDPR
+    if not configuration_helpers.get_value('ALLOW_PROFILE_DOWNLOAD'):
+        return HttpResponseForbidden()
+
     course_key = CourseKey.from_string(course_id)
     course = get_course_by_id(course_key)
     report_type = _('enrolled learner profile')
