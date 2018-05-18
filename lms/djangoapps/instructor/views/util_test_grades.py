@@ -12,26 +12,27 @@ from lms.djangoapps.instructor.views.reports_helpers import (
     DictList,
     proccess_headers,
     proccess_grades_dict,
-    sum_dict_values, order_list,
+    sum_dict_values,
+    order_list,
     generate_csv,
     assign_grades,
 )
 
 from courseware import courses
-from opaque_keys.edx.keys import CourseKey
+from opaque_keys.edx.keys import CourseKey, UsageKey
 from xmodule.modulestore.django import modulestore
 
 
 class ServiceGrades(object):
 
     def __init__(self, course_id):
+        self.course_string = course_id
         self.course_key = CourseKey.from_string(course_id)
         self.course = courses.get_course_by_id(self.course_key)
         self.students = CourseEnrollment.objects.users_enrolled_in(self.course_key)
         self.headers = ['username', 'fullname']
 
-    @classmethod
-    def generate(cls, _xmodule_instance_args, _entry_id, course_id, _task_input, action_name):
+    def generate(self, _xmodule_instance_args, _entry_id, course_id, _task_input, action_name):
         """
         Public method to generate a grade report.
         """
@@ -40,13 +41,13 @@ class ServiceGrades(object):
             context = _CourseGradeReportContext(_xmodule_instance_args, _entry_id, course_id, _task_input, action_name)
 
             if action_name == 'section_report':
-                return ServiceGrades('course-v1:organizacion+cs272018+2018_t1').by_section(context)
+                return ServiceGrades(self.course_string).by_section(context)
 
             if action_name == 'assignment_type_report':
-                return ServiceGrades('course-v1:organizacion+cs272018+2018_t1').by_assignment_type(context)
+                return ServiceGrades(self.course_string).by_assignment_type(context)
 
             if action_name == 'enhanced_problem_report':
-                return ServiceGrades('course-v1:organizacion+cs272018+2018_t1').enhanced_problem_grade(context)
+                return ServiceGrades(self.course_string).enhanced_problem_grade(context)
 
     def get_grades(self):
         """

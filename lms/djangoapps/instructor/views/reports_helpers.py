@@ -135,7 +135,8 @@ def assign_grades(policy, assignment_type, chapter_name, student_grade, section_
         2. assignment_type: String which represents the name of the assignment type.
         3. chapter_name: String which represents the name of the section.
         4. student_grade: Dictionary extracted from section_breakdown.
-        5. section_grade: DictList object.
+        5. section_grade: Empty DictList object.
+        6. sequentials: Empty DictList object.
 
     Caveats
         1. It's important that section_grade be a DictList object due to a subsection,
