@@ -8,24 +8,18 @@ from student.models import CourseEnrollment
 from lms.djangoapps.grades.context import grading_context_for_course
 from lms.djangoapps.grades.new.course_grade_factory import CourseGradeFactory
 from lms.djangoapps.grades.new.course_data import CourseData
-from lms.djangoapps.instructor.views.reports_helpers import DictList, proccess_headers, proccess_grades_dict, sum_dict_values, order_list, generate_csv
+from lms.djangoapps.instructor.views.reports_helpers import (
+    DictList,
+    proccess_headers,
+    proccess_grades_dict,
+    sum_dict_values, order_list,
+    generate_csv,
+    assign_grades,
+)
 
 from courseware import courses
 from opaque_keys.edx.keys import CourseKey
 from xmodule.modulestore.django import modulestore
-
-
-class DictList(dict):
-    """
-    Modify the behavior of a dict allowing has a list of values
-    when there are more than one same key.
-    """
-    def __setitem__(self, key, value):
-        try:
-            self[key]
-        except KeyError:
-            super(DictList, self).__setitem__(key, [])
-        self[key].append(value)
 
 
 class ServiceGrades(object):
@@ -34,8 +28,7 @@ class ServiceGrades(object):
         self.course_key = CourseKey.from_string(course_id)
         self.course = courses.get_course_by_id(self.course_key)
         self.students = CourseEnrollment.objects.users_enrolled_in(self.course_key)
-        # self.headers = ['username', 'fullname', 'general_grade']
-        self.headers = ['username']
+        self.headers = ['username', 'fullname']
 
     @classmethod
     def generate(cls, _xmodule_instance_args, _entry_id, course_id, _task_input, action_name):
@@ -56,6 +49,14 @@ class ServiceGrades(object):
                 return ServiceGrades('course-v1:organizacion+cs272018+2018_t1').enhanced_problem_grade(context)
 
     def get_grades(self):
+        """
+        Public method to generate custom reports.
+
+        Returns:
+            1. Base info of the grades, from this list we could get
+               the info thet we require.
+            2. Dict with the course policy
+        """
         course_grades = []
         result = []
         counter_assignment_type = {}
@@ -92,52 +93,51 @@ class ServiceGrades(object):
 
                         assignment_type = student_grade['subsection'].format
                         chapter_name = parent_location.display_name
-                        
+
+                        # Since the course_policy that we need is in a list
+                        # we take these values and we storage them in a dict for ease
+                        # when we need to use it.
                         for policy in course_policy['GRADER']:
-                            counter_assignment_type[assignment_type] = {
-                                'total_number': policy['min_count'],
-                                'drop': policy['drop_count'],
-                                'weight': policy['weight']
+                            assignment_type_name = policy['type']
+                            weight = policy['weight']
+                            droppables = policy['drop_count']
+                            total_number = policy['min_count']
+                            counter_assignment_type[assignment_type_name] = {
+                                'weight': weight,
+                                'droppables': droppables,
+                                'total_number': total_number
                             }
-                            if policy['type'] == assignment_type:
-                                grade = student_grade['percent'] * policy['weight']                                
-                                student_grade.update({'grade': grade})
-                                student_grade.update({'chapter_name': chapter_name})
-                                sequentials[chapter_name] = student_grade['subsection']
 
-                                # We group in a list the values that has the same keys using DictList
-                                # and discard the droppables.
-                                if not student_grade.has_key('mark'):
-                                    section_grade[chapter_name] = {assignment_type: grade}
-                                else:
-                                    section_grade[chapter_name] = {assignment_type: 0.0}
+                            assignment_grades = assign_grades(policy, assignment_type, chapter_name, student_grade, section_grade, sequentials)
 
-            general_grade = section_grade['general_grade'][0]
+            general_grade = assignment_grades['general_grade'][0]
             section_grade.update({'username': student, 'fullname': student.get_full_name(), 'general_grade': general_grade})
             result.append(section_grade)
-
-        return result, counter_assignment_type, sequentials, 
+        
+        return result, counter_assignment_type, sequentials
 
     def by_section(self, context):
+        """
+        Public method to generate a CSV report with the grades per sections.
+        """
         context.update_status(u'Starting grades')
         course_grade = self.get_grades()
         section_grades = course_grade[0]
         course_policy = course_grade[1]
         score_by_section = []
-        counter_assignment_type = {}
-        chapter_names = []
         for grades in section_grades:
             for key, value in grades.items():
                 self.headers.append(key)
             proccessed_section_grade = proccess_grades_dict(grades, course_policy)
             score_by_section.append(proccessed_section_grade)
-
         header_rows = proccess_headers(self.headers)
         draw_report = generate_csv(context, header_rows, score_by_section, 'grade_report')
-
-        return context.update_status(u'Completed grades')
+        return draw_report
 
     def by_assignment_type(self, context):
+        """
+        Public method to generate a CSV report with the grades per assignment type.
+        """
         course_grade = self.get_grades()
         section_grades = course_grade[0]
         course_policy = course_grade[1]
@@ -148,8 +148,6 @@ class ServiceGrades(object):
         for student in section_grades:
             total_section = proccess_grades_dict(student, course_policy)
             user = student['username']
-            student.update({'username': user.username})
-            student.update({'fullname': user.get_full_name()})
             assignment_type_dict = DictList()
             course_grade_factory = CourseGradeFactory().create(user, self.course)
             for chapter, sequentials in subsections.items():
@@ -161,7 +159,7 @@ class ServiceGrades(object):
                     calculation = (course_grade_factory.score_for_module(sequential.location)[0] * weight) / total_number
                     assignment_type_dict[header_name] = calculation
 
-            calculated_sum = sum_dict_values(assignment_type_dict, {'username': user.username})
+            calculated_sum = sum_dict_values(assignment_type_dict, {'username': user.username, 'fullname': user.get_full_name()})
             assignment_type_grades.append(calculated_sum)
 
         header_rows = proccess_headers(self.headers)
@@ -170,15 +168,16 @@ class ServiceGrades(object):
             ordered = order_list(header_rows, element)
             grades_list.append(ordered)
 
-        draw_report = generate_csv(context, header_rows, grades_list, 'AT_report')
+        draw_report = generate_csv(context, header_rows, grades_list, 'assignment_type_report')
         return draw_report
 
     def enhanced_problem_grade(self, context):
+        """
+        Public method to generate a CSV report with the grades per problem.
+        """
         course_grade = self.get_grades()
         section_grades = course_grade[0]
         course_policy = course_grade[1]
-        subsections = course_grade[2]
-        headers = []
         rows = []
         final_grades = []
         grading_context = grading_context_for_course(self.course_key)
@@ -193,7 +192,9 @@ class ServiceGrades(object):
             for section in sections.items():
                 chapter_name = section[1]['display_name']
                 sequentials = section[1]['sections']
-
+                # We need to walk through subsections, problem_scores and grading context
+                # in order to get the type of each problem in each unit and get the
+                # earneds and possibles points.
                 for sequential in sequentials:
                     for problem_score in sequential.problem_scores:
                         for problem_name in grading_context['all_graded_blocks']:
@@ -204,20 +205,20 @@ class ServiceGrades(object):
                                     new_header = [header_name + " (Earned)", header_name + " (Possible)"]
                                     problem_score_dict[new_header[0]] = grade_tuple[0]
                                     problem_score_dict[new_header[1]] = grade_tuple[1]
-                                    headers.append(new_header)
+                                    # Since new_header is a list of two values
+                                    # at the moment to append it to self.headers will build a
+                                    # list of lists, and due to we need to pass a flatten list as
+                                    # headers rows, we just append the 0 and 1 position item.
+                                    self.headers.append(new_header[0])
+                                    self.headers.append(new_header[1])
 
             rows.append(problem_score_dict)
 
-        flatten_headers = [item for sublist in headers for item in sublist if sublist]
-
-        # We need to order the list
+        header_rows = proccess_headers(self.headers)
+        # Order the rows based on the headers order.
         for element in rows:
-            grades = []
-            ordered = order_list(flatten_headers, element)
+            ordered = order_list(header_rows, element)
             final_grades.append(ordered)
-
-        headers = flatten_headers
-        header_rows = proccess_headers(headers)
-        draw_report = generate_csv(context, header_rows, final_grades, 'problem')
-
+        
+        draw_report = generate_csv(context, header_rows, final_grades, 'enhanced_problem_report')
         return draw_report

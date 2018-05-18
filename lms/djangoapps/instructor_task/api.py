@@ -25,7 +25,6 @@ from lms.djangoapps.instructor_task.tasks import (
     calculate_grades_csv,
     calculate_may_enroll_csv,
     calculate_problem_grade_report,
-    calculate_section_grades,
     calculate_problem_responses_csv,
     calculate_students_features_csv,
     cohort_students,
