@@ -983,6 +983,7 @@ INSTALLED_APPS = [
     # Standard apps
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.humanize',
     'django.contrib.redirects',
     'django.contrib.sessions',
     'django.contrib.sites',
@@ -996,6 +997,9 @@ INSTALLED_APPS = [
 
     # Common views
     'openedx.core.djangoapps.common_views',
+
+    # API access administration
+    'openedx.core.djangoapps.api_admin',
 
     # History tables
     'simple_history',
@@ -1062,7 +1066,13 @@ INSTALLED_APPS = [
     # Dark-launching languages
     'openedx.core.djangoapps.dark_lang',
 
+    #
     # User preferences
+    'wiki',
+    'django_notify',
+    'course_wiki',  # Our customizations
+    'mptt',
+    'sekizai',
     'openedx.core.djangoapps.user_api',
     'django_openid_auth',
 
