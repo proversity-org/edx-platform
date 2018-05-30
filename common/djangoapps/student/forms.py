@@ -20,7 +20,7 @@ from django.core.validators import RegexValidator, slug_re
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.core.djangoapps.user_api import accounts as accounts_settings
 from student.models import CourseEnrollmentAllowed, email_exists_or_retired
-from util.password_policy_validators import password_max_length, password_min_length, validate_password, validate_password_strength
+from util.password_policy_validators import validate_password_strength
 
 
 class PasswordResetFormNoActive(PasswordResetForm):

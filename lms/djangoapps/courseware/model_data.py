@@ -815,11 +815,7 @@ class FieldDataCache(object):
         Raises: KeyError if key isn't found in the cache
         """
 
-<<<<<<< HEAD
-        #if key.scope.user == UserScope.ONE and not self.user.is_anonymous():
-=======
-        if key.scope.user == UserScope.ONE and not self.user.is_anonymous:
->>>>>>> 2556864bfb... Merge pull request #18106 from edx/efischer/is_it_this_easy
+        #if key.scope.user == UserScope.ONE and not self.user.is_anonymous:
             # If we're getting user data, we expect that the key matches the
             # user we were constructed for.
             # assert key.user_id == self.user.id
@@ -901,7 +897,7 @@ class FieldDataCache(object):
         Returns: bool
         """
 
-        if key.scope.user == UserScope.ONE and not self.user.is_anonymous:
+        #if key.scope.user == UserScope.ONE and not self.user.is_anonymous:
             # If we're getting user data, we expect that the key matches the
             # user we were constructed for.
             # assert key.user_id == self.user.id

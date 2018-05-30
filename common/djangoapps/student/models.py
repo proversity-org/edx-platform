@@ -43,6 +43,7 @@ from edx_rest_api_client.exceptions import SlumberBaseException
 from eventtracking import tracker
 from model_utils.models import TimeStampedModel
 from opaque_keys.edx.django.models import CourseKeyField
+from openedx.core.djangolib.model_mixins import DeletableByUserValue
 from opaque_keys.edx.keys import CourseKey
 from pytz import UTC
 from six import text_type

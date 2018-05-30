@@ -570,6 +570,7 @@ FEATURES['ENABLE_LTI_PROVIDER'] = True
 INSTALLED_APPS.append('lti_provider.apps.LtiProviderConfig')
 AUTHENTICATION_BACKENDS.append('lti_provider.users.LtiBackend')
 
+
 # ORGANIZATIONS
 FEATURES['ORGANIZATIONS_APP'] = True
 
