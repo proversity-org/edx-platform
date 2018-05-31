@@ -2,7 +2,10 @@
 
 <%page expression_filter="h"/>
 
-<%! import json %>
+<%!
+import json
+import waffle
+ %>
 <%!
 from django.utils.translation import ugettext as _
 from openedx.core.djangolib.js_utils import (
@@ -33,6 +36,18 @@ from openedx.core.djangolib.js_utils import (
     </div>
 </div>
 
+<%block name="footer_extra">
+%if waffle.switch_is_active('rocket_chat_discussions') and not fragment.discussion_is_available():
+    <% frag = fragment.get_fragment() %>
+    %if frag:
+        ${frag.head_html() |n}
+        <div class="hidden-rocket-chat" style="display: none;">
+            ${frag.body_html() |n}
+        </div>
+    %endif
+%endif
+</%block>
+
 <%block name="js_extra">
 
 <%include file="../discussion/_js_body_dependencies.html" />
@@ -55,6 +70,9 @@ from openedx.core.djangolib.js_utils import (
         teamsBaseUrl: '${teams_base_url | n, js_escaped_string}'
     });
 </%static:require_module>
+%if waffle.switch_is_active('rocket_chat_discussions') and not fragment.discussion_is_available():
+    <%static:require_module module_name="teams/js/teams_features" class_name="TeamsView" />
+%endif
 </%block>
 
 <%include file="../discussion/_underscore_templates.html" />

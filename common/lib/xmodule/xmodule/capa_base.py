@@ -377,6 +377,7 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
             'has_saved_answers': self.has_saved_answers,
             'input_state': self.input_state,
             'seed': self.seed,
+            'attempts': self.attempts,
         }
 
     def set_state_from_lcp(self):
@@ -390,6 +391,7 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
         self.student_answers = lcp_state['student_answers']
         self.has_saved_answers = lcp_state['has_saved_answers']
         self.seed = lcp_state['seed']
+        self.attempts = lcp_state['attempts']
 
     def set_last_submission_time(self):
         """
@@ -1252,7 +1254,8 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
 
         try:
             correct_map = self.lcp.grade_answers(answers)
-            self.attempts = self.attempts + 1
+            self.lcp.attempts = self.lcp.attempts + 1
+            self.attempts = self.lcp.attempts
             self.lcp.done = True
             self.set_state_from_lcp()
             self.set_score(self.score_from_lcp())
