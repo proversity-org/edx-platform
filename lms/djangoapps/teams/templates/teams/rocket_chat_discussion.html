@@ -1,0 +1,16 @@
+## mako
+
+<%!
+import json
+import waffle
+ %>
+
+%if waffle.switch_is_active('rocket_chat_discussions') and not fragment.discussion_is_available():
+    <% frag = fragment.get_fragment() %>
+    %if frag:
+        ${frag.head_html() |n}
+        <div class="hidden-rocket-chat">
+            ${frag.body_html() |n }
+        </div>
+    %endif
+%endif

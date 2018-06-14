@@ -99,3 +99,13 @@ class ModifyTeams(object):
         if "discussion_is_available" in self.course.teams_configuration:
             return self.course.teams_configuration["discussion_is_available"]
         return True
+
+    def get_rocket_chat_locator(self):
+        """
+        This method gets the locator for a unique component in a unit.
+        """
+        unit = self._find_unit()
+        child = unit.get_children()
+        child = child[0]
+        locator = child.parent
+        return locator.to_deprecated_string()

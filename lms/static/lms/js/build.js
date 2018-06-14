@@ -46,6 +46,7 @@
             'support/js/certificates_factory',
             'support/js/enrollment_factory',
             'support/js/manage_user_factory',
+            'teams/js/views/rocket_chat_discussion',
             'teams/js/teams_tab_factory',
             'teams/js/teams_features',
             'js/dateutil_factory'

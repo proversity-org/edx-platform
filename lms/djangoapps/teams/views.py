@@ -165,7 +165,7 @@ class TeamsDashboardView(GenericAPIView):
             "countries": list(countries),
             "disable_courseware_js": True,
             "teams_base_url": reverse('teams_dashboard', request=request, kwargs={'course_id': course_id}),
-            "fragment": ModifyTeams(request, user, course_key),
+            "rocket_chat_locator": ModifyTeams(request, user, course_key).get_rocket_chat_locator(),
         }
         return render_to_response("teams/teams.html", context)
 

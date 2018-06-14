@@ -36,18 +36,6 @@ from openedx.core.djangolib.js_utils import (
     </div>
 </div>
 
-<%block name="footer_extra">
-%if waffle.switch_is_active('rocket_chat_discussions') and not fragment.discussion_is_available():
-    <% frag = fragment.get_fragment() %>
-    %if frag:
-        ${frag.head_html() |n}
-        <div class="hidden-rocket-chat" style="display: none;">
-            ${frag.body_html() |n}
-        </div>
-    %endif
-%endif
-</%block>
-
 <%block name="js_extra">
 
 <%include file="../discussion/_js_body_dependencies.html" />
@@ -70,8 +58,16 @@ from openedx.core.djangolib.js_utils import (
         teamsBaseUrl: '${teams_base_url | n, js_escaped_string}'
     });
 </%static:require_module>
-%if waffle.switch_is_active('rocket_chat_discussions') and not fragment.discussion_is_available():
-    <%static:require_module module_name="teams/js/teams_features" class_name="TeamsView" />
+%if waffle.switch_is_active('rocket_chat_discussions'):
+    <%static:require_module module_name="teams/js/teams_features" class_name="TeamsView">
+    TeamsView({
+        courseID: '${unicode(course.id) | n, js_escaped_string}',
+        userInfo: ${user_info | n, dump_js_escaped_json},
+        teamsUrl: '${teams_url | n, js_escaped_string}',
+        teamsBaseUrl: '${teams_base_url | n, js_escaped_string}',
+        rocketChatLocator: '${rocket_chat_locator | n, js_escaped_string}'
+    });
+    </%static:require_module>
 %endif
 </%block>
 
