@@ -399,9 +399,6 @@ FEATURES = {
     # that they don't have an account associated with email addresses they believe they've registered with.
     'ENABLE_PASSWORD_RESET_FAILURE_EMAIL': False,
 
-    # Whether the browser alert should be shown or not
-    'ENABLE_UNSUPPORTED_BROWSER_ALERT': False,
-
     # Sets the default browser support. For more information go to http://browser-update.org/customize.html
     'UNSUPPORTED_BROWSER_ALERT_VERSIONS': "{i:10,f:-3,o:-3,s:-3,c:-3}",
 
