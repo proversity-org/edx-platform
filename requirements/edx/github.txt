@@ -108,7 +108,7 @@ git+https://github.com/proversity-org/xblock-drag-and-drop-v2.git@v2.1.0#egg=xbl
 git+https://github.com/proversity-org/edx-xblock-bibblio.git#egg=edx-xblock-bibblio
 git+https://github.com/proversity-org/xblock-free-text-response.git@v0.3.0#egg=xblock-free-text-response==0.3.0
 git+https://github.com/proversity-org/recap-xblock.git@v0.4.0#egg=recap-xblock==0.4.0
-git+https://github.com/proversity-org/badgr-xblock.git@proversity/production#egg=badger-xblock
+git+https://github.com/proversity-org/badgr-xblock.git@proversity/production#egg=badgr-xblock
 git+https://github.com/eduNEXT/flow-control-xblock@v0.2.0#egg=flow-control-xblock==0.2.0
 git+https://github.com/proversity-org/xblock-pdf.git@v1.0.0#egg=xblock-pdf==1.0.0
 git+https://github.com/proversity-org/agnostic-content-xblock.git#egg=agnostic-content-xblock
