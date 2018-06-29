@@ -4,38 +4,42 @@
 
     var xblock;
 
-    function createRocketChatDiscussion(urlRocketChat){
+    function createReplacementComponent(replacementComponentUrl){
 
+        if(!replacementComponentUrl){
+            xblock = $("<strong><p id='replacementComponent'>The location id for this component has not been set correctly. Please contact support.</p></strong>");
+        }else{
+            var iframe = $('<iframe>', {
+                src: replacementComponentUrl,
+                id:  "replacementComponent",
+                style: "width: 100%; border: none;",
+                scrolling: 'no'
+                });
 
-        var iframe = $('<iframe>', {
-            src: urlRocketChat,
-            id:  "rocketChatXblock",
-            style: "width: 100%; border: none;",
-            scrolling: 'no'
+            iframe.load(function() {
+                $(this).height( $(this).contents().find("body").height() );
             });
 
-        iframe.load(function() {
-            $(this).height( $(this).contents().find("body").height() );
-        });
+            xblock = iframe;
+        }
 
         $(".discussion-module").hide();
-        if ($("div.discussion-module")[0] && !$(".page-content-main").find("#rocketChatXblock")[0]){
-            $(".team-profile").find(".page-content-main").append(iframe);
-        }else if ($(".page-content-main").find("#rocketChatXblock")[0]){
-            $("#rocketChatXblock").attr("src", urlRocketChat)
+        if ($("div.discussion-module")[0] && !$(".page-content-main").find("#replacementComponent")[0]){
+            $(".team-profile").find(".page-content-main").append(xblock);
+        }else if ($(".page-content-main").find("#replacementComponent")[0]){
+            $("#replacementComponent").attr("src", replacementComponentUrl)
         }
-        xblock = iframe;
     };
 
-    function actionsButtons(urlRocketChat){
+    function actionsButtons(replacementComponentUrl){
         $( ".join-team .action" ).unbind().click(function() {
-            createRocketChatDiscussion(urlRocketChat);
+            createReplacementComponent(replacementComponentUrl);
         });
         $( ".create-team .action" ).unbind().click(function() {
-            createRocketChatDiscussion(urlRocketChat);
+            createReplacementComponent(replacementComponentUrl);
         });
         $( ".action-primary" ).unbind().click(function() {
-            createRocketChatDiscussion(urlRocketChat);
+            createReplacementComponent(replacementComponentUrl);
         });
     };
 
@@ -190,7 +194,12 @@
             loadjs('/static/js/vendor/jquery-ui.min.js');
 
             return function(options){
-                var urlRocketChat = "/xblock/"+options.rocketChatLocator;
+
+                if(options.replacementComponentLocator){
+                    var replacementComponentUrl = "/xblock/"+options.replacementComponentLocator;
+                }else{
+                    var replacementComponentUrl = null;
+                }
                 var urlApiCreateTeams = options.teamsCreateUrl;
                 var staff = options.userInfo.staff;
                 var teamsLocked = JSON.parse(options.teamsLocked);
@@ -200,8 +209,8 @@
 
                     $(".discussion-module").hide();
 
-                    createRocketChatDiscussion(urlRocketChat);
-                    actionsButtons(urlRocketChat);
+                    createReplacementComponent(replacementComponentUrl);
+                    actionsButtons(replacementComponentUrl);
                     buttonAddMembers(staff, urlApiCreateTeams);
                     removeBrowseAndButtons(staff, teamsLocked, options);
                     addTeamMember(staff, options.teamMembershipsUrl, usersEnrolled);
@@ -213,11 +222,11 @@
 
                     // Callback function to execute when mutations are observed
                     function fnHandler () {
-                        if ($("div.discussion-module")[0] && !$(".page-content-main").find("#rocketChatXblock")[0]){
+                        if ($("div.discussion-module")[0] && !$(".page-content-main").find("#replacementComponent")[0]){
                             $(".discussion-module").hide();
                             $(".team-profile").find(".page-content-main").append(xblock);
                         }
-                        actionsButtons(urlRocketChat);
+                        actionsButtons(replacementComponentUrl);
                         buttonAddMembers(staff, urlApiCreateTeams);
                         removeBrowseAndButtons(staff, teamsLocked, options);
                         addTeamMember(staff, options.teamMembershipsUrl, usersEnrolled);
