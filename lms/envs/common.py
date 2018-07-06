@@ -3542,7 +3542,15 @@ INSTALLED_APPS.extend(plugin_apps.get_apps(plugin_constants.ProjectType.LMS))
 plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.LMS, plugin_constants.SettingsType.COMMON)
 
 ###############################################################################
-# This value allows student profile downloads from LMS instructor section.
-# Enhancement to be compliant with GDPR
+# The settings below controls the enrolled students profile download behavior
+# via instructor tab. Enhancement to be compliant with GDPR
 ###############################################################################
+# This setting enables or disables the download of enrolled student profiles
+# via instructor tab
 ALLOW_PROFILE_DOWNLOAD = True
+# This setting enforces the restriction of the fields a enrolled students report
+# can display. if enabled, the following will happen:
+# - Reports fields can be configured through the setting student_profile_download_fields
+#   per microsite. The report will exclusively contain the configured fields
+# - By default, the report will only contain the email field
+GDPR_MODE_PROFILE_DOWNLOAD = False

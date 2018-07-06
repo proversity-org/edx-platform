@@ -30,9 +30,17 @@ from openedx.core.djangoapps.user_api.preferences.api import get_country_time_zo
 from openedx.core.djangoapps.user_api.serializers import CountryTimeZoneSerializer, UserPreferenceSerializer, UserSerializer
 from openedx.core.lib.api.authentication import SessionAuthenticationAllowInactiveUser
 from openedx.core.lib.api.permissions import ApiKeyHeaderPermission
+from rest_framework_oauth.authentication import OAuth2Authentication
 from student.cookies import set_logged_in_cookies
 from student.views import AccountValidationError, create_account_with_params
 from util.json_request import JsonResponse
+from organizations.models import OrganizationCourse
+from student.models import CourseEnrollment, Registration
+import json
+from util.organizations_helpers import get_organizations, get_organization_by_short_name
+import logging
+
+Log = logging.getLogger("openedx.core.djangoapps.user_api.view.py")
 
 
 class LoginSessionView(APIView):
@@ -390,3 +398,214 @@ class CountryTimeZoneListView(generics.ListAPIView):
     def get_queryset(self):
         country_code = self.request.GET.get('country_code', None)
         return get_country_time_zones(country_code)
+
+
+class DeleteUserView(APIView):
+
+    authentication_classes =\
+        (OAuth2Authentication,)
+
+    def post(self, request):
+        try:
+            data = request.data.get("users", None)
+            if data is None:
+                return JsonResponse({"Error": "No users to delete list given empty"})
+            else:
+                user_list = data.split(",")
+            results = {}
+            for user_name in user_list:
+                results[user_name] = self._delete_user(user_name)
+
+            return JsonResponse(results)
+        except Exception as e:
+            return JsonResponse({"Error": "Failed to delete users: {}".format(e.message)})
+
+
+    def _delete_user(self, uname):
+        """Deletes a user from django auth"""
+
+        if not uname:
+            return _('Must provide username')
+        if '@' in uname:
+            try:
+                user = User.objects.get(email=uname)
+            except User.DoesNotExist, err:
+                msg = _('Cannot find user with email address {email_addr}').format(email_addr=uname)
+                return msg
+        else:
+            try:
+                user = User.objects.get(username=uname)
+            except User.DoesNotExist, err:
+                msg = _('Cannot find user with username {username} - {error}').format(
+                    username=uname,
+                    error=str(err)
+                )
+                return msg
+        user.delete()
+        return _('Deleted user {username}').format(username=uname)
+
+
+class UserAnaliticsView(APIView):
+    """
+    **Use Cases**
+
+        Retrieves a json dictionary of all enrolled users listed per course and per organization
+
+    **Example Requests**
+
+        GET /user_api/v1/userorg/?org=AWE
+
+        GET /user_api/v1/userorg/?org=ALL
+
+    **Example GET Response**
+
+        If the request is successful, an HTTP 200 "OK" response is returned along with a
+        disctionary containing all enrolled users catogarized per course and per organization
+
+        PARAM: org - the organizations for which to get the enrolled users
+                   - ALL = all organizations will be considered.
+
+    """
+
+    authentication_classes =\
+        (OAuth2Authentication,)
+
+    def get(self, request):
+        """Handles the incomming request"""
+
+        if not request.user.is_staff:
+            return HttpResponse(status=status.HTTP_403_FORBIDDEN)
+
+        org_filter = request.GET.get('org', None)
+        data = ()
+        enrollment_list = CourseEnrollment.objects.all()
+
+        if org_filter is None or org_filter == 'All':
+            data = data + (self._get_total_courses_for_all_orgs(),)
+            data = data + (self._get_total_users_for_all_orgs(enrollment_list),)
+        else:
+            data = data + (self._get_total_courses_for_org(org_filter),)
+            data = data + (self._get_total_users_for_org(org_filter, enrollment_list),)
+
+
+        data = data + ({"Total unique enrollments": self._get_unique_enrollments_total(enrollment_list)},)
+        data = data + (self._get_total_registered_users(),)
+        data = data + (self._get_total_organizations(),)
+        data = data + (self._get_enrollment_totals(enrollment_list),)
+
+        return JsonResponse(data)
+
+
+    def _get_unique_enrollments_total(self, enrollment_list):
+        """
+        Takes the given enrollment_list and makes it unique
+        """
+        unique_list = []
+        for enrollment in enrollment_list:
+            try:
+                if enrollment.user.email not in unique_list:
+                    unique_list.append(enrollment.user.email)
+            except User.DoesNotExist:
+                pass
+        return len(unique_list)
+
+
+    def _get_total_registered_users(self):
+        """
+        retrieves the total of registered users from the platform
+        """
+        try:            
+            return {"Total Active Registrations": Registration.objects.filter(user__is_active=True).count()}
+        except Exception as err:
+            Log.error("Total Active Registrations, An error accured while trying to get the total registrations, ERROR = {}".format(err))
+            return {"Total Active Registrations, Error": "An error accured while trying to get the total registrations, ERROR = {}".format(err)}
+
+
+    def _get_total_organizations(self):
+        """
+        retreives the total number of configured Organizations from the Organizations app
+        """
+
+        try:
+            total_orgs = get_organizations()
+            return {"Total Organizations": len(total_orgs)}
+        except Exception as err:
+            Log.error("Total Organizations, An error accured while trying to get the total organizations, ERROR = {}".format(err))
+            return {"Total Organizations, Error": "An error accured while trying to get the total organizations, ERROR = {}".format(err)}
+
+
+    def _get_enrollment_totals(self, enrollment_list):
+        """
+        retreives the total of enrolled users, listing active and non active enrollments
+        """
+
+        try:
+            total_enrolled_users_active = enrollment_list.filter(is_active=True).count()
+            total_enrolled_users_not_active = enrollment_list.filter(is_active=False).count()
+
+            return {
+                    "Total Enrollments": total_enrolled_users_active + total_enrolled_users_not_active,
+                    "Total Enrollments - Active": total_enrolled_users_active,
+                    "Total Enrollments - NOT Active": total_enrolled_users_not_active
+                   }
+        except Exception as err:
+            Log.error("Total Enrollments, An error accured while trying to get the total enrolled users, ERROR = {}".format(err))
+            return {"Total Enrollments, Error": "An error accured while trying to get the total enrolled users, ERROR = {}".format(err)}
+
+
+    def _get_total_courses_for_all_orgs(self):
+        """
+        retrieves all organizations and then calculates total courses per org
+        """
+
+        data = {}
+        all_orgs = get_organizations()
+        for org in all_orgs:
+            data.update(self._get_total_courses_for_org(org['short_name']))
+
+        return data
+
+
+
+    def _get_total_courses_for_org(self, org_short_name=None):
+        """
+        retrieves the total number of courses linked to the given organization
+        """
+
+        try:
+            total_courses = OrganizationCourse.objects.filter(organization__short_name=org_short_name).filter(active=True).count()
+            return {"Total courses for {}".format(org_short_name): total_courses}
+        except Exception as err:
+            Log.error("Total Courses, An error accured while trying to get the total courses, ERROR = {}".format(err.message))
+            return {"Total Courses, Error": "An error accured while trying to get the total courses, ERROR = {}".format(err.message)}
+
+
+    def _get_total_users_for_all_orgs(self, enrollment_list):
+        """
+        retrieves the total number of enrolled users per organization
+        """
+        data = {}
+        all_orgs = get_organizations()
+        for org in all_orgs:
+            data.update(self._get_total_users_for_org(org['short_name'], enrollment_list))
+
+        return data
+
+
+    def _get_total_users_for_org(self, org_short_name, enrollment_list):
+        """
+        retrieves the total number of enrolled users for the given organization
+        Caveat, the User object does not have a direct link to the ORG object in the database,
+        so we have to get all CourseEnrollments for thee given organization,
+        and loop over the courses grabing the count() of each CourseEnrollment
+        """
+        total_users = 0
+        org_courses = OrganizationCourse.objects.filter(organization__short_name=org_short_name)
+        for course in org_courses:
+            try:
+                total_users = total_users + enrollment_list.filter(course_id=CourseKey.from_string(course.course_id)).count()
+            except Exception as err:
+                Log.error("Unable to get count for CourseEnrollment on course {}".format(course.course_id))
+                return {"Unable to get count for CourseEnrollment on course {}".format(course.course_id)}
+
+        return {"Total Enrollments for {}".format(org_short_name): total_users}

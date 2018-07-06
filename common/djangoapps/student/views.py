@@ -183,7 +183,6 @@ def csrf_token(context):
     return (u'<div style="display:none"><input type="hidden"'
             ' name="csrfmiddlewaretoken" value="%s" /></div>' % (token))
 
-
 # NOTE: This view is not linked to directly--it is called from
 # branding/views.py:index(), which is cached for anonymous users.
 # This means that it should always return the same thing for anon
@@ -3251,3 +3250,4 @@ def text_me_the_app(request):
     }
 
     return render_to_response('text-me-the-app.html', context)
+

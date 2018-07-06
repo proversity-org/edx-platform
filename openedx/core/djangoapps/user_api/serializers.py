@@ -109,3 +109,4 @@ class SoftwareSecurePhotoVerificationSerializer(serializers.ModelSerializer):
     class Meta(object):
         fields = ('status', 'expiration_datetime', 'is_verified')
         model = SoftwareSecurePhotoVerification
+

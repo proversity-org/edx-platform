@@ -1372,6 +1372,10 @@ def get_students_features(request, course_id, csv=False):  # pylint: disable=red
             'year_of_birth', 'gender', 'level_of_education', 'mailing_address',
             'goals', 'enrollment_mode', 'verification_status',
         ]
+        # If GDPR mode is activated, the default query features list is limited
+        # Enhancement to be compliant with GDPR
+        if configuration_helpers.get_value('GDPR_MODE_PROFILE_DOWNLOAD', False):
+            query_features = ['email']
 
     # Provide human-friendly and translatable names for these features. These names
     # will be displayed in the table generated in data_download.coffee. It is not (yet)
@@ -1392,20 +1396,23 @@ def get_students_features(request, course_id, csv=False):  # pylint: disable=red
         'verification_status': _('Verification Status'),
     }
 
-    if is_course_cohorted(course.id):
-        # Translators: 'Cohort' refers to a group of students within a course.
-        query_features.append('cohort')
-        query_features_names['cohort'] = _('Cohort')
+    # Preventing the addition of undesirable fields if GDPR mode is activated
+    # Enhancement to be compliant with GDPR
+    if not configuration_helpers.get_value('GDPR_MODE_PROFILE_DOWNLOAD', False):
+        if is_course_cohorted(course.id):
+            # Translators: 'Cohort' refers to a group of students within a course.
+            query_features.append('cohort')
+            query_features_names['cohort'] = _('Cohort')
 
-    if course.teams_enabled:
-        query_features.append('team')
-        query_features_names['team'] = _('Team')
+        if course.teams_enabled:
+            query_features.append('team')
+            query_features_names['team'] = _('Team')
 
-    # For compatibility reasons, city and country should always appear last.
-    query_features.append('city')
-    query_features_names['city'] = _('City')
-    query_features.append('country')
-    query_features_names['country'] = _('Country')
+        # For compatibility reasons, city and country should always appear last.
+        query_features.append('city')
+        query_features_names['city'] = _('City')
+        query_features.append('country')
+        query_features_names['country'] = _('Country')
 
     if not csv:
         student_data = instructor_analytics.basic.enrolled_students_features(course_key, query_features)

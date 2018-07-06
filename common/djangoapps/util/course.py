@@ -52,7 +52,7 @@ def get_link_for_about_page(course):
         course_about_url = course.marketing_url
     else:
         course_about_url = u'{about_base_url}/courses/{course_key}/about'.format(
-            about_base_url=configuration_helpers.get_value('LMS_ROOT_URL', settings.LMS_ROOT_URL),
+            about_base_url=configuration_helpers.get_value_for_org(course.location.org, 'LMS_ROOT_URL', settings.LMS_ROOT_URL),
             course_key=unicode(course.id),
         )
 

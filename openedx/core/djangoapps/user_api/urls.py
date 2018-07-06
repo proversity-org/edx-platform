@@ -11,6 +11,8 @@ from .preferences.views import PreferencesDetailView, PreferencesView
 from .verification_api.views import PhotoVerificationStatusView
 from .validation.views import RegistrationValidationView
 
+from .views import DeleteUserView, UserAnaliticsView
+
 ME = AccountViewSet.as_view({
     'get': 'get',
 })
@@ -25,6 +27,16 @@ ACCOUNT_DETAIL = AccountViewSet.as_view({
 })
 
 urlpatterns = [
+    url (
+        r'^/delete_user$',
+        DeleteUserView.as_view(),
+        name = 'delete_user'
+    ),
+    url (
+        r'^/user_analytics$',
+        UserAnaliticsView.as_view(),
+        name = 'user_analytics'
+    ),
     url(
         r'^v1/me$',
         ME,

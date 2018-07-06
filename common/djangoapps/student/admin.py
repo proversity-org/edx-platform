@@ -169,11 +169,15 @@ class CourseEnrollmentForm(forms.ModelForm):
 @admin.register(CourseEnrollment)
 class CourseEnrollmentAdmin(admin.ModelAdmin):
     """ Admin interface for the CourseEnrollment model. """
-    list_display = ('id', 'course_id', 'mode', 'user', 'is_active',)
+    list_display = ('id', 'course_id', 'course_name', 'mode', 'user', 'is_active',)
     list_filter = ('mode', 'is_active',)
     raw_id_fields = ('user',)
     search_fields = ('course__id', 'mode', 'user__username',)
     form = CourseEnrollmentForm
+
+    def course_name(self, obj):
+        if obj.course:
+            return obj.course.display_name
 
     def queryset(self, request):
         return super(CourseEnrollmentAdmin, self).queryset(request).select_related('user')

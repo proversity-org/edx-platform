@@ -24,7 +24,7 @@ from openedx.core.djangoapps.certificates.api import can_show_certificate_availa
 from openedx.core.djangolib.markup import HTML, Text
 from openedx.features.course_experience import CourseHomeMessages, UPGRADE_DEADLINE_MESSAGE
 from student.models import CourseEnrollment
-
+from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 from .context_processor import user_timezone_locale_prefs
 
 import logging
