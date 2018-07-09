@@ -109,7 +109,7 @@ def get_lms_link_for_item(location, preview=False):
     # if not found returns settings.LMS_BASE
     lms_base = SiteConfiguration.get_value_for_org(
         location.org,
-        "LMS_BASE",
+        "LMS_ROOT_URL",
         settings.LMS_BASE
     )
 
