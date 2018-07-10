@@ -119,7 +119,7 @@ def get_lms_link_for_item(location, preview=False):
     if preview:
         # checks PREVIEW_LMS_BASE value in site configuration for the given course_org_filter(org)
         # if not found returns settings.FEATURES.get('PREVIEW_LMS_BASE')
-        lms_base = SiteConfiguration.get_value_for_org(
+        lms_base = configuration_helpers.get_value_for_org(
             location.org,
             "PREVIEW_LMS_BASE",
             settings.FEATURES.get('PREVIEW_LMS_BASE')
@@ -139,7 +139,7 @@ def get_lms_link_for_certificate_web_view(user_id, course_key, mode):
     """
     assert isinstance(course_key, CourseKey)
 
-    # checks LMS_BASE value in SiteConfiguration against course_org_filter if not found returns settings.LMS_BASE
+    # checks LMS_BASE value in configuration_helpers against course_org_filter if not found returns settings.LMS_BASE
     lms_base = configuration_helpers.get_value_for_org(course_key.org, "PREVIEW_LMS_BASE", settings.LMS_BASE)
 
     if lms_base is None:
