@@ -797,17 +797,29 @@ class RegistrationFormFactory(object):
             terms_label = _(u"Terms of Service and Honor Code")
             terms_link = marketing_link("HONOR")
 
-        # Translators: "Terms of Service" is a legal document users must agree to
-        # in order to register a new account.
-        label = Text(_(
-            u"I agree to the {platform_name} {terms_of_service_link_start}{terms_of_service}{terms_of_service_link_end}"
-        )).format(
-            platform_name=configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME),
-            terms_of_service=terms_label,
-            terms_of_service_link_start=HTML("<a href='{terms_link}' target='_blank'>").format(terms_link=terms_link),
-            terms_of_service_link_end=HTML("</a>"),
 
-        )
+        if configuration_helpers.get_value("REGISTER_DISPLAY_ORG_NAME", True):
+            # Translators: "Terms of Service" is a legal document users must agree to
+            # in order to register a new account.
+            label = Text(_(
+                u"I agree to the {platform_name} {terms_of_service_link_start}{terms_of_service}{terms_of_service_link_end}"
+            )).format(
+                platform_name=configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME),
+                terms_of_service=terms_label,
+                terms_of_service_link_start=HTML("<a href='{terms_link}' target='_blank'>").format(terms_link=terms_link),
+                terms_of_service_link_end=HTML("</a>"),
+            )
+        else:
+            # Translators: "Terms of Service" is a legal document users must agree to
+            # in order to register a new account.
+            label = Text(_(
+                u"I agree to the {terms_of_service_link_start}{terms_of_service}{terms_of_service_link_end}"
+            )).format(
+                terms_of_service=terms_label,
+                terms_of_service_link_start=HTML("<a href='{terms_link}' target='_blank'>").format(terms_link=terms_link),
+                terms_of_service_link_end=HTML("</a>"),
+            )
+
 
         # Translators: "Terms of Service" is a legal document users must agree to
         # in order to register a new account.

@@ -15,7 +15,7 @@ from six import text_type
 from django_comment_common.models import assign_default_role
 from django_comment_common.utils import seed_permissions_roles
 from openedx.core.djangoapps.self_paced.models import SelfPacedConfiguration
-from openedx.core.djangoapps.site_configuration.models import SiteConfiguration
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from student import auth
 from student.models import CourseEnrollment
 from student.roles import CourseInstructorRole, CourseStaffRole
@@ -107,9 +107,9 @@ def get_lms_link_for_item(location, preview=False):
 
     # checks LMS_BASE value in site configuration for the given course_org_filter(org)
     # if not found returns settings.LMS_BASE
-    lms_base = SiteConfiguration.get_value_for_org(
+    lms_base = configuration_helpers.get_value_for_org(
         location.org,
-        "LMS_BASE",
+        "LMS_ROOT_URL",
         settings.LMS_BASE
     )
 
@@ -119,13 +119,13 @@ def get_lms_link_for_item(location, preview=False):
     if preview:
         # checks PREVIEW_LMS_BASE value in site configuration for the given course_org_filter(org)
         # if not found returns settings.FEATURES.get('PREVIEW_LMS_BASE')
-        lms_base = SiteConfiguration.get_value_for_org(
+        lms_base = configuration_helpers.get_value_for_org(
             location.org,
             "PREVIEW_LMS_BASE",
             settings.FEATURES.get('PREVIEW_LMS_BASE')
         )
 
-    return u"//{lms_base}/courses/{course_key}/jump_to/{location}".format(
+    return u"{lms_base}/courses/{course_key}/jump_to/{location}".format(
         lms_base=lms_base,
         course_key=text_type(location.course_key),
         location=text_type(location),
@@ -139,13 +139,13 @@ def get_lms_link_for_certificate_web_view(user_id, course_key, mode):
     """
     assert isinstance(course_key, CourseKey)
 
-    # checks LMS_BASE value in SiteConfiguration against course_org_filter if not found returns settings.LMS_BASE
-    lms_base = SiteConfiguration.get_value_for_org(course_key.org, "LMS_BASE", settings.LMS_BASE)
+    # checks LMS_BASE value in configuration_helpers against course_org_filter if not found returns settings.LMS_BASE
+    lms_base = configuration_helpers.get_value_for_org(course_key.org, "PREVIEW_LMS_BASE", settings.LMS_BASE)
 
     if lms_base is None:
         return None
 
-    return u"//{certificate_web_base}/certificates/user/{user_id}/course/{course_id}?preview={mode}".format(
+    return u"{certificate_web_base}/certificates/user/{user_id}/course/{course_id}?preview={mode}".format(
         certificate_web_base=lms_base,
         user_id=user_id,
         course_id=unicode(course_key),
