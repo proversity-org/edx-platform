@@ -4,6 +4,11 @@
 
     var xblock;
 
+    /**
+     * Remove old discussions and add an iframe with a new component using a url.
+     * @function createReplacementComponent
+     * @param  {String} replacementComponentUrl  Url for the new component .
+     */
     function createReplacementComponent(replacementComponentUrl){
 
         if(!replacementComponentUrl){
@@ -31,6 +36,11 @@
         }
     };
 
+    /**
+     * Initialize events for some some buttons.
+     * @function actionsButtons
+     * @param  {String} replacementComponentUrl  Url for the new component .
+     */
     function actionsButtons(replacementComponentUrl){
         $( ".join-team .action" ).unbind().click(function() {
             createReplacementComponent(replacementComponentUrl);
@@ -43,6 +53,11 @@
         });
     };
 
+    /**
+     * Load the user team information to decide if remove the browse tab.
+     * @function loadUserTeam
+     * @param  {object} options User information.
+     */
     function loadUserTeam(options){
         var data = {"course_id": options.courseID, "username": options.userInfo.username}
         $.ajax({
@@ -56,6 +71,10 @@
         });
     };
 
+    /**
+     * Remove browse tab.
+     * @function removeBrowseTab
+     */
     function removeBrowseTab(){
         $("#tab-1").remove();
         $("#tabpanel-browse").remove();
@@ -63,6 +82,13 @@
         $("#tabpanel-my-teams").removeClass("is-hidden");
     };
 
+    /**
+     * Remove browse and button if teams are locked or remove only browse tab if the user is a member team.
+     * @function removeBrowseAndButtons
+     * @param  {boolean} staff User is staff.
+     * @param  {boolean} options teams are locked.
+     * @param  {object} options User information.
+     */
     function removeBrowseAndButtons(staff, teamsLocked, options){
         if (teamsLocked && !staff){
             // Remove browse
@@ -76,6 +102,12 @@
         };
     };
 
+    /**
+     * Add a button to join new users into different teams from a CVS file.
+     * @function buttonAddMembers
+     * @param  {boolean} staff User is staff.
+     * @param  {string} url url to upload the CSV file.
+     */
     function buttonAddMembers(staff, url){
         var button = $("<button class='btn btn-secondary'>Add Members</button>");
         var input = $("<input type='file' name='fileUpload' style='display: none;'accept='text/csv'/>")
@@ -121,6 +153,11 @@
         }
     }
 
+    /**
+     * Append new javascript.
+     * @function loadjs
+     * @param  {string} url Url where js file is.
+     */
     function loadjs(url) {
         $('<script>')
             .attr('type', 'text/javascript')
@@ -128,6 +165,13 @@
             .appendTo("body");
     }
 
+    /**
+     * Add a new member to the currently team.
+     * @function addTeamMember
+     * @param  {boolean} staff User is staff.
+     * @param  {string} url Api url to add users.
+     * @param  {object} userEnrolled An enrolled users list .
+     */
     function addTeamMember(staff, url, usersEnrolled){
 
         if($(".page-content-secondary")[0] && staff && !$(".add-user")[0]){
