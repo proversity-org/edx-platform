@@ -6,7 +6,7 @@ from opaque_keys import InvalidKeyError
 
 CONTENT_DEPTH = 2
 
-class TeamsFeatures(object):
+class CourseTeamsFeatures(object):
     """A class that provides the necessary settings and info for teams"""
     def __init__(self, course_key):
         course = get_course_by_id(course_key, CONTENT_DEPTH)
