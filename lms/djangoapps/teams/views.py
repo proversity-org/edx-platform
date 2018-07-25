@@ -51,7 +51,7 @@ from .serializers import (
     TopicSerializer,
     add_team_count
 )
-from .teams_features import ModifyTeams, get_users_enrolled
+from .teams_features import CourseTeamsFeatures
 from .utils import emit_team_event
 from .errors import AlreadyOnTeamInCourse
 
@@ -143,6 +143,8 @@ class TeamsDashboardView(GenericAPIView):
             {'expand': ('user',)}
         )
 
+        course_teams_features = CourseTeamsFeatures(course_key)
+
         context = {
             "course": course,
             "topics": topics_data,
@@ -168,10 +170,11 @@ class TeamsDashboardView(GenericAPIView):
             "countries": list(countries),
             "disable_courseware_js": True,
             "teams_base_url": reverse('teams_dashboard', request=request, kwargs={'course_id': course_id}),
-            "rocket_chat_locator": ModifyTeams(request, user, course_key).get_rocket_chat_locator(),
+            "replacement_component_locator": course_teams_features.get_replacement_locator(),
             "teams_create_url": reverse('create_teams', args= [course_id]),
-            "teams_locked": modulestore().get_course(course_key).teams_configuration.get("teams_locked"),
-            "users_enrolled": list(get_users_enrolled(course_key))
+            "teams_locked": course_teams_features.is_teams_locked(),
+            "disable_default_discussion" : course_teams_features.is_discussion_disable(),
+            "users_enrolled": list(course_teams_features.get_users_enrolled())
         }
         return render_to_response("teams/teams.html", context)
 
