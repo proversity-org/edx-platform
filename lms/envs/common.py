@@ -2401,6 +2401,9 @@ INSTALLED_APPS = [
 
     # DRF filters
     'django_filters',
+
+    #RocketChat DjangoApp
+    'rocket_chat',
 ]
 
 ######################### CSRF #########################################
