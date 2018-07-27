@@ -115,3 +115,4 @@ git+https://github.com/proversity-org/rocket-chat-extension.git@v0.2.18#egg=rock
 
 
 git+https://github.com/edx/edx-analytics-data-api-client.git#egg=edx-analytics-data-api-client
+git+https://github.com/jadolg/rocketchat_API.git@v0.6.21#egg=rocketchat-API==0.6.21

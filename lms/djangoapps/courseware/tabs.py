@@ -7,6 +7,7 @@ from courseware.entrance_exams import user_can_skip_entrance_exam
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_noop
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.core.lib.course_tabs import CourseTabPluginManager
 from openedx.features.course_experience import UNIFIED_COURSE_TAB_FLAG, default_course_url_name
 from student.models import CourseEnrollment
@@ -302,11 +303,29 @@ class SingleTextbookTab(CourseTab):
     def to_json(self):
         raise NotImplementedError('SingleTextbookTab should not be serialized.')
 
+class RocketChatTab(EnrolledTab):
+    """
+    The representation of the course rocketchat view type.
+    """
+
+    type = "rocketchat"
+    title = ugettext_noop("RocketChat")
+    view_name = "rocket_chat_discussion"
+
+    @classmethod
+    def is_enabled(cls, course, user=None):
+        """Returns true if rocketChat feature is enabled in the course.
+        """
+        return configuration_helpers.get_value('ENABLE_ROCKET_CHAT_SERVICE')
 
 def get_course_tab_list(request, course):
     """
     Retrieves the course tab list from xmodule.tabs and manipulates the set as necessary
     """
+    if RocketChatTab.is_enabled(course):
+        course.tabs.extend([
+            RocketChatTab({"name": "RocketChat"}),
+        ])
     user = request.user
     xmodule_tab_list = CourseTabList.iterate_displayable(course, user=user)
 
