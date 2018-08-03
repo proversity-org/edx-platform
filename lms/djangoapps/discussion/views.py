@@ -46,11 +46,13 @@ from django_comment_client.utils import (
     get_group_names_by_id,
     is_commentable_divided,
     merge_dict,
+    is_discussion_enabled,
     strip_none
 )
 from django_comment_common.utils import ThreadContext, get_course_discussion_settings, set_course_discussion_settings
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
 from openedx.core.djangoapps.monitoring_utils import function_trace
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from student.models import CourseEnrollment
 from util.json_request import JsonResponse, expect_json
 from xmodule.modulestore.django import modulestore
@@ -237,6 +239,10 @@ def forum_form_discussion(request, course_key):
     """
     Renders the main Discussion page, potentially filtered by a search query
     """
+
+    if not is_discussion_enabled(course_key):
+        raise Http404
+
     course = get_course_with_access(request.user, 'load', course_key, check_if_enrolled=True)
     if request.is_ajax():
         user = cc.User.from_django_user(request.user)

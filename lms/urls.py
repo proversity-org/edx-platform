@@ -781,6 +781,15 @@ if settings.FEATURES.get('ENABLE_DISCUSSION_SERVICE'):
 
 urlpatterns += [
     url(
+        r'^courses/{}/rocketchat/'.format(
+            settings.COURSE_ID_PATTERN,
+        ),
+        include('rocket_chat.urls')
+    ),
+]
+
+urlpatterns += [
+    url(
         r'^courses/{}/tab/(?P<tab_type>[^/]+)/$'.format(
             settings.COURSE_ID_PATTERN,
         ),
