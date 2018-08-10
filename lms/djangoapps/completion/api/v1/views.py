@@ -1,23 +1,37 @@
 """ API v1 views. """
+import csv
+
+from celery.result import AsyncResult
+
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import ugettext as _
+from django.http import HttpResponse
 from django.db import DatabaseError
 
+from rest_framework_oauth.authentication import OAuth2Authentication
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework import permissions
 from rest_framework import status
 
+from edx_rest_framework_extensions.authentication import JwtAuthentication
 from opaque_keys.edx.keys import CourseKey, UsageKey
 from opaque_keys import InvalidKeyError
 from six import text_type
 
 from lms.djangoapps.completion.models import BlockCompletion
 from openedx.core.djangoapps.content.course_structures.models import CourseStructure
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.core.lib.api.permissions import IsStaffOrOwner
 from student.models import CourseEnrollment
 from completion import waffle
+from lms.djangoapps.completion.utils import GenerateCompletionReport
+from .serializers import CompletionReportSerializer
+from .tasks import generate_report
 
 
 class CompletionBatchView(APIView):
@@ -135,3 +149,73 @@ class CompletionBatchView(APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({"detail": _("ok")}, status=status.HTTP_200_OK)
+
+
+class CompletionReportView(APIView):
+
+    authentication_classes = (
+        OAuth2Authentication,
+        JwtAuthentication,
+        SessionAuthentication
+    )
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, task_id):
+
+        task = AsyncResult(id=task_id)
+
+        if task.ready():
+            rows, url = task.result
+            result = GenerateCompletionReport.serialize_rows(rows)
+
+            if url is None:
+                url = reverse('completion_api:v1:download-completion-report', args=[task.id])
+
+            serializer = CompletionReportSerializer(data={"status": task.status, "result": result, "link": url})
+            serializer.is_valid()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        serializer = CompletionReportSerializer(data={"status": task.status, "result": None, "link": None})
+        serializer.is_valid()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, course_id):
+
+        try:
+            course_key = CourseKey.from_string(course_id)
+        except InvalidKeyError:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        current_site = Site.objects.get_current()
+        store_report = configuration_helpers.get_value("COMPLETION_STORAGE", False)
+        task = generate_report.delay(course_key, store_report, current_site.domain)
+        state_url = reverse('completion_api:v1:completion-task-report', args=[task.id])
+
+        return Response(state_url, status=status.HTTP_200_OK)
+
+
+class DownloadReportView(APIView):
+
+    authentication_classes = (
+        OAuth2Authentication,
+        JwtAuthentication,
+        SessionAuthentication
+    )
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, task_id):
+        task = AsyncResult(id=task_id)
+        if task.ready():
+
+            rows, url = task.result
+
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="completion-report.csv"'
+
+            writer = csv.writer(response)
+            for row in rows:
+                writer.writerow(row)
+
+            return response
+
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)

@@ -9,6 +9,9 @@ from opaque_keys.edx.keys import CourseKey, UsageKey
 from opaque_keys.edx.locator import BlockUsageLocator
 from openedx.core.djangoapps.request_cache.middleware import request_cached
 from xmodule.modulestore.django import modulestore
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+
+CUSTOM_BLOCK_TYPES_KEY = "CUSTOM_BLOCK_TYPES"
 
 
 @request_cached
@@ -133,6 +136,10 @@ def get_course_outline_block_tree(request, course_id):
             'video',
             'discussion'
         ]
+        custom_block_types =  configuration_helpers.get_value(CUSTOM_BLOCK_TYPES_KEY)
+        if custom_block_types:
+            for block_type in custom_block_types:
+                block_types_filter.append(block_type)
     else:
         # Shallower query is sufficient for last accessed block
         block_types_filter = [
