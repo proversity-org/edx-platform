@@ -22,6 +22,7 @@
             this.$container = $container;
             this.$list_issued_certificate_table_btn = this.$container.find("input[name='issued-certificates-list']");
             this.$list_issued_certificate_csv_btn = this.$container.find("input[name='issued-certificates-csv']");
+            this.$list_students_certificates_status_csv_btn = this.$container.find("input[name='students-certificates-status-csv']");
             this.$certificate_display_table = this.$container.find('.certificate-data-display-table');
             this.$certificates_request_err = this.$container.find('.issued-certificates-error.request-response-error');
             this.$list_issued_certificate_table_btn.click(function() {
@@ -75,6 +76,10 @@
             this.$list_issued_certificate_csv_btn.click(function() {
                 dataDownloadCert.clear_ui();
                 location.href = dataDownloadCert.$list_issued_certificate_csv_btn.data('endpoint') + '?csv=true';
+            });
+            this.$list_students_certificates_status_csv_btn.click(function() {
+                dataDownloadCert.clear_ui();
+                location.href = dataDownloadCert.$list_students_certificates_status_csv_btn.data('endpoint') + '?csv=true';
             });
         }
 

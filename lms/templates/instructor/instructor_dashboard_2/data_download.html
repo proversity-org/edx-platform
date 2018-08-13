@@ -72,6 +72,7 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
       <p>
         <input type="button" name="issued-certificates-list" value="${_("View Certificates Issued")}" data-csv="false" data-endpoint="${ section_data['get_issued_certificates_url'] }">
         <input type="button" name="issued-certificates-csv" value="${_("Download CSV of Certificates Issued")}" data-csv="true" data-endpoint="${ section_data['get_issued_certificates_url'] }">
+        <input type="button" name="students-certificates-status-csv" value="${_("Download CSV of Students Certificates Status")}" data-csv="true" data-endpoint="${ section_data['get_students_certificates_status_url'] }">
       </p>
       <div class="data-display-table certificate-data-display-table" id="data-issued-certificates-table"></div>
       <div class="issued-certificates-error request-response-error msg msg-error copy"></div>
