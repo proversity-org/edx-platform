@@ -1331,6 +1331,63 @@ def get_issued_certificates(request, course_id):
 
 
 @transaction.non_atomic_requests
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
+@require_level('staff')
+def get_students_certificates_status(request, course_id):
+    """
+    Responds with a csv file with the certificate generation status for each student
+    Arguments:
+        course_id
+    Returns:
+        CSV File with the following structure:
+
+        User Email | Certificate Generated
+        user1@example.com | yes
+        user2@example.com | no
+        ...
+        ...
+
+    """
+    course_key = CourseKey.from_string(course_id)
+    # Getting all students enrolled on the course
+    enrolled_students = User.objects.filter(
+        courseenrollment__course_id=course_key,
+        courseenrollment__is_active=1,
+        is_staff=0,
+    ).order_by('email')
+    # Getting all the users with generated certificate in the course
+    students_with_certificate = User.objects.filter(
+        generatedcertificate__course_id=course_key
+    )
+
+    query_features = ['user_email', 'certificate_generated']
+    query_features_names = [
+        ('user_email', _('User Email')),
+        ('certificate_generated', _('Certificate Status'))
+    ]
+    report_data = []
+
+    # iterating over the users to get the report data as a list of dicts
+    for student in enrolled_students:
+        new_el = {
+            "user_email": student.email,
+            "certificate_generated": "no"
+        }
+        if student in students_with_certificate:
+            new_el["certificate_generated"] = "yes"
+
+        report_data.append(new_el)
+
+    __, data_rows = instructor_analytics.csvs.format_dictlist(report_data, query_features)
+    return instructor_analytics.csvs.create_csv_response(
+        'students_certificates_status.csv',
+        [col_header for __, col_header in query_features_names],
+        data_rows
+    )
+
+
+@transaction.non_atomic_requests
 @require_POST
 @ensure_csrf_cookie
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
