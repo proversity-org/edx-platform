@@ -41,6 +41,10 @@ from lms.djangoapps.verify_student.ssencrypt import (
     random_aes_key,
     rsa_encrypt
 )
+from lms.djangoapps.verify_student.houston_encrypt import (
+    send_houston_request,
+    get_houston_verify_student_settings
+)
 from openedx.core.djangoapps.signals.signals import LEARNER_NOW_VERIFIED
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.core.djangolib.model_mixins import DeprecatedModelMixin
@@ -58,6 +62,19 @@ def generateUUID():  # pylint: disable=invalid-name
 class VerificationException(Exception):
     pass
 
+
+def get_verify_student_settings():
+    """
+    Helper function to obtain correct settings for VERIFY_STUDENT,
+    if ENABLE_HOUSTON_PHOTO_VERIFICATIONS is set to false, default to
+    Software Secure settings
+    """
+    if settings.FEATURES.get('ENABLE_HOUSTON_PHOTO_VERIFICATIONS'):
+        VERIFY_STUDENT = get_houston_verify_student_settings()
+    else:
+        VERIFY_STUDENT = settings.VERIFY_STUDENT["SOFTWARE_SECURE"]
+
+    return VERIFY_STUDENT
 
 def status_before_must_be(*valid_start_statuses):
     """
@@ -665,10 +682,14 @@ class SoftwareSecurePhotoVerification(PhotoVerification):
         # developing and aren't interested in working on student identity
         # verification functionality. If you do want to work on it, you have to
         # explicitly enable these in your private settings.
+
+
         if settings.FEATURES.get('AUTOMATIC_VERIFY_STUDENT_IDENTITY_FOR_TESTING'):
             return
 
-        aes_key_str = settings.VERIFY_STUDENT["SOFTWARE_SECURE"]["FACE_IMAGE_AES_KEY"]
+        VERIFY_STUDENT = get_verify_student_settings()
+        aes_key_str = VERIFY_STUDENT["FACE_IMAGE_AES_KEY"]
+
         aes_key = aes_key_str.decode("hex")
 
         path = self._get_path("face")
@@ -697,8 +718,10 @@ class SoftwareSecurePhotoVerification(PhotoVerification):
             self.save()
             return
 
+        VERIFY_STUDENT = get_verify_student_settings()    
         aes_key = random_aes_key()
-        rsa_key_str = settings.VERIFY_STUDENT["SOFTWARE_SECURE"]["RSA_PUBLIC_KEY"]
+        rsa_key_str = VERIFY_STUDENT["RSA_PUBLIC_KEY"]
+        
         rsa_encrypted_aes_key = rsa_encrypt(aes_key, rsa_key_str)
 
         # Save this to the storage backend
@@ -724,7 +747,15 @@ class SoftwareSecurePhotoVerification(PhotoVerification):
 
         """
         try:
-            response = self.send_request(copy_id_photo_from=copy_id_photo_from)
+            if settings.FEATURES.get('ENABLE_HOUSTON_PHOTO_VERIFICATIONS'): 
+                response = send_houston_request(
+                    self.receipt_id, 
+                    self.photo_id_key,
+                    self.user,
+                    copy_id_photo_from=copy_id_photo_from
+                )
+            else:
+                response = self.send_request(copy_id_photo_from=copy_id_photo_from)
             if response.ok:
                 self.submitted_at = datetime.now(pytz.UTC)
                 self.status = "submitted"
@@ -813,7 +844,7 @@ class SoftwareSecurePhotoVerification(PhotoVerification):
         """
         Return the configured django storage backend.
         """
-        config = settings.VERIFY_STUDENT["SOFTWARE_SECURE"]
+        config = get_verify_student_settings()
 
         # Default to the S3 backend for backward compatibility
         storage_class = config.get("STORAGE_CLASS", "storages.backends.s3boto.S3BotoStorage")

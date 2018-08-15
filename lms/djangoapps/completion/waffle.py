@@ -4,7 +4,7 @@ waffle switches for the completion app.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from openedx.core.djangoapps.site_configuration.models import SiteConfiguration
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.core.djangoapps.theming.helpers import get_current_site
 from openedx.core.djangoapps.waffle_utils import CourseWaffleFlag, WaffleFlagNamespace, WaffleSwitchNamespace
 
@@ -70,11 +70,7 @@ def visual_progress_enabled(course_key):
     if not waffle().is_enabled(ENABLE_COMPLETION_TRACKING):
         return
 
-    try:
-        current_site = get_current_site()
-        if not current_site.configuration.get_value(ENABLE_SITE_VISUAL_PROGRESS, False):
-            return
-    except SiteConfiguration.DoesNotExist:
+    if not configuration_helpers.get_value(ENABLE_SITE_VISUAL_PROGRESS):
         return
 
     # Site-aware global override

@@ -309,7 +309,7 @@ class RocketChatTab(EnrolledTab):
     """
 
     type = "rocketchat"
-    title = ugettext_noop("RocketChat")
+    title = ugettext_noop("Chat")
     view_name = "rocket_chat_discussion"
 
     @classmethod
@@ -324,7 +324,7 @@ def get_course_tab_list(request, course):
     """
     if RocketChatTab.is_enabled(course):
         course.tabs.extend([
-            RocketChatTab({"name": "RocketChat"}),
+            RocketChatTab({"name": "Chat"}),
         ])
     user = request.user
     xmodule_tab_list = CourseTabList.iterate_displayable(course, user=user)

@@ -1,3 +1,4 @@
+import hashlib
 import logging
 
 from django.http import Http404
@@ -8,17 +9,21 @@ from opaque_keys.edx.keys import CourseKey
 
 from courseware.access import has_access
 from courseware.courses import get_course_with_access
-from student.models import CourseEnrollment
+from student.models import CourseEnrollment, CourseEnrollmentManager
+
 
 from xmodule.modulestore.django import modulestore
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
-
-from rocketchat_API.rocketchat import RocketChat as ApiRocketChat
-from rocketchat_API.APIExceptions.RocketExceptions import RocketAuthenticationException, RocketConnectionException
-
-from .utils import create_course_group, create_user, get_rocket_chat_settings
+from rocket_chat.utils import (
+    create_course_group,
+    initialize_api_rocket_chat,
+    create_user,
+    get_rocket_chat_settings,
+    create_token,
+)
 
 LOG = logging.getLogger(__name__)
+ROCKET_CHAT_DATA = "rocket_chat_data"
 
 
 @login_required
@@ -44,6 +49,8 @@ def rocket_chat_discussion(request, course_id):
         if course_homepage_invert_title:
             course_title = course.display_number_with_default
 
+        key = hashlib.sha1("{}_{}".format(ROCKET_CHAT_DATA, user.username)).hexdigest()
+
         context = {
             'request': request,
             'cache': None,
@@ -51,45 +58,14 @@ def rocket_chat_discussion(request, course_id):
             'course_title': course_title,
             'staff_access': staff_access,
             'user_is_enrolled': user_is_enrolled,
+            'beacon_rc': key,
         }
 
         rocket_chat_settings = get_rocket_chat_settings()
 
-        if rocket_chat_settings:
+        api_rocket_chat = initialize_api_rocket_chat(rocket_chat_settings)
 
-            admin_user = rocket_chat_settings.get('admin_user', None)
-            admin_pass = rocket_chat_settings.get('admin_pass', None)
-            url_service = rocket_chat_settings.get('public_url_service', None)
-
-            if not admin_user or not admin_pass or not url_service:
-                LOG.error(
-                    'RocketChat settings error: admin_user = %s, admin_pass= %s, public_url_service= %s',
-                    admin_user,
-                    admin_pass,
-                    url_service
-                )
-                context['rocket_chat_error_message'] = 'Rocket chat service is currently not available'
-                return render_to_response('rocket_chat/rocket_chat.html', context)
-
-            try:
-                api_rocket_chat = ApiRocketChat(
-                    admin_user,
-                    admin_pass,
-                    url_service
-                )
-            except RocketAuthenticationException:
-
-                LOG.error('ApiRocketChat error: RocketAuthenticationException')
-                context['rocket_chat_error_message'] = 'Rocket chat service is currently not available'
-
-                return render_to_response('rocket_chat/rocket_chat.html', context)
-
-            except RocketConnectionException:
-
-                LOG.error('ApiRocketChat error: RocketConnectionException')
-                context['rocket_chat_error_message'] = 'Rocket chat service is currently not available'
-
-                return render_to_response('rocket_chat/rocket_chat.html', context)
+        if api_rocket_chat:
 
             user_info = api_rocket_chat.users_info(username=user.username)
 
@@ -101,15 +77,15 @@ def rocket_chat_discussion(request, course_id):
             if 'success' in user_info and not user_info['success']:
                 create_user(api_rocket_chat, user, course_key)
 
-            response = api_rocket_chat.users_create_token(
-                username=user.username)
+            response = create_token(api_rocket_chat, user)
 
-            try:
-                response = response.json()
-            except AttributeError:
-                context['rocket_chat_error_message'] = 'status_code = {}'.format(
-                    response.status_code)
-                return render_to_response('rocket_chat/rocket_chat.html', context)
+            if not response:
+                try:
+                    response = response.json()
+                except AttributeError:
+                    context['rocket_chat_error_message'] = 'status_code = {}'.format(
+                        response.status_code)
+                    return render_to_response('rocket_chat/rocket_chat.html', context)
 
             if response['success']:
                 context['rocket_chat_data'] = response['data']
@@ -120,6 +96,9 @@ def rocket_chat_discussion(request, course_id):
 
             elif 'error' in response:
                 context['rocket_chat_error_message'] = response['error']
+
+            if user.is_staff:
+                context["users_enrolled"] = CourseEnrollmentManager().users_enrolled_in(course_key)
 
             return render_to_response('rocket_chat/rocket_chat.html', context)
 

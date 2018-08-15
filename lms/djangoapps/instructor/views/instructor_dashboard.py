@@ -823,36 +823,13 @@ def _section_recap(request, course, recap_blocks, access):
     """Provide data for the Recap dashboard section """
     
     course_key = course.id
-    recap_items = []
-    recap_fragments = []
-    
-    # Get list of enrolled students for this course
-
-    user_list = User.objects.filter(
-        courseenrollment__course_id=course_key,
-        courseenrollment__is_active=1,
-    ).order_by('username').select_related('profile')
-
-    for block in recap_blocks:
-        recap_items.append({
-            'name': block.display_name,
-            'block_list': block.xblock_list,
-            'url_base': reverse('xblock_view', args=[course.id, block.location, 'recap_blocks_listing_view']),
-            'make_pdf_json': reverse('xblock_handler', args=[course.id, block.location, 'make_pdf_json']),  
-            })
-
     recap_block = recap_blocks[0]
     block, __ = get_module_by_usage_id(
         request, unicode(course_key), unicode(recap_block.location),
         disable_staff_debug_info=True, course=course
     )
     # Set up recap instructor dashboard fragment, pass data to the context
-    fragment = block.render('recap_blocks_listing_view',
-        context={
-            'recap_items': recap_items,
-            'users': user_list,
-        }
-    )
+    fragment = block.render('recap_blocks_listing_view', context={})
     # Wrap the fragment and get all resources associated with this XBlock view
     fragment = wrap_xblock(
         'LmsRuntime', recap_block, 'recap_blocks_listing_view', fragment, None,
@@ -865,7 +842,6 @@ def _section_recap(request, course, recap_blocks, access):
 
     section_data = {
         'fragment': fragment,
-        'users': user_list,
         'section_key': 'recap',
         'section_display_name': _('Recap'),
         'access': access,

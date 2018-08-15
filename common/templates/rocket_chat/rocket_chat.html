@@ -31,7 +31,7 @@ from openedx.core.djangolib.markup import HTML, Text
 <%block name="bodyclass">view-in-course view-course-info ${course.css_class or ''}</%block>
 
 <main id="main" aria-label="Content" tabindex="-1">
-    <div class="container"
+  <div class="container"
     % if getattr(course, 'language'):
       lang="${course.language}"
     % endif
@@ -39,18 +39,49 @@ from openedx.core.djangolib.markup import HTML, Text
       <div class="course-view page-content-container">
         <div class="page-header">
           <h2 class="hd hd-3 page-title">
-            ${_("{course_title}").format(course_title=course_title)}
+            ${_("Chat")}
           </h2>
         </div>
       <div class="page-content">
         % if user.is_authenticated() and rocket_chat_error_message is None:
-          <iframe class="rocket-chat-view" src="${rocket_chat_url}/home?authToken=${rocket_chat_data['authToken']}&userId=${rocket_chat_data['userId']}"></iframe>
+          % if user.is_staff:
+            <div class="page-content-nav rocket-chat-options">
+              <a href="#main">
+                <span class="icon fa fa-eye" ></span>
+                ${_("Chat")}
+              </a>
+
+              <a href="#settings">
+                <span class="icon fa fa-cog" ></span>
+                ${_("Settings")}
+              </a>
+              <hr>
+            </div>
+
+            <div class="page-content-secondary rocket-chat-view">
+              <h2>${_("Edit Memberships")}</h2>
+              <input class="rocket-chat-user-input" list='users'placeholder='Username'><datalist id='users'>
+                % for user_enrolled in users_enrolled:
+                  <option>${user_enrolled}</option>
+                %endfor
+              </datalist><br><br>
+              <a class="btn btn-primary change-role-rocketchat">${_("Change Role to Coach")}</a>
+            </div>
+          %endif
+          <div class="page-content-main rocket-chat-view">
+            <iframe class="rocket-chat-view" src="${rocket_chat_url}/home?authToken=${rocket_chat_data['authToken']}&userId=${rocket_chat_data['userId']}" allow="camera; microphone"></iframe>
+          </div>
         % else:
           <h1 class="rocket_chat_error_message">${rocket_chat_error_message}</h1>
         % endif
         </div>
       </div>
-
   </div>
 </main>
-
+<%static:require_module module_name="js/rocket_chat/rocket_chat_factory" class_name="rocketChatFactory">
+  rocketChatFactory({url_change_role: '${reverse('api:v0:rocket_chat_change_role')}',
+                     staff: '${user.is_staff}',
+                     url_logout: '${reverse('api:v0:rocket_chat_clean_token_cache')}',
+                     beacon_rc: '${beacon_rc}'
+                    });
+</%static:require_module>

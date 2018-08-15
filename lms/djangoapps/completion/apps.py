@@ -15,3 +15,5 @@ class CompletionAppConfig(AppConfig):
 
     def ready(self):
         from . import handlers  # pylint: disable=unused-variable
+        # The line below allows tasks defined in this app to be included by celery workers
+        from .tasks import *  # pylint: disable=unused-variable

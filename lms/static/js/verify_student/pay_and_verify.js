@@ -56,12 +56,12 @@ var edx = edx || {};
                     $el.data('requirements'),
                     function(isVisible) { return isVisible; }
                 ),
-                upgrade: el.data('msg-key') === 'upgrade',
-                currencyCode: el.data('default-currency-code'),
-                currencySymbol: el.data('default-currency-symbol'),
-                minPrice: el.data('course-mode-min-price'),
-                sku: el.data('course-mode-sku'),
-                contributionAmount: el.data('contribution-amount'),
+                upgrade: $el.data('msg-key') === 'upgrade',
+                currencyCode: $el.data('default-currency-code'),
+                currencySymbol: $el.data('default-currency-symbol'),
+                minPrice: $el.data('course-mode-min-price'),
+                sku: $el.data('course-mode-sku'),
+                contributionAmount: $el.data('contribution-amount'),
                 suggestedPrices: _.filter(
                     ($el.data('course-mode-suggested-prices').toString()).split(','),
                     function(price) { return Boolean(price); }

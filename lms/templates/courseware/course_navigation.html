@@ -8,6 +8,7 @@ from courseware.tabs import get_course_tab_list
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
+from lms.djangoapps.courseware.tabs import RocketChatTab
 %>
 
 <%
@@ -69,4 +70,11 @@ if course is not None:
             </div>
         </nav>
     % endif
+%endif
+% if RocketChatTab.is_enabled(course):
+    <%static:require_module module_name="js/rocketchat_notifications" class_name="RocketChatNotifications">
+        RocketChatNotifications({url_credentials: '${reverse('api:v0:rocket_chat_credentials')}',
+                                course_id: '${course.id}',
+    })
+    </%static:require_module>
 %endif
