@@ -27,10 +27,9 @@ urlpatterns = [
 
     url(
         r'^download-completion-report/{task_id_pattern}/$'.format(
-            task_id_pattern=settings.COURSE_ID_PATTERN,
+            task_id_pattern=TASK_ID_PATTERN,
         ),
         views.DownloadReportView.as_view(),
         name='download-completion-report'
     ),
-
 ]

@@ -12,7 +12,7 @@ from lms.djangoapps.instructor_task.models import ReportStore
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 
 CUSTOM_BLOCK_TYPES_KEY = "CUSTOM_BLOCK_TYPES"
-REQUIRED_IDS = "REQUIRED_IDS"
+REQUIRED_ACTIVITY_IDS_KEY = "REQUIRED_ACTIVITY_IDS"
 logger = logging.getLogger(__name__)
 
 
@@ -118,7 +118,7 @@ class GenerateCompletionReport(object):
         """
         This get the ids for the required activities
         """
-        return configuration_helpers.get_value(REQUIRED_IDS, [])
+        return configuration_helpers.get_value(REQUIRED_ACTIVITY_IDS_KEY, [])
 
     def is_activity_completed(self, id, activities):
         """
