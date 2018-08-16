@@ -93,14 +93,16 @@ define(['backbone', 'js/models/location', 'js/collections/course_grader'],
             },
             addActualNumberKey: function(attributes) {
             // Add actual_count key containing the actual count number of at assigned to.
-                attributes.graders.forEach(element => {
-                    for (const iterator of attributes.total_per_at) {
-                        if (element.type === iterator.assignment_type) {
-                            element.actual_count = iterator.actual_count;
-                            break;
+                if (attributes.graders) {
+                    attributes.graders.forEach(element => {
+                        for (let iterator of attributes.total_per_at) {
+                            if (element.type === iterator.assignment_type) {
+                                element.actual_count = iterator.actual_count;
+                                break;
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
 
