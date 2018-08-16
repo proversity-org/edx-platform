@@ -400,8 +400,12 @@ class PayAndVerifyView(View):
 
         # get available payment processors
         if relevant_course_mode.sku:
-            # transaction will be conducted via ecommerce service
-            processors = ecommerce_api_client(request.user).payment.processors.get()
+            try:
+                processors = ecommerce_api_client(request.user).payment.processors.get()
+            except Exception as e:
+                log.info(str(e))
+
+            processors = ["cybersource","paypal","stripe"]
         else:
             # transaction will be conducted using legacy shopping cart
             processors = [settings.CC_PROCESSOR_NAME]
@@ -1126,13 +1130,20 @@ def results_callback(request):
         "Date": request.META.get("HTTP_DATE", "")
     }
 
+    if settings.ENABLE_HOUSTON_PHOTO_VERIFICATIONS:
+        api_access_key_from_settings = settings.VERIFY_STUDENT["HOUSTON_STU"]["API_ACCESS_KEY"]
+        api_secret_key_from_settings = settings.VERIFY_STUDENT["HOUSTON_STU"]["API_SECRET_KEY"]
+    else:
+        api_access_key_from_settings = settings.VERIFY_STUDENT["SOFTWARE_SECURE"]["API_ACCESS_KEY"]
+        api_secret_key_from_settings = settings.VERIFY_STUDENT["SOFTWARE_SECURE"]["API_SECRET_KEY"]
+
     body_for_signature = {"EdX-ID": body_dict["EdX-ID"]}
     has_valid_signature(
         "POST",
         headers,
         body_for_signature,
-        settings.VERIFY_STUDENT["SOFTWARE_SECURE"]["API_ACCESS_KEY"],
-        settings.VERIFY_STUDENT["SOFTWARE_SECURE"]["API_SECRET_KEY"]
+        api_access_key_from_settings,
+        api_secret_key_from_settings
     )
 
     _response, access_key_and_sig = headers["Authorization"].split(" ")
@@ -1143,7 +1154,7 @@ def results_callback(request):
     #    return HttpResponseBadRequest("Signature is invalid")
 
     # This is what we're doing until we can figure out why we disagree on sigs
-    if access_key != settings.VERIFY_STUDENT["SOFTWARE_SECURE"]["API_ACCESS_KEY"]:
+    if access_key != api_access_key_from_settings:
         return HttpResponseBadRequest("Access key invalid")
 
     receipt_id = body_dict.get("EdX-ID")

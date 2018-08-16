@@ -5,6 +5,7 @@ from os.path import abspath, dirname, join
 
 from .aws import *  # pylint: disable=wildcard-import, unused-wildcard-import
 
+
 # Don't use S3 in devstack, fall back to filesystem
 del DEFAULT_FILE_STORAGE
 MEDIA_ROOT = "/edx/var/edxapp/uploads"
@@ -20,7 +21,7 @@ CELERY_ALWAYS_EAGER = True
 HTTPS = 'off'
 
 LMS_ROOT_URL = 'http://localhost:8000'
-
+LMS_BASE = 'localhost:8000'
 LMS_INTERNAL_ROOT_URL = LMS_ROOT_URL
 ENTERPRISE_API_URL = LMS_INTERNAL_ROOT_URL + '/enterprise/api/v1/'
 
@@ -136,7 +137,7 @@ WEBPACK_CONFIG_PATH = 'webpack.dev.config.js'
 
 ########################### VERIFIED CERTIFICATES #################################
 
-FEATURES['AUTOMATIC_VERIFY_STUDENT_IDENTITY_FOR_TESTING'] = True
+FEATURES['AUTOMATIC_VERIFY_STUDENT_IDENTITY_FOR_TESTING'] = False
 FEATURES['ENABLE_PAYMENT_FAKE'] = True
 
 CC_PROCESSOR_NAME = 'CyberSource2'
@@ -242,6 +243,8 @@ FEATURES['ENABLE_SHOPPING_CART'] = True
 FEATURES['STORE_BILLING_INFO'] = True
 FEATURES['ENABLE_PAID_COURSE_REGISTRATION'] = True
 FEATURES['ENABLE_COSMETIC_DISPLAY_PRICE'] = True
+FEATURES['ENABLE_THIRD_PARTY'] = True
+FEATURES['ENABLE_OAUTH2_PROVIDER'] = True
 
 ########################## Third Party Auth #######################
 
@@ -250,6 +253,7 @@ if FEATURES.get('ENABLE_THIRD_PARTY_AUTH') and 'third_party_auth.dummy.DummyBack
 
 ############## ECOMMERCE API CONFIGURATION SETTINGS ###############
 ECOMMERCE_PUBLIC_URL_ROOT = "http://localhost:8002"
+ECOMMERCE_API_URL = "http://localhost:8002/api/v2" 
 
 CREDENTIALS_INTERNAL_SERVICE_URL = 'http://localhost:8008'
 CREDENTIALS_PUBLIC_SERVICE_URL = 'http://localhost:8008'
@@ -292,9 +296,15 @@ Ld/IRK0DgpGP5EJRwpKsDYe/UQ==
 -----END PRIVATE KEY-----"""
 
 JWT_AUTH.update({
-    'JWT_SECRET_KEY': 'lms-secret',
-    'JWT_ISSUER': 'http://127.0.0.1:8000/oauth2',
-    'JWT_AUDIENCE': 'lms-key',
+    'JWT_SECRET_KEY': 'ecommerce-secret',
+    'JWT_ISSUER': 'http://localhost:8000/oauth2',
+    'JWT_AUDIENCE': 'ecommerce-key',
+})
+
+JWT_AUTH.update({
+    'JWT_SECRET_KEY': 'discovery-secret',
+    'JWT_ISSUER': 'http://localhost:8000/oauth2',
+    'JWT_AUDIENCE': 'discovery-key',
 })
 
 #####################################################################
