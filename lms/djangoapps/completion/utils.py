@@ -2,6 +2,7 @@ import logging
 import pytz
 
 from xmodule.modulestore.django import modulestore
+from xmodule.modulestore.exceptions import ItemNotFoundError
 from microsite_configuration import microsite
 from student.models import get_user
 
@@ -9,6 +10,7 @@ from lms.djangoapps.completion.models import BlockCompletion
 from lms.djangoapps.course_blocks.api import get_course_blocks
 from lms.djangoapps.instructor_task.models import ReportStore
 
+from opaque_keys.edx.locator import BlockUsageLocator
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 
 CUSTOM_BLOCK_TYPES_KEY = "CUSTOM_BLOCK_TYPES"
@@ -44,8 +46,19 @@ class GenerateCompletionReport(object):
 
         required_ids = self.get_required_ids()
 
-        for idx, item in enumerate(required_ids):
-            fieldnames.append(" ".join(["required_activity", str(idx + 1)]))
+        for id in required_ids:
+            block_type, block_id = id.rsplit("+block@")
+            locator = BlockUsageLocator(self.course_key, block_type, block_id)
+
+            try:
+                block = modulestore().get_item(locator)
+            except ItemNotFoundError as item_error:
+                logger.warn("The provider id is not valid, error %s", item_error)
+                continue
+
+            unit_name = block.get_parent().display_name
+            block_name = block.display_name
+            fieldnames.append("required_activity => {}-{}".format(unit_name, block_name))
 
         rows.append(fieldnames)
 
@@ -74,9 +87,10 @@ class GenerateCompletionReport(object):
                     len(activities)
                     ]
 
-            for idx, item in enumerate(required_ids):
+            for id in required_ids:
+                block_type, block_id = id.rsplit("+block@")
                 state = "completed" if self.is_activity_completed(
-                    item, completed_activities) else "not_completed"
+                    block_id, completed_activities) else "not_completed"
                 data.append(state)
 
             rows.append(data)
