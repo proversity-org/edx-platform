@@ -1,6 +1,7 @@
 """ API v1 views. """
 import csv
 import logging
+import copy
 
 from celery.result import AsyncResult
 
@@ -169,7 +170,9 @@ class CompletionReportView(APIView):
         task = AsyncResult(id=task_id)
 
         if task.ready():
-            rows, url = task.result
+            # Extracting a deep copy of the result to prevent changing the object
+            cleaned_task_result = copy.deepcopy(task.get())
+            rows, url = cleaned_task_result
             result = GenerateCompletionReport.serialize_rows(rows)
 
             if url is None:
@@ -190,16 +193,16 @@ class CompletionReportView(APIView):
         except InvalidKeyError:
             raise API_ValidationError(["The provided course id is not valid"])
 
-        current_site = Site.objects.get_current()
+        current_site_domain = configuration_helpers.get_value("SITE_NAME")
         store_report = configuration_helpers.get_value("COMPLETION_STORAGE", False)
-        task = generate_report.delay(course_id, store_report, current_site.domain)
+        task = generate_report.delay(course_id, store_report, current_site_domain)
         state_url = reverse('completion_api:v1:completion-task-report', kwargs={"task_id": task.id})
 
         json_response = {
             "state_url": state_url
         }
 
-        logger.info("MicroSite = %s, StorageReport = %s", current_site, store_report)
+        logger.info("MicroSite = %s, StorageReport = %s", current_site_domain, store_report)
 
         return Response(json_response, status=status.HTTP_200_OK)
 

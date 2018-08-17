@@ -6,8 +6,8 @@ class UserReportSerializer(serializers.Serializer):
     user_id = serializers.IntegerField()
     username = serializers.CharField()
     email = serializers.EmailField()
-    first_login = serializers.DateTimeField()
-    last_login = serializers.DateTimeField()
+    first_login = serializers.DateTimeField(format="%Y/%m/%d %H:%M:%S")
+    last_login = serializers.DateTimeField(format="%Y/%m/%d %H:%M:%S")
     days_since_last_login = serializers.IntegerField()
     completed_activities = serializers.IntegerField()
     total_program_activities = serializers.IntegerField()
@@ -15,5 +15,5 @@ class UserReportSerializer(serializers.Serializer):
 
 class CompletionReportSerializer(serializers.Serializer):
     status = serializers.CharField()
-    result = serializers.ListField(child=UserReportSerializer())
+    result = UserReportSerializer(many=True)
     link = serializers.URLField(max_length=200)

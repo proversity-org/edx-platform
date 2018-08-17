@@ -54,15 +54,22 @@ class GenerateCompletionReport(object):
             completed_activities = self.get_completed_activities(user)
             activities = self.get_activities(user)
             last_login = user.last_login
-            days_since_last_login = last_login.utcnow().replace(tzinfo=pytz.UTC) - last_login
+            days_since_last_login = -1
+            disp_last_login = None
+            # Last login could not be defined for a user
+            if last_login:
+                disp_last_login = last_login.strftime('%Y/%m/%d %H:%M:%S')
+                diff_since_last_login = (last_login.utcnow().replace(tzinfo=pytz.UTC) -
+                                         last_login)
+                days_since_last_login = diff_since_last_login.days
 
             data = [u_prof.name,
                     user.id,
                     user.username,
                     user.email,
-                    user.date_joined.strftime('%Y/%m/%d'),
-                    last_login.strftime('%Y/%m/%d'),
-                    days_since_last_login.days,
+                    user.date_joined.strftime('%Y/%m/%d %H:%M:%S'),
+                    disp_last_login,
+                    days_since_last_login,
                     len(completed_activities),
                     len(activities)
                     ]

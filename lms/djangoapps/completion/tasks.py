@@ -1,7 +1,8 @@
 from celery import task  # pylint: disable=no-name-in-module
 from opaque_keys.edx.keys import CourseKey
 
-from student.models import CourseEnrollmentManager
+from django.contrib.auth.models import User
+
 from microsite_configuration import microsite
 from lms.djangoapps.completion.utils import GenerateCompletionReport
 
@@ -10,10 +11,15 @@ from lms.djangoapps.completion.utils import GenerateCompletionReport
 def generate_report(course_id, store_report, site_name):
 
     microsite.set_by_domain(site_name)
-
     course_key = CourseKey.from_string(course_id)
-    users = CourseEnrollmentManager().users_enrolled_in(course_key)
-    completion_report = GenerateCompletionReport(users, course_key)
+
+    # Getting all students enrolled on the course except staff users
+    enrolled_students = User.objects.filter(
+        courseenrollment__course_id=course_key,
+        courseenrollment__is_active=1,
+        is_staff=0,
+    )
+    completion_report = GenerateCompletionReport(enrolled_students, course_key)
     rows = completion_report.generate_rows()
     if store_report:
         return rows, completion_report.store_report(rows)
