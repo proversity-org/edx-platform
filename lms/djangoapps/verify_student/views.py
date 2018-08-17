@@ -1151,7 +1151,7 @@ def results_callback(request):
     #    return HttpResponseBadRequest("Signature is invalid")
 
     # This is what we're doing until we can figure out why we disagree on sigs
-    if access_key != api_access_key_from_settings:
+    if access_key != api_access_key:
         return HttpResponseBadRequest("Access key invalid")
 
     receipt_id = body_dict.get("EdX-ID")
