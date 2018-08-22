@@ -20,11 +20,15 @@ def get_houston_verify_student_settings():
     """
     Helper function to obtain VERIFY_STUDENT  setting for Houston Stu
     """
-    
+    VERIFY_STUDENT = settings.VERIFY_STUDENT["HOUSTON_STU"]
+    return VERIFY_STUDENT
+
+def get_microsite_verify_student_settings():
     VERIFY_STUDENT = configuration_helpers.get_value(
         "VERIFY_STUDENT",
         settings.VERIFY_STUDENT
     )
+
     VERIFY_STUDENT = VERIFY_STUDENT["HOUSTON_STU"]
     return VERIFY_STUDENT
 
@@ -46,6 +50,7 @@ def create_houston_request(receipt_id, photo_id_key, user, copy_id_photo_from=No
     # If we're copying the photo ID image from a previous verification attempt,
     # then we need to send the old image data with the correct image key.
     VERIFY_STUDENT = get_houston_verify_student_settings()
+    MICROSITE_VERIFY_STUDENT = get_microsite_verify_student_settings()
     bucket = VERIFY_STUDENT["S3_BUCKET"]
     s3Client = boto3.client('s3', 
         aws_access_key_id=VERIFY_STUDENT["AWS_ACCESS_KEY"], 
@@ -66,8 +71,8 @@ def create_houston_request(receipt_id, photo_id_key, user, copy_id_photo_from=No
         "Content-Type": "application/json",
         "Date": formatdate(timeval=None, localtime=False, usegmt=True)
     }
-    houston_project_id = VERIFY_STUDENT["HOUSTON_PROJECT_ID"]
-    houston_organisation_id = VERIFY_STUDENT["HOUSTON_ORGANIZATION_ID"]
+    houston_project_id = MICROSITE_VERIFY_STUDENT["HOUSTON_PROJECT_ID"]
+    houston_organisation_id = MICROSITE_VERIFY_STUDENT["HOUSTON_ORGANIZATION_ID"]
     access_key = VERIFY_STUDENT["API_ACCESS_KEY"]
     secret_key = VERIFY_STUDENT["API_SECRET_KEY"]
     

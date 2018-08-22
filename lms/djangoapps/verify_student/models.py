@@ -69,11 +69,7 @@ def get_verify_student_settings():
     Software Secure settings
     """
     if settings.FEATURES.get('ENABLE_HOUSTON_PHOTO_VERIFICATIONS'):
-        VERIFY_STUDENT = configuration_helpers.get_value(
-            "VERIFY_STUDENT",
-            settings.VERIFY_STUDENT
-        )
-        VERIFY_STUDENT = VERIFY_STUDENT["HOUSTON_STU"]
+        VERIFY_STUDENT = settings.VERIFY_STUDENT['HOUSTON_STU']
     else:
         VERIFY_STUDENT = settings.VERIFY_STUDENT["SOFTWARE_SECURE"]
 
