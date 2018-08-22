@@ -8,7 +8,8 @@ define(['jquery', 'underscore', 'gettext', 'js/views/modals/base_modal'],
                 addPrimaryActionButton: true,
                 primaryActionButtonType: 'cancel',
                 primaryActionButtonTitle: gettext('Close'),
-                closeIcon: true
+                closeIcon: true,
+                viewSpecificClasses: "assignment-summary-modal"
             }),
 
             initialize: function() {
