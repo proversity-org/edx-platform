@@ -112,3 +112,10 @@ if settings.FEATURES.get('ENABLE_SOFTWARE_SECURE_FAKE'):
     urlpatterns += [
         url(r'^software-secure-fake-response', SoftwareSecureFakeView.as_view()),
     ]
+
+# Fake response page for incourse reverification ( Houston stu )
+if settings.FEATURES.get('ENABLE_HOUSTON_STU_FAKE'):
+    from lms.djangoapps.verify_student.tests.fake_houston_stu import HoustonStuFakeView
+    urlpatterns += [
+        url(r'^houston-stu-fake-response', HoustonStuFakeView.as_view()),
+    ]

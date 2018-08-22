@@ -82,6 +82,35 @@ def mock_software_secure_post(url, headers=None, data=None, **kwargs):
 
     return response
 
+def mock_houston_stu_post(url, headers=None, data=None, **kwargs):
+    """
+    Mocks our interface when we post to Software Secure. Does basic assertions
+    on the fields we send over to make sure we're not missing headers or giving
+    total garbage.
+    """
+    data_dict = json.loads(data)
+
+    # Basic sanity checking on the keys
+    EXPECTED_KEYS = [
+        "organisationId", "projectId", "preSignedUrlId", 
+        "preSignedUrlPhoto", "photoId", "username", "email", "callbackUrl",
+        "photoIdKey",
+    ]
+    for key in EXPECTED_KEYS:
+        assert_true(
+            data_dict.get(key),
+            "'{}' must be present and not blank in JSON submitted to Houston Stu".format(key)
+        )
+
+    # The keys should be stored as Base64 strings, i.e. this should not explode
+    data_dict["photoIDKey"].decode("base64")
+
+    response = requests.Response()
+    response.status_code = 200
+
+    return response
+
+
 
 def mock_software_secure_post_error(url, headers=None, data=None, **kwargs):
     """
