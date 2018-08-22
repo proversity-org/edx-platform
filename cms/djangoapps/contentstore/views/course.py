@@ -87,7 +87,6 @@ from xmodule.modulestore.exceptions import DuplicateCourseError, ItemNotFoundErr
 from xmodule.tabs import CourseTab, CourseTabList, InvalidTabsException
 
 from .component import ADVANCED_COMPONENT_TYPES
-from .helpers import count_at_per_section
 from .item import create_xblock_info
 from .library import LIBRARIES_ENABLED, get_library_creator_status
 
@@ -1137,25 +1136,21 @@ def grading_handler(request, course_key_string, grader_index=None):
     course_key = CourseKey.from_string(course_key_string)
     with modulestore().bulk_operations(course_key):
         course_module = get_course_and_check_access(course_key, request.user)
+        course_details = CourseGradingModel.fetch(course_key)
         course_structure = _course_outline_json(request, course_module)
+        course_details.count_assignment_types(course_structure)
 
         if 'text/html' in request.META.get('HTTP_ACCEPT', '') and request.method == 'GET':
-            actual_number_per_at = count_at_per_section(course_structure)
-
-            course_details = CourseGradingModel.fetch(course_key)
             return render_to_response('settings_graders.html', {
                 'context_course': course_module,
                 'course_locator': course_key,
                 'course_details': course_details,
                 'grading_url': reverse_course_url('grading_handler', course_key),
-                'is_credit_course': is_credit_course(course_key),
-                'at_count': actual_number_per_at,
+                'is_credit_course': is_credit_course(course_key)
             })
         elif 'application/json' in request.META.get('HTTP_ACCEPT', ''):
             if request.method == 'GET':
                 if grader_index is None:
-                    course_details = CourseGradingModel.fetch(course_key)
-                    course_details.total_per_at = count_at_per_section(course_structure)
                     return JsonResponse(
                         course_details,
                         # encoder serializes dates, old locations, and instances
@@ -1172,7 +1167,8 @@ def grading_handler(request, course_key_string, grader_index=None):
                 # None implies update the whole model (cutoffs, graceperiod, and graders) not a specific grader
                 if grader_index is None:
                     course_details = CourseGradingModel.update_from_json(course_key, request.json, request.user)
-                    course_details.total_per_at = count_at_per_section(course_structure)
+                    course_structure = _course_outline_json(request, course_module)
+                    course_details.count_assignment_types(course_structure)
                     return JsonResponse(
                         course_details,
                         encoder=CourseSettingsEncoder

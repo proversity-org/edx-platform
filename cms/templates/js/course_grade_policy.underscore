@@ -32,7 +32,7 @@
   <div class="field text" id="field-course-grading-assignment-total-count">
     <label for="course-grading-assignment-total-count"><%= gettext("Actual Number") %></label>
     <input type="text" class="short" disabled id="course-grading-assignment-total-count" value = "<%= model.get('actual_count') %>" />
-    <span class="tip tip-stacked"><%= gettext("The number of assignments of this type that are currently assigned to a subsection.") %></span>
+    <span class="tip tip-stacked"><%= gettext("The actual number of subsections in the course that contain problems of this assignment type.") %></span>
   </div>
 
   <div class="actions">
