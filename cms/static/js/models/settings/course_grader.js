@@ -43,15 +43,13 @@ define(['backbone', 'underscore', 'gettext'], function(Backbone, _, gettext) {
                 else {
                     attrs.weight = intWeight;
                     if (this.collection) {
-                    // FIXME b/c saves don't update the models if validation fails, we should
-                    // either revert the field value to the one in the model and make them make room
-                    // or figure out a holistic way to balance the vals across the whole
-                        var totalWeight = 0;
-                        _.each(this.collection.models, function(item_value) {
-                            totalWeight += parseInt(item_value.get('weight'));
-                        });
+                    // Check if the sum of weights of each assignment type is equal to 100%
+                    // if don't, add string error to validation model.
+                        var totalWeight = this.collection.models.reduce(function(subtotal, grader) {
+                            return subtotal + parseInt(grader.get('weight'));
+                        }, 0);
                         if (!(totalWeight === 100))
-                            errors.weight = gettext('The total weights does need to sum 100 percent.');
+                            errors.weight = gettext('Total weight must be 100%.');
                     }
                 }
             }
