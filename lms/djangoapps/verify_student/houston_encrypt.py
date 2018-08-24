@@ -20,12 +20,15 @@ def get_houston_verify_student_settings():
     """
     Helper function to obtain VERIFY_STUDENT  setting for Houston Stu
     """
-    
-    VERIFY_STUDENT = configuration_helpers.get_value(
+    VERIFY_STUDENT = settings.VERIFY_STUDENT["HOUSTON_STU"]
+    VERIFY_STUDENT_MICROSITE = configuration_helpers.get_value(
         "VERIFY_STUDENT",
         settings.VERIFY_STUDENT
     )
-    VERIFY_STUDENT = VERIFY_STUDENT["HOUSTON_STU"]
+    VERIFY_STUDENT_MICROSITE = VERIFY_STUDENT_MICROSITE["HOUSTON_STU"]
+    VERIFY_STUDENT["HOUSTON_ORGANIZATION_ID"] = VERIFY_STUDENT_MICROSITE["HOUSTON_ORGANIZATION_ID"]
+    VERIFY_STUDENT["HOUSTON_PROJECT_ID"] = VERIFY_STUDENT_MICROSITE["HOUSTON_PROJECT_ID"]
+
     return VERIFY_STUDENT
 
 def create_houston_request(receipt_id, photo_id_key, user, copy_id_photo_from=None):
