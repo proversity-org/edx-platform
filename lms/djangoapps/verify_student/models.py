@@ -42,7 +42,8 @@ from lms.djangoapps.verify_student.ssencrypt import (
     rsa_encrypt
 )
 from lms.djangoapps.verify_student.houston_encrypt import (
-    send_houston_request
+    send_houston_request,
+    get_houston_verify_student_settings
 )
 from openedx.core.djangoapps.signals.signals import LEARNER_NOW_VERIFIED
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
@@ -69,7 +70,7 @@ def get_verify_student_settings():
     Software Secure settings
     """
     if settings.FEATURES.get('ENABLE_HOUSTON_PHOTO_VERIFICATIONS'):
-        VERIFY_STUDENT = settings.VERIFY_STUDENT['HOUSTON_STU']
+        VERIFY_STUDENT = get_houston_verify_student_settings()
     else:
         VERIFY_STUDENT = settings.VERIFY_STUDENT["SOFTWARE_SECURE"]
 
