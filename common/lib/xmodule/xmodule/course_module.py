@@ -920,6 +920,20 @@ class CourseFields(object):
         scope=Scope.settings, default=None
      )
 
+    custom_block_type_keys = List(
+        display_name=_("Custom Block Types"),
+        help=_("Specify what kind of blocks will be mark as completed."),
+        default=[],
+        scope=Scope.settings
+    )
+
+    required_activity_ids = List(
+        display_name=_("Required Activity Ids"),
+        help=_("Specify what Activities will be required for the course"),
+        default=[],
+        scope=Scope.settings
+    )
+
 
 class CourseModule(CourseFields, SequenceModule):  # pylint: disable=abstract-method
     """
