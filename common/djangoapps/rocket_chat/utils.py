@@ -5,6 +5,10 @@ from django.conf import settings
 
 from student.models import anonymous_id_for_user, get_user
 
+from rocketchat_API.rocketchat import RocketChat as ApiRocketChat
+from rocketchat_API.APIExceptions.RocketExceptions import RocketAuthenticationException, RocketConnectionException
+
+
 LOG = logging.getLogger(__name__)
 
 
@@ -55,3 +59,54 @@ def create_course_group(api_rocket_chat, course_id, user_id, username):
     except AttributeError:
         LOG.error("Create Course Group error: response with status code = %s", response.status_code)
         pass
+
+
+def initialize_api_rocket_chat(rocket_chat_settings):
+
+    admin_user = rocket_chat_settings.get('admin_user', None)
+    admin_pass = rocket_chat_settings.get('admin_pass', None)
+    url_service = rocket_chat_settings.get('public_url_service', None)
+
+    if not admin_user or not admin_pass or not url_service:
+        LOG.error(
+            'RocketChat settings error: admin_user = %s, admin_pass= %s, public_url_service= %s',
+            admin_user,
+            admin_pass,
+            url_service
+        )
+        return None
+
+    try:
+        api_rocket_chat = ApiRocketChat(
+            admin_user,
+            admin_pass,
+            url_service
+        )
+    except RocketAuthenticationException:
+        LOG.error('ApiRocketChat error: RocketAuthenticationException')
+        return None
+    except RocketConnectionException:
+        LOG.error('ApiRocketChat error: RocketConnectionException')
+        return None
+
+    return api_rocket_chat
+
+
+def get_subscriptions_rids(api_rocket_chat, auth_token, user_id, unread=False):
+    """
+    This method allow to get the roomid for every subscrition
+    """
+    api_rocket_chat.headers['X-Auth-Token'] = auth_token
+    api_rocket_chat.headers['X-User-Id'] = user_id
+    response = api_rocket_chat._RocketChat__call_api_get('subscriptions.get')
+    try:
+        response = response.json()
+    except AttributeError:
+        return
+    if response['success']:
+        subscriptions = response.get('update', [])
+        for subscription in subscriptions:
+            if not unread:
+                yield subscription['rid']
+            elif subscription['unread'] > 0:
+                yield subscription['rid']
