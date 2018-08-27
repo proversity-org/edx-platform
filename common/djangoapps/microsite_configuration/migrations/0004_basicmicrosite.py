@@ -8,7 +8,7 @@ import jsonfield.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('microsite_configuration', '0002_auto_20160202_0228'),
+        ('microsite_configuration', '0003_delete_historical_records'),
     ]
 
     operations = [
