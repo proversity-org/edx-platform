@@ -224,10 +224,11 @@ class DownloadReportView(APIView):
 
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename="completion-report.csv"'
+            response.write(u'\ufeff'.encode('utf8'))
+            writer = csv.writer(response, dialect='excel')
 
-            writer = csv.writer(response)
             for row in rows:
-                writer.writerow(row)
+                writer.writerow([field.encode('utf8') if isinstance(field, basestring) else field for field in row])
 
             return response
 
