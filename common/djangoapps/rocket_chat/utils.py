@@ -68,12 +68,7 @@ def initialize_api_rocket_chat(rocket_chat_settings):
     url_service = rocket_chat_settings.get('public_url_service', None)
 
     if not admin_user or not admin_pass or not url_service:
-        LOG.error(
-            'RocketChat settings error: admin_user = %s, admin_pass= %s, public_url_service= %s',
-            admin_user,
-            admin_pass,
-            url_service
-        )
+        LOG.error('RocketChat settings error: The rocketChat credentials can not be accessed')
         return None
 
     try:

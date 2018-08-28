@@ -47,7 +47,7 @@ class RocketChatCredentials(APIView):
                 if not user_info.get('success', False):
                     create_user(api_rocket_chat, user, course_key)
             except AttributeError:
-                LOG.error("Rocketchat API response with: %s", user_info)
+                LOG.error("Rocketchat API can not get the user information")
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             response = api_rocket_chat.users_create_token(
@@ -56,6 +56,7 @@ class RocketChatCredentials(APIView):
             try:
                 response = response.json()
             except AttributeError:
+                LOG.error("Rocketchat API can not create a user's token")
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             url_service = rocket_chat_settings.get('public_url_service', None)
@@ -73,4 +74,5 @@ class RocketChatCredentials(APIView):
             serializer.is_valid()
             return Response(serializer.data, status=status.HTTP_200_OK)
 
+        LOG.error("Rocketchat API object can not be initialized")
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
