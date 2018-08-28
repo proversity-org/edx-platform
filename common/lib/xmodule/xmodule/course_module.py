@@ -929,7 +929,7 @@ class CourseFields(object):
 
     required_activity_ids = List(
         display_name=_("Required Activity Ids"),
-        help=_("Specify what Activities will be required for the course"),
+        help=_("Specify the id of the activities that you want to track on the completion report"),
         default=[],
         scope=Scope.settings
     )
