@@ -14,7 +14,7 @@ from rocket_chat.utils import (
     create_user,
     get_subscriptions_rids,
 )
-from .serializers import RocketChatCredentialsSerializer
+from .serializers import RocketChatCredentialsSerializer, RocketChatChangeRoleSerializer
 
 LOG = logging.getLogger(__name__)
 
@@ -73,6 +73,56 @@ class RocketChatCredentials(APIView):
             )
             serializer.is_valid()
             return Response(serializer.data, status=status.HTTP_200_OK)
+
+        LOG.error("Rocketchat API object can not be initialized")
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class RocketChatChangeRole(APIView):
+
+    authentication_classes = (
+        SessionAuthentication,
+    )
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, course_id):
+        """
+        This methods allows to chege the role of a specific user
+        """
+        if not request.user.is_staff:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        serializer = RocketChatChangeRoleSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response("Data is not valid", status=status.HTTP_400_BAD_REQUEST)
+
+        username = serializer.data["username"]
+        role = serializer.data["role"]
+
+        rocket_chat_settings = get_rocket_chat_settings()
+
+        api_rocket_chat = initialize_api_rocket_chat(rocket_chat_settings)
+
+        if api_rocket_chat:
+
+            user_info = api_rocket_chat.users_info(username=username)
+
+            try:
+                user_info = user_info.json()
+                if not user_info.get('success', False):
+                    return Response(user_info.get("error"), status=status.HTTP_400_BAD_REQUEST)
+
+                user = user_info.get("user")
+                data = {"roles": [role]}
+                response = api_rocket_chat.users_update(user.get("_id"), **data)
+                if response.status_code == 200:
+                    return Response(status=status.HTTP_204_NO_CONTENT)
+                return Response(response.json().get("error"), status=status.HTTP_400_BAD_REQUEST)
+
+            except AttributeError:
+                LOG.error("Rocketchat API can not get the user information")
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         LOG.error("Rocketchat API object can not be initialized")
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)

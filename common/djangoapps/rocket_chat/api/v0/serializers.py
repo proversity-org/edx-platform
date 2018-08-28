@@ -6,3 +6,8 @@ class RocketChatCredentialsSerializer(serializers.Serializer):
     auth_token = serializers.CharField()
     user_id = serializers.CharField()
     room_ids = serializers.ListField(child=serializers.CharField())
+
+
+class RocketChatChangeRoleSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    role = serializers.CharField()

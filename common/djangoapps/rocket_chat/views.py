@@ -8,7 +8,8 @@ from opaque_keys.edx.keys import CourseKey
 
 from courseware.access import has_access
 from courseware.courses import get_course_with_access
-from student.models import CourseEnrollment
+from student.models import CourseEnrollment, CourseEnrollmentManager
+
 
 from xmodule.modulestore.django import modulestore
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
@@ -85,6 +86,9 @@ def rocket_chat_discussion(request, course_id):
 
             elif 'error' in response:
                 context['rocket_chat_error_message'] = response['error']
+
+            if user.is_staff:
+                context["users_enrolled"] = CourseEnrollmentManager().users_enrolled_in(course_key)
 
             return render_to_response('rocket_chat/rocket_chat.html', context)
 
