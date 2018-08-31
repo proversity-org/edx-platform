@@ -1146,7 +1146,7 @@ def grading_handler(request, course_key_string, grader_index=None):
                 'course_locator': course_key,
                 'course_details': course_details,
                 'grading_url': reverse_course_url('grading_handler', course_key),
-                'is_credit_course': is_credit_course(course_key)
+                'is_credit_course': is_credit_course(course_key),
             })
         elif 'application/json' in request.META.get('HTTP_ACCEPT', ''):
             if request.method == 'GET':

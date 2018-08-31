@@ -6,7 +6,7 @@ define(['backbone', 'underscore', 'gettext'], function(Backbone, _, gettext) {
             'drop_count': 0,
             'short_label': '', // what to use in place of type if space is an issue
             'weight': 0, // int 0..100
-            'actual_count': 0 // Current number of at assigned to
+            'actual_count': 0 // Current count of subsections assigned to this grader
         },
         parse: function(attrs) {
         // round off values while converting them to integer
