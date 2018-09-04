@@ -11417,3 +11417,79 @@ msgstr ""
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Use Current Transcript"
 msgstr "Utiliser la transcription courante"
+
+# Missing Translations
+
+#: Found in edx-theme-microsites and not localized
+msgid ""
+"Passwords must have a minimum of length of 8 characters, "
+"contain a mix of upper and lowercase letters, "
+"have at least 1 number as well as a special character: eg: !@#$%^&*+=?/~"
+msgstr ""
+"Les mots de passe doivent posséder un minimum de 8 caractères, "
+"contenir un mélange de lettres majuscules et minuscules, "
+"avoir au moins 1 chiffre et un caractère spécial: par exemple:! @ # $% ^ & * + =? / ~"
+
+#: Found in edx-theme-microsites and localized
+msgid "Cookie Policy"
+msgstr "Politique de cookie"
+
+#: Found in edx-theme-microsites and localized
+msgid "Or explore other courses"
+msgstr "Ou explorer d'autres cours"
+
+#: ?
+msgid "Resource"
+msgstr "Ressources"
+
+#: Found in edx-theme-microsites and localized
+msgid "Have a question about something? You can contact the support team directly:"
+msgstr "Vous avez une question sur quelque chose? Vous pouvez contacter l'équipe d'assistance directement:"
+
+#: Found in edx-theme-microsites and localized
+msgid ""
+"Please note: The support team is English speaking. While we will do our best "
+"to address your inquiry in any language, our responses will be in English."
+msgstr ""
+"L'équipe de support est anglophone. Bien que nous fassions de notre mieux pour "
+"répondre à votre demande dans n'importe quelle langue, nos réponses seront en anglais."
+
+#: Found in edx-theme-microsites and localized
+msgid "Briefly describe your suggestion"
+msgstr "Décrivez brièvement votre suggestion"
+
+#: Found in edx-theme-microsites and localized
+msgid ""
+"Please give us specific details of where in the course your suggestion is related to, "
+"and why you are making that suggestion."
+msgstr ""
+"S'il vous plaît, donnez-nous des détails précis sur la relation entre votre suggestion "
+"et la raison pour laquelle vous faites cette suggestion."
+
+#: Found in edx-theme-microsites and localized
+msgid "Briefly state your question here"
+msgstr "Brièvement énoncez vos questions ici"
+
+#: Found in edx-theme-microsites and localized
+msgid ""
+"Please tell us the details of where in the course your question "
+"relates to so that we can give you a detailed answer."
+msgstr ""
+"Veuillez nous indiquer les détails du cours auquel votre question "
+"se rapporte afin que nous puissions vous donner une réponse détaillée."
+
+#: lms/templates/instructor/instructor_dashboard_2/data_download.html
+msgid ""
+"To generate a CSV file that lists all student answers to a given problem, "
+"enter the location of the problem (from its Staff Debug Info). "
+msgstr ""
+"Pour générer un fichier CSV répertoriant toutes les réponses des élèves à un problème donné, "
+"entrez l'emplacement du problème (à partir des informations de débogage du personnel)."
+
+#: lms/templates/instructor/instructor_dashboard_2/data_download.html
+msgid "Problem location:"
+msgstr "Emplacement du problème:"
+
+#: lms/templates/instructor/instructor_dashboard_2/data_download.html
+msgid "Download CSV of students Certificates Status"
+msgstr "Télécharger le CSV des étudiants Statut des certificats"
