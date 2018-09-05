@@ -34,7 +34,7 @@ from course_modes.models import CourseMode
 from edxmako.shortcuts import render_to_response, render_to_string
 from lms.djangoapps.commerce.utils import EcommerceService, is_account_activation_requirement_disabled
 from lms.djangoapps.verify_student.image import InvalidImageData, decode_image_data
-from lms.djangoapps.verify_student.models import SoftwareSecurePhotoVerification, VerificationDeadline
+from lms.djangoapps.verify_student.models import SoftwareSecurePhotoVerification, VerificationDeadline, get_verify_student_settings
 from lms.djangoapps.verify_student.ssencrypt import has_valid_signature
 from openedx.core.djangoapps.commerce.utils import ecommerce_api_client
 from openedx.core.djangoapps.embargo import api as embargo_api
@@ -400,8 +400,12 @@ class PayAndVerifyView(View):
 
         # get available payment processors
         if relevant_course_mode.sku:
-            # transaction will be conducted via ecommerce service
-            processors = ecommerce_api_client(request.user).payment.processors.get()
+            try:
+                processors = ecommerce_api_client(request.user).payment.processors.get()
+            except Exception as e:
+                log.info(str(e))
+
+            processors = ["cybersource","paypal","stripe"]
         else:
             # transaction will be conducted using legacy shopping cart
             processors = [settings.CC_PROCESSOR_NAME]
@@ -1126,13 +1130,17 @@ def results_callback(request):
         "Date": request.META.get("HTTP_DATE", "")
     }
 
+    VERIFY_STUDENT = get_verify_student_settings()
+    api_access_key = VERIFY_STUDENT["API_ACCESS_KEY"]
+    api_secret_key = VERIFY_STUDENT["API_SECRET_KEY"]
+
     body_for_signature = {"EdX-ID": body_dict["EdX-ID"]}
     has_valid_signature(
         "POST",
         headers,
         body_for_signature,
-        settings.VERIFY_STUDENT["SOFTWARE_SECURE"]["API_ACCESS_KEY"],
-        settings.VERIFY_STUDENT["SOFTWARE_SECURE"]["API_SECRET_KEY"]
+        api_access_key,
+        api_secret_key
     )
 
     _response, access_key_and_sig = headers["Authorization"].split(" ")
@@ -1143,7 +1151,7 @@ def results_callback(request):
     #    return HttpResponseBadRequest("Signature is invalid")
 
     # This is what we're doing until we can figure out why we disagree on sigs
-    if access_key != settings.VERIFY_STUDENT["SOFTWARE_SECURE"]["API_ACCESS_KEY"]:
+    if access_key != api_access_key:
         return HttpResponseBadRequest("Access key invalid")
 
     receipt_id = body_dict.get("EdX-ID")

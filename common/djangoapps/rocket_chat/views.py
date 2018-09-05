@@ -8,15 +8,13 @@ from opaque_keys.edx.keys import CourseKey
 
 from courseware.access import has_access
 from courseware.courses import get_course_with_access
-from student.models import CourseEnrollment
+from student.models import CourseEnrollment, CourseEnrollmentManager
+
 
 from xmodule.modulestore.django import modulestore
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 
-from rocketchat_API.rocketchat import RocketChat as ApiRocketChat
-from rocketchat_API.APIExceptions.RocketExceptions import RocketAuthenticationException, RocketConnectionException
-
-from .utils import create_course_group, create_user, get_rocket_chat_settings
+from .utils import create_course_group, create_user, get_rocket_chat_settings, initialize_api_rocket_chat
 
 LOG = logging.getLogger(__name__)
 
@@ -55,41 +53,9 @@ def rocket_chat_discussion(request, course_id):
 
         rocket_chat_settings = get_rocket_chat_settings()
 
-        if rocket_chat_settings:
+        api_rocket_chat = initialize_api_rocket_chat(rocket_chat_settings)
 
-            admin_user = rocket_chat_settings.get('admin_user', None)
-            admin_pass = rocket_chat_settings.get('admin_pass', None)
-            url_service = rocket_chat_settings.get('public_url_service', None)
-
-            if not admin_user or not admin_pass or not url_service:
-                LOG.error(
-                    'RocketChat settings error: admin_user = %s, admin_pass= %s, public_url_service= %s',
-                    admin_user,
-                    admin_pass,
-                    url_service
-                )
-                context['rocket_chat_error_message'] = 'Rocket chat service is currently not available'
-                return render_to_response('rocket_chat/rocket_chat.html', context)
-
-            try:
-                api_rocket_chat = ApiRocketChat(
-                    admin_user,
-                    admin_pass,
-                    url_service
-                )
-            except RocketAuthenticationException:
-
-                LOG.error('ApiRocketChat error: RocketAuthenticationException')
-                context['rocket_chat_error_message'] = 'Rocket chat service is currently not available'
-
-                return render_to_response('rocket_chat/rocket_chat.html', context)
-
-            except RocketConnectionException:
-
-                LOG.error('ApiRocketChat error: RocketConnectionException')
-                context['rocket_chat_error_message'] = 'Rocket chat service is currently not available'
-
-                return render_to_response('rocket_chat/rocket_chat.html', context)
+        if api_rocket_chat:
 
             user_info = api_rocket_chat.users_info(username=user.username)
 
@@ -120,6 +86,9 @@ def rocket_chat_discussion(request, course_id):
 
             elif 'error' in response:
                 context['rocket_chat_error_message'] = response['error']
+
+            if user.is_staff:
+                context["users_enrolled"] = CourseEnrollmentManager().users_enrolled_in(course_key)
 
             return render_to_response('rocket_chat/rocket_chat.html', context)
 

@@ -142,9 +142,9 @@ REQUIRE_DEBUG = DEBUG
 OAUTH_OIDC_ISSUER = 'http://127.0.0.1:8000/oauth2'
 
 JWT_AUTH.update({
-    'JWT_SECRET_KEY': 'lms-secret',
+    'JWT_SECRET_KEY': 'ecommerce-secret',
     'JWT_ISSUER': 'http://127.0.0.1:8000/oauth2',
-    'JWT_AUDIENCE': 'lms-key',
+    'JWT_AUDIENCE': 'ecommerce-key',
 })
 
 #####################################################################

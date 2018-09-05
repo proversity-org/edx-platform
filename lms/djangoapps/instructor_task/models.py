@@ -28,6 +28,7 @@ from opaque_keys.edx.django.models import CourseKeyField
 from six import text_type
 
 from openedx.core.storage import get_storage
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 
 logger = logging.getLogger(__name__)
 
@@ -194,7 +195,7 @@ class ReportStore(object):
         """
         # Convert old configuration parameters to those expected by
         # DjangoStorageReportStore for backward compatibility
-        config = getattr(settings, config_name, {})
+        config = configuration_helpers.get_value(config_name, getattr(settings, config_name, {}))
         storage_type = config.get('STORAGE_TYPE', '').lower()
         if storage_type == 's3':
             return DjangoStorageReportStore(

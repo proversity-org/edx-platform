@@ -5,6 +5,7 @@ from lms.djangoapps.completion.models import BlockCompletion
 from lms.djangoapps.completion.waffle import visual_progress_enabled
 from lms.djangoapps.course_api.blocks.api import get_blocks
 from lms.djangoapps.course_blocks.utils import get_student_module_as_dict
+from lms.djangoapps.courseware.courses import get_course_by_id
 from opaque_keys.edx.keys import CourseKey, UsageKey
 from opaque_keys.edx.locator import BlockUsageLocator
 from openedx.core.djangoapps.request_cache.middleware import request_cached
@@ -118,6 +119,7 @@ def get_course_outline_block_tree(request, course_id):
                 block['children'][-1]['resume_block'] = True
 
     course_key = CourseKey.from_string(course_id)
+    course = get_course_by_id(course_key)
     course_usage_key = modulestore().make_course_usage_key(course_key)
 
     if visual_progress_enabled(course_key=course_key):
@@ -133,6 +135,10 @@ def get_course_outline_block_tree(request, course_id):
             'video',
             'discussion'
         ]
+        custom_block_types = course.custom_block_type_keys
+        if custom_block_types:
+            for block_type in custom_block_types:
+                block_types_filter.append(block_type)
     else:
         # Shallower query is sufficient for last accessed block
         block_types_filter = [

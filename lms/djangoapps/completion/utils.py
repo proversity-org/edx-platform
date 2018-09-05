@@ -1,0 +1,161 @@
+import logging
+import pytz
+
+from xmodule.modulestore.django import modulestore
+from xmodule.modulestore.exceptions import ItemNotFoundError
+from student.models import get_user
+
+from lms.djangoapps.completion.models import BlockCompletion
+from lms.djangoapps.course_blocks.api import get_course_blocks
+from lms.djangoapps.courseware.courses import get_course_by_id
+from lms.djangoapps.instructor_task.models import ReportStore
+
+from opaque_keys.edx.locator import BlockUsageLocator
+
+logger = logging.getLogger(__name__)
+
+
+class GenerateCompletionReport(object):
+
+    def __init__(self, users, course_key):
+
+        self.users = users
+        self.course_key = course_key
+        self.course = get_course_by_id(self.course_key)
+
+    def generate_rows(self):
+        """
+        Returns a list with the headings and data for every user
+        """
+        rows = []
+
+        fieldnames = ['full_name',
+                      'user_id',
+                      'username',
+                      'email',
+                      'first_login',
+                      'last_login',
+                      'days_since_last_login',
+                      'completed_activities',
+                      'total_program_activities'
+                      ]
+
+        required_ids = self.get_required_ids()
+
+        for id in required_ids:
+            block_type, block_id = id.rsplit("+block@")
+            locator = BlockUsageLocator(self.course_key, block_type, block_id)
+
+            try:
+                block = modulestore().get_item(locator)
+            except ItemNotFoundError as item_error:
+                logger.warn("The provider id is not valid, error %s", item_error)
+                continue
+
+            unit_name = block.get_parent().display_name
+            block_name = block.display_name
+            fieldnames.append("required_activity => {}-{}".format(unit_name, block_name))
+
+        rows.append(fieldnames)
+
+        for user in self.users:
+            user, u_prof = get_user(user.email)
+            completed_activities = self.get_completed_activities(user)
+            activities = self.get_activities(user)
+            last_login = user.last_login
+            days_since_last_login = -1
+            disp_last_login = None
+            # Last login could not be defined for a user
+            if last_login:
+                disp_last_login = last_login.strftime('%Y/%m/%d %H:%M:%S')
+                diff_since_last_login = (last_login.utcnow().replace(tzinfo=pytz.UTC) -
+                                         last_login)
+                days_since_last_login = diff_since_last_login.days
+
+            data = [u_prof.name,
+                    user.id,
+                    user.username,
+                    user.email,
+                    user.date_joined.strftime('%Y/%m/%d %H:%M:%S'),
+                    disp_last_login,
+                    days_since_last_login,
+                    len(completed_activities),
+                    len(activities)
+                    ]
+
+            for id in required_ids:
+                block_type, block_id = id.rsplit("+block@")
+                state = "completed" if self.is_activity_completed(
+                    block_id, completed_activities) else "not_completed"
+                data.append(state)
+
+            rows.append(data)
+
+        return rows
+
+    def get_activities(self, user):
+        """
+        Return the avalaible activities on the course
+        """
+        usage_key = modulestore().make_course_usage_key(self.course_key)
+        blocks = get_course_blocks(user, usage_key)
+
+        block_types_filter = [
+            'html',
+            'problem',
+            'video',
+            'discussion',
+        ]
+
+        custom_block_types = self.course.custom_block_type_keys
+
+        if custom_block_types:
+                for block_type in custom_block_types:
+                    block_types_filter.append(block_type)
+
+        # filter blocks by types
+        if block_types_filter:
+            block_keys_to_remove = []
+            for block_key in blocks:
+                block_type = blocks.get_xblock_field(block_key, 'category')
+                if block_type not in block_types_filter:
+                    block_keys_to_remove.append(block_key)
+            for block_key in block_keys_to_remove:
+                blocks.remove_block(block_key, keep_descendants=True)
+
+        return blocks
+
+    def get_completed_activities(self, user):
+        """
+        Return blocks that have been completed by the user
+        """
+        return BlockCompletion.get_course_completions(user, self.course_key)
+
+    def get_required_ids(self):
+        """
+        This get the ids for the required activities
+        """
+        return self.course.required_activity_ids
+
+    def is_activity_completed(self, id, activities):
+        """
+        Verify if the id exist for the given activity list
+        """
+        for activity in activities:
+            if id == activity.block_id:
+                return True
+        return False
+
+    def store_report(self, rows):
+        """
+        Store a CVS file with the data in rows
+        """
+        config_name = "COMPLETION_DOWNLOAD"
+        report_store = ReportStore.from_config(config_name)
+        report_store.store_rows(self.course_key, "completion_data.csv", rows)
+        return report_store.links_for(self.course_key)[0][1]
+
+    @staticmethod
+    def serialize_rows(rows):
+        headers = rows.pop(0)
+        return [dict(zip(headers, row)) for row in rows]
