@@ -27840,14 +27840,14 @@ msgstr ""
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid ""
 "To generate a CSV file that lists all student answers to a given problem, "
-"enter the location of the problem (from its Staff Debug Info). "
+"enter the location of the problem (from its Staff Debug Info)."
 msgstr ""
 "Pour générer un fichier CSV répertoriant toutes les réponses des élèves à un problème donné, "
 "entrez l'emplacement du problème (à partir des informations de débogage du personnel)."
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
-msgid "Problem location:"
-msgstr "Emplacement du problème:"
+msgid "Problem location: "
+msgstr "Emplacement du problème: "
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid "Download CSV of students Certificates Status"
