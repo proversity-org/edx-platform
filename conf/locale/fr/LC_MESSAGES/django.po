@@ -27856,5 +27856,5 @@ msgstr "Conditions d'utilisation et Code d'honneur"
 
 #: Found in edx-theme-microsites and localized
 #: GCS/templates/courseware/course_about.html
-msgid "Enrol Now"
+msgid "Enrol now"
 msgstr "Inscrivez-vous maintenant"

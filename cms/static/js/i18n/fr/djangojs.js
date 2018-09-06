@@ -659,7 +659,7 @@
     "Endorse": "Approuver", 
     "Ends {end}": "Finit \u00e0 {end}", 
     "Engage with posts": "Participez \u00e0 la conversation", 
-    "Enrol Now": "Inscrivez-vous maintenant", 
+    "Enrol now": "Inscrivez-vous maintenant", 
     "Enroll Now": "Inscrivez-vous maintenant", 
     "Enrolled": "Inscrit", 
     "Enrolling you in the selected course": "Inscription en cours", 
