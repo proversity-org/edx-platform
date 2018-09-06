@@ -19,7 +19,7 @@ class SoftwareSecureFakeViewTest(UrlResetMixin, TestCase):
 
     def setUp(self, **kwargs):
         enable_software_secure_fake = kwargs.get('enable_software_secure_fake', False)
-        with patch.dict('django.conf.settings.FEATURES', {'ENABLE_SOFTWARE_SECURE_FAKE': enable_software_secure_fake}):
+        with patch.dict('django.conf.settings.FEATURES', {'ENABLE_SOFTWARE_SECURE_FAKE': True}):
             super(SoftwareSecureFakeViewTest, self).setUp()
 
         self.user = UserFactory.create(username="test", password="test")
@@ -43,6 +43,7 @@ class SoftwareSecureFakeViewDisabledTest(SoftwareSecureFakeViewTest):
         response = self.client.get(
             '/verify_student/software-secure-fake-response'
         )
+        print response
 
         self.assertEqual(response.status_code, 404)
 
