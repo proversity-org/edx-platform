@@ -43,8 +43,6 @@ class SoftwareSecureFakeViewDisabledTest(SoftwareSecureFakeViewTest):
         response = self.client.get(
             '/verify_student/software-secure-fake-response'
         )
-        print response
-
         self.assertEqual(response.status_code, 404)
 
 
