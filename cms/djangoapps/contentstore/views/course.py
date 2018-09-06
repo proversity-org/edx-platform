@@ -324,7 +324,7 @@ def course_search_index_handler(request, course_key_string):
         }), content_type=content_type, status=200)
 
 
-def _course_outline_json(request, course_module):
+def _course_outline_json(request, course_module, graders=None):
     """
     Returns a JSON representation of the course module and recursively all of its children.
     """
@@ -338,6 +338,7 @@ def _course_outline_json(request, course_module):
         course_outline=False if is_concise else True,
         include_children_predicate=include_children_predicate,
         is_concise=is_concise,
+        graders=graders,
         user=request.user
     )
 
@@ -1137,7 +1138,7 @@ def grading_handler(request, course_key_string, grader_index=None):
     with modulestore().bulk_operations(course_key):
         course_module = get_course_and_check_access(course_key, request.user)
         course_details = CourseGradingModel.fetch(course_key)
-        course_structure = _course_outline_json(request, course_module)
+        course_structure = _course_outline_json(request, course_module, graders=course_details.graders)
         course_details.count_assignment_types(course_structure)
 
         if 'text/html' in request.META.get('HTTP_ACCEPT', '') and request.method == 'GET':
@@ -1167,7 +1168,7 @@ def grading_handler(request, course_key_string, grader_index=None):
                 # None implies update the whole model (cutoffs, graceperiod, and graders) not a specific grader
                 if grader_index is None:
                     course_details = CourseGradingModel.update_from_json(course_key, request.json, request.user)
-                    course_structure = _course_outline_json(request, course_module)
+                    course_structure = _course_outline_json(request, course_module, graders=course_details.graders)
                     course_details.count_assignment_types(course_structure)
                     return JsonResponse(
                         course_details,
