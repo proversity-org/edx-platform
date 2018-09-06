@@ -27777,28 +27777,24 @@ msgstr "CRÉER UN GROUPE"
 
 #: Found in edx-theme-microsites and not localized
 msgid ""
-"Passwords must have a minimum of length of 8 characters, "
+"Passwords must have a minimum length of 8 characters, "
 "contain a mix of upper and lowercase letters, "
-"have at least 1 number as well as a special character: eg: !@#$%^&*+=?/~"
+"have at least 1 number as well as a special character: eg: !@#$%^&*_+=?/~"
 msgstr ""
 "Les mots de passe doivent posséder un minimum de 8 caractères, "
 "contenir un mélange de lettres majuscules et minuscules, "
-"avoir au moins 1 chiffre et un caractère spécial: par exemple:! @ # $% ^ & * + =? / ~"
+"avoir au moins 1 chiffre et un caractère spécial: par exemple:! @ # $% ^ & *  _ + =? / ~"
 
 #: Found in edx-theme-microsites and localized
 msgid "Cookie Policy"
 msgstr "Politique de cookie"
 
-#: lms/templates/learner_dashboard/course_enroll.underscore
-msgid "Enroll Now"
-msgstr "Inscrivez-vous maintenant"
-
 #: Found in edx-theme-microsites and localized
 msgid "Or explore other courses"
 msgstr "Ou explorer d'autres cours"
 
-#: ?
-msgid "Resource"
+#: Courseware tab added manually in studio
+msgid "Resources"
 msgstr "Ressources"
 
 #: Found in edx-theme-microsites and localized
@@ -27852,3 +27848,13 @@ msgstr "Emplacement du problème: "
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid "Download CSV of students Certificates Status"
 msgstr "Télécharger le CSV des étudiants Statut des certificats"
+
+#: Found in edx-theme-microsites and localized
+#: GCS/templates/footer.html
+msgid "Terms of Service and Honour Code"
+msgstr "Conditions d'utilisation et Code d'honneur"
+
+#: Found in edx-theme-microsites and localized
+#: GCS/templates/courseware/course_about.html
+msgid "Enrol Now"
+msgstr "Inscrivez-vous maintenant"
