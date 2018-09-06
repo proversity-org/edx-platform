@@ -27846,7 +27846,7 @@ msgid "Problem location: "
 msgstr "Emplacement du problème: "
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
-msgid "Download CSV of students Certificates Status"
+msgid "Download CSV of Students Certificates Status"
 msgstr "Télécharger le CSV des étudiants Statut des certificats"
 
 #: Found in edx-theme-microsites and localized

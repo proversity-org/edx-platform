@@ -600,7 +600,7 @@
     "Donate": "Faire un don", 
     "Double-check that your webcam is connected and working to continue.": "V\u00e9rifiez que votre webcam est bien connect\u00e9e avant de continuer.", 
     "Download": "T\u00e9l\u00e9charger", 
-    "Download CSV of students Certificates Status": "T\u00e9l\u00e9charger le CSV des \u00e9tudiants Statut des certificats", 
+    "Download CSV of Students Certificates Status": "T\u00e9l\u00e9charger le CSV des \u00e9tudiants Statut des certificats", 
     "Download Transcript for Editing": "T\u00e9l\u00e9charger la transcription pour l'\u00e9diter", 
     "Download URL": "URL de t\u00e9l\u00e9chargement", 
     "Download available encodings (.csv)": "T\u00e9l\u00e9charger les encodages disponibles (.csv)", 
