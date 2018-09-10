@@ -6,7 +6,7 @@ define(['js/views/validation',
         'edx-ui-toolkit/js/utils/string-utils',
         'edx-ui-toolkit/js/utils/html-utils',
         'js/models/assignment_type_summary',
-        'js/views/assignment_type_summary'
+        'js/views/modals/assignment_type_summary'
     ],
     function(ValidatingView, _, $, ui, GraderView, StringUtils, HtmlUtils, AssignmentTypeSummaryModel, AssignmentTypeSummaryDialogView) {
         var GradingView = ValidatingView.extend({
