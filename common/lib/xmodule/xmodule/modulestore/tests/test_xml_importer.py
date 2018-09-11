@@ -15,6 +15,7 @@ from xmodule.modulestore.xml_importer import (
     _update_module_location
 )
 from xmodule.modulestore.tests.mongo_connection import MONGO_PORT_NUM, MONGO_HOST
+from opaque_keys.edx.keys import CourseKey
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xmodule.tests import DATA_DIR
 import os
