@@ -160,8 +160,9 @@ class GenerateCompletionReport(object):
         """
         count = 0
         for id in required_ids:
+            block_type, block_id = id.rsplit("+block@")
             for activity in activities:
-                if id == activity.block_id:
+                if block_id == activity.block_id:
                     count += 1
 
         return count
