@@ -1155,7 +1155,7 @@
     "Password Status": "\u00c9tat du mot de passe", 
     "Password assistance": "Aide mot de passe", 
     "Password is incorrect": "Mot de passe incorrect.", 
-    "Passwords must have a minimum length of 8 characters, contain a mix of upper and lowercase letters, have at least 1 number as well as a special character: eg: !@#$%^&*_+=?/~": "Les mots de passe doivent poss\u00e9der un minimum de 8 caract\u00e8res, contenir un m\u00e9lange de lettres majuscules et minuscules, avoir au moins 1 chiffre et un caract\u00e8re sp\u00e9cial: par exemple:! @ # $% ^ & *  _ + =? / ~", 
+    "Passwords must have a minimum length of 8 characters, contain a mix of upper and lowercase letters, and have at least 1 number.": "Les mots de passe doivent poss\u00e9der un minimum de 8 caract\u00e8res, contenir un m\u00e9lange de lettres majuscules et minuscules, et avoir au moins 1 chiffre.", 
     "Paste": "Coller", 
     "Paste as text": "Coller comme un texte", 
     "Paste is now in plain text mode. Contents will now be pasted as plain text until you toggle this option off.": "Coller se fait maintenant en mode texte brut. Les contenus seront maintenant coll\u00e9s sous forme de texte seul  jusqu'\u00e0 ce que vous appuyez \u00e0 nouveau sur cette option.", 

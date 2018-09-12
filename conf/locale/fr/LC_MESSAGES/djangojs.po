@@ -11424,11 +11424,11 @@ msgstr "Utiliser la transcription courante"
 msgid ""
 "Passwords must have a minimum length of 8 characters, "
 "contain a mix of upper and lowercase letters, "
-"have at least 1 number as well as a special character: eg: !@#$%^&*_+=?/~"
+"and have at least 1 number."
 msgstr ""
 "Les mots de passe doivent posséder un minimum de 8 caractères, "
 "contenir un mélange de lettres majuscules et minuscules, "
-"avoir au moins 1 chiffre et un caractère spécial: par exemple:! @ # $% ^ & *  _ + =? / ~"
+"et avoir au moins 1 chiffre."
 
 #: Found in edx-theme-microsites and localized
 msgid "Cookie Policy"
