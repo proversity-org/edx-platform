@@ -11503,3 +11503,13 @@ msgstr "Conditions d'utilisation et Code d'honneur"
 #: GCS/templates/courseware/course_about.html
 msgid "Enrol now"
 msgstr "Inscrivez-vous maintenant"
+
+#: Found in edx-theme-microsites and localized
+#: GCS/templates/courseware/course_about.html
+msgid "Enrolment in this course is by invitation only"
+msgstr "L'inscription dans cette matière est sur invitation uniquement"
+
+#: Found in edx-theme-microsites and localized
+#: GCS/templates/navigation/navbar-logo-header.html
+msgid "Hi"
+msgstr "Hé"
