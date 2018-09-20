@@ -3562,3 +3562,6 @@ ALLOW_PROFILE_DOWNLOAD = True
 #   per microsite. The report will exclusively contain the configured fields
 # - By default, the report will only contain the email field
 GDPR_MODE_PROFILE_DOWNLOAD = False
+
++# Queue to use for updating persistent grades
++RECALCULATE_GRADES_ROUTING_KEY = LOW_PRIORITY_QUEUE
