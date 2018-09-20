@@ -710,6 +710,18 @@ class CourseGradingTest(CourseTestCase):
             mock.call(sender=CourseGradingModel, user_id=self.user.id, course_id=self.course.id),
         ])
 
+    def test_actual_count_key(self):
+        grader_url = get_url(self.course.id, 'grading_handler')
+        grader_sample = self._model_from_url(grader_url + '/1')
+        # We need to ensure that individual graders not contain actual_count key,
+        # since it is not part of the model itself.
+        self.assertNotIn('actual_count', grader_sample)
+        all_graders = self._model_from_url(grader_url)
+        # When we fetch all graders, the actual_count key must be exist
+        # in every grader, since it is added in runtime.
+        for element in all_graders['graders']:
+            self.assertIn('actual_count', element)
+
     def setup_test_set_get_section_grader_ajax(self):
         """
         Populate the course, grab a section, get the url for the assignment type access
