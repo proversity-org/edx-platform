@@ -582,7 +582,7 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
                 data={
                     "message": (
                         u"An error occurred while retrieving enrollments for user '{username}'"
-                    ).format(username=real_username)
+                    ).format(username=username)
                 }
             )
 
