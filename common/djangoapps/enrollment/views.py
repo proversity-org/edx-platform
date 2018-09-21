@@ -184,6 +184,7 @@ class EnrollmentView(APIView, ApiKeyPermissionMixIn):
             A JSON serialized representation of the course enrollment.
 
         """
+
         username = username or request.user.username
 
         # TODO Implement proper permissions
@@ -569,18 +570,34 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
         courses.
         """
         username = request.GET.get('user', request.user.username)
+
         try:
-            enrollment_data = api.get_enrollments(username)
+          if '@' in username:
+            real_username = django_user.objects.get(email=username).username
+          else:
+            real_username = django_user.objects.get(username=username).username
+        except django_user.DoesNotExist:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "message": (
+                        u"An error occurred while retrieving enrollments for user '{username}'"
+                    ).format(username=real_username)
+                }
+            )
+
+        try:
+            enrollment_data = api.get_enrollments(real_username)
         except CourseEnrollmentError:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={
                     "message": (
                         u"An error occurred while retrieving enrollments for user '{username}'"
-                    ).format(username=username)
+                    ).format(username=real_username)
                 }
             )
-        if username == request.user.username or GlobalStaff().has_user(request.user) or \
+        if real_username == request.user.username or GlobalStaff().has_user(request.user) or \
                 self.has_api_key_permissions(request):
             return Response(enrollment_data)
         filtered_data = []
