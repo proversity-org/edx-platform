@@ -73,10 +73,12 @@
      function($) {
         return function(options){
             var url_credentials = options["url_credentials"]
+            var courseId = options["course_id"]
             $(document).ready(function() {
                 $.ajax({
                     type: "GET",
                     url: url_credentials,
+                    data: {courseId},
                     success: connectWebSocket,
                 });
             });

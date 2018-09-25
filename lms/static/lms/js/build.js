@@ -37,7 +37,7 @@
             'js/learner_dashboard/entitlement_unenrollment_factory',
             'js/learner_dashboard/program_details_factory',
             'js/learner_dashboard/program_list_factory',
-            'js/rocket_chat/rocket_chat_navigation',
+            'js/rocket_chat/rocket_chat_factory',
             'js/rocketchat_notifications',
             'js/student_account/logistration_factory',
             'js/student_account/views/account_settings_factory',
