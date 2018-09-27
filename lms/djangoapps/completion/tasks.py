@@ -3,14 +3,12 @@ from opaque_keys.edx.keys import CourseKey
 
 from django.contrib.auth.models import User
 
-from microsite_configuration import microsite
 from lms.djangoapps.completion.utils import GenerateCompletionReport
 
 
 @task(default_retry_delay=5, max_retries=5)
-def generate_report(course_id, store_report, site_name):
+def generate_report(course_id, store_report):
 
-    microsite.set_by_domain(site_name)
     course_key = CourseKey.from_string(course_id)
 
     # Getting all students enrolled on the course except staff users
