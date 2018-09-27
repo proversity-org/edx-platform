@@ -27868,3 +27868,18 @@ msgstr "L'inscription dans cette matière est sur invitation uniquement"
 #: GCS/templates/navigation/navbar-logo-header.html
 msgid "Hi"
 msgstr "Hé"
+
+#: Found in edx-theme-microsites and localized
+#: GCS/templates/student_account/login_and_register.html
+#: openedx/core/djangoapps/user_api/accounts/__init__.py
+#: openedx/core/djangoapps/user_api/api.py
+msgid ""
+"Usernames can only contain letters (A-Z, a-z), numerals (0-9), underscores "
+"(_), and hyphens (-). "
+"The name that will identify you in your courses. "
+"It cannot be changed later."
+msgstr ""
+"Les noms d'utilisateur peuvent seulement contenir des lettres (A-Z, a-z), "
+"des chiffres (0-9), des tirets bas (_) et des traits d'union (-). "
+"Le nom qui permettra de vous identifier en cours. Il ne pourra pas être "
+"modifié plus tard."

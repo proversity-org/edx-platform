@@ -41,7 +41,7 @@
                     $.ajax({
                         type: "POST",
                         url: url_change_role,
-                        data: {username, role},
+                        data: {"username": username, "role": role},
                         success: function(){
                             input.val("");
                             alert("The role has been changed");
