@@ -13,7 +13,7 @@
                     $.ajax({
                         type: "GET",
                         url: urlLogout,
-                        data: {beacon_rc},
+                        data: {"beacon_rc": beacon_rc},
                     });
                     localStorage.setItem("beacon_rc", beacon);
                 } else {
