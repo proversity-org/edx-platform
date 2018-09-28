@@ -6,10 +6,9 @@ import copy
 from celery.result import AsyncResult
 
 from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import ugettext as _
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.db import DatabaseError
 
 from rest_framework_oauth.authentication import OAuth2Authentication
@@ -33,7 +32,6 @@ from openedx.core.lib.api.permissions import IsStaffOrOwner
 from student.models import CourseEnrollment
 from completion import waffle
 from lms.djangoapps.completion.utils import GenerateCompletionReport
-from lms.djangoapps.completion.api.v1.serializers import CompletionReportSerializer
 from lms.djangoapps.completion.tasks import generate_report
 
 logger = logging.getLogger(__name__)
@@ -163,48 +161,90 @@ class CompletionReportView(APIView):
         JwtAuthentication,
         SessionAuthentication
     )
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrOwner)
 
     def get(self, request, task_id):
+        """
+        This method returns a response value with the following structure
 
+        if the task has been completed
+        {
+          "status": "Completed",
+          "link": "report link",
+          "result": [
+            {'First Name': 'first name',
+             'Last Name': 'last name',
+             'Student Enrollment ID': user_id,
+             'Email': email,
+             'First Login': first login,
+             'Last Login': last login,
+             'Completed Activities': completed activities,
+             'Total Activities': total activities,
+             'Module Code': module code
+             },
+            {......},
+            {......},
+          ]
+        }
+
+        if the task has not been completed
+        {
+          "status": "Pending",
+          "link": null,
+          "result": []
+        }
+
+        """
         task = AsyncResult(id=task_id)
+        result = None
+        url = None
 
-        if task.ready():
+        if task.successful():
             # Extracting a deep copy of the result to prevent changing the object
-            cleaned_task_result = copy.deepcopy(task.get())
-            rows, url = cleaned_task_result
+            rows, url = copy.deepcopy(task.get())
             result = GenerateCompletionReport.serialize_rows(rows)
 
-            if url is None:
-                url = reverse('completion_api:v1:download-completion-report', kwargs={"task_id": task.id})
+            if not url:
+                url = reverse("completion_api:v1:download-completion-report", kwargs={"task_id": task.id})
+        elif task.failed():
+            result = task.info.message
 
-            serializer = CompletionReportSerializer(data={"status": task.status, "result": result, "link": url})
-            serializer.is_valid()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-        serializer = CompletionReportSerializer(data={"status": task.status, "result": None, "link": None})
-        serializer.is_valid()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            return JsonResponse(
+                data={"status": task.status, "result": result, "link": url},
+                status=status.HTTP_202_ACCEPTED,
+            )
+        except TypeError:
+            raise Http404
 
     def post(self, request, course_id):
-
+        """
+        This method starts a celery task that generates a report with the information about
+        the required activities and its state.
+        Response format
+            {
+                "state_url": "/api/completion/v1/completion-report/YOUR_TASK_ID/status/"
+            }
+        """
         try:
             CourseKey.from_string(course_id)
         except InvalidKeyError:
             raise API_ValidationError(["The provided course id is not valid"])
 
-        current_site_domain = configuration_helpers.get_value("SITE_NAME")
         store_report = configuration_helpers.get_value("COMPLETION_STORAGE", False)
-        task = generate_report.delay(course_id, store_report, current_site_domain)
+        task = generate_report.delay(course_id, store_report)
         state_url = reverse('completion_api:v1:completion-task-report', kwargs={"task_id": task.id})
 
         json_response = {
             "state_url": state_url
         }
 
-        logger.info("MicroSite = %s, StorageReport = %s", current_site_domain, store_report)
+        logger.info("StorageReport = %s", store_report)
 
-        return Response(json_response, status=status.HTTP_200_OK)
+        try:
+            return JsonResponse(json_response, status=status.HTTP_200_OK)
+        except TypeError:
+            raise Http404
 
 
 class DownloadReportView(APIView):
@@ -214,7 +254,7 @@ class DownloadReportView(APIView):
         JwtAuthentication,
         SessionAuthentication
     )
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrOwner)
 
     def get(self, request, task_id):
         task = AsyncResult(id=task_id)
@@ -232,4 +272,4 @@ class DownloadReportView(APIView):
 
             return response
 
-        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+        raise Http404

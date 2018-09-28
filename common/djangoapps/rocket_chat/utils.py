@@ -1,15 +1,20 @@
+import hashlib
 import logging
 import re
 
 from django.conf import settings
+from django.core.cache import cache
 
 from student.models import anonymous_id_for_user, get_user
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 
 from rocketchat_API.rocketchat import RocketChat as ApiRocketChat
 from rocketchat_API.APIExceptions.RocketExceptions import RocketAuthenticationException, RocketConnectionException
 
 
 LOG = logging.getLogger(__name__)
+CACHE_TIMEOUT = configuration_helpers.get_value("ROCKET_CHAT_CACHE_TIMEOUT", 86400)
+ROCKET_CHAT_DATA = "rocket_chat_data"
 
 
 def get_rocket_chat_settings():
@@ -33,9 +38,9 @@ def create_user(api_rocket_chat, user, course_key):
     """Create a user in rocketChat"""
     user, u_prof = get_user(user.email)
     anonymous_id = anonymous_id_for_user(user, course_key)
-    api_rocket_chat.users_create(
+    return api_rocket_chat.users_create(
         email=user.email,
-        name=u_prof.name,
+        name=u_prof.name if u_prof.name != "" else user.username,
         password=anonymous_id,
         username=user.username
     )
@@ -45,7 +50,8 @@ def create_course_group(api_rocket_chat, course_id, user_id, username):
     """
     Add an user to the course group
     """
-    room_name = re.sub('[^A-Za-z0-9]+', '', course_id)
+    course = re.sub('[^A-Za-z0-9]+', '', course_id)
+    room_name = "{}__{}".format("General", course)
     response = api_rocket_chat.groups_info(room_name=room_name)
     try:
         response = response.json()
@@ -53,7 +59,15 @@ def create_course_group(api_rocket_chat, course_id, user_id, username):
         if response['success']:
             api_rocket_chat.groups_invite(response['group']['_id'], user_id)
         else:
-            kwargs = {'members': [username]}
+            kwargs = {
+                'members': [username],
+                'customFields': {
+                    'course': course,
+                    'team': None,
+                    'topic': None,
+                    'specificTeam': False,
+                }
+            }
             api_rocket_chat.groups_create(name=room_name, **kwargs)
 
     except AttributeError:
@@ -87,13 +101,11 @@ def initialize_api_rocket_chat(rocket_chat_settings):
     return api_rocket_chat
 
 
-def get_subscriptions_rids(api_rocket_chat, auth_token, user_id, unread=False):
+def get_subscriptions_rids(auth_token, user_id, unread=False):
     """
     This method allow to get the roomid for every subscrition
     """
-    api_rocket_chat.headers['X-Auth-Token'] = auth_token
-    api_rocket_chat.headers['X-User-Id'] = user_id
-    response = api_rocket_chat._RocketChat__call_api_get('subscriptions.get')
+    response = user_api_rocket_chat(auth_token, user_id)._RocketChat__call_api_get('subscriptions.get')
     try:
         response = response.json()
     except AttributeError:
@@ -105,3 +117,38 @@ def get_subscriptions_rids(api_rocket_chat, auth_token, user_id, unread=False):
                 yield subscription['rid']
             elif subscription['unread'] > 0:
                 yield subscription['rid']
+
+
+def logout(auth_token, user_id):
+    """
+    Invalidate the REST API authentication token.
+    """
+    try:
+        return user_api_rocket_chat(auth_token, user_id).logout().json()
+    except AttributeError:
+        pass
+    return {"status": "fall"}
+
+
+def create_token(api_rocket_chat, user):
+
+    key = hashlib.sha1("{}_{}".format(ROCKET_CHAT_DATA, user.username)).hexdigest()
+    response = cache.get(key)
+    if not response:
+        response = api_rocket_chat.users_create_token(
+            username=user.username)
+        try:
+            response = response.json()
+            cache.set(key, response, CACHE_TIMEOUT)
+            return response
+        except AttributeError:
+            return None
+    return response
+
+
+def user_api_rocket_chat(auth_token, user_id):
+    url_service = get_rocket_chat_settings().get('private_url_service', None)
+    user_api_rocket_chat = ApiRocketChat(server_url=url_service)
+    user_api_rocket_chat.headers['X-Auth-Token'] = auth_token
+    user_api_rocket_chat.headers['X-User-Id'] = user_id
+    return user_api_rocket_chat
