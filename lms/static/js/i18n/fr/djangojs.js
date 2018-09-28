@@ -1877,6 +1877,7 @@
     "User Email": "Email de l'utilisateur", 
     "Username": "Nom d'utilisateur", 
     "Username or email address": "Nom d'utilisateur ou adresse email", 
+    "Usernames can only contain letters (A-Z, a-z), numerals (0-9), underscores (_), and hyphens (-). The name that will identify you in your courses. It cannot be changed later.": "Les noms d'utilisateur peuvent seulement contenir des lettres (A-Z, a-z), des chiffres (0-9), des tirets bas (_) et des traits d'union (-). Le nom qui permettra de vous identifier en cours. Il ne pourra pas \u00eatre modifi\u00e9 plus tard.", 
     "Users must create and activate their account before they can be promoted to beta tester.": "Les utilisateurs doivent cr\u00e9er et activer leur compte avant de pouvoir devenir des b\u00eata-testeurs.", 
     "V Align": "Alignement Vertical", 
     "Valid": "Valide", 

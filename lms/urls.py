@@ -781,6 +781,10 @@ if settings.FEATURES.get('ENABLE_DISCUSSION_SERVICE'):
 
 urlpatterns += [
     url(
+        r'^api/rocketchat/',
+        include('rocket_chat.api_urls')
+    ),
+    url(
         r'^courses/{}/rocketchat/'.format(
             settings.COURSE_ID_PATTERN,
         ),

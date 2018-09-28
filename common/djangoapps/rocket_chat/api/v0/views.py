@@ -1,5 +1,7 @@
 import logging
 
+from django.core.cache import cache
+
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,6 +15,8 @@ from rocket_chat.utils import (
     initialize_api_rocket_chat,
     create_user,
     get_subscriptions_rids,
+    logout,
+    create_token,
 )
 from .serializers import RocketChatCredentialsSerializer, RocketChatChangeRoleSerializer
 
@@ -26,11 +30,15 @@ class RocketChatCredentials(APIView):
     )
     permission_classes = (permissions.IsAuthenticated,)
 
-    def get(self, request, course_id):
+    def get(self, request):
         """
         This returns a Json with the  user credentials in order to use the rocketchat api methods outside of the server
         """
         user = request.user
+        course_id = request.GET.get("courseId")
+
+        if not course_id:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         course_key = CourseKey.from_string(course_id)
 
@@ -50,12 +58,9 @@ class RocketChatCredentials(APIView):
                 LOG.error("Rocketchat API can not get the user information")
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            response = api_rocket_chat.users_create_token(
-                username=user.username)
+            response = create_token(api_rocket_chat, user)
 
-            try:
-                response = response.json()
-            except AttributeError:
+            if not response:
                 LOG.error("Rocketchat API can not create a user's token")
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -66,7 +71,7 @@ class RocketChatCredentials(APIView):
             auth_token = data.get('authToken', None)
             user_id = data.get('userId', None)
 
-            subscriptions_rids = get_subscriptions_rids(api_rocket_chat, auth_token, user_id, True)
+            subscriptions_rids = get_subscriptions_rids(auth_token, user_id, True)
 
             serializer = RocketChatCredentialsSerializer(
                 data={"url_service": url_service, "auth_token": auth_token, "user_id": user_id, "room_ids": list(subscriptions_rids)}
@@ -85,7 +90,7 @@ class RocketChatChangeRole(APIView):
     )
     permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request, course_id):
+    def post(self, request):
         """
         This methods allows to chege the role of a specific user
         """
@@ -126,3 +131,27 @@ class RocketChatChangeRole(APIView):
 
         LOG.error("Rocketchat API object can not be initialized")
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class RocketChatCleanToken(APIView):
+
+    authentication_classes = (
+        SessionAuthentication,
+    )
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        key = request.GET.get('beacon_rc')
+        response = cache.get(key)
+
+        if response:
+            data = response.get('data', {})
+            auth_token = data.get('authToken', None)
+            user_id = data.get('userId', None)
+            logout_status = logout(auth_token, user_id)
+
+            if logout_status.get("status") == "success":
+                cache.delete(key)
+                return Response(status=status.HTTP_202_ACCEPTED)
+
+        return Response(status=status.HTTP_401_UNAUTHORIZED)

@@ -73,6 +73,8 @@ if course is not None:
 %endif
 % if RocketChatTab.is_enabled(course):
     <%static:require_module module_name="js/rocketchat_notifications" class_name="RocketChatNotifications">
-        RocketChatNotifications({url_credentials: '${reverse('api:v0:rocket_chat_credentials', kwargs={"course_id": course.id})}'})
+        RocketChatNotifications({url_credentials: '${reverse('api:v0:rocket_chat_credentials')}',
+                                course_id: '${course.id}',
+    })
     </%static:require_module>
 %endif
