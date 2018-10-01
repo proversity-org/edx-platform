@@ -10586,3 +10586,33 @@ msgstr ""
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Use Current Transcript"
 msgstr "השתמש בתמליל נוכחי"
+
+#: cms/static/js/models/settings/course_grader.js
+msgid "Total weight must be 100%."
+msgstr "המשקל הכולל של כל סוגי המטלות צריך להסתכם ל100%"
+
+#: cms/static/js/views/modals/assignment_type_summary.js
+msgid "Total summary: <%= total %>"
+msgstr "סה\"כ משקל: <%= total %>"
+
+#: cms/static/js/views/settings/grading.js
+msgid "Assignment types weight summary"
+msgstr "סיכום המשקל לפי סוגי המטלות"
+
+#: cms/templates/js/assignment-type-summary-dialog.underscore
+msgid "Assignment type"
+msgstr "סוג מטלה"
+
+#: cms/templates/js/assignment-type-summary-dialog.underscore
+msgid "Weight"
+msgstr "משקל"
+
+#: cms/templates/js/course_grade_policy.underscore
+msgid "Actual Number"
+msgstr "מספר הפועל"
+
+#: cms/templates/js/course_grade_policy.underscore
+msgid ""
+"The actual number of subsections in the course that contain problems of this"
+" assignment type."
+msgstr "מספר תתי הפרקים בפועל בקורס שמכילים בעיות מסוג המטלה הזה"

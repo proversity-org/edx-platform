@@ -10945,3 +10945,34 @@ msgstr ""
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Use Current Transcript"
 msgstr "استخدم النص الحالي"
+
+#: cms/static/js/models/settings/course_grader.js
+msgid "Total weight must be 100%."
+msgstr "٪يجب أن يكون الوزن الإجمالي لجميع أنواع المهام 100"
+
+#: cms/static/js/views/modals/assignment_type_summary.js
+msgid "Total summary: <%= total %>"
+msgstr "الوزن الكلي: <%= total %>"
+
+#: cms/static/js/views/settings/grading.js
+msgid "Assignment types weight summary"
+msgstr "ملخص الوزن حسب نوع المهام"
+
+#: cms/templates/js/assignment-type-summary-dialog.underscore
+msgid "Assignment type"
+msgstr "نوع المهمة"
+
+#: cms/templates/js/assignment-type-summary-dialog.underscore
+msgid "Weight"
+msgstr "الوزن"
+
+#: cms/templates/js/course_grade_policy.underscore
+msgid "Actual Number"
+msgstr "العدد الفعلي"
+
+#: cms/templates/js/course_grade_policy.underscore
+msgid ""
+"The actual number of subsections in the course that contain problems of this"
+" assignment type."
+msgstr "العدد الفعلي للفصول الفرعية التي تحتوي على هذه الأنواع من المشاكل في سياق هذه المهمة"
+
