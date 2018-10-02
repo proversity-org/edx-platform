@@ -5,6 +5,7 @@ import unittest
 
 import mock
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.test.utils import override_settings
 
@@ -173,11 +174,19 @@ class TestEnterpriseApi(unittest.TestCase):
         mock_enterprise_enabled.assert_called_once()
         mock_consent_necessary.assert_called_once()
 
+    @override_settings(FEATURES=FEATURES_WITH_ENTERPRISE_ENABLED)
+    @mock.patch('openedx.features.enterprise_support.api.reverse')
     @mock.patch('openedx.features.enterprise_support.api.consent_needed_for_course')
-    def test_get_enterprise_consent_url(self, needed_for_course_mock):
+    def test_get_enterprise_consent_url(self, needed_for_course_mock, reverse_mock):
         """
         Verify that get_enterprise_consent_url correctly builds URLs.
         """
+        def fake_reverse(*args, **kwargs):
+            if args[0] == 'grant_data_sharing_permissions':
+                return '/enterprise/grant_data_sharing_permissions'
+            return reverse(*args, **kwargs)
+
+        reverse_mock.side_effect = fake_reverse
         needed_for_course_mock.return_value = True
 
         request_mock = mock.MagicMock(
@@ -197,11 +206,19 @@ class TestEnterpriseApi(unittest.TestCase):
         actual_url = get_enterprise_consent_url(request_mock, course_id, return_to=return_to)
         self.assertEqual(actual_url, expected_url)
 
+    @override_settings(FEATURES=FEATURES_WITH_ENTERPRISE_ENABLED)
+    @mock.patch('openedx.features.enterprise_support.api.reverse')
     @mock.patch('openedx.features.enterprise_support.api.consent_needed_for_course')
-    def test_get_enterprise_consent_url_next_provided_not_course_specific(self, needed_for_course_mock):
+    def test_get_enterprise_consent_url_next_provided_not_course_specific(self, needed_for_course_mock, reverse_mock):
         """
         Verify that get_enterprise_consent_url correctly builds URLs.
         """
+        def fake_reverse(*args, **kwargs):
+            if args[0] == 'grant_data_sharing_permissions':
+                return '/enterprise/grant_data_sharing_permissions'
+            return reverse(*args, **kwargs)
+
+        reverse_mock.side_effect = fake_reverse
         needed_for_course_mock.return_value = True
 
         request_mock = mock.MagicMock(

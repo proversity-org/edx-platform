@@ -32,7 +32,7 @@ service mongodb restart
 
 mkdir -p downloads
 
-DEBIAN_FRONTEND=noninteractive apt-get -yq install xvfb libasound2 libstartup-notification0
+DEBIAN_FRONTEND=noninteractive apt-get -yq install xvfb libasound2 libstartup-notification0 gettext
 
 export FIREFOX_FILE="downloads/firefox_45.0.2%2Bbuild1-0ubuntu1_amd64.deb"
 if [ -f $FIREFOX_FILE ]; then
