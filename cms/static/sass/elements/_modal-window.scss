@@ -777,4 +777,15 @@
       }
     }
   }
+
+  // Assignment types weight summary modal
+  .assignment-summary-modal {
+    top: 20% !important;
+    .modal-content {
+      height: 435px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 0;
+    }
+  }
 }
