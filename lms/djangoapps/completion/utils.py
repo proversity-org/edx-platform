@@ -2,7 +2,6 @@ import logging
 
 from xmodule.modulestore.django import modulestore
 from student.models import get_user
-from third_party_auth import pipeline
 
 from lms.djangoapps.completion.models import BlockCompletion
 from lms.djangoapps.course_blocks.api import get_course_blocks
@@ -27,23 +26,22 @@ class GenerateCompletionReport(object):
         """
         rows = []
 
-        fieldnames = ['first_name',
-                      'last_name',
-                      'user_id',
-                      'username',
-                      'email',
-                      'first_login',
-                      'last_login',
-                      'completed_activities',
-                      'total_program_activities',
-                      'module_code'
+        fieldnames = ['First Name',
+                      'Last Name',
+                      'Student Enrollment ID',
+                      'Email',
+                      'First Login',
+                      'Last Login',
+                      'Completed Activities',
+                      'Total Activities',
+                      'Module Code'
                       ]
 
         required_ids = self.get_required_ids()
         activities = len(required_ids)
 
         for idx, item in enumerate(required_ids):
-            fieldnames.append("required_activity_{}".format(idx + 1))
+            fieldnames.append("Required Activity {}".format(idx + 1))
 
         rows.append(fieldnames)
 
@@ -57,18 +55,11 @@ class GenerateCompletionReport(object):
             if last_login:
                 display_last_login = last_login.strftime('%Y/%m/%d %H:%M:%S')
 
-            providers = pipeline.get_provider_user_states(user)
-            user_provider_ids = [provider.remote_id for provider in providers if provider.has_account]
-
-            if user_provider_ids:
-                user_id = '//'.join(user_provider_ids)
-            else:
-                user_id = user.id
+            student_enrollment_id = "{org}-{user_id}".format(org=self.course_key.org, user_id=user.id)
 
             data = [first_name,
                     last_name,
-                    user_id,
-                    user.username,
+                    student_enrollment_id,
                     user.email,
                     user.date_joined.strftime('%Y/%m/%d %H:%M:%S'),
                     display_last_login,
