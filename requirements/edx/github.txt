@@ -113,6 +113,7 @@ git+https://github.com/proversity-org/xblock-pdf.git@v1.0.0#egg=xblock-pdf==1.0.
 git+https://github.com/proversity-org/agnostic-content-xblock.git#egg=agnostic-content-xblock
 git+https://github.com/proversity-org/rocket-chat-extension.git@v0.2.25#egg=rocketc-xblock==0.2.25
 git+https://github.com/proversity-org/openedx-surveymonkey-xblock.git@v0.1.0#egg=surveymonkey-xblock==0.1.0
+git+https://github.com/proversity-org/xblock-activetable.git@b3d8c2cf1389170f3db5d108c3f893a7e650a482#egg=xblock-activetable==1.0.0-1
 
 
 git+https://github.com/edx/edx-analytics-data-api-client.git#egg=edx-analytics-data-api-client
