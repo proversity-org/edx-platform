@@ -2,6 +2,8 @@ import logging
 
 from xmodule.modulestore.django import modulestore
 from student.models import get_user
+from third_party_auth import pipeline
+from third_party_auth.admin import SAMLProviderConfig
 
 from lms.djangoapps.completion.models import BlockCompletion
 from lms.djangoapps.course_blocks.api import get_course_blocks
@@ -26,16 +28,18 @@ class GenerateCompletionReport(object):
         """
         rows = []
 
-        fieldnames = ['First Name',
-                      'Last Name',
-                      'Student Enrollment ID',
-                      'Email',
-                      'First Login',
-                      'Last Login',
-                      'Completed Activities',
-                      'Total Activities',
-                      'Module Code'
-                      ]
+        fieldnames = [
+            'First Name',
+            'Last Name',
+            'Student Enrollment ID',
+            'Email',
+            'First Login',
+            'Last Login',
+            'Completed Activities',
+            'Total Activities',
+            'Module Code',
+            'ContactID 18',
+        ]
 
         required_ids = self.get_required_ids()
         activities = len(required_ids)
@@ -57,16 +61,23 @@ class GenerateCompletionReport(object):
 
             student_enrollment_id = "{org}-{user_id}".format(org=self.course_key.org, user_id=user.id)
 
-            data = [first_name,
-                    last_name,
-                    student_enrollment_id,
-                    user.email,
-                    user.date_joined.strftime('%Y/%m/%d %H:%M:%S'),
-                    display_last_login,
-                    self.get_count_required_completed_activities(required_ids, completed_activities),
-                    activities,
-                    self.course_key.to_deprecated_string(),
-                    ]
+            user_provider_ids = [
+                provider.remote_id for provider in pipeline.get_provider_user_states(user)
+                if provider.has_account and isinstance(provider.provider, SAMLProviderConfig)
+            ]
+
+            data = [
+                first_name,
+                last_name,
+                student_enrollment_id,
+                user.email,
+                user.date_joined.strftime('%Y/%m/%d %H:%M:%S'),
+                display_last_login,
+                self.get_count_required_completed_activities(required_ids, completed_activities),
+                activities,
+                self.course_key.to_deprecated_string(),
+                next(iter(user_provider_ids), None),
+            ]
 
             for id in required_ids:
                 block_type, block_id = id.rsplit("+block@")
