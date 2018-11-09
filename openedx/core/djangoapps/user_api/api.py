@@ -853,7 +853,7 @@ class RegistrationFormFactory(object):
             terms_label = _(u"Terms of Service")
             terms_link = marketing_link("TOS")
             
-            privacy_label = _(u"Privacy Policy")
+            privacy_label = _(u"Privacy Notice")
             privacy_link = marketing_link("PRIVACY")
 
             # Translators: "Terms of service" is a legal document users must agree to
