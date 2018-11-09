@@ -2,8 +2,7 @@ import logging
 
 from xmodule.modulestore.django import modulestore
 from student.models import get_user
-from third_party_auth import pipeline
-from third_party_auth.admin import SAMLProviderConfig
+from social_django.models import UserSocialAuth
 
 from lms.djangoapps.completion.models import BlockCompletion
 from lms.djangoapps.course_blocks.api import get_course_blocks
@@ -61,9 +60,10 @@ class GenerateCompletionReport(object):
 
             student_enrollment_id = "{org}-{user_id}".format(org=self.course_key.org, user_id=user.id)
 
-            user_provider_ids = [
-                provider.remote_id for provider in pipeline.get_provider_user_states(user)
-                if provider.has_account and isinstance(provider.provider, SAMLProviderConfig)
+            contact_ids = [
+                social_auth.extra_data.get("contactid")
+                for social_auth in UserSocialAuth.get_social_auth_for_user(user)
+                if social_auth.provider == "tpa-saml"
             ]
 
             data = [
@@ -76,7 +76,7 @@ class GenerateCompletionReport(object):
                 self.get_count_required_completed_activities(required_ids, completed_activities),
                 activities,
                 self.course_key.to_deprecated_string(),
-                next(iter(user_provider_ids), None),
+                next(iter(contact_ids), None),
             ]
 
             for id in required_ids:
