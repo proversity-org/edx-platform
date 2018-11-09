@@ -597,6 +597,8 @@ plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.CMS, plugin_c
 
 derive_settings(__name__)
 
+# Acclaim Badges - https://github.com/YourAcclaim/Acclaim-Badges-for-EDX
+ENCRYPTED_FIELDS_KEYDIR = ENV_TOKENS.get('ENCRYPTED_FIELDS_KEYDIR', '/edx/var/edxapp/fieldkeys')
 CLOUDFRONT_PRIVATE_SIGNING_KEY = AUTH_TOKENS.get('CLOUDFRONT_PRIVATE_SIGNING_KEY')
 CLOUDFRONT_ID = ENV_TOKENS.get('CLOUDFRONT_ID')
 CLOUDFRONT_URL = ENV_TOKENS.get('CLOUDFRONT_URL')
