@@ -847,7 +847,7 @@ class RegistrationFormFactory(object):
             required (bool): Whether this field is required; defaults to True
         """
 
-        if configuration_helpers.get_value("enableCombinedToSPrivacy", false):
+        if configuration_helpers.get_value("enableCombinedToSPrivacy", False):
             # Translators: This is a legal document users must agree to
             # in order to register a new account.
             terms_label = _(u"Terms of Service")
@@ -864,7 +864,7 @@ class RegistrationFormFactory(object):
                 tos_link_start=HTML("<a href='{terms_link}' target='_blank'>").format(terms_link=terms_link),
                 tos_link_end=HTML("</a>"),
                 privacy=privacy_label,
-                privacy_link_start=HTML("<a href='{privacy_link}' target='_blank'>").format(terms_link=terms_link),
+                privacy_link_start=HTML("<a href='{privacy_link}' target='_blank'>").format(privacy_link=privacy_link),
                 privacy_link_end=HTML("</a>"),
             )
 
