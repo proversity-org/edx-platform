@@ -846,26 +846,56 @@ class RegistrationFormFactory(object):
         Keyword Arguments:
             required (bool): Whether this field is required; defaults to True
         """
-        # Translators: This is a legal document users must agree to
-        # in order to register a new account.
-        terms_label = _(u"Terms of Service")
-        terms_link = marketing_link("TOS")
 
-        # Translators: "Terms of service" is a legal document users must agree to
-        # in order to register a new account.
-        label = Text(_(u"I agree to the {platform_name} {tos_link_start}{terms_of_service}{tos_link_end}")).format(
-            platform_name=configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME),
-            terms_of_service=terms_label,
-            tos_link_start=HTML("<a href='{terms_link}' target='_blank'>").format(terms_link=terms_link),
-            tos_link_end=HTML("</a>"),
-        )
+        if configuration_helpers.get_value("enableCombinedToSPrivacy", false):
+            # Translators: This is a legal document users must agree to
+            # in order to register a new account.
+            terms_label = _(u"Terms of Service")
+            terms_link = marketing_link("TOS")
+            
+            privacy_label = _(u"Privacy Policy")
+            privacy_link = marketing_link("PRIVACY")
 
-        # Translators: "Terms of service" is a legal document users must agree to
-        # in order to register a new account.
-        error_msg = _(u"You must agree to the {platform_name} {terms_of_service}").format(
-            platform_name=configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME),
-            terms_of_service=terms_label
-        )
+            # Translators: "Terms of service" is a legal document users must agree to
+            # in order to register a new account.
+            label = Text(_(u"I agree to the {platform_name} {tos_link_start}{terms_of_service}{tos_link_end} & {privacy_link_start}{privacy}{privacy_link_end}")).format(
+                platform_name=configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME),
+                terms_of_service=terms_label,
+                tos_link_start=HTML("<a href='{terms_link}' target='_blank'>").format(terms_link=terms_link),
+                tos_link_end=HTML("</a>"),
+                privacy=privacy_label,
+                privacy_link_start=HTML("<a href='{privacy_link}' target='_blank'>").format(terms_link=terms_link),
+                privacy_link_end=HTML("</a>"),
+            )
+
+            # Translators: "Terms of service" is a legal document users must agree to
+            # in order to register a new account.
+            error_msg = _(u"You must agree to the {platform_name} {terms_of_service} & {privacy}").format(
+                platform_name=configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME),
+                terms_of_service=terms_label,
+                privacy=privacy_label 
+            )
+        else:
+            # Translators: This is a legal document users must agree to
+            # in order to register a new account.
+            terms_label = _(u"Terms of Service")
+            terms_link = marketing_link("TOS")
+
+            # Translators: "Terms of service" is a legal document users must agree to
+            # in order to register a new account.
+            label = Text(_(u"I agree to the {platform_name} {tos_link_start}{terms_of_service}{tos_link_end}")).format(
+                platform_name=configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME),
+                terms_of_service=terms_label,
+                tos_link_start=HTML("<a href='{terms_link}' target='_blank'>").format(terms_link=terms_link),
+                tos_link_end=HTML("</a>"),
+            )
+
+            # Translators: "Terms of service" is a legal document users must agree to
+            # in order to register a new account.
+            error_msg = _(u"You must agree to the {platform_name} {terms_of_service}").format(
+                platform_name=configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME),
+                terms_of_service=terms_label
+            )
 
         form_desc.add_field(
             "terms_of_service",
