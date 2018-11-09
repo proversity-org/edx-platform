@@ -596,3 +596,6 @@ plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.CMS, plugin_c
 ########################## Derive Any Derived Settings  #######################
 
 derive_settings(__name__)
+
+# Acclaim Badges - https://github.com/YourAcclaim/Acclaim-Badges-for-EDX
+ENCRYPTED_FIELDS_KEYDIR = ENV_TOKENS.get('ENCRYPTED_FIELDS_KEYDIR', '/edx/var/edxapp/fieldkeys')
