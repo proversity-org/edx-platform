@@ -34,3 +34,5 @@ update_module_store_settings(
         'data_dir': DATA_DIR,
     },
 )
+
+INSTALLED_APPS += ['import_export', 'systematic']
