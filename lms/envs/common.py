@@ -2407,6 +2407,9 @@ INSTALLED_APPS = [
 
     #RocketChat DjangoApp
     'rocket_chat',
+
+    #Acclaim Badges
+    'acclaim_badges',
 ]
 
 ######################### CSRF #########################################
