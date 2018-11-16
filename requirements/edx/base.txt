@@ -224,3 +224,8 @@ XBlock==1.1.1
 redis==2.10.6
 
 -r base_common.txt
+
+# Acclaim Badges, follow readme instructions 
+# https://github.com/YourAcclaim/Acclaim-Badges-for-EDX/blob/master/README.rst 
+# after installing the package
+acclaim_badges==0.1.0
