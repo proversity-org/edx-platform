@@ -1119,3 +1119,7 @@ try:
     )
 except:
     pass
+
+urlpatterns += (
+    url(r'^acclaim/', include('acclaim_badges.urls')),
+)
