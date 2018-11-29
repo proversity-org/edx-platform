@@ -88,7 +88,7 @@ git+https://github.com/edx/RecommenderXBlock.git@1.3#egg=recommender-xblock==1.3
 git+https://github.com/edx/ease.git@release-2015-07-14#egg=ease==0.1.3
 git+https://github.com/solashirai/crowdsourcehinter.git@518605f0a95190949fe77bd39158450639e2e1dc#egg=crowdsourcehinter-xblock==0.1
 -e git+https://github.com/edx/RateXBlock.git@367e19c0f6eac8a5f002fd0f1559555f8e74bfff#egg=rate-xblock
--e git+https://github.com/edx/DoneXBlock.git@01a14f3bd80ae47dd08cdbbe2f88f3eb88d00fba#egg=done-xblock
+-e git+https://github.com/proversity-org/DoneXBlock.git@3ec7b69ceeb73e9bda2ac3e67436fe01b912337b#egg=done-xblock
 git+https://github.com/edx/edx-milestones.git@v0.1.11#egg=edx-milestones==0.1.11
 git+https://github.com/edx/xblock-utils.git@v1.0.5#egg=xblock-utils==1.0.5
 -e git+https://github.com/edx-solutions/xblock-google-drive.git@138e6fa0bf3a2013e904a085b9fed77dab7f3f21#egg=xblock-google-drive
@@ -112,9 +112,9 @@ git+https://github.com/proversity-org/badgr-xblock.git@proversity/production#egg
 git+https://github.com/eduNEXT/flow-control-xblock@v0.2.0#egg=flow-control-xblock==0.2.0
 git+https://github.com/proversity-org/xblock-pdf.git@v1.0.0#egg=xblock-pdf==1.0.0
 git+https://github.com/proversity-org/agnostic-content-xblock.git#egg=agnostic-content-xblock
-git+https://github.com/proversity-org/rocket-chat-extension.git@v0.2.25#egg=rocketc-xblock==0.2.25
+git+https://github.com/proversity-org/rocket-chat-extension.git@v0.2.26#egg=rocketc-xblock==0.2.26
 git+https://github.com/proversity-org/openedx-surveymonkey-xblock.git@v0.1.0#egg=surveymonkey-xblock==0.1.0
-git+https://github.com/proversity-org/xblock-activetable.git@e2a6cc4093e5b611ce9e0d457a3eaea09ff7ef7f#egg=activetable-xblock==1.0.0-2
+git+https://github.com/proversity-org/xblock-activetable.git@2d026d05d214d46da58f51aacb8fadc9e1031728#egg=activetable-xblock==1.0.0-2
 
 
 git+https://github.com/edx/edx-analytics-data-api-client.git#egg=edx-analytics-data-api-client
