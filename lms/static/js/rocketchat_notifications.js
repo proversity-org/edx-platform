@@ -54,7 +54,9 @@
                     if(!roomIds.includes(args["rid"]) && args["unread"] > 0){
                         roomIds.push(args["rid"]);
                     }else if (args["unread"] == 0 ){
-                        roomIds = roomIds.filter(item => item !== args["rid"]);
+                        roomIds = roomIds.filter(function(roomId){
+                            roomId !== args["rid"];
+                        });
                     }
                 } catch (error) {
                     console.log(error);
@@ -78,7 +80,7 @@
                 $.ajax({
                     type: "GET",
                     url: url_credentials,
-                    data: {courseId},
+                    data: {"courseId": courseId},
                     success: connectWebSocket,
                 });
             });
