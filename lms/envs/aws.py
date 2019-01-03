@@ -141,6 +141,13 @@ ANALITICA_TOKEN = ENV_TOKENS.get('ANALITICA_TOKEN', ANALITICA_TOKEN)
 # Custom backend for oauth2
 CUSTOM_BACKENDS = ENV_TOKENS.get('CUSTOM_BACKENDS', CUSTOM_BACKENDS)
 
+CUSTOM_BACKENDS["careersandenterprise"] = {
+        "AUTH_URL": "https://tools.careersandenterprise.co.uk/oauth/authorize",
+        "ACCESS_TOKEN_URL": "https://tools.careersandenterprise.co.uk/oauth/token",
+        "USER_DATA_URL": "https://tools.careersandenterprise.co.uk/api/whoami",
+    }
+
+
 # DEFAULT_COURSE_ABOUT_IMAGE_URL specifies the default image to show for courses that don't provide one
 DEFAULT_COURSE_ABOUT_IMAGE_URL = ENV_TOKENS.get('DEFAULT_COURSE_ABOUT_IMAGE_URL', DEFAULT_COURSE_ABOUT_IMAGE_URL)
 
@@ -715,6 +722,7 @@ if FEATURES.get('ENABLE_THIRD_PARTY_AUTH'):
         'third_party_auth.lti.LTIAuthBackend',
     ])
 
+    tmp_backends.append('lms.djangoapps.student_account.careersandenterprise.CareersAndEnterpriseOAuth2')
     AUTHENTICATION_BACKENDS = list(tmp_backends) + list(AUTHENTICATION_BACKENDS)
     del tmp_backends
 
