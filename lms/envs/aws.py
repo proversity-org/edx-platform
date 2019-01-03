@@ -142,8 +142,9 @@ ANALITICA_TOKEN = ENV_TOKENS.get('ANALITICA_TOKEN', ANALITICA_TOKEN)
 CUSTOM_BACKENDS = ENV_TOKENS.get('CUSTOM_BACKENDS', CUSTOM_BACKENDS)
 
 CUSTOM_BACKENDS["teachfirst"] = {
-        "ACCESS_TOKEN_URL": "http://my.dev.teachfirst.org.uk/oauth/token", 
-        "AUTH_URL": "http://my.dev.teachfirst.org.uk/oauth/authorize",  
+        "AUTH_URL": "https://my.dev.teachfirst.org.uk/oauth/authorize",  
+        "ACCESS_TOKEN_URL": "https://my.dev.teachfirst.org.uk/oauth/token",
+        "USER_DATA_URL": "https://my.dev.teachfirst.org.uk/api/v1/WhoAmI",
     }
 
 # DEFAULT_COURSE_ABOUT_IMAGE_URL specifies the default image to show for courses that don't provide one
@@ -719,6 +720,8 @@ if FEATURES.get('ENABLE_THIRD_PARTY_AUTH'):
         'third_party_auth.saml.SAMLAuthBackend',
         'third_party_auth.lti.LTIAuthBackend',
     ])
+
+    tmp_backends.append('lms.djangoapps.student_account.teachfirst.TeachFirstOAuth2')
 
     AUTHENTICATION_BACKENDS = list(tmp_backends) + list(AUTHENTICATION_BACKENDS)
     del tmp_backends
