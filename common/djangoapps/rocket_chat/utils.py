@@ -50,7 +50,8 @@ def create_course_group(api_rocket_chat, course_id, user_id, username):
     """
     Add an user to the course group
     """
-    room_name = re.sub('[^A-Za-z0-9]+', '', course_id)
+    course = re.sub('[^A-Za-z0-9]+', '', course_id)
+    room_name = "{}__{}".format("General", course)
     response = api_rocket_chat.groups_info(room_name=room_name)
     try:
         response = response.json()
@@ -58,7 +59,15 @@ def create_course_group(api_rocket_chat, course_id, user_id, username):
         if response['success']:
             api_rocket_chat.groups_invite(response['group']['_id'], user_id)
         else:
-            kwargs = {'members': [username]}
+            kwargs = {
+                'members': [username],
+                'customFields': {
+                    'course': course,
+                    'team': None,
+                    'topic': None,
+                    'specificTeam': False,
+                }
+            }
             api_rocket_chat.groups_create(name=room_name, **kwargs)
 
     except AttributeError:
