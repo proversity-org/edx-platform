@@ -141,6 +141,11 @@ ANALITICA_TOKEN = ENV_TOKENS.get('ANALITICA_TOKEN', ANALITICA_TOKEN)
 # Custom backend for oauth2
 CUSTOM_BACKENDS = ENV_TOKENS.get('CUSTOM_BACKENDS', CUSTOM_BACKENDS)
 
+CUSTOM_BACKENDS["teachfirst"] = {
+        "ACCESS_TOKEN_URL": "http://my.dev.teachfirst.org.uk/oauth/token", 
+        "AUTH_URL": "http://my.dev.teachfirst.org.uk/oauth/authorize",  
+    }
+
 # DEFAULT_COURSE_ABOUT_IMAGE_URL specifies the default image to show for courses that don't provide one
 DEFAULT_COURSE_ABOUT_IMAGE_URL = ENV_TOKENS.get('DEFAULT_COURSE_ABOUT_IMAGE_URL', DEFAULT_COURSE_ABOUT_IMAGE_URL)
 
