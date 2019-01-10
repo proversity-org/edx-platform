@@ -102,7 +102,7 @@ git+https://github.com/edx-solutions/xblock-image-explorer.git@v0.9.0#egg=xblock
 
 # Third Party XBlocks
 
-git+https://github.com/proversity-org/edx-sga@617954031436928e4e89846274a89d8baa32c162#egg=edx-sga==0.8.2-4
+git+https://github.com/proversity-org/edx-sga@1fe30d0693ab1d134886dd113d23332be5a1db17#egg=edx-sga==0.8.2-4
 git+https://github.com/proversity-org/xblock-poll.git@v1.5.1#egg=xblock-poll==1.5.1
 git+https://github.com/proversity-org/xblock-drag-and-drop-v2.git@v2.1.0#egg=xblock-drag-and-drop-v2==2.1.0
 git+https://github.com/proversity-org/edx-xblock-bibblio.git#egg=edx-xblock-bibblio
