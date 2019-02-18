@@ -56,3 +56,12 @@ class TeachFirstOAuth2(BaseOAuth2):
 
     def get_user_id(self, details, response):
         return details.get('email')
+
+    def extra_data(self, user, uid, response, details=None, *args, **kwargs):
+        data = super(TeachFirstOAuth2, self).extra_data(user, uid, response, details,
+                                                 *args, **kwargs)
+        data['access_token'] = response.get('access_token', '') or \
+                               kwargs.get('access_token')
+        # Add Salesforce ID to user social auth extra data
+        data['salesforceid'] = response.get('salesforceid')
+        return data
