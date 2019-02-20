@@ -11,6 +11,7 @@ import openedx.core.djangoapps.external_auth.views
 import openedx.core.djangoapps.lang_pref.views
 from cms.djangoapps.contentstore.views.organization import OrganizationListView
 from ratelimitbackend import admin
+from secure_cloudfront.views import secure_cloudfront_video
 
 django_autodiscover()
 admin.site.site_header = _('Studio Administration')
@@ -262,3 +263,11 @@ urlpatterns += [
 
 from openedx.core.djangoapps.plugins import constants as plugin_constants, plugin_urls
 urlpatterns.extend(plugin_urls.get_patterns(plugin_constants.ProjectType.CMS))
+
+urlpatterns += [
+    url(
+        r'^secure-cloudfront-video/$',
+        secure_cloudfront_video,
+        name='secure_cloudfront_video',
+    ),
+]
