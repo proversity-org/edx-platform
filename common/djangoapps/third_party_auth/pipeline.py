@@ -149,7 +149,7 @@ _AUTH_ENTRY_CHOICES = frozenset([
     AUTH_ENTRY_REGISTER_API,
 ] + AUTH_ENTRY_CUSTOM.keys())
 
-_DEFAULT_RANDOM_PASSWORD_LENGTH = 12
+_DEFAULT_RANDOM_PASSWORD_LENGTH = 80
 _PASSWORD_CHARSET = string.letters + string.digits
 
 logger = getLogger(__name__)
