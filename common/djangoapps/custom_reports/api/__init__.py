@@ -1,5 +1,5 @@
 """
-init.py file for reports
+init.py file for api
 """
 
 # Flag for enabling Threading in report generation
@@ -9,4 +9,4 @@ ENABLE_THREADING_IN_RG = True
 TOTAL_THREADS_IN_WEEKLY_REPORT = 5
 
 # Reports directory name
-REPORTS_DIR = 'reports'
+REPORTS_DIR = '/edx/var/edxapp/data/reports'

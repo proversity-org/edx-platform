@@ -1,16 +1,16 @@
 from threading import Thread
-from grades.new.course_data import CourseData
-from grades.new.course_grade import CourseGrade
-from proversity.reports import ENABLE_THREADING_IN_RG, TOTAL_THREADS_IN_WEEKLY_REPORT
+from grades.course_data import CourseData
+from grades.course_grade import CourseGrade
+from custom_reports.api import ENABLE_THREADING_IN_RG, TOTAL_THREADS_IN_WEEKLY_REPORT
 from opaque_keys.edx.keys import CourseKey
 from student.models import CourseEnrollment
 from datetime import timedelta, date
 from courseware import courses
 from django.contrib.auth.models import User
-from reports.models import ReportsStatus
+from .models import ReportsStatus
 import requests
 import uuid, csv, json, math, copy
-from reports import REPORTS_DIR
+from api import REPORTS_DIR
 from django.conf import settings
 from django.core.validators import URLValidator
 import logging

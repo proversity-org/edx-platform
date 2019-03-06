@@ -1,29 +1,78 @@
-"""
-Reports view functions
-"""
-from django.http import HttpResponse
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework_oauth.authentication import OAuth2Authentication
+from rest_framework.authentication import SessionAuthentication
+from rest_framework import status
+from ..utils import WeeklyReportGenerationThread, MonthlyReportGenerationThread, validate_parameters
+from ..models import ReportsStatus
+from .permissions import IsSuperuser
+from django.core.exceptions import ValidationError
 
 
-# sample callback
-@csrf_exempt
-@require_POST
-def my_callback(request):
-    print(request.body)
-    return JsonResponse({
-        "success": True
-    })
+class AuthAPIView(APIView):
+    authentication_classes = (OAuth2Authentication, SessionAuthentication)
+    permission_classes = (IsSuperuser,)
 
 
-def download_csv_or_json(request, csv_or_json_file_name):
-    if not request.user.is_superuser:
-        return HttpResponse("You are not authenticated")
-    try:
-        with open('reports/{}'.format(csv_or_json_file_name), 'rb') as csv_or_json_file:
-            response = HttpResponse(csv_or_json_file, content_type="text/csv")
-            response['Content-Disposition'] = 'attachment; filename="{}"'.format(csv_or_json_file_name)
-            return response
-    except IOError:
-        return HttpResponse('No such file found')
+class WeeklyReport(AuthAPIView):
+    def post(self, request):
+        try:
+            course_ids, callback_url = validate_parameters(request)
+        except ValueError as ve:
+            return Response({
+                "error": str(ve)
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except ValidationError as error:
+            error = error[0] if len(list(error)) > 0 else "Unknown error occured with Callback URL"
+            return Response({
+                "error": error
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            report_status = ReportsStatus.objects.get(status=1)
+        except ReportsStatus.DoesNotExist:
+            report_status = None
+
+        if report_status:
+            return Response({
+                "message": "Report generation is already in process"
+            })
+        else:
+            report_gen_thread = WeeklyReportGenerationThread(course_ids, callback_url)
+            thread_id = report_gen_thread.get_id()
+            report_gen_thread.start()
+            return Response({
+                "message": "Report generation started with id {}".format(thread_id)
+            }, status=status.HTTP_202_ACCEPTED)
+
+
+class MonthlyReport(AuthAPIView):
+    def post(self, request):
+        try:
+            course_ids, callback_url = validate_parameters(request)
+        except ValueError as ve:
+            return Response({
+                "error": str(ve)
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except ValidationError as error:
+            error = error[0] if len(list(error)) > 0 else "Unknown error occured with Callback URL"
+            return Response({
+                "error": error
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            report_status = ReportsStatus.objects.get(status=1)
+        except ReportsStatus.DoesNotExist:
+            report_status = None
+
+        if report_status:
+            response = {"message": "Report generation is already in process"}
+            return Response(response)
+
+        else:
+            monthly_report_generation = MonthlyReportGenerationThread(course_ids, callback_url)
+            thread_id = monthly_report_generation.get_id()
+            monthly_report_generation.start()
+            return Response({
+                "message": "Report generation started with id {}".format(thread_id)
+            }, status=status.HTTP_202_ACCEPTED)

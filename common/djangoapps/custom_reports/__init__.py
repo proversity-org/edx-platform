@@ -1,3 +1,3 @@
 """
-init.py file for proversity
+init.py file for custom_reports
 """
