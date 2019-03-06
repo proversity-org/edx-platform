@@ -2407,6 +2407,9 @@ INSTALLED_APPS = [
 
     #RocketChat DjangoApp
     'rocket_chat',
+
+    # Custom User Api
+    'custom_reports'
 ]
 
 ######################### CSRF #########################################

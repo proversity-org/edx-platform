@@ -1095,6 +1095,11 @@ urlpatterns += [
     url(r'^api/', include('edx_proctoring.urls')),
 ]
 
+# Custom User Api URLs
+urlpatterns += [
+    url(r'^api/user-reports/', include('custom_reports.urls')),
+]
+
 if settings.FEATURES.get('ENABLE_FINANCIAL_ASSISTANCE_FORM'):
     urlpatterns += [
         url(
