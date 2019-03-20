@@ -37,6 +37,7 @@ from edxmako.shortcuts import render_to_response, render_to_string
 from openedx.core.djangoapps.external_auth.djangostore import DjangoOpenIDStore
 from openedx.core.djangoapps.external_auth.models import ExternalAuthMap
 from openedx.core.djangoapps.site_configuration.helpers import get_value
+from openedx.core.djangoapps.user_api.accounts.utils import generate_password
 from student.helpers import get_next_url_for_login_page
 from student.models import UserProfile
 from xmodule.modulestore.django import modulestore
@@ -76,18 +77,14 @@ def default_render_failure(request,  # pylint: disable=unused-argument
 # -----------------------------------------------------------------------------
 
 
-def generate_password(length=12, chars=string.letters + string.digits):
-    """Generate internal password for externally authenticated user"""
-    choice = random.SystemRandom().choice
-    return ''.join([choice(chars) for _i in range(length)])
-
-
+@transaction.non_atomic_requests
 @csrf_exempt
 def openid_login_complete(request,
                           redirect_field_name=REDIRECT_FIELD_NAME,  # pylint: disable=unused-argument
                           render_failure=None):
-    """Complete the openid login process"""
-
+    """
+    Complete the openid login process
+    """
     render_failure = (render_failure or default_render_failure)
 
     openid_response = openid_views.parse_openid_response(request)
