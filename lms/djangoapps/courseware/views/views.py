@@ -868,6 +868,7 @@ def course_about(request, course_id):
             needs_to_set_age = False
 
         if course.minimum_age is None or int(course.minimum_age) is 0:
+            needs_to_set_age = False
             needs_to_verify_age = False
             display_age = 0
         elif course.minimum_age > 0:
