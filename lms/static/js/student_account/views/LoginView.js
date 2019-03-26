@@ -214,7 +214,8 @@
                 var message = _.sprintf(
                     gettext('You have successfully signed into %(currentProvider)s, but your %(currentProvider)s' +
                             ' account does not have a linked %(platformName)s account. To link your accounts,' +
-                            ' sign in now using your %(platformName)s password.'),
+                            ' sign in now using your %(platformName)s password.' +
+                            ' If you are unsure of your password, please follow the password reset process by clicking “Forgot password” below to link your accounts.'),
                     {currentProvider: this.currentProvider, platformName: this.platformName}
                 );
 
