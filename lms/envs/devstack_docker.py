@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ Overrides for Docker-based devstack. """
 
 from .devstack import *  # pylint: disable=wildcard-import, unused-wildcard-import
@@ -75,6 +76,12 @@ MKTG_URLS = {
 CREDENTIALS_SERVICE_USERNAME = 'credentials_worker'
 
 COURSE_CATALOG_API_URL = 'http://edx.devstack.discovery:18381/api/v1/'
+
+LANGUAGES = [
+    ('en', u'English'),
+    ('fr', u'Français'),  # French
+]
+LANGUAGE_CODE = 'fr'
 
 # Uncomment the lines below if you'd like to see SQL statements in your devstack LMS log.
 # LOGGING['handlers']['console']['level'] = 'DEBUG'
