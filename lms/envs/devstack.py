@@ -274,3 +274,9 @@ if os.path.isfile(join(dirname(abspath(__file__)), 'private.py')):
 MODULESTORE = convert_module_store_setting_if_needed(MODULESTORE)
 
 SECRET_KEY = '85920908f28904ed733fe576320db18cabd7b6cd'
+
+#### CABINET OFFICE THEME ####
+
+DEFAULT_SITE_THEME = "cabinet-theme"
+ENABLE_COMPREHENSIVE_THEMING = True
+COMPREHENSIVE_THEME_DIRS = ["/edx/app/openedx-themes", "/edx/app/openedx-themes/proversity-openedx-themes/edx-platform"]

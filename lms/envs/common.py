@@ -3469,3 +3469,20 @@ USER_STATE_BATCH_SIZE = 5000
 from openedx.core.djangoapps.plugins import plugin_apps, plugin_settings, constants as plugin_constants
 INSTALLED_APPS.extend(plugin_apps.get_apps(plugin_constants.ProjectType.LMS))
 plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.LMS, plugin_constants.SettingsType.COMMON)
+
+################################## TEMPLATE CONFIGURATION HACK #####################################
+# Mako templating
+theme_hack = ENV_ROOT.dirname() / 'openedx-themes' / 'proversity-openedx-themes' / 'edx-platform' / 'cabinet-theme' / 'lms' / 'templates'
+import tempfile
+MAKO_MODULE_DIR = os.path.join(tempfile.gettempdir(), 'mako_lms')
+MAKO_TEMPLATE_DIRS_BASE = [
+    theme_hack,
+    PROJECT_ROOT / 'templates',
+    COMMON_ROOT / 'templates',
+    COMMON_ROOT / 'lib' / 'capa' / 'capa' / 'templates',
+    COMMON_ROOT / 'djangoapps' / 'pipeline_mako' / 'templates',
+    OPENEDX_ROOT / 'core' / 'djangoapps' / 'cors_csrf' / 'templates',
+    OPENEDX_ROOT / 'core' / 'djangoapps' / 'dark_lang' / 'templates',
+    OPENEDX_ROOT / 'core' / 'lib' / 'license' / 'templates',
+    OPENEDX_ROOT / 'features' / 'course_experience' / 'templates',
+]
