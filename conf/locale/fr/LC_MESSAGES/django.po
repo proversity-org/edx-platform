@@ -165,7 +165,7 @@
 # jmc <jmc@edx.org>, 2014
 # John Burke <johnb@matinee.co.uk>, 2018
 # Julien Rolland <julien.rolland33@gmail.com>, 2013
-# Juan Camilo Montoya Franco <juan.montoya@edunext.co>, 2017
+# Juan Camilo Montoya Franco <juan.montoya@edunext.co>, 2017,2019
 # Julien Colmonts <julien.colmonts@student.uclouvain.be>, 2014
 # Julien Rolland <julien.rolland33@gmail.com>, 2013
 # Justine Seran, 2015
@@ -347,19 +347,19 @@ msgstr "Vide"
 #: common/lib/xmodule/xmodule/video_module/video_handlers.py
 #, python-brace-format
 msgid "The following parameters are required: {missing}."
-msgstr ""
+msgstr "Les paramètres suivants sont requis: {missing}"
 
 #: cms/djangoapps/contentstore/views/transcript_settings.py
 #: common/lib/xmodule/xmodule/video_module/video_handlers.py
 #, python-brace-format
 msgid "A transcript with the \"{language_code}\" language code already exists."
-msgstr ""
+msgstr "Il existe déjà une transcription de langue \"{language_code}\"."
 
 #: cms/djangoapps/contentstore/views/transcript_settings.py
 #: cms/djangoapps/contentstore/views/transcripts_ajax.py
 #: common/lib/xmodule/xmodule/video_module/video_handlers.py
 msgid "A transcript file is required."
-msgstr ""
+msgstr "Une fichier de transcription est requis."
 
 #: cms/djangoapps/contentstore/views/transcript_settings.py
 #: cms/djangoapps/contentstore/views/transcripts_ajax.py
@@ -368,6 +368,8 @@ msgid ""
 "There is a problem with this transcript file. Try to upload a different "
 "file."
 msgstr ""
+"Il y a un problème avec le fichier de transcription. Essayez de charger un "
+"fichier différent."
 
 #: cms/djangoapps/contentstore/views/videos.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -401,20 +403,21 @@ msgstr "En attente"
 
 #: cms/templates/admin/base_site.html lms/templates/admin/base_site.html
 msgid "Django site admin"
-msgstr ""
+msgstr "administration du site Django"
 
 #: cms/templates/admin/base_site.html lms/templates/admin/base_site.html
 msgid "Django administration"
-msgstr ""
+msgstr "Administration Django"
 
 #: cms/templates/admin/base_site.html lms/templates/admin/base_site.html
 msgid "View site"
-msgstr ""
+msgstr "Voir le site"
 
 #: cms/templates/admin/base_site.html lms/templates/admin/base_site.html
 msgid "Documentation"
-msgstr ""
+msgstr "Documentation"
 
+#: cms/templates/admin/base_site.html lms/templates/admin/base_site.html
 #: wiki/templates/wiki/base.html
 msgid "Log out"
 msgstr "Déconnexion"
@@ -637,7 +640,7 @@ msgstr "Profil utilisateur"
 
 #: common/djangoapps/student/admin.py
 msgid "Account recovery"
-msgstr ""
+msgstr "Récupération de compte"
 
 #. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: This label appears above a field on the login form
@@ -659,6 +662,8 @@ msgid ""
 "Raw passwords are not stored, so there is no way to see this user's "
 "password."
 msgstr ""
+"Les mot de passes ne sont pas stockés en dur, donc il n'y a aucun moyen de "
+"voir le mot de passe de cet utilisateur."
 
 #: common/djangoapps/student/forms.py
 msgid ""
@@ -678,7 +683,7 @@ msgstr ""
 
 #: common/djangoapps/student/forms.py
 msgid "Full Name cannot contain the following characters: < >"
-msgstr ""
+msgstr "Le Nom complet ne peut pas contenir les caractères: < >"
 
 #: common/djangoapps/student/forms.py
 msgid "A properly formatted e-mail is required"
@@ -1034,6 +1039,8 @@ msgstr "Photo de l'apprenant floue"
 #: common/djangoapps/student/views/dashboard.py
 msgid "Name on ID does not match name on account"
 msgstr ""
+"Le nom sur votre pièce d'identité ne concorde pas avec le nom dans votre "
+"compte"
 
 #: common/djangoapps/student/views/dashboard.py
 msgid "Learner photo not provided"
@@ -1050,6 +1057,10 @@ msgid ""
 "link from {platform_name}. If you need help, contact "
 "{link_start}{platform_name} Support{link_end}."
 msgstr ""
+"Consultez votre boîte de réception associé à l’e-mail "
+"{email_start}{email}{email_end} pour voir si vous avez reçu le lien "
+"d’activation de compte de la part de {platform_name}. En cas de besoin, "
+"veuillez contacter le {link_start}Service client {platform_name}{link_end}."
 
 #: common/djangoapps/student/views/dashboard.py
 #, python-brace-format
@@ -1169,6 +1180,8 @@ msgstr ""
 #: common/djangoapps/student/views/management.py
 msgid "Some error occured during password change. Please try again"
 msgstr ""
+"Une erreur est survenue lors de la modification du mot de passe. Veuillez "
+"réessayer."
 
 #: common/djangoapps/student/views/management.py
 msgid "No email address provided."
@@ -1214,15 +1227,17 @@ msgstr ""
 
 #: common/djangoapps/third_party_auth/admin.py
 msgid "Deleted the selected configuration(s)."
-msgstr ""
+msgstr "Configurations sélectionnée(s) supprimées."
 
 #: common/djangoapps/third_party_auth/admin.py
 msgid "Delete the selected configuration"
-msgstr ""
+msgstr "Supprimer la configuration sélectionnée"
 
 #: common/djangoapps/third_party_auth/middleware.py
 msgid "Unable to connect with the external provider, please try again"
 msgstr ""
+"Nous n'avons pas pu vous connecter avec le fournisseur externe, veuillez "
+"réessayer"
 
 #: common/djangoapps/third_party_auth/models.py
 msgid "Authentication with {} is currently unavailable."
@@ -1247,6 +1262,11 @@ msgid ""
 "forwarded directly to the login URL of the provider instead of being first "
 "prompted with a login dialog."
 msgstr ""
+"Si cette option est activée, les utilisateurs qui visitent un URL avec « TPA"
+" hint » pour ce fournisseur (par exemple, un URL se terminant par "
+"‘?tpa_hint=[nom_fournisseur]’) seront directement renvoyés au URL de "
+"connexion du fournisseur au lieu de d’abord voir apparaitre un dialogue de "
+"connexion."
 
 #: common/djangoapps/third_party_auth/models.py
 msgid ""
@@ -1273,6 +1293,8 @@ msgid ""
 "If this option is selected, users will be sent a welcome email upon "
 "registration."
 msgstr ""
+"Si cette option est sélectionnée, les utilisateurs recevront un e-mail de "
+"bienvenue dès leur inscription."
 
 #: common/djangoapps/third_party_auth/models.py
 msgid ""
@@ -1280,6 +1302,9 @@ msgid ""
 "provider as an option to authenticate with on the login screen, but manual "
 "authentication using the correct link is still possible."
 msgstr ""
+"Si cette option n’est pas sélectionnée, le fournisseur ne proposera pas aux "
+"utilisateurs une option d’authentification sur l’écran de connexion, mais "
+"l’authentification manuelle en employant le lien correct reste possible."
 
 #: common/djangoapps/third_party_auth/models.py
 msgid ""
@@ -1300,6 +1325,9 @@ msgid ""
 "immediately after authenticating with the third party instead of the login "
 "page."
 msgstr ""
+"Si cette option est sélectionnée, les utilisateurs seront redirigés à la "
+"page d’inscription immédiatement après s’être authentifié auprès du tiers au"
+" lieu de la page de connexion."
 
 #: common/djangoapps/third_party_auth/models.py
 msgid ""
@@ -1308,6 +1336,10 @@ msgid ""
 "address associated with their account is changed as a part of this "
 "synchronization."
 msgstr ""
+"Synchroniser les données de votre profil d’utilisateur envoyées par le "
+"fournisseur d’identité avec le compte utilisateur edX à chaque connexion "
+"SSO. Dans le cadre de cette synchronisation, l’utilisateur sera averti si "
+"l’adresse e-mail associée à leur compte a été modifiée."
 
 #: common/djangoapps/third_party_auth/models.py
 msgid "The Site that this SAML configuration belongs to."
@@ -1760,8 +1792,8 @@ msgstr[1] ""
 #, python-format
 msgid "%(num)d letter"
 msgid_plural "%(num)d letters"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)dlettre"
+msgstr[1] "%(num)dlettres"
 
 #: common/djangoapps/util/password_policy_validators.py
 #, python-format
@@ -1945,7 +1977,7 @@ msgstr ""
 #: common/lib/capa/capa/capa_problem.py
 #, python-brace-format
 msgid "Question {0}"
-msgstr ""
+msgstr "Question {0}"
 
 #: common/lib/capa/capa/capa_problem.py
 #: common/lib/xmodule/xmodule/capa_base.py
@@ -2464,6 +2496,8 @@ msgid ""
 "Defines when to show whether a learner's answer to the problem is correct. "
 "Configured on the subsection."
 msgstr ""
+"Définit quand afficher si la réponse d'un étudiant au problème est juste. "
+"Configuré à la sous-section."
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Always"
@@ -2582,7 +2616,7 @@ msgstr "Dictionnaire des réponses actuelles des élèves"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Dictionary with the current student score"
-msgstr ""
+msgstr "Dictionnaire des notes actuelles des élèves"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Whether or not the answers have been saved since last submit"
@@ -2708,7 +2742,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/capa_base.py
 #, python-brace-format
 msgid "{previous_hints}{list_start_tag}{strong_text}{hint_text}</li>"
-msgstr ""
+msgstr "{previous_hints}{list_start_tag}{strong_text}{hint_text}</li>"
 
 #. Translators: e.g. "Hint 1 of 3: " meaning we are showing the first of three
 #. hints.
@@ -2857,7 +2891,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/capa_module.py
 msgid "Answer ID"
-msgstr ""
+msgstr "ID réponse"
 
 #: common/lib/xmodule/xmodule/capa_module.py
 msgid "Question"
@@ -2887,6 +2921,10 @@ msgid ""
 " Copy the component location ID of a component from its Settings dialog in "
 "Studio."
 msgstr ""
+"Le composant identité de l'emplacement de tout composant source employé pour"
+" déterminer si un étudiant peut visualiser le contenu de ce module "
+"conditionnel. Copiez le composant identité de l'emplacement d'un composant à"
+" partir de la boîte de dialogue Paramètres dans Studio."
 
 #: common/lib/xmodule/xmodule/conditional_module.py
 msgid "Conditional Attribute"
@@ -2897,6 +2935,8 @@ msgid ""
 "The attribute of the source components that determines whether a learner is "
 "shown the content of this conditional module."
 msgstr ""
+"L'attribut du composant source qui détermine si un étudiant peut visualiser "
+"le contenu de ce module conditionnel."
 
 #: common/lib/xmodule/xmodule/conditional_module.py
 msgid "Conditional Value"
@@ -2907,6 +2947,8 @@ msgid ""
 "The value that the conditional attribute of the source components must match"
 " before a learner is shown the content of this conditional module."
 msgstr ""
+"La valeur à laquelle l'attribut conditionnel doit correspondre avant qu'un "
+"étudiant ne puisse visualiser le contenu de ce module conditionnel."
 
 #: common/lib/xmodule/xmodule/conditional_module.py
 msgid "Blocked Content Message"
@@ -2920,6 +2962,11 @@ msgid ""
 "your message to give learners a direct link to required units. For example, "
 "'You must complete {link} before you can access this unit'."
 msgstr ""
+"Le message qui est montré aux étudiants lorsque toutes les conditions ne "
+"sont pas remplies pour afficher le contenu de ce module conditionnel. "
+"Ajoutez {link} au texte de votre message afin de donner aux étudiants un "
+"lien direct vers les unités requises. Par exemple, « Vous devez compléter "
+"{link} avant de ne pouvoir accéder à cette unité »."
 
 #: common/lib/xmodule/xmodule/conditional_module.py
 #, python-brace-format
@@ -2983,7 +3030,7 @@ msgstr "Date à laquelle se termine ce cours"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Date that certificates become available to learners"
-msgstr ""
+msgstr "Date à laquelle les certificats seront disponibles pour les étudiants"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Cosmetic Course Display Price"
@@ -3009,6 +3056,10 @@ msgid ""
 "for the course, such as \"Winter 2018\". If you enter null for this value, "
 "the start date that you have set for this course is used."
 msgstr ""
+"Saisissez le texte que vous souhaitez utiliser en tant que période de début "
+"des cours annoncés, tel que « Hiver 2018 ». Si vous saisissez null pour "
+"cette valeur, la date de début que vous aviez choisie pour ce cours sera "
+"celle retenue."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Pre-Requisite Courses"
@@ -3110,6 +3161,17 @@ msgid ""
 "\"default\" attribute to true. For example, \"Lydian Mode\": {\"id\": \"i4x-"
 "UniversityX-MUS101-course-2015_T1\", \"default\": true}."
 msgstr ""
+"Ajoutez des categories de discussion dans le format suivant : « "
+"NomdeCatégorie » : {\"id\": \"i4x-InstitutionName-CourseNumber-course-"
+"CourseRun\"}. Par exemple, une catégorie de discussion pourrait être « "
+"Lydian Mode » : {\"id\": \"i4x-UniversityX-MUS101-course-2015_T1\"}. La "
+"valeur identitaire de chacune de ces catégories doit être unique. En valeur "
+"identitaire, les seuls caractères spéciaux permis  sont les tirets du bas, "
+"les traits d’union, et les points. Vous pouvez aussi déterminer une "
+"catégorie comme étant celle par défaut pour les nouveaux messages dans les "
+"Pages de discussion en réglant son attribut « par défaut » comme étant vrai."
+" Par exemple, « Lydian Mode » : {\"id\": \"i4x-UniversityX-MUS101-course-"
+"2015_T1\", \"default\": true}."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Discussion Sorting Alphabetical"
@@ -3778,6 +3840,10 @@ msgid ""
 "must take the exam with proctoring. This setting only applies if proctored "
 "exams are enabled for the course."
 msgstr ""
+"Saisissez vrai ou faux. Si la valeur choisie est vrai, les étudiants peuvent"
+" choisir de passer cet examen surveillé sans surveillance. Si la valeur est "
+"faux, tous les étudiants doivent passer l'examen en étant surveillés. Ce "
+"paramètre ne peut être utilisé que dans le cadre d'un examen surveillé."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Create Zendesk Tickets For Suspicious Proctored Exam Attempts"
@@ -3802,6 +3868,10 @@ msgid ""
 "course. Regardless of this setting, timed exams are enabled if Enable "
 "Proctored Exams is set to true."
 msgstr ""
+"Saisissez vrai ou faux. Si la valeur est vrai, vous pourrez activer les "
+"examens minutés dans votre cours. Ce paramètre mis à part, les examens "
+"minutés sont activés si le paramètre Activer les examens surveillés est "
+"réglé sur vrai."
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Minimum Grade for Credit"
@@ -3908,13 +3978,15 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Highlights Enabled for Messaging"
-msgstr ""
+msgstr "Points clés activés pour l'envoi de messages"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Enter true or false. If true, any highlights associated with content in the "
 "course will be messaged to learners at their scheduled time."
 msgstr ""
+"Saisissez vrai ou faux. Si vous avez choisi vrai, tout point clé associé au "
+"contenu de ce cours sera envoyé aux étudiants à l'heure prévue pour eux."
 
 #: common/lib/xmodule/xmodule/course_module.py cms/templates/certificates.html
 #: cms/templates/group_configurations.html cms/templates/settings.html
@@ -3929,6 +4001,10 @@ msgid ""
 "dictionary of values in JSON format, such as { \"my_custom_setting\": "
 "\"value\", \"other_setting\": \"value\" }"
 msgstr ""
+"Toute information supplémentaire à propos de ce cours requise par la "
+"plateforme ou permettant l'intégration de systèmes externes tels que les "
+"logiciels de CRM. Saisissez un dictionnaire de valeur au format JSON, tel "
+"que { \"my_custom_setting\": \"value\", \"other_setting\": \"value\" }"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "General"
@@ -3938,34 +4014,38 @@ msgstr "Général"
 #, python-brace-format
 msgid "{assignment_type} = {weighted_percent:.2%} of a possible {weight:.2%}"
 msgstr ""
+"{assignment_type} = {weighted_percent:.2%} faisant éventuellement "
+"{weight:.2%}"
 
 #: common/lib/xmodule/xmodule/graders.py
 msgid "Generated"
-msgstr ""
+msgstr "Généré"
 
 #. Translators: "Homework 1 - Unreleased - 0% (?/?)" The section has not been
 #. released for viewing.
 #: common/lib/xmodule/xmodule/graders.py
 #, python-brace-format
 msgid "{section_type} {index} Unreleased - 0% (?/?)"
-msgstr ""
+msgstr "{section_type} {index} Non affiché-0 % (?/?)"
 
 #: common/lib/xmodule/xmodule/graders.py
 #, python-brace-format
 msgid "The lowest {drop_count} {section_type} scores are dropped."
 msgstr ""
+"Les {drop_count} notes les plus basses en {section_type} ne seront pas "
+"retenues."
 
 #. Translators: "Homework Average = 0%"
 #: common/lib/xmodule/xmodule/graders.py
 #, python-brace-format
 msgid "{section_type} Average = {percent:.0%}"
-msgstr ""
+msgstr "{section_type} Moyenne = {percent:.0%}"
 
 #. Translators: Avg is short for Average
 #: common/lib/xmodule/xmodule/graders.py
 #, python-brace-format
 msgid "{short_label} Avg"
-msgstr ""
+msgstr "{short_label} Moyenne"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Text"
@@ -4536,7 +4616,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Enable video auto-advance"
-msgstr ""
+msgstr "Activez l'avance automatique de la vidéo"
 
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid ""
@@ -4544,6 +4624,10 @@ msgid ""
 "clicks it, when the last video in a unit finishes it will automatically move"
 " to the next unit and autoplay the first video."
 msgstr ""
+"Indiquez s'il faut ou non afficher le bouton d'avance automatique dans les "
+"vidéos. Si l'étudiant clique dessus, lorsque la dernière vidéo d'une unité "
+"se terminera, elle passera automatiquement à l'unité suivante et lira "
+"automatiquement la première vidéo."
 
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Video Pre-Roll"
@@ -4620,6 +4704,8 @@ msgstr "Groupes de Parcours d'inscription"
 #: common/lib/xmodule/xmodule/partitions/partitions_service.py
 msgid "Partition for segmenting users by enrollment track"
 msgstr ""
+"Répartition permettant de diviser les utilisateurs en fonction de leur "
+"parcours d'inscription"
 
 #: common/lib/xmodule/xmodule/poll_module.py
 msgid "Whether this student has voted on the poll"
@@ -4749,23 +4835,28 @@ msgstr "Cet examen est caché à l'apprenant."
 #: common/lib/xmodule/xmodule/seq_module.py
 msgid ""
 "Because the course has ended, this assignment is hidden from the learner."
-msgstr ""
+msgstr "Ce devoir n'est plus affiché à l'étudiant car le cours a pris fin."
 
 #: common/lib/xmodule/xmodule/seq_module.py
 msgid ""
 "Because the due date has passed, this assignment is hidden from the learner."
 msgstr ""
+"Ce devoir n'est plus affiché à l'étudiant car la date d'échéance est passée."
 
 #: common/lib/xmodule/xmodule/seq_module.py
 msgid ""
 "This section is a prerequisite. You must complete this section in order to "
 "unlock additional content."
 msgstr ""
+"Cette section est un prérequis. Vous devez compléter cette section afin de "
+"déverrouiller le contenu supplémentaire."
 
 #: common/lib/xmodule/xmodule/seq_module.py
 msgid ""
 "A list summarizing what students should look forward to in this section."
 msgstr ""
+"Une liste résumant ce à quoi les étudiants devraient s'attendre dans le "
+"cadre de cette section."
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 #, python-brace-format
@@ -4923,7 +5014,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/video_module/video_handlers.py
 msgid "Language is required."
-msgstr ""
+msgstr "La maîtrise de la langue est requise."
 
 #: common/lib/xmodule/xmodule/video_module/video_module.py
 msgid "Basic"
@@ -5180,6 +5271,8 @@ msgid ""
 "Specify whether to advance automatically to the next unit when the video "
 "ends."
 msgstr ""
+"Indiquez si l'avance automatique à l'unité prochaine doit se faire à une "
+"fois la vidéo terminée."
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Specify whether YouTube is available for the user."
@@ -5303,7 +5396,7 @@ msgstr ""
 
 #: common/templates/student/edx_ace/accountrecovery/email/body.html
 msgid "Create Password"
-msgstr ""
+msgstr "Créer un mot de passe"
 
 #: common/templates/student/edx_ace/accountrecovery/email/body.html
 #: common/templates/student/edx_ace/accountrecovery/email/body.txt
@@ -5358,7 +5451,7 @@ msgstr ""
 
 #: common/templates/student/edx_ace/emailchange/email/body.html
 msgid "Email Change"
-msgstr ""
+msgstr "Changement d'email"
 
 #: common/templates/student/edx_ace/emailchange/email/body.html
 #: common/templates/student/edx_ace/emailchange/email/body.txt
@@ -5371,7 +5464,7 @@ msgstr ""
 
 #: common/templates/student/edx_ace/emailchange/email/body.html
 msgid "Confirm Email Change"
-msgstr ""
+msgstr "Confirmer le changement d'email"
 
 #: common/templates/student/edx_ace/emailchange/email/body.html
 #: common/templates/student/edx_ace/emailchange/email/body.txt
@@ -5435,11 +5528,15 @@ msgid ""
 "However, there is currently no user account associated with your email "
 "address: %(email_address)s."
 msgstr ""
+"Cependant, il n'existe actuellement aucun compte utilisateur associé à votre"
+" adresse e-mail : %(email_address)s."
 
 #: common/templates/student/edx_ace/passwordreset/email/body.html
 #: common/templates/student/edx_ace/passwordreset/email/body.txt
 msgid "If you did not request this change, you can ignore this email."
 msgstr ""
+"Si vous n'avez pas demandé cette modification, vous pouvez ignorer cet "
+"e-mail."
 
 #: common/templates/student/edx_ace/passwordreset/email/body.html
 msgid "Change my Password"
@@ -5590,6 +5687,8 @@ msgid ""
 "© {org_name}.  All rights reserved except where noted.  EdX, Open edX and "
 "their respective logos are trademarks or registered trademarks of edX Inc."
 msgstr ""
+"© {org_name}. Tous droits réservés sauf indiqué.  EdX, Open edX et leurs "
+"logos particuliers sont des marques déposées ou marques d'edX Inc."
 
 #. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: 'Open edX' is a brand, please keep this untranslated.
@@ -5695,15 +5794,15 @@ msgstr "Plan du site"
 
 #: lms/djangoapps/branding/api.py
 msgid "Affiliates"
-msgstr ""
+msgstr "Partenariats"
 
 #: lms/djangoapps/branding/api.py
 msgid "Open edX"
-msgstr ""
+msgstr "Ouvrir edX"
 
 #: lms/djangoapps/branding/api.py
 msgid "Trademark Policy"
-msgstr ""
+msgstr "Politique de la marque"
 
 #: lms/djangoapps/branding/api.py
 #, python-brace-format
@@ -6246,6 +6345,8 @@ msgstr ""
 #: lms/djangoapps/commerce/models.py
 msgid "Path to course(s) checkout page hosted by the E-Commerce service."
 msgstr ""
+"Chemin vers la ou les page(s) de cours hébergé par le service de commerce "
+"électronique."
 
 #: lms/djangoapps/commerce/models.py openedx/core/djangoapps/catalog/models.py
 #: openedx/core/djangoapps/credentials/models.py
@@ -6339,19 +6440,19 @@ msgstr ""
 
 #: lms/djangoapps/course_goals/models.py
 msgid "Earn a certificate"
-msgstr ""
+msgstr "Obtenir un certificat"
 
 #: lms/djangoapps/course_goals/models.py
 msgid "Complete the course"
-msgstr ""
+msgstr "Compléter le cours"
 
 #: lms/djangoapps/course_goals/models.py
 msgid "Explore the course"
-msgstr ""
+msgstr "Explorer le cours"
 
 #: lms/djangoapps/course_goals/models.py
 msgid "Not sure yet"
-msgstr ""
+msgstr "Pas encore décidé"
 
 #: lms/djangoapps/course_wiki/tab.py lms/djangoapps/course_wiki/views.py
 #: lms/templates/wiki/base.html
@@ -6425,17 +6526,18 @@ msgstr "Début du cours"
 
 #: lms/djangoapps/courseware/date_summary.py
 msgid "Don't forget to add a calendar reminder!"
-msgstr ""
+msgstr "N'oubliez pas d'ajouter un pense-bête sur le calendrier !"
 
 #: lms/djangoapps/courseware/date_summary.py
 #, python-brace-format
 msgid "Course starts in {time_remaining_string} on {course_start_date}."
 msgstr ""
+"Le cours commence dans {time_remaining_string}, le {course_start_date}."
 
 #: lms/djangoapps/courseware/date_summary.py
 #, python-brace-format
 msgid "Course starts in {time_remaining_string} at {course_start_time}."
-msgstr ""
+msgstr "Le cours commence à {time_remaining_string}, à {course_start_time}."
 
 #: lms/djangoapps/courseware/date_summary.py
 msgid "Course End"
@@ -6464,19 +6566,23 @@ msgstr ""
 #, python-brace-format
 msgid "This course is ending in {time_remaining_string} on {course_end_date}."
 msgstr ""
+"Ce cours se termine dans {time_remaining_string}, le {course_end_date}."
 
 #: lms/djangoapps/courseware/date_summary.py
 #, python-brace-format
 msgid "This course is ending in {time_remaining_string} at {course_end_time}."
 msgstr ""
+"Le cours se termine dans {time_remaining_string}, à {course_end_time}."
 
 #: lms/djangoapps/courseware/date_summary.py
 msgid "Certificate Available"
-msgstr ""
+msgstr "Certificat disponible"
 
 #: lms/djangoapps/courseware/date_summary.py
 msgid "Day certificates will become available for passing verified learners."
 msgstr ""
+"Les certificats de jour seront disponibles pour les étudiants vérifiés ayant"
+" réussi."
 
 #: lms/djangoapps/courseware/date_summary.py
 #, python-brace-format
@@ -6485,6 +6591,9 @@ msgid ""
 "{time_remaining_string} from now. You will also be able to view your "
 "certificates on your {learner_profile_link}."
 msgstr ""
+"Si vous avez obtenu un certificat, vous pourrez y accéder d'ici "
+"{time_remaining_string}. Vous pourrez également voir vos certificats sur "
+"votre {learner_profile_link}."
 
 #: lms/djangoapps/courseware/date_summary.py
 #: openedx/features/learner_profile/templates/learner_profile/learner_profile.html
@@ -6508,6 +6617,8 @@ msgid ""
 "Don't miss the opportunity to highlight your new knowledge and skills by "
 "earning a verified certificate."
 msgstr ""
+"Ne manquez pas l'occasion de mettre en avant vos nouvelles connaissances et "
+"compétences en obtenant un certificat vérifié."
 
 #: lms/djangoapps/courseware/date_summary.py
 msgid ""
@@ -6525,7 +6636,7 @@ msgstr ""
 #: lms/djangoapps/courseware/date_summary.py
 #, python-brace-format
 msgid "by {date}"
-msgstr ""
+msgstr "d'ici {date}"
 
 #: lms/djangoapps/courseware/date_summary.py
 #, python-brace-format
@@ -6533,11 +6644,15 @@ msgid ""
 "Don't forget, you have {time_remaining_string} left to upgrade to a Verified"
 " Certificate."
 msgstr ""
+"N'oubliez pas, il vous reste {time_remaining_string} pour mettre à jour un "
+"Certificat vérifié."
 
 #: lms/djangoapps/courseware/date_summary.py
 #, python-brace-format
 msgid "Don't forget to upgrade to a verified certificate by {localized_date}."
 msgstr ""
+"N'oubliez pas, les certificats vérifiés doivent être mis à jour avant le "
+"{localized_date}."
 
 #: lms/djangoapps/courseware/date_summary.py
 #, python-brace-format
@@ -6547,11 +6662,15 @@ msgid ""
 "your identity on {platform_name} if you have not done so "
 "already.{button_panel}"
 msgstr ""
+"Pour être admissible à un certificat, vous devez remplir toutes les demandes"
+" d'évaluation du cours, effectuer les mises à jour avant la fin des délais "
+"du cours, et faire vérifier votre identité avec succès sur {platform_name} "
+"si ce n'est pas déjà le cas.{button_panel}"
 
 #: lms/djangoapps/courseware/date_summary.py
 #, python-brace-format
 msgid "Upgrade ({upgrade_price})"
-msgstr ""
+msgstr "Mise à niveau ({upgrade_price})"
 
 #: lms/djangoapps/courseware/date_summary.py
 #: cms/templates/group_configurations.html
@@ -6613,14 +6732,17 @@ msgstr ""
 msgid ""
 "Number of days a learner has to upgrade after content is made available"
 msgstr ""
+"Nombre de jours restant à l'étudiant pour effectuer la mise à niveau après "
+"que le contenu soit mis à sa disposition"
 
 #: lms/djangoapps/courseware/models.py
 msgid "Disable the dynamic upgrade deadline for this course run."
-msgstr ""
+msgstr "Désactiver le délai de mise à niveau dynamique pour cette session."
 
 #: lms/djangoapps/courseware/models.py
 msgid "Disable the dynamic upgrade deadline for this organization."
 msgstr ""
+"Désactiver le délai de mise à niveau dynamique pour cette organisation."
 
 #: lms/djangoapps/courseware/tabs.py lms/templates/courseware/syllabus.html
 msgid "Syllabus"
@@ -6646,6 +6768,8 @@ msgid ""
 "You are not signed in. To see additional course content, {sign_in_link} or "
 "{register_link}, and enroll in this course."
 msgstr ""
+"Vous n'êtes pas connecté. Pour voir plus de contenu de cours, {sign_in_link}"
+" ou {register_link} avant de vous inscrire à ce cours."
 
 #: lms/djangoapps/courseware/views/index.py
 #: lms/djangoapps/courseware/views/views.py
@@ -6710,7 +6834,7 @@ msgstr "Félicitations, vous êtes qualifié pour un certificat!"
 
 #: lms/djangoapps/courseware/views/views.py
 msgid "You've earned a certificate for this course."
-msgstr ""
+msgstr "Vous avez obtenu un certificat pour ce cours."
 
 #: lms/djangoapps/courseware/views/views.py
 msgid "Certificate unavailable"
@@ -6732,7 +6856,7 @@ msgstr "Votre certificat est disponible"
 #: lms/djangoapps/courseware/views/views.py
 #, python-brace-format
 msgid "To see course content, {sign_in_link} or {register_link}."
-msgstr ""
+msgstr "Pour voir le contenu du cours, {sign_in_link} ou {register_link}."
 
 #: lms/djangoapps/courseware/views/views.py
 #, python-brace-format
@@ -6740,11 +6864,13 @@ msgid ""
 "You must be enrolled in the course to see course content."
 "                             {enroll_link_start}Enroll now{enroll_link_end}."
 msgstr ""
+"Vous devez être inscrit à ce cours afin de voir son contenu. "
+"{enroll_link_start}S'inscrire maintenant{enroll_link_end}."
 
 #: lms/djangoapps/courseware/views/views.py
 #: openedx/features/course_experience/views/course_home_messages.py
 msgid "You must be enrolled in the course to see course content."
-msgstr ""
+msgstr "Vous devez être inscrit à ce cours pour voir le contenu du cours."
 
 #: lms/djangoapps/courseware/views/views.py
 msgid "Invalid location."
@@ -7053,7 +7179,7 @@ msgstr "nom complet"
 #: lms/djangoapps/discussion/templates/discussion/edx_ace/responsenotification/email/body.txt
 #, python-format
 msgid "%(comment_username)s replied to <b>%(thread_title)s</b>:"
-msgstr ""
+msgstr "%(comment_username)s a répondu à <b>%(thread_title)s</b> :"
 
 #: lms/djangoapps/discussion/templates/discussion/edx_ace/responsenotification/email/body.html
 #: lms/djangoapps/discussion/templates/discussion/edx_ace/responsenotification/email/body.txt
@@ -7063,7 +7189,7 @@ msgstr "Afficher la discussion"
 #: lms/djangoapps/discussion/templates/discussion/edx_ace/responsenotification/email/subject.txt
 #, python-format
 msgid "Response to %(thread_title)s"
-msgstr ""
+msgstr "Réponse à %(thread_title)s"
 
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid "Title can't be empty"
@@ -7160,10 +7286,14 @@ msgstr ""
 #: lms/djangoapps/email_marketing/models.py
 msgid "Sailthru send template to use on passed ID verification."
 msgstr ""
+"Sailthru a envoyé un modèle à employer pour les vérifications d'identité "
+"réussies."
 
 #: lms/djangoapps/email_marketing/models.py
 msgid "Sailthru send template to use on failed ID verification."
 msgstr ""
+"Sailthru a envoyé un modèle à employer pour les vérifications d'identité "
+"ratées."
 
 #: lms/djangoapps/email_marketing/models.py
 msgid "Sailthru send template to use on upgrading a course. Deprecated "
@@ -7203,12 +7333,16 @@ msgid ""
 "Number of seconds to delay the sending of User Welcome email after user has "
 "been created"
 msgstr ""
+"Nombre de secondes de retard à ajouter lors de l'envoi de l'e-mail de "
+"Bienvenue des utilisateurs, une fois l'utilisateur créé"
 
 #: lms/djangoapps/email_marketing/models.py
 msgid ""
 "The number of seconds to delay/timeout wait to get cookie values from "
 "sailthru."
 msgstr ""
+"Nombre de secondes de retard/d'attente avant de recevoir les valeurs des "
+"cookies de Sailthru."
 
 #: lms/djangoapps/instructor/paidcourse_enrollment_report.py
 #, python-brace-format
@@ -7264,7 +7398,7 @@ msgstr ""
 
 #: lms/djangoapps/instructor/settings/common.py
 msgid "Your Platform Insights"
-msgstr ""
+msgstr "La Plateforme selon vous"
 
 #: lms/djangoapps/instructor/views/api.py
 #, python-brace-format
@@ -7272,6 +7406,8 @@ msgid ""
 "The {report_type} report is being created. To view the status of the report,"
 " see Pending Tasks below."
 msgstr ""
+"Le rapport {report_type} est en cours de création. Pour consulter le statut "
+"de ce rapport, voir les Tâches en attente ci-dessous."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "User does not exist."
@@ -7281,6 +7417,8 @@ msgstr "L'utilisateur n'existe pas."
 msgid ""
 "Found a conflict with given identifier. Please try an alternative identifier"
 msgstr ""
+"Il existe une contradiction avec l'identifiant donnée. Veuillez essayer un "
+"autre identifiant"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -7340,7 +7478,7 @@ msgstr ""
 #: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor_task/api_helper.py
 msgid "problem responses"
-msgstr ""
+msgstr "réponses aux problèmes"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Could not find problem with this location."
@@ -7388,7 +7526,7 @@ msgstr "Date de l'exécution du rapport"
 #: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor_task/api_helper.py
 msgid "enrolled learner profile"
-msgstr ""
+msgstr "profil de l'étudiant inscrit"
 
 #: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor_task/tasks_helper/enrollments.py
@@ -7491,7 +7629,7 @@ msgstr "Pays"
 #: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor_task/api_helper.py
 msgid "enrollment"
-msgstr ""
+msgstr "inscription"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "The file must contain a 'cohort' column containing cohort names."
@@ -7555,22 +7693,22 @@ msgstr "Montant total des rabais"
 #: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor_task/api_helper.py
 msgid "detailed enrollment"
-msgstr ""
+msgstr "inscriptions détaillées"
 
 #: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor_task/api_helper.py
 msgid "executive summary"
-msgstr ""
+msgstr "sommaire exécutif"
 
 #: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor_task/api_helper.py
 msgid "survey"
-msgstr ""
+msgstr "enquête"
 
 #: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor_task/api_helper.py
 msgid "proctored exam results"
-msgstr ""
+msgstr "résultats des examens surveillés"
 
 #: lms/djangoapps/instructor/views/api.py
 msgid "Could not parse amount as a decimal"
@@ -7653,17 +7791,17 @@ msgstr "Ne peut renoter avec all_students et unique_student_identifier."
 #: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor_task/api_helper.py
 msgid "ORA data"
-msgstr ""
+msgstr "Données ORA"
 
 #: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor_task/api_helper.py
 msgid "grade"
-msgstr ""
+msgstr "note"
 
 #: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor_task/api_helper.py
 msgid "problem grade"
-msgstr ""
+msgstr "note obtenue au problème"
 
 #: lms/djangoapps/instructor/views/api.py
 #, python-brace-format
@@ -8112,11 +8250,11 @@ msgstr "Prolongations de la date d'échéance pour {0} {1} ({2})"
 
 #: lms/djangoapps/instructor_task/api_helper.py
 msgid "Requested task is already running"
-msgstr ""
+msgstr "La tâche requise est déja lancée"
 
 #: lms/djangoapps/instructor_task/api_helper.py
 msgid "Error occured. Please try again later."
-msgstr ""
+msgstr "Une erreur est survenue. Veuillez essayer à nouveau plus tard."
 
 #: lms/djangoapps/instructor_task/api_helper.py
 #, python-brace-format
@@ -8125,6 +8263,9 @@ msgid ""
 " see Pending Tasks below. You will be able to download the report when it is"
 " complete."
 msgstr ""
+"Le rapport {report_type} est en cours de création. Pour voir l’état du "
+"rapport, veuillez consulter les Tâches en cours ci-dessous. Vous pourrez "
+"télécharger le rapport une fois qu’il sera complété."
 
 #: lms/djangoapps/instructor_task/api_helper.py
 msgid "This component cannot be rescored."
@@ -8154,7 +8295,7 @@ msgstr "réévalué"
 #: lms/djangoapps/instructor_task/tasks.py
 #: lms/djangoapps/instructor_task/tasks_helper/module_state.py
 msgid "overridden"
-msgstr ""
+msgstr "remplacé"
 
 #. Translators: This is a past-tense verb that is inserted into task progress
 #. messages as {action}.
@@ -8475,19 +8616,27 @@ msgid ""
 "This unit's access settings refer to deleted or invalid group "
 "configurations."
 msgstr ""
+"Les paramètres d'accès de cette unité se rapportent à des configurations de "
+"groupe supprimées ou non valables."
 
 #: lms/djangoapps/lms_xblock/mixin.py
 msgid "This component's access settings refer to deleted or invalid groups."
 msgstr ""
+"Les paramètres d'accès de ce composant se rapportent à des groupes supprimés"
+" ou non valables."
 
 #: lms/djangoapps/lms_xblock/mixin.py
 msgid "This unit's access settings refer to deleted or invalid groups."
 msgstr ""
+"Les paramètres d'accès de cette unité se rapportent à des groupes supprimés "
+"ou non valables."
 
 #: lms/djangoapps/lms_xblock/mixin.py
 msgid ""
 "This component's access settings contradict its parent's access settings."
 msgstr ""
+"Les paramètres d'accès de ce composant sont en contradiction avec les "
+"paramètres d'accès du composant mère."
 
 #: lms/djangoapps/lms_xblock/mixin.py
 msgid "Whether to display this module in the table of contents"
@@ -9443,20 +9592,20 @@ msgstr "Voir et mettre à jour les inscriptions des apprenants."
 #: lms/djangoapps/support/views/index.py
 #: lms/templates/support/manage_user.html
 msgid "Manage User"
-msgstr ""
+msgstr "Gestion Utilisateur"
 
 #: lms/djangoapps/support/views/index.py
 msgid "Disable User Account"
-msgstr ""
+msgstr "Désactiver le Compte utilisateur"
 
 #: lms/djangoapps/support/views/index.py
 #: lms/templates/support/entitlement.html
 msgid "Entitlements"
-msgstr ""
+msgstr "Droits"
 
 #: lms/djangoapps/support/views/index.py
 msgid "View, create, and reissue learner entitlements"
-msgstr ""
+msgstr "Voir, créer et réémettre des droits étudiants"
 
 #: lms/djangoapps/support/views/index.py
 #: lms/templates/support/feature_based_enrollments.html
@@ -9473,15 +9622,15 @@ msgstr "user_support_url"
 
 #: lms/djangoapps/support/views/manage_user.py
 msgid "user_detail_url"
-msgstr ""
+msgstr "user_detail_url"
 
 #: lms/djangoapps/support/views/manage_user.py
 msgid "Usable"
-msgstr ""
+msgstr "Utilisable"
 
 #: lms/djangoapps/support/views/manage_user.py
 msgid "Unusable"
-msgstr ""
+msgstr "Inutilisable"
 
 #: lms/djangoapps/support/views/manage_user.py
 msgid "User Enabled Successfully"
@@ -9489,7 +9638,7 @@ msgstr ""
 
 #: lms/djangoapps/support/views/manage_user.py
 msgid "User Disabled Successfully"
-msgstr ""
+msgstr "Utilisateur désactivé avex succès"
 
 #: lms/djangoapps/support/views/refund.py
 #: lms/templates/shoppingcart/billing_details.html
@@ -9700,21 +9849,21 @@ msgstr "Les données de l'image sont invalides."
 #: lms/djangoapps/verify_student/views.py
 #, python-brace-format
 msgid "{platform_name} ID Verification Photos Received"
-msgstr ""
+msgstr "Photos de Vérification d'identité {platform_name} reçues"
 
 #: lms/djangoapps/verify_student/views.py
 #, python-brace-format
 msgid "Your {platform_name} ID Verification Approved"
-msgstr ""
+msgstr "Votre Vérification d'identité {platform_name} a été approuvée."
 
 #: lms/djangoapps/verify_student/views.py
 #, python-brace-format
 msgid "Your {platform_name} Verification Has Been Denied"
-msgstr ""
+msgstr "Votre Vérification {platform_name} a été refusée. "
 
 #: lms/templates/admin/user_api/accounts/cancel_retirement_action.html
 msgid "Please correct the errors below."
-msgstr ""
+msgstr "Merci de corriger les erreurs ci-dessous."
 
 #: lms/templates/admin/user_api/accounts/cancel_retirement_action.html
 #, python-format
@@ -9828,7 +9977,7 @@ msgstr ""
 #: lms/templates/instructor/edx_ace/removebetatester/email/body.txt
 #, python-format
 msgid "Dear %(full_name)s"
-msgstr ""
+msgstr "Cher %(full_name)s"
 
 #: lms/templates/instructor/edx_ace/addbetatester/email/body.txt
 #, python-format
@@ -9913,7 +10062,7 @@ msgstr ""
 
 #: lms/templates/instructor/edx_ace/allowedenroll/email/body.txt
 msgid "Dear student,"
-msgstr ""
+msgstr "Cher étudiant,"
 
 #: lms/templates/instructor/edx_ace/allowedenroll/email/body.txt
 #, python-format
@@ -9964,7 +10113,7 @@ msgstr ""
 
 #: lms/templates/instructor/edx_ace/allowedunenroll/email/body.txt
 msgid "Dear Student,"
-msgstr ""
+msgstr "Cher étudiant,"
 
 #: lms/templates/instructor/edx_ace/enrolledunenroll/email/body.html
 #, python-format
@@ -9988,7 +10137,7 @@ msgstr ""
 #: lms/templates/instructor/edx_ace/removebetatester/email/body.html
 #: lms/templates/instructor/edx_ace/removebetatester/email/body.txt
 msgid "Your other courses have not been affected."
-msgstr ""
+msgstr "Vos autres cours n'ont pas été affectés."
 
 #: lms/templates/instructor/edx_ace/enrolledunenroll/email/body.html
 #: lms/templates/instructor/edx_ace/enrolledunenroll/email/body.txt
@@ -10065,6 +10214,8 @@ msgid ""
 "If you are not redirected within 5 seconds, <a href=\"%(target)s\">click "
 "here to go to the home page</a>."
 msgstr ""
+"Si vous n'êtes pas redirigé d'ici 5 secondes, <a href=\"%(target)s\">cliquer"
+" ici pour aller à la page d'accueil</a>."
 
 #: lms/templates/main_django.html cms/templates/base.html
 #: lms/templates/main.html
@@ -10086,6 +10237,8 @@ msgid ""
 "These permissions will be granted for data from your courses associated with"
 " the following content providers:"
 msgstr ""
+"Ces permissions donneront le droit de consulter des données de vos cours "
+"associées aux fournisseurs de contenu suivants :"
 
 #: lms/templates/oauth2_provider/authorize.html
 msgid ""
@@ -10099,6 +10252,9 @@ msgstr ""
 
 #: lms/templates/oauth2_provider/authorize.html
 #: openedx/core/djangoapps/user_api/admin.py
+#: cms/templates/course-create-rerun.html cms/templates/index.html
+#: cms/templates/manage_users.html cms/templates/manage_users_lib.html
+#: cms/templates/videos_index_pagination.html
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -10357,7 +10513,8 @@ msgstr "Aperçu de cette révision"
 msgid "Auto log:"
 msgstr "Log automatique :"
 
-#: lms/templates/wiki/history.html wiki/templates/wiki/history.html
+#: lms/templates/wiki/history.html cms/templates/videos_index_pagination.html
+#: wiki/templates/wiki/history.html
 msgid "Change"
 msgstr "Modifier"
 
@@ -10413,6 +10570,8 @@ msgid ""
 "You need to <a href=\"%(login_url)s\">log in</a> or <a "
 "href=\"%(signup_url)s\">sign up</a> to use this function."
 msgstr ""
+"Pour utiliser cette fonction, il faut <a href=\"%(login_url)s\">se "
+"connecter</a> ou <a href=\"%(signup_url)s\">s'enregistrer</a>."
 
 #: lms/templates/wiki/includes/anonymous_blocked.html
 msgid "You need to log in or sign up to use this function."
@@ -10531,6 +10690,8 @@ msgid ""
 "Markdown syntax is allowed. See the %(start_link)scheatsheet%(end_link)s for"
 " help."
 msgstr ""
+"La syntaxe Markdown est autorisée. Lisez l' "
+"%(start_link)santiséche%(end_link)s pour avoir de l'aide."
 
 #: lms/templates/wiki/plugins/attachments/index.html
 #: wiki/plugins/attachments/wiki_plugin.py
@@ -10680,17 +10841,17 @@ msgstr "Restaurer cette révision marquera cet article comme supprimé."
 
 #: lms/urls.py
 msgid "LMS Administration"
-msgstr ""
+msgstr "Administration LMS"
 
 #: openedx/core/djangoapps/ace_common/apps.py
 msgid "ACE Common"
-msgstr ""
+msgstr "ACE Common"
 
 #: openedx/core/djangoapps/ace_common/templates/ace_common/edx_ace/common/base_body.html
 #: themes/red-theme/lms/templates/ace_common/edx_ace/common/base_body.html
 #, python-format
 msgid "Go to %(platform_name)s Home Page"
-msgstr ""
+msgstr "Aller à la Page d'accueil %(platform_name)s"
 
 #: openedx/core/djangoapps/ace_common/templates/ace_common/edx_ace/common/base_body.html
 #: themes/red-theme/lms/templates/ace_common/edx_ace/common/base_body.html
@@ -10709,7 +10870,7 @@ msgstr "%(platform_name)s sur LinkedIn"
 #: themes/red-theme/lms/templates/ace_common/edx_ace/common/base_body.html
 #, python-format
 msgid "%(platform_name)s on Twitter"
-msgstr ""
+msgstr "%(platform_name)s sur Twitter"
 
 #: openedx/core/djangoapps/ace_common/templates/ace_common/edx_ace/common/base_body.html
 #: themes/red-theme/lms/templates/ace_common/edx_ace/common/base_body.html
@@ -10721,23 +10882,23 @@ msgstr "%(platform_name)s sur Facebook"
 #: themes/red-theme/lms/templates/ace_common/edx_ace/common/base_body.html
 #, python-format
 msgid "%(platform_name)s on Google Plus"
-msgstr ""
+msgstr "%(platform_name)s sur Google Plus"
 
 #: openedx/core/djangoapps/ace_common/templates/ace_common/edx_ace/common/base_body.html
 #: themes/red-theme/lms/templates/ace_common/edx_ace/common/base_body.html
 #, python-format
 msgid "%(platform_name)s on Reddit"
-msgstr ""
+msgstr "%(platform_name)s sur Reddit"
 
 #: openedx/core/djangoapps/ace_common/templates/ace_common/edx_ace/common/base_body.html
 #: themes/red-theme/lms/templates/ace_common/edx_ace/common/base_body.html
 msgid "Download the iOS app on the Apple Store"
-msgstr ""
+msgstr "Télécharger l'application iOS sur Apple Store"
 
 #: openedx/core/djangoapps/ace_common/templates/ace_common/edx_ace/common/base_body.html
 #: themes/red-theme/lms/templates/ace_common/edx_ace/common/base_body.html
 msgid "Download the Android app on the Google Play Store"
-msgstr ""
+msgstr "Télécharger l'application Android sur Google Play Store"
 
 #: openedx/core/djangoapps/ace_common/templates/ace_common/edx_ace/common/base_body.html
 #: themes/red-theme/lms/templates/ace_common/edx_ace/common/base_body.html
@@ -10756,6 +10917,9 @@ msgid ""
 "earning a verified certificate. Upgrade by "
 "%(user_schedule_upgrade_deadline_time)s."
 msgstr ""
+"Ne manquez pas l'occasion de mettre en avant vos nouvelles connaissances et "
+"compétences en obtenant un certificat vérifié. Mettre à jour d'ici "
+"%(user_schedule_upgrade_deadline_time)s."
 
 #: openedx/core/djangoapps/ace_common/templates/ace_common/edx_ace/common/upsell_cta.html
 #: openedx/core/djangoapps/ace_common/templates/ace_common/edx_ace/common/upsell_cta.txt
@@ -10780,7 +10944,7 @@ msgstr "Nom de l'organisation"
 
 #: openedx/core/djangoapps/api_admin/forms.py
 msgid "Organization Address"
-msgstr ""
+msgstr "Adresse de l'organisation"
 
 #: openedx/core/djangoapps/api_admin/forms.py
 msgid "Describe what your application does."
@@ -10788,15 +10952,15 @@ msgstr "Décriver ce que votre application fait."
 
 #: openedx/core/djangoapps/api_admin/forms.py
 msgid "The URL of your organization's website."
-msgstr ""
+msgstr "L'URL du site Internet de votre organisation."
 
 #: openedx/core/djangoapps/api_admin/forms.py
 msgid "The name of your organization."
-msgstr ""
+msgstr "Le nom de votre organisation."
 
 #: openedx/core/djangoapps/api_admin/forms.py
 msgid "The contact address of your organization."
-msgstr ""
+msgstr "L'adresse de contact de votre organisation."
 
 #: openedx/core/djangoapps/api_admin/forms.py
 #, python-brace-format
@@ -10845,6 +11009,8 @@ msgid ""
 "I, and my organization, accept the {link_start}{platform_name} API Terms of "
 "Service{link_end}."
 msgstr ""
+"Mon organisation et moi acceptons les {link_start}Conditions d'utilisation "
+"des API {platform_name}{link_end}."
 
 #: openedx/core/djangoapps/bookmarks/apps.py
 #: openedx/features/course_bookmarks/plugins.py
@@ -10909,7 +11075,7 @@ msgstr ""
 
 #: openedx/core/djangoapps/catalog/models.py
 msgid "Long Term Cache Time To Live"
-msgstr ""
+msgstr "Time To Live du Cache longue durée"
 
 #: openedx/core/djangoapps/catalog/models.py
 msgid ""
@@ -10917,6 +11083,9 @@ msgid ""
 "does needs to be refreshed less frequently. Enable long term caching of API "
 "responses by setting this to a value greater than 0."
 msgstr ""
+"Indiqué en secondes (86 400 s, 24 h par défaut). Dans certains cas, il faut "
+"rafraichir le cache moins souvent. Activez le système de cache longue durée "
+"des réponses API en réglant à une valeur supérieure à 0."
 
 #: openedx/core/djangoapps/catalog/models.py
 msgid ""
@@ -10945,7 +11114,7 @@ msgstr ""
 
 #: openedx/core/djangoapps/config_model_utils/models.py
 msgid "Enabled"
-msgstr ""
+msgstr "Activé"
 
 #: openedx/core/djangoapps/config_model_utils/models.py
 msgid "Configure values for all course runs associated with this site."
@@ -10967,6 +11136,7 @@ msgid ""
 "should be formatted as 'org+course' (i.e. MITx+6.002x, HarvardX+CS50)."
 msgstr ""
 
+#: openedx/core/djangoapps/config_model_utils/models.py
 #: cms/templates/course-create-rerun.html cms/templates/index.html
 #: cms/templates/settings.html
 msgid "Course Run"
@@ -11011,7 +11181,7 @@ msgstr "Une cohorte avec le même nom existe déjà."
 
 #: openedx/core/djangoapps/credentials/apps.py
 msgid "Credentials"
-msgstr ""
+msgstr "Crédits"
 
 #: openedx/core/djangoapps/credentials/models.py
 msgid "Internal Service URL"
@@ -11169,20 +11339,20 @@ msgstr "Date limite pour l'achat et la demande de crédit."
 
 #: openedx/core/djangoapps/dark_lang/views.py
 msgid "Preview Language Administration"
-msgstr ""
+msgstr "Aperçu de la Gestion des langues"
 
 #: openedx/core/djangoapps/dark_lang/views.py
 msgid "Language not provided"
-msgstr ""
+msgstr "Langue indisponible"
 
 #: openedx/core/djangoapps/dark_lang/views.py
 #, python-brace-format
 msgid "Language set to {preview_language}"
-msgstr ""
+msgstr "Langue configurée : {preview_language}"
 
 #: openedx/core/djangoapps/dark_lang/views.py
 msgid "Language reset to the default"
-msgstr ""
+msgstr "Langue remise à défaut"
 
 #: openedx/core/djangoapps/debug/views.py
 msgid "This is a test message"
@@ -11264,10 +11434,12 @@ msgid ""
 "Comma-separated list of scopes that this application will be allowed to "
 "request."
 msgstr ""
+"Liste séparée par des virgules des champs que cette application sera "
+"autorisée à vous demander."
 
 #: openedx/core/djangoapps/oauth_dispatch/models.py
 msgid "Content Provider"
-msgstr ""
+msgstr "Fournisseur de contenu"
 
 #: openedx/core/djangoapps/password_policy/apps.py
 msgid "Password Policy"
@@ -11348,11 +11520,11 @@ msgstr ""
 
 #: openedx/core/djangoapps/schedules/admin.py
 msgid "Known Error Case"
-msgstr ""
+msgstr "Cas d'erreur connue"
 
 #: openedx/core/djangoapps/schedules/admin.py
 msgid "Schedule start < course start"
-msgstr ""
+msgstr "Début de l'horaire < début du cours"
 
 #: openedx/core/djangoapps/schedules/admin.py
 msgid "All"
@@ -11360,24 +11532,26 @@ msgstr "Tous"
 
 #: openedx/core/djangoapps/schedules/admin.py
 msgid "Experience"
-msgstr ""
+msgstr "Expérience"
 
 #: openedx/core/djangoapps/schedules/apps.py
 #: openedx/core/djangoapps/schedules/models.py
 msgid "Schedules"
-msgstr ""
+msgstr "Horaires"
 
 #: openedx/core/djangoapps/schedules/models.py
 msgid "Indicates if this schedule is actively used"
-msgstr ""
+msgstr "Indique si cet horaire est activement employé"
 
 #: openedx/core/djangoapps/schedules/models.py
 msgid "Date this schedule went into effect"
-msgstr ""
+msgstr "Date d'entrée en vigueur de cet horaire"
 
 #: openedx/core/djangoapps/schedules/models.py
 msgid "Deadline by which the learner must upgrade to a verified seat"
 msgstr ""
+"Date limite avant laquelle l'étudiant doit avoir effectué la mise à niveau "
+"vers une place vérifiée "
 
 #: openedx/core/djangoapps/schedules/models.py
 #: lms/templates/ccx/coach_dashboard.html lms/templates/ccx/schedule.html
@@ -11387,7 +11561,7 @@ msgstr "Planifier"
 #: openedx/core/djangoapps/schedules/templates/dropdown_filter.html
 #, python-format
 msgid " By %(filter_title)s "
-msgstr ""
+msgstr "Par %(filter_title)s"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/courseupdate/email/body.html
 #, python-format
@@ -11400,6 +11574,9 @@ msgid ""
 "We hope you're enjoying <strong>%(course_name)s</strong>! We want to let you"
 " know what you can look forward to in week %(week_num)s:"
 msgstr ""
+"Nous espérons que vous profitez bien du cours de "
+"<strong>%(course_name)s</strong> ! Nous voulons juste vous annoncer ce que "
+"la semaine n°%(week_num)s vous réserve :"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/courseupdate/email/body.html
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/courseupdate/email/body.txt
@@ -11408,10 +11585,14 @@ msgid ""
 " spend time with the course each week. Your focused attention will pay off "
 "in the end!"
 msgstr ""
+"Avec des cours qui vont à votre rythme, votre apprentissage se fait selon "
+"votre propre horaire. Nous vous encourageons à consacrer un certain temps "
+"hebdomadaire aux cours. Au final, vos efforts de concentration porteront "
+"leur fruits !"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/courseupdate/email/body.html
 msgid "Resume your course now"
-msgstr ""
+msgstr "Reprendre le cours maintenant"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/courseupdate/email/body.txt
 #, python-format
@@ -11419,11 +11600,13 @@ msgid ""
 "We hope you're enjoying %(course_name)s! We want to let you know what you "
 "can look forward to in week %(week_num)s:"
 msgstr ""
+"Nous espérons que vous profitez bien du cours de %(course_name)s ! Nous "
+"voulons juste vous annoncer ce que la semaine n°%(week_num)s vous réserve :"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/courseupdate/email/subject.txt
 #, python-format
 msgid "Welcome to week %(week_num)s"
-msgstr ""
+msgstr "Bienvenue à la semaine n°%(week_num)s"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day10/email/body.html
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day10/email/body.txt
@@ -11433,6 +11616,9 @@ msgid ""
 " participating in the discussion forums. What do you want to do to keep "
 "learning?"
 msgstr ""
+"Sur %(platform_name)s, beaucoup d'étudiants résoudent de plus en plus de "
+"problèmes chaque semaine, tout en participant à des forums de discussion. Qu"
+"'est-ce qui vous permettrait de prolonger votre apprentissage?"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day10/email/body.html
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day10/email/body.txt
@@ -11442,11 +11628,15 @@ msgid ""
 "problems every week, and participating in the discussion forums. What do you"
 " want to do to keep learning?"
 msgstr ""
+"Sur %(platform_name)s, beaucoup d'étudiants en %(course_name)s résoudent de "
+"plus en plus de problèmes chaque semaine, tout en participant à des forums "
+"de discussion. Qu'est-ce qui vous permettrait de prolonger votre "
+"apprentissage?"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day10/email/body.html
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day10/email/subject.txt
 msgid "Keep up the momentum!"
-msgstr ""
+msgstr "Gardez votre élan !"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day10/email/body.html
 #, python-format
@@ -11455,11 +11645,15 @@ msgid ""
 "completing more problems every week, and participating in the discussion "
 "forums. What do you want to do to keep learning?"
 msgstr ""
+"Sur %(platform_name)s, beaucoup d'étudiants "
+"en<strong>%(course_name)s</strong>résoudent de plus en plus de problèmes "
+"chaque semaine, tout en participant à des forums de discussion. Qu'est-ce "
+"qui vous permettrait de prolonger votre apprentissage ?"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day10/email/body.html
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day10/email/body.txt
 msgid "Keep learning"
-msgstr ""
+msgstr "Continuer à apprendre"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day3/email/body.html
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day3/email/body.txt
@@ -11469,6 +11663,9 @@ msgid ""
 "%(platform_name)s? We do, and we’re glad to have you! Come see what everyone"
 " is learning."
 msgstr ""
+"Vous rappelez-vous de lorsque vous vous êtes inscrit à %(course_name)s, et à"
+" d'autres cours sur %(platform_name)s ? Nous oui, et nous sommes contents "
+"que vous soyez là ! Venez voir ce que tout le monde étudie."
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day3/email/body.html
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day3/email/body.txt
@@ -11477,10 +11674,13 @@ msgid ""
 "Remember when you enrolled in %(course_name)s on %(platform_name)s? We do, "
 "and we’re glad to have you! Come see what everyone is learning."
 msgstr ""
+"Vous rappelez-vous de lorsque vous vous êtes inscrit à %(course_name)s sur "
+"%(platform_name)s ? Nous oui, et nous sommes contents que vous soyez là ! "
+"Venez voir ce que tout le monde étudie."
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day3/email/body.html
 msgid "Keep learning today"
-msgstr ""
+msgstr "Continuer à apprendre aujourd'hui"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day3/email/body.html
 #, python-format
@@ -11489,6 +11689,10 @@ msgid ""
 "courses on %(platform_name)s? We do, and we’re glad to have you! Come see "
 "what everyone is learning."
 msgstr ""
+"Vous rappelez-vous de lorsque vous vous êtes inscrit à "
+"<strong>%(course_name)s</strong>, et à d'autres cours sur %(platform_name)s "
+"? Nous oui, et nous sommes contents que vous soyez là ! Venez voir ce que "
+"tout le monde étudie."
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day3/email/body.html
 #, python-format
@@ -11497,17 +11701,20 @@ msgid ""
 "%(platform_name)s? We do, and we’re glad to have you! Come see what everyone"
 " is learning."
 msgstr ""
+"Vous rappelez-vous de lorsque vous vous êtes inscrit à "
+"<strong>%(course_name)s</strong> sur %(platform_name)s ? Nous oui, et nous "
+"sommes contents que vous soyez là ! Venez voir ce que tout le monde étudie."
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day3/email/body.html
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day3/email/body.txt
 #: themes/red-theme/lms/templates/schedules/edx_ace/recurringnudge_day3/email/body.txt
 msgid "Start learning now"
-msgstr ""
+msgstr "Commencer à apprendre maintenant"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day3/email/subject.txt
 #, python-format
 msgid "Keep learning on %(platform_name)s"
-msgstr ""
+msgstr "Continuer à étudier sur %(platform_name)s"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/recurringnudge_day3/email/subject.txt
 #, python-format
@@ -11523,6 +11730,11 @@ msgid ""
 "An %(platform_name)s certificate is official and easily shareable. Upgrade "
 "by %(user_schedule_upgrade_deadline_time)s."
 msgstr ""
+"Nous espérons que jusqu'à là, vous appréciez votre apprentissage sur "
+"%(platform_name)s ! Un certificat vérifié vous permet de mettre en avant vos"
+" nouvelles connaissances et compétences. Un certificat %(platform_name)s est"
+" officiel et facilement partageable. Mettre à jour d'ici "
+"%(user_schedule_upgrade_deadline_time)s."
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/upgradereminder/email/body.html
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/upgradereminder/email/body.txt
@@ -11533,10 +11745,15 @@ msgid ""
 " An %(platform_name)s certificate is official and easily shareable. Upgrade "
 "by %(user_schedule_upgrade_deadline_time)s."
 msgstr ""
+"Nous espérons que jusqu'à là, vous appréciez votre apprentissage sur "
+"%(first_course_name)s ! Un certificat vérifié vous permet de mettre en avant"
+" vos nouvelles connaissances et compétences. Un certificat %(platform_name)s"
+" est officiel et facilement partageable. Mettre à jour d'ici "
+"%(user_schedule_upgrade_deadline_time)s."
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/upgradereminder/email/body.html
 msgid "Upgrade now"
-msgstr ""
+msgstr "Mettre à jour maintenant"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/upgradereminder/email/body.html
 #, python-format
@@ -11546,6 +11763,10 @@ msgid ""
 "highlight your new knowledge and skills. An %(platform_name)s certificate is"
 " official and easily shareable."
 msgstr ""
+"Nous espérons que jusqu'à là, vous appréciez votre apprentissage sur "
+"<strong>%(platform_name)s</strong> ! Un certificat vérifié vous permet de "
+"mettre en avant vos nouvelles connaissances et compétences. Un certificat "
+"%(platform_name)s est officiel et facilement partageable."
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/upgradereminder/email/body.html
 #, python-format
@@ -11564,23 +11785,27 @@ msgstr ""
 #, python-format
 msgid "Upgrade by <strong>%(user_schedule_upgrade_deadline_time)s</strong>."
 msgstr ""
+"Mettre à jour d'ici "
+"<strong>%(user_schedule_upgrade_deadline_time)s</strong>."
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/upgradereminder/email/body.html
 msgid "You are eligible to upgrade in these courses:"
 msgstr ""
+"Vous êtes autorisé à effectuer une mise à jour pour les cours suivants :"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/upgradereminder/email/body.html
 msgid "Example of a verified certificate"
-msgstr ""
+msgstr "Exemple de certificat vérifié"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/upgradereminder/email/body.txt
 msgid "Upgrade now at"
-msgstr ""
+msgstr "Mettre à jour maintenant à"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/upgradereminder/email/subject.txt
 #, python-format
 msgid "Upgrade to earn a verified certificate on %(platform_name)s"
 msgstr ""
+"Mettre à jour pour obtenir un certificat vérifié sur %(platform_name)s"
 
 #: openedx/core/djangoapps/schedules/templates/schedules/edx_ace/upgradereminder/email/subject.txt
 #, python-format
@@ -11595,32 +11820,36 @@ msgstr "Activer les améliorations de la page d'accueil des cours."
 #: openedx/core/djangoapps/theming/views.py
 #, python-brace-format
 msgid "Site theme changed to {site_theme}"
-msgstr ""
+msgstr "{site_theme} est devenu le thème du site"
 
 #: openedx/core/djangoapps/theming/views.py
 #, python-brace-format
 msgid "Theme {site_theme} does not exist"
-msgstr ""
+msgstr "Le thème {site_theme} n'existe pas"
 
 #: openedx/core/djangoapps/theming/views.py
 msgid "Site theme reverted to the default"
-msgstr ""
+msgstr "Le thème du site est revenu au thème par défaut"
 
 #: openedx/core/djangoapps/theming/views.py
 #: openedx/core/djangoapps/theming/templates/theming/theming-admin-fragment.html
 msgid "Theming Administration"
-msgstr ""
+msgstr "Administration thématique"
 
 #: openedx/core/djangoapps/user_api/accounts/__init__.py
 msgid ""
 "Usernames can only contain letters (A-Z, a-z), numerals (0-9), underscores "
 "(_), and hyphens (-)."
 msgstr ""
+"Les noms d'utilisateur peuvent seulement contenir des lettres (A-Z, a-z), "
+"des chiffres (0-9), des tirets bas (_) et des traits d'union (-)."
 
 #: openedx/core/djangoapps/user_api/accounts/__init__.py
 msgid ""
 "Usernames can only contain letters, numerals, and @/./+/-/_ characters."
 msgstr ""
+"Les noms d'utilisateur peuvent seulement contenir des lettres, des chiffres,"
+" et les caractères @/./+/-/_."
 
 #. Translators: This message is shown to users who attempt to create a new
 #. account using
@@ -11652,6 +11881,7 @@ msgstr ""
 #, python-brace-format
 msgid "Username must be between {min} and {max} characters long."
 msgstr ""
+"Le nom d'utilisateur doit faire entre {min} et {max} caractères de long."
 
 #: openedx/core/djangoapps/user_api/accounts/__init__.py
 #, python-brace-format
@@ -11663,7 +11893,7 @@ msgstr ""
 #. into the required field or enter it incorrectly.
 #: openedx/core/djangoapps/user_api/accounts/__init__.py
 msgid "Enter your full name."
-msgstr ""
+msgstr "Saisissez votre nom complet."
 
 #: openedx/core/djangoapps/user_api/accounts/__init__.py
 msgid "The email addresses do not match."
@@ -11675,31 +11905,32 @@ msgstr "Sélectionnez votre pays ou région de résidence."
 
 #: openedx/core/djangoapps/user_api/accounts/__init__.py
 msgid "Select your profession."
-msgstr ""
+msgstr "Sélectionnez votre profession."
 
 #: openedx/core/djangoapps/user_api/accounts/__init__.py
 msgid "Select your specialty."
-msgstr ""
+msgstr "Sélectionnez votre spécialité."
 
 #: openedx/core/djangoapps/user_api/accounts/__init__.py
 msgid "Enter your profession."
-msgstr ""
+msgstr "Saisissez votre profession."
 
 #: openedx/core/djangoapps/user_api/accounts/__init__.py
 msgid "Enter your specialty."
-msgstr ""
+msgstr "Saisissez votre spécialité"
 
 #: openedx/core/djangoapps/user_api/accounts/__init__.py
 msgid "Enter your city."
-msgstr ""
+msgstr "Saisissez votre ville."
 
 #: openedx/core/djangoapps/user_api/accounts/__init__.py
 msgid "Tell us your goals."
-msgstr ""
+msgstr "Indiquez-nous vos objectifs."
 
 #: openedx/core/djangoapps/user_api/accounts/__init__.py
 msgid "Select the highest level of education you have completed."
 msgstr ""
+"Veuillez sélectionner le plus haut niveau de formation que vous ayez obtenu."
 
 #: openedx/core/djangoapps/user_api/accounts/__init__.py
 msgid "Enter your mailing address."
@@ -11737,7 +11968,7 @@ msgstr "Entreprise"
 #: openedx/core/djangoapps/user_api/accounts/settings_views.py
 #: openedx/core/djangoapps/user_api/api.py
 msgid "Job Title"
-msgstr ""
+msgstr "Intitulé du poste"
 
 #. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: This label appears above a field on the registration form
@@ -11761,19 +11992,20 @@ msgstr ""
 #: openedx/core/djangoapps/user_api/accounts/settings_views.py
 #: openedx/core/djangoapps/user_api/api.py
 msgid "Profession"
-msgstr ""
+msgstr "Profession"
 
 #. Translators: This label appears above a dropdown menu on the registration
 #. form used to select the user's specialty
 #: openedx/core/djangoapps/user_api/accounts/settings_views.py
 #: openedx/core/djangoapps/user_api/api.py
 msgid "Specialty"
-msgstr ""
+msgstr "Spécialité"
 
 #: openedx/core/djangoapps/user_api/accounts/utils.py
 msgid ""
 " Make sure that you are providing a valid username or a URL that contains \""
 msgstr ""
+"Assurez vous de fournir un nom d'utilisateur valable ou un URL contenant \""
 
 #: openedx/core/djangoapps/user_api/accounts/views.py
 #: openedx/core/djangoapps/user_authn/views/login.py
@@ -11793,16 +12025,18 @@ msgstr "Email ou mot de passe incorrect."
 #: openedx/core/djangoapps/user_api/admin.py
 #: wiki/templates/wiki/permission_denied.html
 msgid "Permission Denied"
-msgstr ""
+msgstr "Permission refusée"
 
 #: openedx/core/djangoapps/user_api/admin.py
 msgid "Retirement does not exist!"
 msgstr ""
 
-#: cms/templates/export.html cms/templates/import.html
+#: openedx/core/djangoapps/user_api/admin.py cms/templates/export.html
+#: cms/templates/import.html
 msgid "Success"
 msgstr "Opération réussie"
 
+#: openedx/core/djangoapps/user_api/admin.py
 #: lms/templates/staff_problem_info.html
 #: lms/templates/instructor/instructor_dashboard_2/e-commerce.html
 msgid "Actions"
@@ -11903,6 +12137,9 @@ msgid ""
 "I agree to the {platform_name} "
 "{terms_of_service_link_start}{terms_of_service}{terms_of_service_link_end}"
 msgstr ""
+"J'accepte les "
+"{terms_of_service_link_start}{terms_of_service}{terms_of_service_link_end} "
+"de {platform_name}"
 
 #. Translators: "Terms of Service" is a legal document users must agree to
 #. in order to register a new account.
@@ -11922,6 +12159,11 @@ msgid ""
 "                   and agree to our {privacy_policy_link_start}Privacy "
 "Policy{privacy_policy_link_end}."
 msgstr ""
+"En créant un compte sur {platform_name}, vous acceptez de vous conformer à "
+"nos {platform_name} "
+"{terms_of_service_link_start}{terms_of_service}{terms_of_service_link_end} "
+"et acceptez notre {privacy_policy_link_start}Politique de "
+"confidentialité{privacy_policy_link_end}."
 
 #. Translators: "Terms of service" is a legal document users must agree to
 #. in order to register a new account.
@@ -11931,10 +12173,11 @@ msgid ""
 "I agree to the {platform_name} "
 "{tos_link_start}{terms_of_service}{tos_link_end}"
 msgstr ""
+"J'accepte {platform_name} {tos_link_start}{terms_of_service}{tos_link_end}"
 
 #: openedx/core/djangoapps/user_api/config/waffle.py
 msgid "System maintenance in progress. Please try again later."
-msgstr ""
+msgstr "Maintenance du système en cours. Veuillez réessayer plus tard."
 
 #: openedx/core/djangoapps/user_api/preferences/api.py
 #, python-brace-format
@@ -11993,7 +12236,7 @@ msgstr ""
 #: openedx/core/djangoapps/user_api/templates/user_api/edx_ace/deletionnotificationmessage/email/body.txt
 #, python-format
 msgid "Hello %(full_name)s,"
-msgstr ""
+msgstr "Bonjour %(full_name)s,"
 
 #: openedx/core/djangoapps/user_api/templates/user_api/edx_ace/deletionnotificationmessage/email/body.html
 #: openedx/core/djangoapps/user_api/templates/user_api/edx_ace/deletionnotificationmessage/email/body.txt
@@ -12002,6 +12245,8 @@ msgid ""
 "We received a deletion request for your account on %(platform_name)s. We're "
 "sorry to see you go!"
 msgstr ""
+"Nous avons reçu une demande de suppression de votre compte sur "
+"%(platform_name)s. Nous regrettons de vous voir partir !"
 
 #: openedx/core/djangoapps/user_api/templates/user_api/edx_ace/deletionnotificationmessage/email/body.html
 #: openedx/core/djangoapps/user_api/templates/user_api/edx_ace/deletionnotificationmessage/email/body.txt
@@ -12011,6 +12256,11 @@ msgid ""
 "If you want to opt-out of emails before then, please unsubscribe from the "
 "footer of any email."
 msgstr ""
+"Votre compte sera supprimé d'ici peu. La suppression d'un compte, comprenant"
+" le retrait des listes d'e-mail, peu prendre quelques semaines afin de "
+"traiter entièrement notre système. Si vous souhaitez renoncer aux e-mails "
+"ultérieurement, veuillez vous désinscrire en consultant le pied de page de "
+"n'importe quel e-mail."
 
 #: openedx/core/djangoapps/user_api/templates/user_api/edx_ace/deletionnotificationmessage/email/body.html
 #: openedx/core/djangoapps/user_api/templates/user_api/edx_ace/deletionnotificationmessage/email/body.txt
@@ -12026,19 +12276,19 @@ msgstr ""
 #: openedx/core/djangoapps/user_api/templates/user_api/edx_ace/deletionnotificationmessage/email/body.txt
 #, python-format
 msgid "Best, %(platform_name)s"
-msgstr ""
+msgstr "Cordialement, %(platform_name)s"
 
 #: openedx/core/djangoapps/user_api/templates/user_api/edx_ace/deletionnotificationmessage/email/subject.txt
 msgid "Your Account Has Been Queued For Deletion"
-msgstr ""
+msgstr "Votre Compte est en attente d'être Supprimé."
 
 #: openedx/core/djangoapps/user_authn/views/auto_auth.py
 msgid "Superuser creation not allowed"
-msgstr ""
+msgstr "La création d'Utilisateurs root n'est pas autorisée"
 
 #: openedx/core/djangoapps/user_authn/views/auto_auth.py
 msgid "Account modification not allowed."
-msgstr ""
+msgstr "Modification du compte non autorisée."
 
 #: openedx/core/djangoapps/user_authn/views/login.py
 #, python-brace-format
@@ -12067,13 +12317,14 @@ msgid ""
 "{register_label_strong} at the top of the page."
 msgstr ""
 
+#: openedx/core/djangoapps/user_authn/views/login.py
 #: lms/templates/register-form.html
 #: lms/templates/header/navbar-not-authenticated.html
 #: lms/templates/navigation/navbar-not-authenticated.html
 #: themes/edx.org/lms/templates/header/navbar-not-authenticated.html
 #: themes/stanford-style/lms/templates/register-form.html
 msgid "Register"
-msgstr "Inscription"
+msgstr "S'inscrire"
 
 #: openedx/core/djangoapps/user_authn/views/login.py
 msgid "There was an error receiving your login information. Please email us."
@@ -12123,12 +12374,12 @@ msgstr "L'access_token fourni n'est pas valide."
 #: openedx/core/djangoapps/util/user_messages.py
 #, python-brace-format
 msgid "{header_open}{title}{header_close}{body}"
-msgstr ""
+msgstr "{header_open}{title}{header_close}{body}"
 
 #: openedx/core/djangoapps/util/user_messages.py
 #, python-brace-format
 msgid "{header_open}{title}{header_close}"
-msgstr ""
+msgstr "{header_open}{title}{header_close}"
 
 #: openedx/core/djangoapps/util/user_messages.py
 #: cms/templates/course_outline.html cms/templates/index.html
@@ -12144,16 +12395,18 @@ msgstr ""
 
 #: openedx/core/djangoapps/video_pipeline/models.py
 msgid "Oauth client name of video pipeline service."
-msgstr ""
+msgstr "Nom de client Oauth du service de pipeline de vidéo."
 
 #: openedx/core/djangoapps/video_pipeline/models.py
 msgid "edx-video-pipeline API URL."
-msgstr ""
+msgstr "URL de l'API du pipeline de vidéo edX."
 
 #: openedx/core/djangoapps/video_pipeline/models.py
 msgid ""
 "Username created for Video Pipeline Integration, e.g. veda_service_user."
 msgstr ""
+"Nom d'utilisateur créé pour l'Intégration du pipeline de video, par exemple "
+"veda_service_user."
 
 #: openedx/core/djangoapps/waffle_utils/models.py
 msgid "Force On"
@@ -12226,6 +12479,8 @@ msgid ""
 "You are not signed in. To view the discussion content, {sign_in_link} or "
 "{register_link}, and enroll in this course."
 msgstr ""
+"Vous n'êtes pas connecté. Pour voir le contenu de la discussion, "
+"{sign_in_link} ou {register_link} avant de vous inscrire à ce cours."
 
 #: openedx/features/content_type_gating/admin.py
 #: openedx/features/course_duration_limits/admin.py
@@ -12400,7 +12655,7 @@ msgstr "Avis"
 #: openedx/features/course_experience/views/course_home_messages.py
 #, python-brace-format
 msgid "{sign_in_link} or {register_link} and then enroll in this course."
-msgstr ""
+msgstr "{sign_in_link} ou {register_link} avant de vous inscrire à ce cours."
 
 #: openedx/features/course_experience/views/course_home_messages.py
 #: lms/templates/header/navbar-not-authenticated.html
@@ -12414,6 +12669,8 @@ msgstr "Connexion"
 msgid ""
 "{open_enroll_link}Enroll now{close_enroll_link} to access the full course."
 msgstr ""
+"{open_enroll_link}Inscrivez-vous maintenant{close_enroll_link} pour accéder "
+"au cours intégral."
 
 #: openedx/features/course_experience/views/course_home_messages.py
 #, python-brace-format
@@ -12426,26 +12683,29 @@ msgid ""
 "To start, set a course goal by selecting the option below that best "
 "describes your learning plan. {goal_options_container}"
 msgstr ""
+"Pour commencer, définissez un objectif de cours en sélectionnant l'option "
+"ci-dessous qui correspond le mieux à votre plan d'apprentissage. "
+"{goal_options_container}"
 
 #: openedx/features/course_experience/views/course_home_messages.py
 #, python-brace-format
 msgid "Set goal to: {choice}"
-msgstr ""
+msgstr "Sélectionner l'objectif suivant : {choice}"
 
 #: openedx/features/course_experience/views/course_home_messages.py
 #, python-brace-format
 msgid "{choice}"
-msgstr ""
+msgstr "{choice}"
 
 #: openedx/features/course_experience/views/course_home_messages.py
 #, python-brace-format
 msgid "Set goal to: {goal_text}"
-msgstr ""
+msgstr "Sélectionner l'objectif suivant : {goal_text}"
 
 #: openedx/features/enterprise_support/api.py
 #, python-brace-format
 msgid "Enrollment in {course_title} was not complete."
-msgstr ""
+msgstr "L'inscription à {course_title} est incomplète."
 
 #: openedx/features/enterprise_support/api.py
 #, python-brace-format
@@ -12464,6 +12724,11 @@ msgid ""
 "access {platform_name}.{line_break}{line_break}Error "
 "Details:{line_break}{error_message}"
 msgstr ""
+"Nous sommes désolés, vous n’êtes pas autorisé à accéder à {platform_name} à "
+"travers ce canal. Veuillez pendre contact avec votre administrateur ou "
+"gestionnaire pédagogique afin d’avoir accès à "
+"{platform_name}.{line_break}{line_break}Détails de l’Erreur "
+":{line_break}{error_message}"
 
 #: openedx/features/enterprise_support/utils.py
 #, python-brace-format
@@ -12471,6 +12736,8 @@ msgid ""
 "Thank you for joining {platform_name}. Just a couple steps before you start "
 "learning!"
 msgstr ""
+"Merci d’avoir rejoint {platform_name}. Il ne reste que quelques étapes avant"
+" de commencer votre apprentissage !"
 
 #: openedx/features/enterprise_support/utils.py
 #: lms/templates/peer_grading/peer_grading_problem.html
@@ -12495,6 +12762,9 @@ msgid ""
 "Remember when you enrolled in %(course_name)s, and other courses on edX.org?"
 " We do, and we’re glad to have you! Come see what everyone is learning."
 msgstr ""
+"Vous rappelez-vous de lorsque vous vous êtes inscrit à %(course_name)s, et à"
+" d'autres cours sur edX.org ? Nous oui, et nous sommes contents que vous "
+"soyez là ! Venez voir ce que tout le monde étudie."
 
 #: themes/red-theme/lms/templates/schedules/edx_ace/recurringnudge_day3/email/body.txt
 #, python-format
@@ -12502,16 +12772,21 @@ msgid ""
 "Remember when you enrolled in %(course_name)s on edX.org? We do, and we’re "
 "glad to have you! Come see what everyone is learning."
 msgstr ""
+"Vous rappelez-vous de lorsque vous vous êtes inscrit à %(course_name)s sur "
+"edX.org ? Nous oui, et nous sommes contents que vous soyez là ! Venez voir "
+"ce que tout le monde étudie."
 
 #: cms/djangoapps/api/v1/serializers/course_runs.py
 msgid "Course team user does not exist"
-msgstr ""
+msgstr "Utilisateur de l'équipe pédagogique inexistant"
 
 #: cms/djangoapps/contentstore/course_group_config.py
 msgid ""
 "The groups in this configuration can be mapped to cohorts in the Instructor "
 "Dashboard."
 msgstr ""
+"Les groupes dans cette configuration peuvent être répartis en cohortes sur "
+"le Tableau de bord de l'enseignant."
 
 #: cms/djangoapps/contentstore/course_group_config.py
 #: cms/templates/group_configurations.html
@@ -14680,7 +14955,7 @@ msgstr ""
 
 #: lms/templates/secondary_email_change_failed.html
 msgid "Secondary e-mail change failed"
-msgstr ""
+msgstr "Le changement d'email secondaire a échoué"
 
 #: lms/templates/secondary_email_change_failed.html
 msgid "We were unable to activate your secondary email {secondary_email}"
@@ -15280,6 +15555,34 @@ msgid ""
 " you do not understand or do not wish to be bound by the Terms, you should "
 "not use the APIs."
 msgstr ""
+"Bienvenue sur {platform_name}. Merci d’utiliser l’API de découverte de cours"
+" de {platform_name}, l’API d’entreprise, et/ou tout autre API supplémentaire"
+" que nous pouvons offrir de temps à autre (collectivement, les « API »). "
+"Veuillez lire ces Conditions d’utilisation avant d’accéder ou d’utiliser les"
+" API. Ces Conditions d’utilisation, toute autre modalité supplémentaire "
+"ajoutée à la documentation d’accompagnement de l’API, ainsi que les règles "
+"et directives applicables que {platform_name} met à votre disposition et/ou "
+"met à jour occasionnellement sont des accords (collectivement, les « "
+"Conditions ») entre vous et {platform_name}. Ces Conditions sont énoncées en"
+" vertu de l’accord sur les produits d’entreprise, de l’accord sur la "
+"participation des membres ou, le cas échéant, de tout autre accord direct "
+"régissant l’achat de produits vendus sur {platform_name} (« l’Accord »), "
+"mises en œuvre par vous-même ou la partie au nom de laquelle vous avez accès"
+" aux API et à {platform_name}, et pouvez les utiliser. Si vous bénéficiez "
+"bel et bien d’un Accord s’appliquant à votre utilisation des API, l’Accord "
+"prévaudra dans l’éventualité d’une quelconque contradiction entre ledit "
+"Accord et ces Conditions. En accédant ou en utilisant les API, vous acceptez"
+" d’être légalement lié par les Conditions, que vous soyez ou non un "
+"utilisateur enregistré. Si vous utilisez le compte d’une entreprise, d’une "
+"association ou de toute autre personne morale pour accéder ou utiliser "
+"l’API, vous acceptez ces Conditions au nom de l’entité en question et "
+"déclarez et garantissez à {platform_name} que vous êtes en plein droit "
+"d’accepter ces Conditions au nom de l’entité en question, auquel cas les "
+"termes « vous », « votre », ou tout autre terme associés ci-inclus "
+"renverront à l’entité en question, au nom de laquelle vous accédez et "
+"utilisez les API. Si vous ne disposez pas des droits nécessaires, ou si vous"
+" ne comprenez pas ou ne souhaitez pas être lié par les Conditions, vous ne "
+"devez pas utiliser les API."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid "API Access"
@@ -15298,6 +15601,18 @@ msgid ""
 "provide you with instructions for obtaining your API shared secret and "
 "client ID."
 msgstr ""
+"Pour accéder aux API, vous devrez créer un compte utilisateur sur "
+"{platform_name} pour vos application (et non pas pour usage personnel). Ce "
+"compte vous permettra d'accéder à notre page API de demandes sur "
+"{request_url}. Sur cette page, vous devez compléter le formulaire de requête"
+" d'API, incluant une description de vos utilisations envisagées de l'API. "
+"Toute information fournie à {platform_name} dans le cadr de votre compte ou "
+"de votreinscription doit être exacte et à jour, et vous acceptez de nous "
+"informer rapidement de tout changements. {platform_name_capitalized} "
+"examinera votre formulaire de demande d'utilisation de l'API et, sous "
+"réserve d'approbation et sous les critères définis par {platform_name}, vous"
+" donnera les instructions pour obtenir votre identifiant client API secret "
+"partagé."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid "Permissible Use"
@@ -15319,6 +15634,21 @@ msgid ""
 "credentials anywhere other than on the {platform_name} website at "
 "{platform_url}."
 msgstr ""
+"Vous acceptez d'utiliser ces API uniquement dans le but de transmettre du "
+"contenu accessible via les API (le « Contenu de l'API ») vers votre propre "
+"site internet, site mobile, application, blog, liste de distribution "
+"d'email, ou propriété de réseau social (« Votre Application ») ou pour une "
+"autre utilisation commerciale que vous avez décrite dans votre demande "
+"d'accès et approuvée par {platform_name} au cas par cas. "
+"{platform_name_capitalized} peut vérifier que votre utilisation des API est "
+"conforme aux Conditions et peut vous refuser l'accès ou arrêter votre "
+"intégration si vous essayez de contourner ou de dépasser les exigences et "
+"limitations mises en place par {platform_name}. Votre Application ou toute "
+"autre utilisation approuvée de l’API ou du Contenu de l'API ne doit pas "
+"inciter vos utilisateurs finaux à dévoiler leur nom d'utilisateur "
+"{platform_name}, mot de passe ou toute autre authentifiant d’utilisateur "
+"{platform_name} autre part que sur le site internet de {platform_name} sur "
+"{platform_url}."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid "Prohibited Uses and Activities"
@@ -15332,6 +15662,12 @@ msgid ""
 "at any time, in its sole discretion, does not benefit or serve the best "
 "interests of {platform_name}, its users and its partners."
 msgstr ""
+"{platform_name_capitalized} est le seul habilité à évaluer l’acceptabilité "
+"d’une quelconque utilisation des API, et {platform_name} se réserve à tout "
+"moment le droit de refuser l’accès API en cas d’utilisation que "
+"{platform_name} qualifierait, à son entière discrétion, comme étant ni à "
+"l’avantage ni dans le meilleur intérêt de {platform_name}, ses utilisateurs "
+"et ses associés."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15370,6 +15706,8 @@ msgstr ""
 #: lms/templates/api_admin/terms_of_service.html
 msgid "altering or editing any content or graphics in the API Content;"
 msgstr ""
+"la modification ou la modification du contenu ou des graphiques dans le "
+"Contenu de l'API ;"
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15416,6 +15754,11 @@ msgid ""
 "calls made by you or Your Application to the APIs. You must not attempt to "
 "circumvent any restrictions or limitations imposed by {platform_name}."
 msgstr ""
+"{platform_name_capitalized} se réserve le droit, à son entière discrétion, "
+"d’imposer des restrictions et limites raisonnables par rapport au nombre et "
+"à la fréquence des appels aux API, qu’ils soient faits par vous ou Votre "
+"Application. N’essayez pas de contourner toute restriction ou limite imposée"
+" par {platform_name}."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid "Compliance"
@@ -15433,6 +15776,17 @@ msgid ""
 "or mask either your identity or Your Application's identity when using the "
 "APIs."
 msgstr ""
+"Vous acceptez de vous conformer à l’ensemble des lois, règlements et droits "
+"de tiers applicables (y compris, de manière non exhaustive, les lois "
+"relatives à l’importation et l’exportation de données ou de logiciels, la "
+"protection de la vie privée, les droits d’auteur et les lois en vigueur). "
+"Vous n’utiliserez pas les API pour encourager ou promouvoir des activités "
+"illégales ou la violation de droits de tiers. Vous n’enfreindrez aucune "
+"autre condition d’utilisation avec {platform_name}. Vous n’accéderez (ou "
+"tenterez d’accéder) à une API que par les moyens décrits dans la "
+"documentation de cette API. Lors de votre utilisation des API, votre "
+"identité et l’identité de Votre Application ne devront être ni forgées ni "
+"masquées."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid "Ownership"
@@ -15454,6 +15808,22 @@ msgid ""
 "distribute or modify the APIs or any API Content (including adaptation, "
 "editing, excerpting, or creating derivative works)."
 msgstr ""
+"Vous reconnaissez et acceptez que les API et l’ensemble du Contenu des API "
+"contiennent la propriété intellectuelle précieuse de {platform_name} et de "
+"ses associés. Les API et l’ensemble du Contenu des API sont protégés par des"
+" lois sur les droits d’auteurs et marques déposées, entre autres, à la fois "
+"américaines et étrangères. Tout droit relatif aux API et au Contenu des API,"
+" à défaut d’être expressément accordé, est réservé. L’utilisation des API ou"
+" du Contenu des API ne vous confère aucun droit de propriété sur les API ou "
+"le Contenu des API. Vous ne devez ni revendiquer la propriété ni tenter de "
+"revendiquer la propriété des API ou du Contenu des API. Vous ne devez pas "
+"représenter faussement votre personne, votre entreprise ou Votre Application"
+" comme étant source d’un quelconque Contenu API. Vous ne pouvez pas "
+"modifier, créer des versions dérivées, ou tenter d’utiliser, d’autoriser, ou"
+" d’exploiter d’une manière ou d’une autre tout Contenu API, en totalité ou "
+"en partie, en votre nom ou au nom de tout autre tiers. Vous ne pouvez ni "
+"distribuer ni modifier les API ou le Contenu des API (y compris au moyen de "
+"l’adaptation, l’édition, la citation, ou la création de versions dérivées)."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15472,6 +15842,22 @@ msgid ""
 "other entities providing information, API Content or services for the APIs, "
 "the course instructors and their staffs."
 msgstr ""
+"Chaque nom, logo, et sceau (« Marques déposées ») apparaissant dans les API,"
+" le Contenu des API ou, dans le cas échéant, sur ou par le biais des "
+"services rendus disponibles à travers les API, appartient à son propriétaire"
+" respectif. Les annonces de droit d’auteur, de Marque déposée, ou de tout "
+"autre droit de propriété intégrées ou attachées au Contenu API ne peuvent "
+"être retirées, altérées ou dissimulées. Si un quelconque Participant "
+"{platform_name} (défini ci-après) ou tout autre tiers refuse l’accès au "
+"Contenu API détenu ou géré par ledit Participant {platform_name} ou tiers, y"
+" compris, mais sans se limiter aux Marques déposées, vous devez vous assurer"
+" que l’ensemble du Contenu API de ce Participant {platform_name} ou de ce "
+"tiers soit supprimé de Votre Application et de vos réseaux, systèmes et "
+"serveurs aussi vite que possible, dans la mesure du raisonnable. « "
+"Participants {platform_name_capitalized} » désigne le Massachusetts "
+"Institute of Technology, Harvard, et toutes les autres entités fournissant "
+"l’information, le Contenu API ou les services pour les API, les instructeurs"
+" et leur personnel."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15484,6 +15870,17 @@ msgid ""
 "content, in whole or in part, in any form and in any media formats and "
 "through any media channels (now known or hereafter developed)."
 msgstr ""
+"À partir du moment où vous soumettez un quelconque contenu à {platform_name}"
+" dans le cadre de votre utilisation des API ou de tout Contenu de l’API, "
+"vous accordez à {platform_name} la licence et le droit à l’hébergement, au "
+"transfère, à l’affichage, à l’exécution, la modification, la distribution, "
+"la redistribution et au renouvellement de sa licence. Vous lui accordez "
+"également la licence et le droit d’utiliser, rendre disponible et exploiter "
+"le contenu en question, en tout ou en partie, peu importe la forme ou le "
+"format de média, et à travers tous les canaux médiatiques (connus ou à "
+"venir). Ces licences et droits sont internationaux, non exclusifs, "
+"cessibles, sous-licenciables, intégralement libérés, exempts de redevances, "
+"perpétuels et irrévocables."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid "Privacy"
@@ -15498,6 +15895,14 @@ msgid ""
 " collect and how you may use and share such information (including for "
 "advertising) with {platform_name} and other third parties."
 msgstr ""
+"Vous acceptez de vous conformer à l’ensemble des lois et règlements "
+"applicables sur la protection de la vie privée et d’être transparent par "
+"rapport à toute collecte et utilisation de données d’utilisateur final. Dans"
+" le cadre de Votre Application, vous êtes tenu de fournir et d’adhérer à une"
+" politique de confidentialité décrivant de manière claire et précise à vos "
+"utilisateurs finaux quelles informations d’utilisateur vous collectez et "
+"comment vous utilisez et partagez ces informations (notamment pour les "
+"publicités) avec {platform_name} ou d’autres tiers."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid "Right to Charge"
@@ -15509,6 +15914,9 @@ msgid ""
 "{platform_name} reserves the right to charge fees for future use or access "
 "to the APIs."
 msgstr ""
+"Certains accès aux API peuvent vous être fournis gratuitement. Cependant "
+"{platform_name} se réserve le droit d’imposer des frais en cas d’accès ou "
+"d’usage futurs des API."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15520,6 +15928,13 @@ msgid ""
 "changes.  Be sure to return to this page periodically to ensure familiarity "
 "with the most current version of the Terms."
 msgstr ""
+"{platform_name_capitalized} se réserve le droit de modifier les Condition à "
+"tout moment, sans préavis. Toute modification de ces Conditions entre en "
+"vigueur dès son affichage sur cette page, avec une date d'effet mise à jour."
+" En accédant aux API après que des modifications aient été apportées, vous "
+"signifiez votre accord sur une base prospective des Conditions modifiées et "
+"de ses changements. Assurez-vous de revenir à cette page régulièrement afin "
+"de vous familiariser avec la version la plus récente des Conditions."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15529,6 +15944,12 @@ msgid ""
 "that is unacceptable to you, you should stop using the APIs. Continued use "
 "of the APIs means you accept the change."
 msgstr ""
+"{platform_name_capitalized} peut également mettre à jour ou modifier les API"
+" de temps à autre, sans préavis. Ces modifications peuvent avoir un effet "
+"sur votre utilisation des API ou de la manière comment votre intégration "
+"interagit avec les API. Si l’une de nos modifications vous paraît "
+"inacceptable, vous devriez arrêter d’utiliser les API. L’utilisation "
+"continue des API indique que vous acceptez la modification."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid "Confidentiality"
@@ -15541,6 +15962,10 @@ msgid ""
 "discourage others from using your credentials. Your credentials may not be "
 "embedded in open source projects."
 msgstr ""
+"Vos identifiants (tels que le secret client et les ID) sont prévus pour "
+"n’être utilisés que par vous. Vos identifiants doivent rester confidentiels,"
+" et vous devez empêcher et décourager les autres de les utiliser. Ils ne "
+"peuvent être intégrés dans un projet open source."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15560,6 +15985,23 @@ msgid ""
 "to do so by law if you provide {platform_name} with reasonable prior notice,"
 " unless a court orders that {platform_name} not receive notice."
 msgstr ""
+"Dans l’éventualité où {platform_name} vous fournit l’accès à des "
+"informations, propres à {platform_name} et/ou aux API, qualifiées de « "
+"Confidentielles » ou qu’une personne raisonnable pourrait assumer comme "
+"étant confidentielles ou de nature exclusive en fonction de leurs conditions"
+" de diffusion (« Informations confidentielles »), vous acceptez de destiner "
+"ces informations exclusivement à l’utilisation et à la création à l’aide "
+"d’API. Vous ne pouvez divulguer les Informations confidentielles à personne "
+"sans le consentement écrit préalable de {platform_name}, et vous acceptez de"
+" protéger les Informations confidentielles des utilisations non autorisées "
+"et des divulgations de la même manière que vous protégeriez vos propres "
+"informations confidentielles. L’information que vous avez vous-même "
+"développée, reçue légitimement d’un tiers sans obligation de "
+"confidentialité, ou devenue publique à travers sans que ce soit de votre "
+"faute ne peut être qualifiée d’Information confidentielle. Vous pouvez "
+"divulguez des Informations confidentielles lorsque la loi vous y oblige si "
+"vous prévenez {platform_name} avec un préavis raisonnable, à moins qu’un "
+"tribunal n’enjoigne de ne donner aucun préavis à {platform_name}."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid "Disclaimer of Warranty / Limitation of Liabilities"
@@ -15574,6 +16016,13 @@ msgid ""
 "PARTICULAR PURPOSE AND NON-INFRINGEMENT, EXCEPT INSOFAR AS ANY SUCH IMPLIED "
 "WARRANTIES MAY NOT BE DISCLAIMED UNDER APPLICABLE LAW."
 msgstr ""
+"LES API ET L’ENSEMBLE DES INFORMATIONS, CONTENU DES API OU SERVICES MIS À "
+"VOTRE DISPOSITION SUR OU À TRAVERS LES API SONT FOURNIS « TEL QUEL » ET « "
+"TEL QUE DISPONIBLE » SANS GARANTIE QUELCONQUE (EXPRESSE, IMPLICITE OU "
+"AUTRE), Y COMPRIS, MAIS SANS SE LIMITER À, TOUTE GARANTIE IMPLICITE DE "
+"QUALITÉ MARCHANDE, DE CONFORMITÉ À UN USAGE SPÉCIFIQUE ET D’ABSENCE DE "
+"CONTREFAÇON, POUR AUTANT QUE LA LÉGISLATION EN VIGUEUR NE RÉFUTE PAS LES "
+"GARANTIES IMPLICITES EN QUESTION."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15604,6 +16053,15 @@ msgid ""
 "DOWNLOAD OR USE OF SUCH INFORMATION, MATERIALS OR DATA, UNLESS OTHERWISE "
 "EXPRESSLY PROVIDED FOR IN THE {platform_name} PRIVACY POLICY."
 msgstr ""
+"L’UTILISATION DES API, AINSI QUE DU CONTENU DES API ET DE TOUT AUTRE SERVICE"
+" OBTENU PAR OU GRÂCE AUX API, SE FAIT À VOS PROPRES RISQUES. VOTRE ACCÈS AUX"
+" OU TÉLÉCHARGEMENT DES INFORMATIONS, DOCUMENTS OU DONNÉES À L’AIDE DES API "
+"SE FAIT VOTRE ENTIÈRE DISCRÉTION ET À VOS PROPRES RISQUES, ET VOUS SEREZ LE "
+"SEUL RESPONSABLE DES ÉVENTUELS DOMMAGES SUBIS PAR VOTRE PROPRIÉTE (DONT "
+"VOTRE SYSTÈME INFORMATIQUE) OU DES PERTES DE DONNÉES PROVOQUÉES PAR LE "
+"TÉLÉCHARGEMENT OU L’EMPLOI DE L’INFORMATION, DOCUMENT OU DONNÉE EN QUESTION,"
+" SAUF EN CAS DE DÉROGATION ÉCRITE CONTRAIRE PRÉVUE PAR LA POLITIQUE DE "
+"CONFIDENTIALITÉ DE {platform_name}."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15615,6 +16073,15 @@ msgid ""
 "INFORMATION OBTAINED FROM OR THROUGH THE APIS, WHETHER YOUR CLAIM IS BASED "
 "IN CONTRACT, TORT, STATUTORY OR OTHER LAW."
 msgstr ""
+"DANS TOUTE LA MESURE PERMISE PAR LA LÉGISLATION APPLICABLE, VOUS ACCEPTEZ "
+"QUE NI {platform_name} NI AUCUN DES PARTICIPANTS {platform_name} NE SERONT "
+"TENUS RESPONSABLES ENVERS VOUS EN CAS DE PERTES OU DE DOMMAGES, RÉELS OU "
+"CONSÉCUTIFS, DÉCOULANT OU LIÉS AUX CONDITIONS, OU À VOTRE (OU CELLE DE TOUT "
+"AUTRE TIERS) UTILISATION OU INCAPACITÉ D’UTILISATION DES API OU DE TOUT "
+"CONTENU DES API, OU DE LA CONFIANCE QUE VOUS AVEZ ACCORDÉE AUX INFORMATIONS "
+"OBTENUES PAR OU GRÂCE AUX API, QUE VOTRE RÉCLAMATION SOIT FONDÉE SUR UN "
+"CONTRAT, LE DROIT DE RESPONSABILITÉ CIVILE, LE DROIT COMMUN, OU TOUTE AUTRE "
+"LOI."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15627,6 +16094,14 @@ msgid ""
 "DEFAMATION, ERRORS, LOSS OF PROFITS, LOSS OF DATA OR INTERRUPTION IN "
 "AVAILABILITY OF DATA)."
 msgstr ""
+"EN PARTICULIER, DANS TOUTE LA MESURE PERMISE PAR LA LÉGISLATION APPLICABLE, "
+"NI {platform_name} NI AUCUN DES PARTICIPANTS {platform_name} NE SERONT TENUS"
+" RESPONSABLES D’UN QUELCONQUE DOMMAGE CONSÉCUTIF, INDIRECT, PUNITIF, "
+"PARTICULIER, EXEMPLAIRE, OU ACCIDENTEL, QU’IL SOIT PRÉVISIBLE OU NON, ET QUE"
+" {platform_name} OU N’IMPORTE LEQUEL DES PARTICIPANTS {platform_name} AIENT "
+"ÉTÉ OU NON NÉGLIGENTS OU EN TORT (NOTAMMENT EN CAS DE PLAINTES POUR "
+"DIFFAMATION, D’ERREURS, DE PERTE DE PROFITS, DE PERTE DE DONNÉES OU "
+"D’INTERRUPTION DANS LA DISPONIBILITÉ DES DONNÉES)."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15635,6 +16110,12 @@ msgid ""
 " OR ALL OF THE ABOVE DISCLAIMERS, EXCLUSIONS, OR LIMITATIONS MAY NOT APPLY "
 "TO YOU, AND YOU MIGHT HAVE ADDITIONAL RIGHTS."
 msgstr ""
+"CERTAINES LOIS DE L’ÉTAT N’AUTORISENT NI LES RESTRICTIONS SUR LES GARANTIES "
+"IMPLICITES NI L’EXCLUSION ET LA RESTRICTION DE CERTAINS DOMMAGES. SI CES "
+"LOIS S’APPLIQUENT À VOUS, UNE PARTIE OU LA TOTALITÉ DES CLAUSES DE NON-"
+"RESPONSABILITÉ, EXCEPTIONS OU RESTRICTIONS MENTIONNÉES CI-DESSUS PEUVENT NE "
+"PAS S’APPLIQUER À VOUS ET VOUS POURRIEZ BÉNÉFICIER DE DROITS "
+"SUPPLÉMENTAIRES."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15646,6 +16127,14 @@ msgid ""
 "that may be offered at these third-party sites. If you decide to access "
 "linked third-party websites, you do so at your own risk."
 msgstr ""
+"Les API et le Contenu des API peut comprendre des liens hypertextes vers des"
+" sites entretenus ou gérés par des tiers et qui ne sont ni affiliés ni "
+"administrés par {platform_name}. {platform_name_capitalized} et les "
+"Participants {platform_name} ne sont pas responsables de ces sites tiers et "
+"ne contrôlent pas, n’approuvent pas, n’examinent pas et n’appuient pas le "
+"contenu ou l’utilisation de tout produit ou service qu’ils pourraient "
+"offrir. Si vous décidez de visiter des sites tiers liés, vous le faites à "
+"vos propres risques."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15661,6 +16150,19 @@ msgid ""
 "{platform_name} or one of the {platform_name} Participants will provide you "
 "with written notice of such claim, action or demand."
 msgstr ""
+"Dans toute la mesure permise par la législation applicable, vous acceptez de"
+" défendre, et dégager de toute responsabilité et d’indemniser "
+"{platform_name} et les Participants {platform_name}, ainsi que leurs "
+"succursales, filiales, agents, enseignants, étudiants, confrères, membres du"
+" conseil d’administration, agents et employés, contre toute revendication, "
+"action en justice ou demande de tiers étant le résultat, la cause, ou liée "
+"d’une quelconque façon à l’utilisation des API et de tout Contenu des API, y"
+" compris pour l’ensemble des responsabilités ou frais découlant d’une "
+"quelconque plainte, pertes, dommages (réels ou consécutifs), procès, "
+"jugements, coûts de litige et honoraires d’avocats, de quelque nature que ce"
+" soit. En pareil cas, {platform_name} ou l’un des Participants "
+"{platform_name} vous fournira un avis écrit dans l’éventualité d’une telle "
+"plainte, action en justice ou demande."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid "General Legal Terms"
@@ -15682,6 +16184,21 @@ msgid ""
 "you by {platform_name} under these Terms, {platform_name} may notify you via"
 " the email address associated with your {platform_name} account."
 msgstr ""
+"Les Conditions constituent l’intégralité de l’accord passé entre vous et "
+"{platform_name} dans le cadre de votre utilisation des API et du Contenu des"
+" API, remplacent tout autre accord précédent passé entre vous et "
+"{platform_name} par rapport à votre utilisation des API et du Contenu des "
+"API. Le défaut d’exercer ou d’appliquer un quelconque droit ou une "
+"disposition des Conditions de la part de {platform_name} ne constitue pas la"
+" renonciation au droit ou à la disposition en question. Si une quelconque "
+"disposition des Conditions est jugée inapplicable par un tribunal compétent,"
+" les parties conviennent malgré tout que le tribunal devrait s’efforcer de "
+"mettre en pratique les intentions des parties reflétées par la disposition "
+"et que les autres dispositions des Conditions resteront pleinement en "
+"vigueur. Les Conditions ne créent aucun droit bénéficiaire pour les tiers et"
+" aucun, partenariat, agence, ou coentreprise. Pour tout avis vous étant "
+"envoyé par {platform_name} sous ces Conditions {platform_name} peut vous "
+"envoyer un avis par le courriel associé à votre compte {platform_name}."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15698,6 +16215,19 @@ msgid ""
 "still be allowed to apply for injunctive remedies (or an equivalent type of "
 "urgent legal relief) in any jurisdiction."
 msgstr ""
+"Vous acceptez que les Conditions, les API, et toute plainte ou tout litige "
+"découlant de ou lié aux Conditions ou aux API soit régi par les lois du "
+"Commonwealth du Massachusetts, à l’exclusion de ses dispositions relatives "
+"aux conflits de lois. Vous acceptez que ces plaintes et litiges en question "
+"soient entendus et réglés exclusivement dans des tribunaux fédéraux ou "
+"étatiques situés et compétents à Cambridge, Massachusetts, États-Unis. Vous "
+"reconnaissez la compétence personnelle de ces tribunaux envers vous à cette "
+"fin, et vous renoncez et acceptez de ne déposer aucune objection dans ces "
+"tribunaux (y compris toute défense, objection d’incompétence, session ou "
+"inconvénient de l’assemblée). En dépit de ce qui précède, vous acceptez que "
+"{platform_name} devra toujours être autorisé à solliciter une procédure "
+"d’injonction (ou une mesure d’urgence équivalente) auprès de n’importe "
+"quelle juridiction."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid "Termination"
@@ -15710,6 +16240,11 @@ msgid ""
 "any API Content for any reason or no reason, without prior notice or "
 "liability."
 msgstr ""
+"Vous pouvez arrêter d’utiliser les API à tout moment. Vous acceptez que "
+"{platform_name}, en son entière discrétion et à tout moment, puisse mettre "
+"un terme à votre utilisation des API ou du Contenu des API pour une "
+"quelconque raison ou aucune raison, sans avis préalable ni assumer de "
+"responsabilité."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15721,6 +16256,14 @@ msgid ""
 "{platform_name} Participants will have any liability to you for such an "
 "action."
 msgstr ""
+"{platform_name_capitalized} et les Participants {platform_name} se réservent"
+" le droit, à tout moment et en leur entière discrétion, d’annuler, retarder,"
+" reporter, ou modifier les formats des API ou du Contenu des API que "
+"{platform_name} met à votre disposition, ou de cesser de fournir en partie "
+"ou en totalité les API, le Contenu des API ou les services connexes, et vous"
+" acceptez que ni {platform_name} ni aucun des Participants {platform_name} "
+"ne sera tenu d’aucune responsabilité envers vous pour avoir accompli une "
+"telle action."
 
 #: lms/templates/api_admin/terms_of_service.html
 msgid ""
@@ -15737,6 +16280,20 @@ msgid ""
 "you otherwise may have to {platform_name}, including without limitation any "
 "indemnification obligations contained herein."
 msgstr ""
+"En cas d’une quelconque résiliation des Conditions ou suspension de votre "
+"accès à une API pour quelque raison que ce soit, votre droit d’utiliser une "
+"quelconque API ou un quelconque Contenu d’API sera immédiatement interrompu."
+" Vous cesserez immédiatement d’utiliser les API et supprimerez tout Contenu "
+"d’API archivé ou stocké dans Votre Application et vos réseaux, systèmes et "
+"serveurs aussi vite que possible, dans la mesure du raisonnable. Chacune des"
+" dispositions des Conditions qui, par leur nature, devraient survivre la "
+"cessation, survivront la cessation, notamment les dispositions de propriété,"
+" les exonérations de garantie et les limites de responsabilité. La cessation"
+" d’accès et d’utilisation des API et du Contenu des API ne vous dispense "
+"nullement des obligations découlant ou incombant avant ladite cessation. "
+"Elle ne limite pas non plus toute responsabilité que vous seriez autrement "
+"tenu d’assumer envers {platform_name}, notamment toute obligation "
+"d’indemnisation mentionnée à la présente."
 
 #: lms/templates/api_admin/catalogs/edit.html
 msgid "Edit {catalog_name}"
@@ -17128,6 +17685,9 @@ msgid ""
 "dashboard{link_end} and clicking the {bold_start}Get Credit{bold_end} button"
 " below the course title."
 msgstr ""
+"Achetez du crédit en allant sur votre {link_start}tableau de bord "
+"{platform_name}{link_end} et en cliquant sur le bouton  {bold_start}Obtenir "
+"du Crédit{bold_end} sous le titre du cours."
 
 #: lms/templates/credit_notifications/credit_eligibility_email.html
 msgid ""
@@ -17136,6 +17696,10 @@ msgid ""
 "request an official academic transcript at the institution that granted the "
 "credit."
 msgstr ""
+"Une fois que vous avez complété votre paiement, revenez au tableau de bord "
+"et cliquez sur le bouton {bold_start}Demande de Crédit{bold_end} sous le "
+"titre du cours afin de déposer une demande pour un relevé officiel de notes "
+"auprès de l’institution vous ayant accordé ce crédit."
 
 #: lms/templates/credit_notifications/credit_eligibility_email.html
 msgid ""
@@ -17161,7 +17725,7 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Your certificate will be available on or before {date}"
-msgstr ""
+msgstr "Votre certificat sera disponible au plus tard le {date}"
 
 #: lms/templates/dashboard/_dashboard_certificate_information.html
 msgid "Your final grade:"
@@ -17316,22 +17880,25 @@ msgstr ""
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "You must select a session by {expiration_date} to access the course."
 msgstr ""
+"Vous devez sélectionner une session au plus tard le {expiration_date} afin "
+"d'avoir accès au cours."
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "You must select a session to access the course."
-msgstr ""
+msgstr "Vous devez sélectionner une session afin d'avoir accès au cours."
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Change or Leave Session"
-msgstr ""
+msgstr "Changer ou Quitter la Session"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "You can no longer change sessions."
-msgstr ""
+msgstr "Vous ne pouvez plus changer de session."
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "You can change sessions until {entitlement_expiration_date}."
 msgstr ""
+"Vous avez jusqu'au {entitlement_expiration_date} pour changer de session."
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "View Archived Course"
@@ -17355,6 +17922,8 @@ msgstr "Partager sur Facebook"
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "I'm taking {course_name} online with {twitter_brand}. Check it out!"
 msgstr ""
+"Je prend des cours de {course_name} en ligne grâce à {twitter_brand}. "
+"Essaie-le !"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Share {course_name} on Twitter"
@@ -17384,6 +17953,9 @@ msgid ""
 "received. You can contact the account holder to request payment, or you can "
 "unenroll from this course"
 msgstr ""
+"Vous ne pouvez plus accéder à ce cours car le paiement n'a pas encore été "
+"reçu. Vous pouvez contacter le gérant du compte pour demander le paiement, "
+"ou vous pouvez vous désinscrire de ce cours."
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid ""
@@ -17464,6 +18036,10 @@ msgid ""
 "Your current verification will expire in {days} days. {start_link}Re-verify "
 "your identity now{end_link} using a webcam and a government-issued photo ID."
 msgstr ""
+"Votre vérification actuelle expirera dans {days} jours. "
+"{start_link}Revérifiez votre identité maintenant{end_link} en prenant une "
+"photo avec votre caméra et une photo d'une pièce d'identité délivrée par une"
+" administration publique."
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid ""
@@ -17571,17 +18147,19 @@ msgstr "Options de cours pour {courseName}"
 
 #: lms/templates/dashboard/_dashboard_show_consent.html
 msgid "Consent to share your data"
-msgstr ""
+msgstr "Consentement pour le partage de vos données"
 
 #: lms/templates/dashboard/_dashboard_show_consent.html
 msgid ""
 "To access this course, you must first consent to share your learning "
 "achievements with {enterprise_customer_name}."
 msgstr ""
+"Pour avoir accès à ce cours, vous devez d'abord accepter de partager vos "
+"résultats d'apprentissage avec {enterprise_customer_name}."
 
 #: lms/templates/dashboard/_dashboard_show_consent.html
 msgid "View Consent"
-msgstr ""
+msgstr "Voir le Consentement"
 
 #: lms/templates/dashboard/_dashboard_status_verification.html
 msgid "Current Verification Status: Approved"
@@ -17617,6 +18195,10 @@ msgid ""
 "certificate, you must submit a new photo of yourself and your government-"
 "issued photo ID before the verification deadline for your course."
 msgstr ""
+"Votre demande de vérification n'a pas été acceptée. Afin de recevoir un "
+"certificat vérifié, vous devez soumettre une nouvelle photo de vous-même "
+"ainsi qu'une photo d'une pièce d'identité avant la date limite de la "
+"vérification de votre cours."
 
 #: lms/templates/dashboard/_dashboard_status_verification.html
 msgid "Your verification was denied for the following reasons:"
@@ -17637,6 +18219,10 @@ msgid ""
 "submit a new photo of yourself and your government-issued photo ID before "
 "the verification deadline for your course."
 msgstr ""
+"Votre demande de vérification a expiré. Afin de recevoir un certificat "
+"vérifié, vous devez soumettre une nouvelle photo de vous-même ainsi qu'une "
+"photo d'une pièce d'identité avant la date limite de la vérification de "
+"votre cours."
 
 #: lms/templates/dashboard/_dashboard_third_party_error.html
 msgid "Could Not Link Accounts"
@@ -17665,7 +18251,7 @@ msgstr ""
 
 #: lms/templates/dashboard/_entitlement_reason_survey.html
 msgid "Price is too high for me"
-msgstr ""
+msgstr "Le prix est trop élevé pour moi"
 
 #: lms/templates/dashboard/_entitlement_reason_survey.html
 msgid "I was not satisfied with my experience taking the courses"
@@ -17691,6 +18277,7 @@ msgstr ""
 #: lms/templates/dashboard/_reason_survey.html
 msgid "Thank you for sharing your reasons for unenrolling."
 msgstr ""
+"Merci de nous avoir fait part de votre principal motif de désinscription."
 
 #: lms/templates/dashboard/_entitlement_reason_survey.html
 #: lms/templates/dashboard/_reason_survey.html
@@ -17700,33 +18287,35 @@ msgstr "Vous êtes désinscrit de"
 #: lms/templates/dashboard/_entitlement_reason_survey.html
 #: lms/templates/dashboard/_reason_survey.html
 msgid "Return To Dashboard"
-msgstr ""
+msgstr "Retour au Tableau de bord"
 
 #: lms/templates/dashboard/_entitlement_reason_survey.html
 #: lms/templates/dashboard/_reason_survey.html
 msgid "Browse Courses"
-msgstr ""
+msgstr "Parcourir les Cours"
 
 #: lms/templates/dashboard/_reason_survey.html
 msgid ""
 "We're sorry to see you go! Please share your main reason for unenrolling."
 msgstr ""
+"Nous sommes désolés de vous voir partir ! Pourriez-vous nous faire part de "
+"votre principal motif de désinscription ?"
 
 #: lms/templates/dashboard/_reason_survey.html
 msgid "I just wanted to browse the material"
-msgstr ""
+msgstr "J'avais juste envie de parcourir les ressources"
 
 #: lms/templates/dashboard/_reason_survey.html
 msgid "This won't help me reach my goals"
-msgstr ""
+msgstr "Ça ne m'a pas aidé à atteindre mes objectifs"
 
 #: lms/templates/dashboard/_reason_survey.html
 msgid "I don't have the time"
-msgstr ""
+msgstr "Je n'ai pas assez de temps"
 
 #: lms/templates/dashboard/_reason_survey.html
 msgid "I don't have the academic or language prerequisites"
-msgstr ""
+msgstr "Je n'ai pas les pré-requis académiques ou linguistiques"
 
 #: lms/templates/dashboard/_reason_survey.html
 msgid "I don't have enough support"
@@ -17734,19 +18323,19 @@ msgstr "Je ne bénéficie pas du soutien nécessaire"
 
 #: lms/templates/dashboard/_reason_survey.html
 msgid "I am not happy with the quality of the content"
-msgstr ""
+msgstr "Je ne suis pas satisfait de la qualité du contenu"
 
 #: lms/templates/dashboard/_reason_survey.html
 msgid "The course material was too hard"
-msgstr ""
+msgstr "Les ressources sont trop compliquées"
 
 #: lms/templates/dashboard/_reason_survey.html
 msgid "The course material was too easy"
-msgstr ""
+msgstr "Les ressources sont trop simples"
 
 #: lms/templates/dashboard/_reason_survey.html
 msgid "Something was broken"
-msgstr ""
+msgstr "Quelque chose ne fonctionnait plus"
 
 #: lms/templates/dashboard/_reason_survey.html
 msgid "Other"
@@ -17916,6 +18505,10 @@ msgid ""
 "engaging, high-quality {platform_name} courses. Note that you will not be "
 "able to log back into your account until you have activated it."
 msgstr ""
+"Vous y êtes presque ! Utilisez le lien pour activer votre compte afin "
+"d’avoir accès aux cours {platform_name}, à la fois stimulants et de haute "
+"qualité. Notez bien qu’il vous sera impossible de vous reconnecter à votre "
+"compte tant que vous ne l’aurez pas activé."
 
 #: lms/templates/emails/activation_email.txt
 msgid "Enjoy learning with {platform_name}."
@@ -18124,30 +18717,33 @@ msgid ""
 "Sorry! The photos you submitted for ID verification were not accepted, for "
 "the following reason(s):"
 msgstr ""
+"Nous sommes désolés, mais les photos que vous avez envoyé pour votre "
+"vérification d'identité n'ont pas été acceptées pour la (ou les) raison "
+"suivante :"
 
 #: lms/templates/emails/failed_verification_email.txt
 msgid "The photo(s) of you:"
-msgstr ""
+msgstr "Votre photo(s) :"
 
 #: lms/templates/emails/failed_verification_email.txt
 msgid "The photo of you:"
-msgstr ""
+msgstr "Votre photo :"
 
 #: lms/templates/emails/failed_verification_email.txt
 msgid "The photo of your ID:"
-msgstr ""
+msgstr "Votre photo d'identifiant :"
 
 #: lms/templates/emails/failed_verification_email.txt
 msgid "Other Reasons:"
-msgstr ""
+msgstr "Autres raisons :"
 
 #: lms/templates/emails/failed_verification_email.txt
 msgid "Resubmit Verification: {reverify_url}"
-msgstr ""
+msgstr "Renvoyer la vérification : {reverify_url}"
 
 #: lms/templates/emails/failed_verification_email.txt
 msgid "ID Verification FAQ: {faq_url}"
-msgstr ""
+msgstr "FAQ sur la vérification de la pièce d'identité : {faq_url}"
 
 #: lms/templates/emails/failed_verification_email.txt
 #: lms/templates/emails/order_confirmation_email.txt
@@ -18177,16 +18773,18 @@ msgstr "Votre numéro de commande est : {order_number}"
 
 #: lms/templates/emails/passed_verification_email.txt
 msgid "Hi {full_name}"
-msgstr ""
+msgstr "Bonjour {full_name}"
 
 #: lms/templates/emails/passed_verification_email.txt
 msgid "Congratulations! Your ID verification process was successful."
-msgstr ""
+msgstr "Félicitations ! Votre procédure de vérification d'identité a réussi."
 
 #: lms/templates/emails/passed_verification_email.txt
 msgid ""
 "Your verification is effective for one year. It will expire on {expiry_date}"
 msgstr ""
+"Votre état de vérification est valable un an. Il arrivera à échéance le "
+"{expiry_date}"
 
 #: lms/templates/emails/photo_submission_confirmation.txt
 msgid "Hi {full_name},"
@@ -18203,6 +18801,11 @@ msgid ""
 "your verification was successful.You can also check the status of the "
 "verification process on your dashboard."
 msgstr ""
+"Nous avons reçu votre information et la procédure de vérification d’identité"
+" a commencé. Vous devriez recevoir un e-mail de notre part dans les "
+"prochains jours afin de confirmer si votre vérification a été concluante. "
+"Vous pouvez aussi vérifier le statut de la procédure de vérification sur "
+"votre tableau de bord."
 
 #: lms/templates/emails/registration_codes_sale_email.txt
 msgid "Thank you for purchasing enrollments in {course_name}."
@@ -18454,11 +19057,11 @@ msgstr ""
 
 #: lms/templates/enrollment/course_enrollment_message.html
 msgid "Thank you for enrolling in:"
-msgstr ""
+msgstr "Nous vous remercions pour votre inscription :"
 
 #: lms/templates/enrollment/course_enrollment_message.html
 msgid "We hope you enjoy the course."
-msgstr ""
+msgstr "Nous espérons que vous allez aimer ce cours."
 
 #: lms/templates/enrollment/course_enrollment_message.html
 msgid ""
@@ -18562,7 +19165,7 @@ msgstr "{platform_name} Accueil"
 
 #: lms/templates/header/header.html lms/templates/header/user_dropdown.html
 msgid "Options Menu"
-msgstr ""
+msgstr "Menu Options"
 
 #: lms/templates/header/header.html lms/templates/navigation/navigation.html
 msgid ""
@@ -18586,7 +19189,7 @@ msgstr "Programmes"
 #: lms/templates/navigation/bootstrap/navbar-authenticated.html
 #: themes/edx.org/lms/templates/header/navbar-authenticated.html
 msgid "Journals"
-msgstr ""
+msgstr "Journaux"
 
 #: lms/templates/header/navbar-authenticated.html
 msgid "Discover New"
@@ -18609,7 +19212,7 @@ msgstr "Panier"
 
 #: lms/templates/header/navbar-not-authenticated.html
 msgid "Supplemental Links"
-msgstr ""
+msgstr "Liens supplémentaires"
 
 #: lms/templates/header/navbar-not-authenticated.html
 #: lms/templates/navigation/navbar-not-authenticated.html
@@ -18828,7 +19431,7 @@ msgstr "Professionnel"
 
 #: lms/templates/instructor/instructor_dashboard_2/course_info.html
 msgid "Master's"
-msgstr ""
+msgstr "Master"
 
 #: lms/templates/instructor/instructor_dashboard_2/course_info.html
 msgid "Basic Course Information"
@@ -19000,7 +19603,7 @@ msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid "NOTE"
-msgstr ""
+msgstr "REMARQUE"
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid ""
@@ -19009,6 +19612,10 @@ msgid ""
 "by-chapter, or problem-by-problem basis, or contact your site administrator "
 "to increase the limit."
 msgstr ""
+"Le rapport généré est limité à {max_entries} réponses. Si vous vous attendez"
+" à plus de {max_entries} réponses, essayez de générer le rapport au chapitre"
+" ou au problème-près, ou contactez l’administrateur du site afin d’augmenter"
+" cette limite."
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid "Download a CSV of problem responses"
@@ -19801,6 +20408,8 @@ msgid ""
 "If this option is {em_start}checked{em_end}, users who have not enrolled in "
 "your course will be automatically enrolled."
 msgstr ""
+"Si cette option est {em_start}cochée{em_end}, les utilisateurs qui ne se "
+"sont pas inscrits à votre cours seront automatiquement inscrits."
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Checking this box has no effect if 'Remove beta testers' is selected."
@@ -19916,6 +20525,13 @@ msgid ""
 "moderation roles to manage course team membership. Only enrolled users can "
 "be added as Discussion Admins."
 msgstr ""
+"Les Administrateurs de discussion peuvent modifier ou supprimer tout message"
+" ou dénonciation abusive, fermer et rouvrir des sujets, approuver des "
+"réponses, et voir les messages publiés par l’ensemble des groupes. Leurs "
+"messages sont marqués comme venant d’un « Équipe pédagogique ». Ils peuvent "
+"également ajouter ou retirer les rôles de modérateur de discussion afin de "
+"gérer la composition des équipes durant les cours. Seuls les utilisateurs "
+"inscrits peuvent être ajoutés en tant qu’Administrateur de discussion."
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Add Discussion Admin"
@@ -19933,6 +20549,13 @@ msgid ""
 " by adding or removing discussion moderation roles. Only enrolled users can "
 "be added as Discussion Moderators."
 msgstr ""
+"Les Modérateurs de discussion peuvent modifier ou supprimer tout message ou "
+"dénonciation abusive, fermer et rouvrir des sujets, approuver des réponses, "
+"et voir les messages publiés par l’ensemble des groupes. Leurs messages sont"
+" marqués comme venant d’un «Équipe pédagogique». Ils ne peuvent pas ajouter "
+"ou retirer les rôles de modérateur de discussion afin de gérer la "
+"composition des équipes durant les cours. Seuls les utilisateurs inscrits "
+"peuvent être ajoutés en tant que Modérateur de discussion."
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Add Moderator"
@@ -19951,10 +20574,19 @@ msgid ""
 "their group. Their posts are marked as 'Community TA'. Only enrolled "
 "learners can be added as Group Community TAs."
 msgstr ""
+"Le Soutien pédagogique du Groupe est composé de membres de la communauté qui"
+" aident les équipes pédagogiques à modérer les discussions. Le Soutien "
+"pédagogique du Groupe ne peut voir que les messages envoyés par les "
+"étudiants à leur groupe assigné. Ils peuvent modifier ou  supprimer des "
+"messages, des dénonciations abusives, fermer et réouvrir des sujets, et "
+"approver des réponses, mais seulement pour les messages publiés par les "
+"étudiants de leur groupe. Leurs messages sont marqués comme venant du « "
+"Soutien pédagogique du Groupe ». Seuls les utilisateurs inscrits peuvent "
+"être ajoutés en tant que Soutien pédagogique du Groupe."
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Add Group Community TA"
-msgstr ""
+msgstr "Ajouter un Soutien pédagogique du Groupe"
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid ""
@@ -19964,6 +20596,14 @@ msgid ""
 "open threads, and endorse responses. Their posts are marked as 'Community "
 "TA'. Only enrolled learners can be added as Community TAs."
 msgstr ""
+"Le Soutien pédagogique est composé de membres de la communauté qui aident "
+"les équipes pédagogiques à modérer les discussions. Le Soutien pédagogique "
+"du Groupe peut voir les messages envoyés par les étudiants appartenant au "
+"groupe d’étudiants ou au parcours d’inscription lui étant affecté, et peut "
+"modifier ou supprimer des messages, des dénonciations abusives, fermer et "
+"rouvrir des sujets, et approuver des réponses. Leurs messages sont marqués "
+"comme venant du « Soutien pédagogique ». Seuls les utilisateurs inscrits "
+"peuvent être ajoutés en tant que Soutien pédagogique."
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Add Community TA"
@@ -20220,7 +20860,7 @@ msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "View a specific learner's enrollment status"
-msgstr ""
+msgstr "Voir le statut de l'inscription d'un apprenant spécifique"
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "Learner's {platform_name} email address or username *"
@@ -20232,7 +20872,7 @@ msgstr "Adresse email ou nom d'utilisateur de l'apprenant"
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "View Enrollment Status"
-msgstr ""
+msgstr "Voir le statut de l'inscription"
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid "View a specific learner's grades and progress"
@@ -20386,6 +21026,8 @@ msgid ""
 "For the entire entrance exam, permanently and completely delete the "
 "learner's answers and scores from the database."
 msgstr ""
+"Supprimer complètement et de manière permanente l'historique des réponses et"
+" notes de l'étudiants pour tout l'examen d'entrée."
 
 #: lms/templates/instructor/instructor_dashboard_2/student_admin.html
 msgid ""
@@ -20432,7 +21074,7 @@ msgstr "Mes Cours"
 
 #: lms/templates/learner_dashboard/_dashboard_navigation_journals.html
 msgid "My Journals"
-msgstr ""
+msgstr "Mes Journaux"
 
 #: lms/templates/learner_dashboard/program_details.html
 msgid "Program Details"
@@ -20440,19 +21082,21 @@ msgstr "Détails du programme"
 
 #: lms/templates/learner_dashboard/text-me-fragment.html
 msgid "Get the {platform_name} Mobile App!"
-msgstr ""
+msgstr "Obtenez l'Application mobile {platform_name} !"
 
 #: lms/templates/learner_dashboard/text-me-fragment.html
 msgid "We'll send you a one time SMS with a link to download the app."
 msgstr ""
+"Nous vous enverrons un SMS ponctuel avec un lien pour télécharger "
+"l'application."
 
 #: lms/templates/learner_dashboard/text-me-fragment.html
 msgid "Mobile phone number"
-msgstr ""
+msgstr "Numéro de téléphone portable"
 
 #: lms/templates/learner_dashboard/text-me-fragment.html
 msgid "Send me a text with the link"
-msgstr ""
+msgstr "Envoyez-moi un SMS avec le lien"
 
 #: lms/templates/modal/_modal-settings-language.html
 msgid "Change Preferred Language"
@@ -21199,6 +21843,11 @@ msgid ""
 " sanctions.Unfortunately, because {platform_name} is required to comply with"
 " export controls,we cannot allow you to access this course at this time."
 msgstr ""
+"Notre système indique que vous essayez d'accéder à un cours {platform_name} "
+"à partir d'un pays ou d'une région actuellement assujettis à des sanctions "
+"économiques et commerciales de la part des États-Unis. Malheureusement, "
+"étant donné que {platform_name} doit se conformer aux contrôles à "
+"l'exportation, nous ne pouvons pas vous permettre d'accéder à ce cours."
 
 #: lms/templates/static_templates/faq.html
 #: themes/red-theme/lms/templates/footer.html
@@ -21384,7 +22033,7 @@ msgstr ""
 
 #: lms/templates/ux/reference/bootstrap/course-skeleton.html
 msgid "Skeleton Page"
-msgstr ""
+msgstr "Page squelette"
 
 #: lms/templates/ux/reference/bootstrap/course-skeleton.html
 #: openedx/features/course_experience/templates/course_experience/course-home-fragment.html
@@ -21501,6 +22150,9 @@ msgid ""
 "website. If you continue browsing this site, we understand that you accept "
 "the use of cookies."
 msgstr ""
+"Ce site utilise des cookies pour vous assurer la meilleure navigation "
+"possible. En continuant de naviguer sur ce site, nous comprenons que vous "
+"acceptez l'utlisation de cookies."
 
 #: lms/templates/widgets/cookie-consent.html
 msgid "Got it!"
@@ -21541,11 +22193,11 @@ msgstr "Code de langue"
 
 #: openedx/core/djangoapps/dark_lang/templates/dark_lang/preview-language-fragment.html
 msgid "e.g. en for English"
-msgstr ""
+msgstr "Par exemple, fr pour français"
 
 #: openedx/core/djangoapps/theming/templates/theming/theming-admin-fragment.html
 msgid "Preview Theme"
-msgstr ""
+msgstr "Aperçu du thème"
 
 #: openedx/core/lib/license/templates/license.html
 msgid "All Rights Reserved"
@@ -21582,19 +22234,19 @@ msgstr "Dates importantes"
 
 #: openedx/features/course_experience/templates/course_experience/course-home-fragment.html
 msgid "Goal: "
-msgstr ""
+msgstr "Objectif :"
 
 #: openedx/features/course_experience/templates/course_experience/course-home-fragment.html
 msgid "Edit your course goal:"
-msgstr ""
+msgstr "Modifier votre objectif de cours :"
 
 #: openedx/features/course_experience/templates/course_experience/course-home-fragment.html
 msgid "Pursue a verified certificate"
-msgstr ""
+msgstr "Obtenir un certificat vérifié"
 
 #: openedx/features/course_experience/templates/course_experience/course-home-fragment.html
 msgid "Upgrade ({price})"
-msgstr ""
+msgstr "Mettre à jour ({price})"
 
 #: openedx/features/course_experience/templates/course_experience/course-outline-fragment.html
 msgid "Expand All"
@@ -21602,52 +22254,56 @@ msgstr "Tout déplier"
 
 #: openedx/features/course_experience/templates/course_experience/course-outline-fragment.html
 msgid "Prerequisite: "
-msgstr ""
+msgstr "Pré-requis :"
 
 #: openedx/features/course_experience/templates/course_experience/course-outline-fragment.html
 msgid "{subsection_format} due {{date}}"
-msgstr ""
+msgstr "{subsection_format} pour le {{date}}"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid "Learn About Verified Certificates"
-msgstr ""
+msgstr "En savoir plus sur les Certificats vérifiés"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid "{platform_name} Verified Certificate"
-msgstr ""
+msgstr "{platform_name} Certificat vérifié"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid "Why upgrade?"
-msgstr ""
+msgstr "Pourquoi effectuer une mise à jour ?"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid "Official proof of completion"
-msgstr ""
+msgstr "Preuve officielle d'accomplissement"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid "Easily shareable certificate"
-msgstr ""
+msgstr "Certificat partageable facilement"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid "Proven motivator to complete the course"
-msgstr ""
+msgstr "Source de motivation reconnu pour compléter le cours"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid ""
 "Certificate purchases help {platform_name} continue to offer free courses"
 msgstr ""
+"Les achats de Certificats permettent à {platform_name} de continuer à "
+"proposer des cours gratuits"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid "How it works"
-msgstr ""
+msgstr "Comment ça marche"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid "Pay the Verified Certificate upgrade fee"
-msgstr ""
+msgstr "Payez les frais de mise à jour du Certificat vérifié"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid "Verify your identity with a webcam and government-issued ID"
 msgstr ""
+"Vérifiez votre identité à l'aide d'une caméra et d'une pièce d'identité "
+"officielle"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid "Study hard and pass the course"
@@ -21655,11 +22311,11 @@ msgstr "Étudiez bien et validez le cours"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid "Share your certificate with friends, employers, and others"
-msgstr ""
+msgstr "Partagez votre certificat avec vos amis et employeurs, entre autres"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid "edX Learner Stories"
-msgstr ""
+msgstr "Histoires d'Étudiants edX"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid ""
@@ -21667,10 +22323,13 @@ msgid ""
 "                             resume - I feel like this certificate could "
 "really help me land                             my dream job!"
 msgstr ""
+"Mon certificat m’a aidé à mettre en avant mes connaissances sur mon CV. J’ai"
+" l’impression que ce certificat pourrait vraiment m’aider à obtenir le job "
+"de mes rêves !"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid "{learner_name}, edX Learner"
-msgstr ""
+msgstr "{learner_name}, Étudiant edX"
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid ""
@@ -21679,10 +22338,13 @@ msgid ""
 "I have and that I have                             achieved something while "
 "I was unemployed."
 msgstr ""
+"Je voulais ajouter un certificat vérifié à mon CV et à mon profil afin de "
+"démontrer que je mets tout à l’œuvre pour atteindre le but que je me suis "
+"fixé et que j’ai accompli quelque chose alors que j’étais au chômage."
 
 #: openedx/features/course_experience/templates/course_experience/course-sock-fragment.html
 msgid "Upgrade ({course_price})"
-msgstr ""
+msgstr "Mise à jour ({course_price})"
 
 #: openedx/features/course_experience/templates/course_experience/course-updates-fragment.html
 msgid "This course does not have any updates."
@@ -21694,7 +22356,7 @@ msgstr "Aujourd'hui est le {date}"
 
 #: openedx/features/course_experience/templates/course_experience/latest-update-fragment.html
 msgid "Latest Update"
-msgstr ""
+msgstr "Dernière Mise à jour"
 
 #: openedx/features/course_search/templates/course_search/course-search-fragment.html
 msgid "Search Results"
@@ -21702,74 +22364,74 @@ msgstr "Résultats de la recherche"
 
 #: openedx/features/journals/templates/journals/bundle_about.html
 msgid "Purchase the Bundle ("
-msgstr ""
+msgstr "Acheter le Lot ("
 
 #: openedx/features/journals/templates/journals/bundle_about.html
 msgid "Courses included"
-msgstr ""
+msgstr "Cours inclus"
 
 #: openedx/features/journals/templates/journals/bundle_about.html
 msgid "Journals included"
-msgstr ""
+msgstr "Journaux inclus"
 
 #: openedx/features/journals/templates/journals/bundle_about.html
 msgid "{access_length} Day Access"
-msgstr ""
+msgstr "{access_length} Accès de jour"
 
 #: openedx/features/journals/templates/journals/bundle_about.html
 #: openedx/features/journals/templates/journals/learner_dashboard/journal_dashboard.html
 msgid "View Journal"
-msgstr ""
+msgstr "Voir le Journal"
 
 #: openedx/features/journals/templates/journals/bundle_card.html
 msgid "Bundle"
-msgstr ""
+msgstr "Lot"
 
 #: openedx/features/journals/templates/journals/journal_card.html
 msgid "Journal"
-msgstr ""
+msgstr "Journal"
 
 #: openedx/features/journals/templates/journals/journal_card.html
 msgid "{num_months} month"
 msgid_plural "{num_months} months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{num_months} mois"
+msgstr[1] "{num_months} mois"
 
 #: openedx/features/journals/templates/journals/journal_card.html
 msgid "unlimited"
-msgstr ""
+msgstr "illimité"
 
 #: openedx/features/journals/templates/journals/journal_card.html
 msgid "Access Length"
-msgstr ""
+msgstr "Durée d'Accès"
 
 #: openedx/features/journals/templates/journals/learner_dashboard/journal_dashboard.html
 msgid "Journal Dashboard"
-msgstr ""
+msgstr "Tableau de bord du Journal"
 
 #: openedx/features/journals/templates/journals/learner_dashboard/journal_dashboard.html
 msgid "{journal_title} Cover Image"
-msgstr ""
+msgstr "{journal_title} Image de couverture"
 
 #: openedx/features/journals/templates/journals/learner_dashboard/journal_dashboard.html
 msgid "Access Expired: {date}"
-msgstr ""
+msgstr "Date d'expiration de l'Accès : {date}"
 
 #: openedx/features/journals/templates/journals/learner_dashboard/journal_dashboard.html
 msgid "Access Expires: {date}"
-msgstr ""
+msgstr "Expiration de l'Accès : {date}"
 
 #: openedx/features/journals/templates/journals/learner_dashboard/journal_dashboard.html
 msgid "Renew Access"
-msgstr ""
+msgstr "Renouveler l'Accès"
 
 #: openedx/features/journals/templates/journals/learner_dashboard/journal_dashboard.html
 msgid "You have not purchased access to any journals yet."
-msgstr ""
+msgstr "Vous n'avez acheté l'accès à aucun journal."
 
 #: openedx/features/journals/templates/journals/learner_dashboard/journal_dashboard.html
 msgid "Explore journals and courses"
-msgstr ""
+msgstr "Explore journals and courses"
 
 #: openedx/features/learner_analytics/templates/learner_analytics/dashboard.html
 msgid "My Stats (Beta)"
@@ -21892,6 +22554,10 @@ msgid ""
 " under its guidelines, as well as having their photo ID checked to verify "
 "their identity."
 msgstr ""
+"Un Certificat Vérifié edX signifie que l'apprenant a accepté de respecter le"
+" code d'honneur edX, a terminé toutes les tâches requises par ce cours en "
+"vertu de ses lignes directrices, et a également fait vérifier sa photo "
+"d’identité afin de valider son identité."
 
 #: themes/edx.org/lms/templates/certificates/_about-edx.html
 msgid "About edX"
@@ -21904,6 +22570,11 @@ msgid ""
 "of Texas, and many others. edX is a non-profit online initiative created by "
 "founding partners Harvard and MIT."
 msgstr ""
+"{link_start}edX{link_end} met à votre disposition des cours interactives en "
+"ligne et des MOOC en provenance des meilleurs universités du monde, dont le "
+"Massachusetts Institute of Technology, Harvard, Berkeley, l’Université du "
+"Texas, et beaucoup d’autres. edX est une initiative en ligne à but non "
+"lucratif créée par les membres fondateurs Harvard et MIT."
 
 #: themes/edx.org/lms/templates/certificates/_accomplishment-banner.html
 msgid "Congratulations, {user_name}!"
@@ -22147,7 +22818,7 @@ msgstr ""
 
 #: cms/templates/accessibility.html
 msgid "Studio Accessibility Policy"
-msgstr ""
+msgstr "Politique d'accessibilité Studio"
 
 #: cms/templates/activation_active.html cms/templates/activation_complete.html
 #: cms/templates/activation_invalid.html
@@ -22533,6 +23204,9 @@ msgid ""
 "(This number will be the same as the original course number and cannot be "
 "changed.)"
 msgstr ""
+"Le seul nombre qui identifie le nouveau cours au sein de l'organisation. (Ce"
+" numéro sera le même que le numéro de cours d'origine et ne pourra pas être "
+"modifié.)"
 
 #. Translators: This is an example for the "run" used to identify different
 #. instances of a course, seen when filling out the form to create a new
@@ -23044,6 +23718,9 @@ msgid ""
 "Creating the export data files (You can now leave this page safely, but "
 "avoid making drastic changes to content until this export is complete)"
 msgstr ""
+"Création des fichiers d'exportation de données (Vous pouvez maintenant "
+"quitter cette page en toute sécurité, mais évitez toute modification "
+"significative du contenu jusqu'à ce que l'exportation ne soit achevée)."
 
 #: cms/templates/export.html
 msgid "Compressing"
@@ -23052,6 +23729,7 @@ msgstr "Compression"
 #: cms/templates/export.html
 msgid "Compressing the exported data and preparing it for download"
 msgstr ""
+"Compression des données exportées et préparation de leur téléchargement"
 
 #: cms/templates/export.html
 msgid "Your exported library can now be downloaded"
@@ -23174,42 +23852,46 @@ msgstr "Quelles sont les données exportées ?"
 
 #: cms/templates/export.html
 msgid "The following content is exported."
-msgstr ""
+msgstr "Le contenu suivant est exporté."
 
 #: cms/templates/export.html cms/templates/import.html
 msgid "Course content and structure"
-msgstr ""
+msgstr "Contenu et structure du cours"
 
 #: cms/templates/export.html cms/templates/import.html
 msgid "Course dates"
-msgstr ""
+msgstr "Dates du cours"
 
 #: cms/templates/export.html cms/templates/import.html
 msgid "Grading policy"
-msgstr ""
+msgstr "Politique de notation"
 
 #: cms/templates/export.html cms/templates/import.html
 msgid "Any group configurations"
-msgstr ""
+msgstr "Toute configuration des groupes"
 
 #: cms/templates/export.html cms/templates/import.html
 msgid ""
 "Settings on the Advanced Settings page, including MATLAB API keys and LTI "
 "passports"
 msgstr ""
+"Paramètre sur la page des Paramètres avancés, y compris les clés de l'API "
+"MATLAB et les passeports LTI"
 
 #: cms/templates/export.html
 msgid "The following content is not exported."
-msgstr ""
+msgstr "Le contenu suivant n'est pas exporté."
 
 #: cms/templates/export.html cms/templates/import.html
 msgid ""
 "Learner-specific content, such as learner grades and discussion forum data"
 msgstr ""
+"Contenu propre aux étudiants, comme les notes d'étudiants et les données de "
+"forum de discussion"
 
 #: cms/templates/export.html cms/templates/import.html
 msgid "The course team"
-msgstr ""
+msgstr "L'équipe pédagogique"
 
 #. Translators: ".tar.gz" is a file extension, and should not be translated
 #: cms/templates/export.html
@@ -23294,12 +23976,19 @@ msgid ""
 "track in your course are automatically included in the corresponding "
 "enrollment track group."
 msgstr ""
+"Les groupes de parcours d'inscription vous permettent de proposer un contenu"
+" de cours différent en fonction du parcours d'inscription des élèves. Pour "
+"chaque parcours d'inscription de votre cours, les élèves rejoindront le "
+"groupe de parcours d'inscription leur correspondant."
 
 #: cms/templates/group_configurations.html
 msgid ""
 "On unit pages in the course outline, you can restrict access to components "
 "to learners based on their enrollment track."
 msgstr ""
+"Vous pouvez, dans les pages d'unité de la description de cours, limiter "
+"l'accès des étudiants vers les composants en fonction de leur parcours "
+"d'inscription."
 
 #: cms/templates/group_configurations.html
 msgid ""
@@ -23330,6 +24019,12 @@ msgid ""
 " Only learners in the cohorts that are associated with the specified content"
 " groups see the additional content."
 msgstr ""
+"Chaque contenu de groupe que vous créerez pourra être associé à au moins une"
+" cohorte. En plus de rendre le contenu du cours accessible à tous les "
+"étudiants, vous pouvez limiter aux étudiants d’un groupe de contenu "
+"particulier l’accès à une partie du contenu. Seuls les étudiants des "
+"cohortes associées aux groupes de contenu particuliers peuvent voir le "
+"contenu supplémentaire."
 
 #: cms/templates/group_configurations.html
 msgid ""
@@ -23354,6 +24049,11 @@ msgid ""
 "experiment. When you create a content experiment for a course, you select "
 "the group configuration to use."
 msgstr ""
+"Utilisez les configurations de groupe de test de contenu si vous faites des "
+"tests, appelés également test A/B, dans votre cours. Les configurations de "
+"test de contenu définissent combien de groupes d'étudiants sont dans un test"
+" de contenu. Quand vous créez un test de contenu pour un cours, vous "
+"sélectionnez la configuration de groupe à employer."
 
 #: cms/templates/group_configurations.html
 msgid ""
@@ -23873,11 +24573,11 @@ msgstr "Quelle sont les données importées ?"
 
 #: cms/templates/import.html
 msgid "The following content is imported."
-msgstr ""
+msgstr "Le contenu suivant est importé."
 
 #: cms/templates/import.html
 msgid "The following content is not imported."
-msgstr ""
+msgstr "Le contenu suivant n'est pas importé."
 
 #: cms/templates/import.html
 msgid "Warning: Importing while a course is running"
@@ -24784,11 +25484,11 @@ msgstr "Heure de fin du Cours"
 
 #: cms/templates/settings.html
 msgid "Certificates Available Date"
-msgstr ""
+msgstr "Date de disponibilité des certificats"
 
 #: cms/templates/settings.html
 msgid "By default, 48 hours after course end date"
-msgstr ""
+msgstr "Par défaut, 48 heures après la date de fin du cours"
 
 #: cms/templates/settings.html
 msgid "Enrollment Start Date"
@@ -24912,13 +25612,15 @@ msgstr ""
 
 #: cms/templates/settings.html
 msgid "Course About Sidebar HTML"
-msgstr ""
+msgstr "Cours à propos de l'utilisation du code HTML avec la barre latérale "
 
 #: cms/templates/settings.html
 msgid ""
 "Custom sidebar content for {a_link_start}your course summary "
 "page{a_link_end} (formatted in HTML)"
 msgstr ""
+"Personnalisation du contenu de la barre latérale pour {a_link_start}la page "
+"de votre résumé de cours{a_link_end} (sous format HTML)"
 
 #: cms/templates/settings.html
 msgid "Course Card Image"
@@ -25366,15 +26068,15 @@ msgstr "Envoy des des vidéos"
 
 #: cms/templates/videos_index.html
 msgid "Course Video Settings"
-msgstr ""
+msgstr "Paramètres de la vidéo du cours"
 
 #: cms/templates/videos_index_pagination.html
 msgid "Changing.."
-msgstr ""
+msgstr "Changement en cours..."
 
 #: cms/templates/videos_index_pagination.html
 msgid "Videos per page:"
-msgstr ""
+msgstr "Vidéos par page"
 
 #: cms/templates/visibility_editor.html
 msgid "Access is not restricted"
@@ -25393,6 +26095,8 @@ msgid ""
 "Access to this component is not restricted, but visibility might be affected"
 " by inherited settings."
 msgstr ""
+"L'accès à ce composant n'est pas limité, mais sa visibilité peut être "
+"influencée par les paramètres hérités."
 
 #: cms/templates/visibility_editor.html
 msgid ""
@@ -25407,17 +26111,23 @@ msgid ""
 "You can restrict access to this component to learners in specific enrollment"
 " tracks or content groups."
 msgstr ""
+"Vous pouvez limiter l'accès à ce composant aux étudiants de parcours "
+"d'inscriptions ou de groupes de contenu particuliers."
 
 #: cms/templates/visibility_editor.html
 msgid ""
 "You can restrict access to this unit to learners in specific content groups."
 msgstr ""
+"Vous pouvez limiter l'accès à cette unité aux étudiants de groupes de "
+"contenu particuliers."
 
 #: cms/templates/visibility_editor.html
 msgid ""
 "You can restrict access to this component to learners in specific content "
 "groups."
 msgstr ""
+"Vous pouvez limiter l'accès à ce composant aux étudiants de groupes de "
+"contenu particuliers."
 
 #: cms/templates/visibility_editor.html
 msgid "Manage content groups"
@@ -25431,6 +26141,9 @@ msgid ""
 " component is hidden from learners. The unit setting overrides the component"
 " access settings defined here."
 msgstr ""
+"{screen_reader_start}Attention :{screen_reader_end} L'unité contenant ce "
+"composant ne peut être affichée aux étudiants. Les paramètres de l'unité "
+"remplacent ceux de l'accès au composant définis ici."
 
 #: cms/templates/visibility_editor.html
 msgid "Access is restricted to:"
@@ -25457,6 +26170,8 @@ msgid ""
 "This group no longer exists.  Choose another group or remove the access "
 "restriction."
 msgstr ""
+"Ce groupe n'existe plus. Veuillez choisir un autre groupe ou supprimer la "
+"limite d'accès."
 
 #: cms/templates/emails/activation_email.txt
 msgid ""
@@ -25536,16 +26251,22 @@ msgid ""
 "Your {task_name} task has completed with the status '{task_status}'. Use "
 "this URL to view task details or download any files created: {detail_url}"
 msgstr ""
+"Votre tâche {task_name} vient d'atteindre l'état « '{task_status} ». "
+"Utilisez cet URL pour voir la tâche en détail ou télécharger tout fichier "
+"créé : {detail_url}"
 
 #: cms/templates/emails/user_task_complete_email.txt
 msgid ""
 "Your {task_name} task has completed with the status '{task_status}'. Sign in"
 " to view the details of your task or download any files created."
 msgstr ""
+"Votre tâche {task_name} vient d'atteindre l'état «'{task_status} ». "
+"Connectez-vous pour voir la tâche en détail ou télécharger tout fichier "
+"créé."
 
 #: cms/templates/emails/user_task_complete_email_subject.txt
 msgid "{platform_name} {studio_name}: Task Status Update"
-msgstr ""
+msgstr "{platform_name} {studio_name} : Mise à jour de l'état de la tâche"
 
 #: cms/templates/maintenance/_announcement_delete.html
 msgid "Delete Announcement"
@@ -25557,7 +26278,7 @@ msgstr ""
 
 #: cms/templates/maintenance/_announcement_delete.html
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmer"
 
 #: cms/templates/maintenance/_announcement_edit.html
 msgid "Edit Announcement"
@@ -25629,15 +26350,15 @@ msgstr ""
 
 #: cms/templates/widgets/footer.html
 msgid "Policies"
-msgstr ""
+msgstr "Règles"
 
 #: cms/templates/widgets/footer.html
 msgid "Accessibility Accommodation Request"
-msgstr ""
+msgstr "Demande aménagement de l'accessibilité"
 
 #: cms/templates/widgets/footer.html
 msgid "LMS"
-msgstr ""
+msgstr "LMS"
 
 #. Translators: 'EdX', 'edX', 'Studio', and 'Open edX' are trademarks of 'edX
 #. Inc.'. Please do not translate any of these trademarks and company names.
@@ -25755,15 +26476,15 @@ msgstr "Maintenance"
 
 #: wiki/apps.py
 msgid "Wiki notifications"
-msgstr ""
+msgstr "Notifications Wiki"
 
 #: wiki/apps.py
 msgid "Wiki images"
-msgstr ""
+msgstr "Images Wiki"
 
 #: wiki/apps.py
 msgid "Wiki attachments"
-msgstr ""
+msgstr "Pièces-jointes Wiki"
 
 #: wiki/forms.py
 msgid "Only localhost... muahahaha"
@@ -26246,24 +26967,29 @@ msgid ""
 "will loose their references to this file. The following articles reference "
 "this file:"
 msgstr ""
+"Le fichier peut être référencé dans d'autres articles. Le supprimer leur "
+"fera perdre toute référence à ce fichier. Les articles suivants font "
+"référence à ce fichier :"
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/delete.html
 msgid "Delete it!"
-msgstr ""
+msgstr "Supprimez-le !"
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/delete.html
 msgid ""
 "You can remove a reference to a file, but it will retain its references on "
 "other articles."
 msgstr ""
+"Vous pouvez retirer une référence à un fichier, mais il conservera les "
+"références à d'autres articles."
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/delete.html
 msgid "Remove reference"
-msgstr ""
+msgstr "Retirer la référence"
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/history.html
 msgid "History of"
-msgstr ""
+msgstr "Historique de"
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/history.html
 msgid "User"
@@ -26282,7 +27008,7 @@ msgstr "Action"
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/history.html
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/search.html
 msgid "<em>No description</em>"
-msgstr ""
+msgstr "<em>Aucune description</em>"
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/history.html
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/search.html
@@ -26291,7 +27017,7 @@ msgstr "Télécharger"
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/history.html
 msgid "Use this!"
-msgstr ""
+msgstr "Utilisez ceci !"
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/replace.html
 #, python-format
@@ -26304,10 +27030,18 @@ msgid ""
 "for the listed articles where necessary. This way of working is more "
 "efficient...."
 msgstr ""
+"Remplacer une pièce-jointe consiste à ajouter un nouveau fichier qui sera "
+"utilisé à sa place. Toute référence à ce fichier sera remplacée par celui "
+"que vous chargez et le fichier sera téléchargé au format "
+"<strong>%(filename)s</strong>. Veuillez noter que si la pièce-jointe est "
+"employée par d'autres articles, vous risquez d'altérer des contenus. "
+"Cependant, n'hésitez pas à en profiter et de faire tous les remplacements "
+"nécessaires pour les articles énumérés si besoin est. Cette manière d'opérer"
+" est plus efficace..."
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/replace.html
 msgid "Articles using"
-msgstr ""
+msgstr "Articles utilisant"
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/replace.html
 #, python-format
@@ -26316,40 +27050,44 @@ msgid ""
 "place. All references to the file will be replaced by the one you upload and"
 " the file will be downloaded as <strong>%(filename)s</strong>."
 msgstr ""
+"Remplacer une pièce-jointe consiste à ajouter un nouveau fichier qui sera "
+"utilisé à sa place. Toute référence à ce fichier sera remplacée par celui "
+"que vous chargez et le fichier sera téléchargé au format "
+"<strong>%(filename)s</strong>."
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/replace.html
 #: wiki/plugins/images/templates/wiki/plugins/images/revision_add.html
 msgid "Upload replacement"
-msgstr ""
+msgstr "Charger un remplacement"
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/search.html
 msgid "Add file to"
-msgstr ""
+msgstr "Ajouter un fichier à"
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/search.html
 msgid "Add attachment from other article"
-msgstr ""
+msgstr "Ajouter une pièce-jointe en provenance d'un autre article"
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/search.html
 msgid "Main article"
-msgstr ""
+msgstr "Article principal"
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/search.html
 msgid "Add to article"
-msgstr ""
+msgstr "Ajouter à l'article"
 
 #: wiki/plugins/attachments/templates/wiki/plugins/attachments/search.html
 msgid "Your search did not return any results"
-msgstr ""
+msgstr "Votre recherche n'a donné aucun résultat"
 
 #: wiki/plugins/help/templates/wiki/plugins/help/sidebar.html
 msgid "Adding new articles"
-msgstr ""
+msgstr "Ajouter de nouveaux articles"
 
 #: wiki/plugins/help/templates/wiki/plugins/help/sidebar.html
 #: wiki/plugins/links/templates/wiki/plugins/links/sidebar.html
 msgid "An external link"
-msgstr ""
+msgstr "Un lien extérieur"
 
 #: wiki/plugins/help/templates/wiki/plugins/help/sidebar.html
 msgid "Headers"
@@ -26360,14 +27098,16 @@ msgid ""
 "Use these codes for headers and to automatically generate Tables of "
 "Contents."
 msgstr ""
+"Utilisez ces codes pour les en-têtes et pour générer automatiquement des "
+"Tables des matières."
 
 #: wiki/plugins/help/templates/wiki/plugins/help/sidebar.html
 msgid "Typography"
-msgstr ""
+msgstr "Typographie"
 
 #: wiki/plugins/help/templates/wiki/plugins/help/sidebar.html
 msgid "Lists"
-msgstr ""
+msgstr "Liste"
 
 #: wiki/plugins/images/forms.py
 #, python-format
@@ -26447,67 +27187,72 @@ msgid ""
 "The following images are available for this article. Copy the markdown tag "
 "to directly refer to an image from the article text."
 msgstr ""
+"Les images suivantes sont disponibles pour ces articles. Copiez le tag de "
+"surlignement afin de faire une référence directe à une image du texte de "
+"l'article."
 
 #: wiki/plugins/images/templates/wiki/plugins/images/index.html
 msgid "Back to edit page"
-msgstr ""
+msgstr "Retour à la page d'édition"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/index.html
 msgid "No file"
-msgstr ""
+msgstr "Aucun fichier"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/index.html
 msgid "Upload new image"
-msgstr ""
+msgstr "Charger une nouvelle image"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/index.html
 msgid "Restore image"
-msgstr ""
+msgstr "Restaurer l'image"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/index.html
 msgid "Remove image"
-msgstr ""
+msgstr "Enlever l'image"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/index.html
 msgid "Completely delete"
-msgstr ""
+msgstr "Supprimer complètement"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/index.html
 msgid "Revert to this version"
-msgstr ""
+msgstr "Revenir à cette version"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/index.html
 msgid "There are no images for this article."
-msgstr ""
+msgstr "Il n'y a pas d'images pour cet article."
 
 #: wiki/plugins/images/templates/wiki/plugins/images/purge.html
 #: wiki/templates/wiki/deleted.html
 msgid "Purge deletion"
-msgstr ""
+msgstr "Supprimer définitivement la suppression"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/purge.html
 msgid "Purge image: Completely remove image file and all revisions."
 msgstr ""
+"Supprimer définitivement l'image : Retirer définitivement le fichier d'image"
+" et toutes les révisions."
 
 #: wiki/plugins/images/templates/wiki/plugins/images/purge.html
 msgid "Remove it completely!"
-msgstr ""
+msgstr "L'enlever complètement !"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/render.html
 msgid "Image not found"
-msgstr ""
+msgstr "Image non trouvée"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/revision_add.html
 msgid "Replace image"
-msgstr ""
+msgstr "Remplacer l'image"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/revision_add.html
 msgid "Choose an image file to replace current image."
-msgstr ""
+msgstr "Choisissez un fichier d'image pour remplacer l'image actuelle."
 
 #: wiki/plugins/images/templates/wiki/plugins/images/sidebar.html
 msgid "Image id"
-msgstr ""
+msgstr "Identifiant de l'image."
 
 #: wiki/plugins/images/templates/wiki/plugins/images/sidebar.html
 #: wiki/plugins/links/templates/wiki/plugins/links/sidebar.html
@@ -26516,27 +27261,27 @@ msgstr "Insérer"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/sidebar.html
 msgid "No images found for this article"
-msgstr ""
+msgstr "Aucune image trouvée pour cet article"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/sidebar.html
 msgid "Manage images"
-msgstr ""
+msgstr "Gérer les images"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/sidebar.html
 msgid "Add new image"
-msgstr ""
+msgstr "Ajouter une nouvelle image"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/sidebar.html
 msgid "Add image"
-msgstr ""
+msgstr "Ajouter une image"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/sidebar.html
 msgid "You do not have permissions to add images."
-msgstr ""
+msgstr "Vous n'avez pas la permission d'ajouter des images."
 
 #: wiki/plugins/images/templates/wiki/plugins/images/sidebar.html
 msgid "How to use images"
-msgstr ""
+msgstr "Comment utiliser les images"
 
 #: wiki/plugins/images/templates/wiki/plugins/images/sidebar.html
 msgid ""
@@ -26548,6 +27293,15 @@ msgid ""
 "Markdown in the caption. The markdown code syntax for images looks like "
 "this, possible values for align are left/center/right:"
 msgstr ""
+"Après avoir chargé une image, elle est jointe à cet article en particulier "
+"et ne pourra être employée que dans ce contexte. D'autres utilisateurs "
+"peuvent remplacer l'image, mais les anciennes versions seront conservées. "
+"Vous aurez éventuellement envie de montrer une image avec une belle "
+"citation. Pour y parvenir, appuyez sur le bouton Insérer et remplissez le "
+"champ de légende, tout en positionnant éventuellement votre champ à droite "
+"ou à gauche du contenu. Vous pouvez utiliser Markdown dans la légende. La "
+"syntaxe du code markdown pour images ressemble à ceci, les valeurs "
+"d'alignement possibles sont gauche/centre/droit :"
 
 #: wiki/plugins/links/wiki_plugin.py
 msgid "Links"
@@ -26555,19 +27309,24 @@ msgstr "Liens"
 
 #: wiki/plugins/links/templates/wiki/plugins/links/sidebar.html
 msgid "Link to another wiki page"
-msgstr ""
+msgstr "Créer un lien vers une page wiki"
 
 #: wiki/plugins/links/templates/wiki/plugins/links/sidebar.html
 msgid ""
 "Type in something from another wiki page's title and auto-complete will help"
 " you create a tag for you wiki link. Tags for links look like this:"
 msgstr ""
+"Tapez quelque chose venant du titre d'une page wiki, et la saisie "
+"automatique vous permettra de créer une balise pour votre lien wiki. Les "
+"liens wiki ressemblent à ceci :"
 
 #: wiki/plugins/links/templates/wiki/plugins/links/sidebar.html
 msgid ""
 "You can link to another website simply by inserting an address example.com "
 "or http://example.com or by using the markdown syntax:"
 msgstr ""
+"Vous pouvez établir un lien vers un autre site Internet en ajoutant une "
+"adresse exemple.com ou http://exemple.com grâce à la syntaxe de markdown :"
 
 #: wiki/plugins/notifications/forms.py
 msgid "Notifications"
@@ -26614,15 +27373,15 @@ msgstr "Nouvel article créé : %s"
 
 #: wiki/plugins/notifications/templates/wiki/plugins/notifications/menubaritem.html
 msgid "notifications"
-msgstr ""
+msgstr "notifications"
 
 #: wiki/plugins/notifications/templates/wiki/plugins/notifications/menubaritem.html
 msgid "No notifications"
-msgstr ""
+msgstr "Aucune notification"
 
 #: wiki/plugins/notifications/templates/wiki/plugins/notifications/menubaritem.html
 msgid "Clear notifications list"
-msgstr ""
+msgstr "Effacer la liste de notifications"
 
 #: wiki/templates/wiki/base.html
 msgid "Search..."
@@ -26635,63 +27394,68 @@ msgstr "S'inscrire"
 
 #: wiki/templates/wiki/deleted.html
 msgid "Article deleted"
-msgstr ""
+msgstr "Article supprimé"
 
 #: wiki/templates/wiki/deleted.html
 msgid "Article Deleted"
-msgstr ""
+msgstr "Article supprimé"
 
 #: wiki/templates/wiki/deleted.html
 msgid "The article you were looking for has been deleted."
-msgstr ""
+msgstr "L'article que vous recherchez a été supprimé."
 
 #: wiki/templates/wiki/deleted.html
 msgid "You may restore this article and its children by clicking restore."
 msgstr ""
+"Vous pouvez restaurer cet article est ses enfants en cliquant sur restaurer."
 
 #: wiki/templates/wiki/deleted.html
 msgid ""
 "You may remove this article and any children permanently and free their "
 "slugs by clicking the below button. This action cannot be undone."
 msgstr ""
+"Vous pouvez non seulement retirer cet article et l'un de ses quelconques "
+"enfants de manière permanente, mais aussi libérer leurs slugs en cliquant "
+"sur le bouton ci-dessous. Cette action ne peut pas être annulée."
 
 #: wiki/templates/wiki/dir.html
 msgid "Listing articles in"
-msgstr ""
+msgstr "Énumérer les articles dans"
 
 #: wiki/templates/wiki/dir.html
 msgid "Up one level"
-msgstr ""
+msgstr "Hausser d'un niveau."
 
 #: wiki/templates/wiki/dir.html
 msgid "clear"
-msgstr ""
+msgstr "effacer"
 
 #: wiki/templates/wiki/dir.html
 msgid "article,articles"
-msgstr ""
+msgstr "article,articles"
 
 #: wiki/templates/wiki/dir.html
 msgid "matches,match"
-msgstr ""
+msgstr "concordances,concordance"
 
 #: wiki/templates/wiki/dir.html
 #, python-format
 msgid "%(cnt)s %(articles_plur)s in this level %(match_plur)s your search."
-msgstr ""
+msgstr "%(cnt)s%(articles_plur)s à ce niveau %(match_plur)s votre recherche."
 
 #: wiki/templates/wiki/dir.html
 msgid "is,are"
-msgstr ""
+msgstr "est,sont"
 
 #: wiki/templates/wiki/dir.html
 #, python-format
 msgid "There %(articles_plur_verb)s %(cnt)s %(articles_plur)s in this level."
 msgstr ""
+"À ce niveau, %(articles_plur)s%(articles_plur_verb)s au nombre de %(cnt)s."
 
 #: wiki/templates/wiki/dir.html
 msgid "Last modified"
-msgstr ""
+msgstr "Dernière modification"
 
 #: wiki/templates/wiki/history.html
 msgid "no log message"
@@ -26699,7 +27463,7 @@ msgstr "Pas de message de journal"
 
 #: wiki/templates/wiki/permission_denied.html
 msgid "Sorry, you don't have permission to view this page."
-msgstr ""
+msgstr "Désolé, vous n’avez pas le droit de voir cette page."
 
 #: wiki/templates/wiki/preview_inline.html
 msgid "Previewing revision"
@@ -26715,19 +27479,19 @@ msgstr "et"
 
 #: wiki/templates/wiki/source.html
 msgid "Source of"
-msgstr ""
+msgstr "Source de"
 
 #: wiki/templates/wiki/source.html
 msgid "This article is currently locked for editing."
-msgstr ""
+msgstr "Cet article est actuellement verrouillé pour l'édition."
 
 #: wiki/templates/wiki/accounts/login.html
 msgid "Log me in..."
-msgstr ""
+msgstr "Connectez-moi..."
 
 #: wiki/templates/wiki/accounts/login.html
 msgid "Don't have an account?"
-msgstr ""
+msgstr "Pas de compte ?"
 
 #: wiki/templates/wiki/accounts/signup.html
 msgid "Sign me up..."
@@ -26735,7 +27499,7 @@ msgstr "Inscrivez-moi..."
 
 #: wiki/templates/wiki/article/create_root.html
 msgid "Create root article"
-msgstr ""
+msgstr "Créer un article racine"
 
 #: wiki/templates/wiki/article/create_root.html
 msgid "Congratulations!"
@@ -26747,58 +27511,63 @@ msgid ""
 " create the first one, the root article. In the beginning, it will only be "
 "editable by administrators, but you can define permissions after."
 msgstr ""
+"Vous avez installé django-wiki... mais il n'y a aucun article. Il est grand "
+"temps de créer le premier, l'article racine. Au début, seuls les "
+"administrateurs pourront le modifier, mais vous pourrez définir les "
+"permissions par la suite."
 
 #: wiki/templates/wiki/article/create_root.html
 msgid "Root article"
-msgstr ""
+msgstr "Article racine"
 
 #: wiki/templates/wiki/article/create_root.html
 msgid "Create root"
-msgstr ""
+msgstr "Créer une racine"
 
 #: wiki/templates/wiki/includes/anonymous_blocked.html
 msgid "You need to log in og sign up to use this function."
 msgstr ""
+"Vous devez vous connecter ou vous inscrire pour utiliser cette fonction."
 
 #: wiki/templates/wiki/includes/article_menu.html
 msgid "View Source"
-msgstr ""
+msgstr "Voir la source"
 
 #: wiki/templates/wiki/includes/breadcrumbs.html
 msgid "Sub-articles for"
-msgstr ""
+msgstr "Sous-articles de"
 
 #: wiki/templates/wiki/includes/breadcrumbs.html
 msgid "No sub-articles"
-msgstr ""
+msgstr "Aucun sous-article"
 
 #: wiki/templates/wiki/includes/breadcrumbs.html
 msgid "...and more"
-msgstr ""
+msgstr "... et plus encore"
 
 #: wiki/templates/wiki/includes/breadcrumbs.html
 msgid "Browse articles in this level"
-msgstr ""
+msgstr "Parcourir des articles à ce niveau"
 
 #: wiki/templates/wiki/includes/breadcrumbs.html
 msgid "New article next to"
-msgstr ""
+msgstr "Nouvel article à côté de"
 
 #: wiki/templates/wiki/includes/breadcrumbs.html
 msgid "New article below"
-msgstr ""
+msgstr "Nouvel article en dessous de"
 
 #: wiki/templates/wiki/includes/revision_info.html
 msgid "by"
-msgstr ""
+msgstr "par"
 
 #: wiki/templates/wiki/includes/revision_info.html
 msgid "restored"
-msgstr ""
+msgstr "restauré"
 
 #: wiki/templates/wiki/includes/revision_info.html
 msgid "unlocked"
-msgstr ""
+msgstr "déverrouillé"
 
 #: wiki/views/accounts.py
 msgid "You are now sign up... and now you can sign in!"
@@ -26857,7 +27626,7 @@ msgstr "Vos modifications ont été sauvegardées."
 
 #: wiki/views/article.py
 msgid "A new revision of the article was successfully added."
-msgstr ""
+msgstr "Une nouvelle révision de l'article a été ajoutée avec succès."
 
 #: wiki/views/article.py
 msgid "Restoring article"
