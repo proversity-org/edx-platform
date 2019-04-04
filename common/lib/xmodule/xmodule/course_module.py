@@ -934,6 +934,15 @@ class CourseFields(object):
         scope=Scope.settings
     )
 
+    pay_now_link = String(
+        display_name=_(" Pay-Now Link "),
+        help=_(
+            "This replaces the enrol button on the course in order to redirect to an external payment page "
+        ),
+        default=None,
+        scope=Scope.settings
+    )
+
 
 class CourseModule(CourseFields, SequenceModule):  # pylint: disable=abstract-method
     """
