@@ -11,7 +11,8 @@ from .views import (
     TeamsDetailView,
     TeamsListView,
     TopicDetailView,
-    TopicListView
+    TopicListView,
+    CreateTeams,
 )
 
 TEAM_ID_PATTERN = r'(?P<team_id>[a-z\d_-]+)'
@@ -55,5 +56,12 @@ urlpatterns = [
         ),
         MembershipDetailView.as_view(),
         name="team_membership_detail"
-    )
+    ),
+    url(
+        r'^create_teams/{course_id_pattern}$'.format(
+            course_id_pattern=settings.COURSE_ID_PATTERN,
+        ),
+        CreateTeams.as_view(),
+        name="create_teams"
+    ),
 ]
