@@ -55,6 +55,22 @@ from openedx.core.djangolib.js_utils import (
         teamsBaseUrl: '${teams_base_url | n, js_escaped_string}'
     });
 </%static:require_module>
+%if disable_default_discussion:
+    <%static:require_module module_name="teams/js/teams_features" class_name="TeamsView">
+    TeamsView({
+        courseID: '${unicode(course.id) | n, js_escaped_string}',
+        userInfo: ${user_info | n, dump_js_escaped_json},
+        teamsUrl: '${teams_url | n, js_escaped_string}',
+        teamMembershipsUrl: '${team_memberships_url | n, js_escaped_string}',
+        teamMembershipDetailUrl: '${team_membership_detail_url | n, js_escaped_string}',
+        teamsBaseUrl: '${teams_base_url | n, js_escaped_string}',
+        teamsCreateUrl: '${teams_create_url | n, js_escaped_string}',
+        teamsLocked: '${teams_locked | n, dump_js_escaped_json}',
+        replacementComponentLocator: '${replacement_component_locator | n, js_escaped_string}',
+        usersEnrolled: '${users_enrolled | n, dump_js_escaped_json}'
+    });
+    </%static:require_module>
+%endif
 </%block>
 
 <%include file="../discussion/_underscore_templates.html" />
