@@ -1118,3 +1118,5 @@ plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.LMS, plugin_c
 ########################## Derive Any Derived Settings  #######################
 
 derive_settings(__name__)
+
+LOCALE_PATHS = ['/edx/app/edxapp/edx-platform/conf/locale', '/edx/app/openedx-themes/proversity-openedx-themes/edx-platform/cabinet-theme/conf/locale']

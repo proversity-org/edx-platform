@@ -86,3 +86,6 @@ LANGUAGE_CODE = 'fr'
 # Uncomment the lines below if you'd like to see SQL statements in your devstack LMS log.
 # LOGGING['handlers']['console']['level'] = 'DEBUG'
 # LOGGING['loggers']['django.db.backends'] = {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False}
+
+COMPREHENSIVE_THEME_LOCALE_PATHS = ["/edx/app/openedx-themes/proversity-openedx-themes/edx-platform/cabinet-theme/conf/locale"]
+

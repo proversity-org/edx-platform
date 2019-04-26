@@ -1116,3 +1116,13 @@ plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.LMS, plugin_c
 derive_settings(__name__)
 
 logging.warn('DEPRECATION WARNING: aws.py has been deprecated, you should use production.py instead.')
+
+# Localization strings (e.g. django.po) are under these directories
+def _make_locale_paths(settings):
+    locale_paths = [settings.REPO_ROOT + '/conf/locale']  # edx-platform/conf/locale/
+    if settings.ENABLE_COMPREHENSIVE_THEMING:
+        # Add locale paths to settings for comprehensive theming.
+        for locale_path in settings.COMPREHENSIVE_THEME_LOCALE_PATHS:
+            locale_paths += (path(locale_path), )
+    return locale_paths
+#LOCALE_PATHS = _make_locale_paths

@@ -1080,7 +1080,7 @@ def _make_locale_paths(settings):
     return locale_paths
 LOCALE_PATHS = _make_locale_paths
 derived('LOCALE_PATHS')
-
+print(LOCALE_PATHS)
 # Messages
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
@@ -3250,7 +3250,8 @@ SITE_ID = 1
 COMPREHENSIVE_THEME_DIRS = [REPO_ROOT / "themes"]
 
 # Theme directory locale paths
-COMPREHENSIVE_THEME_LOCALE_PATHS = []
+COMPREHENSIVE_THEME_LOCALE_PATHS = ["/edx/app/openedx-themes/proversity-openedx-themes/edx-platform/cabinet-theme/conf/locale"]
+
 
 # Theme to use when no site or site theme is defined,
 # set to None if you want to use openedx theme
