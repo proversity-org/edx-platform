@@ -228,7 +228,7 @@
 
         Sequence.prototype.render = function(newPosition) {
             var bookmarked, currentTab, modxFullUrl, sequenceLinks,
-                self = this;
+            self = this;
             if (this.position !== newPosition) {
                 if (this.position) {
                     this.mark_visited(this.position);
@@ -242,6 +242,9 @@
                         });
                     }
                 }
+
+                // Send page view event to Google Analytics.
+                this.sendPageViewToGA(newPosition);
 
                 // On Sequence change, fire custom event 'sequence:change' on element.
                 // Added for aborting video bufferization, see ../video/10_main.js
@@ -446,6 +449,35 @@
             event.preventDefault();
             this.el.find('.nav-item.active .bookmark-icon').removeClass('bookmarked').addClass('is-hidden');
             this.el.find('.nav-item.active .bookmark-icon-sr').text('');
+        };
+
+        /**
+         * Sends the vertical+block id to Google Analytics,
+         * in order to track by course unit.
+         *
+         * Since the Google Analytics track code only takes the location url
+         * of the page, when you navigate through the units of the course, the location url
+         * doesn't change and the GA track doesn't work well.
+         *
+         * This function allows us to send the pageview event when
+         * each unit is rendered and not only when the page is loaded.
+         */
+        Sequence.prototype.sendPageViewToGA = function(position) {
+            try {
+                var element = this.link_for(position);
+                var usageKey = element[0].attributes['data-id'].value;
+                var pathName = window.location.pathname;
+                var lastSlash = pathName.lastIndexOf('/');
+                var gaPathName = pathName.slice(0, lastSlash) + '/' + usageKey;
+
+                ga('send', {
+                    hitType: 'pageview',
+                    page: gaPathName
+                });
+            } catch (error) {
+                console.log('The Google Analytics pageview event was not sent. ' + error.message);
+            }
+
         };
 
         return Sequence;
