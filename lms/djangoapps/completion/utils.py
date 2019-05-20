@@ -1,8 +1,10 @@
 import logging
 
-from xmodule.modulestore.django import modulestore
+from opaque_keys.edx.locator import BlockUsageLocator
 from student.models import get_user
 from social_django.models import UserSocialAuth
+from xmodule.modulestore.django import modulestore
+from xmodule.modulestore.exceptions import ItemNotFoundError
 
 from lms.djangoapps.completion.models import BlockCompletion
 from lms.djangoapps.course_blocks.api import get_course_blocks
@@ -57,7 +59,17 @@ class GenerateCompletionReport(object):
         activities = len(required_ids)
 
         for idx, item in enumerate(required_ids):
-            fieldnames.append("Required Activity {}".format(idx + 1))
+            block_type, block_id = item.rsplit("+block@")
+            locator = BlockUsageLocator(self.course_key, block_type, block_id)
+
+            try:
+                block = modulestore().get_item(locator)
+            except ItemNotFoundError as item_error:
+                logger.warn("The provider id is not valid, error %s", item_error)
+                continue
+
+            block_name = block.display_name
+            fieldnames.append("Required Activity {} {}".format(idx + 1, block_name))
 
         rows.append(fieldnames)
 
