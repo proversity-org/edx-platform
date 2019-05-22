@@ -59,17 +59,8 @@ class GenerateCompletionReport(object):
         activities = len(required_ids)
 
         for idx, item in enumerate(required_ids):
-            block_type, block_id = item.rsplit("+block@")
-            locator = BlockUsageLocator(self.course_key, block_type, block_id)
-
-            try:
-                block = modulestore().get_item(locator)
-            except ItemNotFoundError as item_error:
-                logger.warn("The provider id is not valid, error %s", item_error)
-                continue
-
-            block_name = block.display_name
-            fieldnames.append("Required Activity {} {}".format(idx + 1, block_name))
+            fieldnames.append("Required Activity {} ".format(idx + 1))
+            fieldnames.append("Required Activity {} Name".format(idx + 1))
 
         rows.append(fieldnames)
 
@@ -103,6 +94,19 @@ class GenerateCompletionReport(object):
                 state = "completed" if self.is_activity_completed(
                     block_id, completed_activities) else "not_completed"
                 data.append(state)
+                locator = BlockUsageLocator(self.course_key, block_type, block_id)
+
+                try:
+                    block = modulestore().get_item(locator)
+                except ItemNotFoundError as item_error:
+                    logger.warn(
+                        "The block type %s with id %s is not valid, error: %s",
+                        block_type,
+                        block_id,
+                        item_error
+                    )
+                    continue
+                data.append(block.display_name)
 
             rows.append(data)
 
