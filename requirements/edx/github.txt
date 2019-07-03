@@ -116,7 +116,7 @@ git+https://github.com/proversity-org/rocket-chat-extension.git@v0.4.1#egg=rocke
 git+https://github.com/proversity-org/openedx-surveymonkey-xblock.git@v0.3.1#egg=surveymonkey-xblock==0.3.1
 git+https://github.com/proversity-org/xblock-activetable.git@4654007dcc25a1cd0d93351ed3f7db57e16098a7#egg=activetable-xblock==1.0.0-2
 git+https://github.com/proversity-org/openedx-graded-discussion-xblock.git@v0.1.1#egg=graded_discussion-xblock==0.1.1
--e git+https://github.com/eduNEXT/edx_xblock_scorm.git@0f5807e189905bfa1a4a1b50467a6386c35f3e98#egg=edx_xblock_scorm
+-e git+https://github.com/eduNEXT/edx_xblock_scorm.git@a48bb287a123c8cba0e6e9e94e977d859a136d37#egg=edx_xblock_scorm
 
 git+https://github.com/edx/edx-analytics-data-api-client.git#egg=edx-analytics-data-api-client
 git+https://github.com/jadolg/rocketchat_API.git@0.6.21#egg=rocketchat-API==0.6.21
