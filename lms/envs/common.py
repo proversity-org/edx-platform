@@ -2407,6 +2407,9 @@ INSTALLED_APPS = [
 
     #RocketChat DjangoApp
     'rocket_chat',
+
+    # Student Account DjangoApp
+    'lms.djangoapps.student_account',
 ]
 
 ######################### CSRF #########################################
