@@ -554,7 +554,7 @@ def course_index_monitoring():
         except Exception as e:
             error = {
                 "course_id": u_course_key,
-                "reason": e
+                "reason": e.message
             }
             reindex_errors.append(error)
 
