@@ -15,6 +15,7 @@ from celery.task import task
 from celery.utils.log import get_task_logger
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core import mail
 from django.core.exceptions import SuspiciousOperation
 from django.core.files import File
 from django.test import RequestFactory
@@ -47,6 +48,9 @@ from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.exceptions import DuplicateCourseError, ItemNotFoundError
 from xmodule.modulestore.xml_exporter import export_course_to_xml, export_library_to_xml
 from xmodule.modulestore.xml_importer import import_course_from_xml, import_library_from_xml
+
+from edxmako.shortcuts import render_to_string
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 
 LOGGER = get_task_logger(__name__)
 FILE_READ_CHUNK = 1024  # bytes
@@ -538,3 +542,48 @@ def import_olx(self, user_id, course_key_string, archive_path, archive_name, lan
                 from contentstore.views.entrance_exam import add_entrance_exam_milestone
                 add_entrance_exam_milestone(course.id, entrance_exam_chapter)
                 LOGGER.info(u'Course %s Entrance exam imported', course.id)
+
+@task(default_retry_delay=5, max_retries=5)  # pylint: disable=not-callable
+def course_index_monitoring():
+    not_indexed = CoursewareSearchIndexer.get_not_indexed()
+    reindex_errors = []
+    for course_key in not_indexed:
+        u_course_key = unicode(course_key)
+        try:
+            CoursewareSearchIndexer.do_course_reindex(modulestore(), course_key)
+        except Exception as e:
+            error = {
+                "course_id": u_course_key,
+                "reason": e.message
+            }
+            reindex_errors.append(error)
+
+    result = {
+        "not_indexed": reindex_errors,
+        "total": len(reindex_errors),
+    }
+
+    #EMAILING
+    if len(reindex_errors) > 0:
+        subject = render_to_string('emails/course_index_monitoring_task_subject.txt', result)
+        # Eliminate any newlines
+        subject = ''.join(subject.splitlines())
+        message = render_to_string('emails/course_index_monitoring_task_email.txt', result)
+
+        from_address = configuration_helpers.get_value(
+            'email_from_address',
+            settings.DEFAULT_FROM_EMAIL
+        )
+
+        try:
+            mail.send_mail(subject, message, from_address, settings.ADMINS, fail_silently=False)
+            LOGGER.info("Course index monitoring email has been sent to %s", settings.ADMINS)
+        except Exception:
+            LOGGER.exception(
+                'Unable to send task course index monitoring email to the user from "%s" to "%s"',
+                from_address,
+                settings.ADMINS,
+                exc_info=True
+            )
+
+    return result
