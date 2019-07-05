@@ -20,6 +20,7 @@ from openedx.core.lib.courses import course_image_url
 from xmodule.annotator_mixin import html_to_text
 from xmodule.library_tools import normalize_key_for_search
 from xmodule.modulestore import ModuleStoreEnum
+from xmodule.modulestore.django import modulestore
 
 # REINDEX_AGE is the default amount of time that we look back for changes
 # that might have happened. If we are provided with a time at which the
@@ -427,6 +428,37 @@ class CoursewareSearchIndexer(SearchIndexerBase):
             "course_name": location_path[0],
             "location": location_path[1:4]
         }
+
+    @classmethod
+    def validate_index(cls, field, value):
+        """
+        Validate if a course is indexed on elasticsearch using as
+        reference a key and a value.
+        """
+        searcher = SearchEngine.get_search_engine(cls.INDEX_NAME)
+        result = searcher.search(
+            query_string="",
+            field_dictionary={
+                field: value,
+            },
+            doc_type="course_info",
+            use_field_match=True
+        )
+        return True if result['total'] > 0 else False
+
+    @classmethod
+    def get_not_indexed(self):
+        """
+        Return all courses that not has been indexing
+        using the API of elasticsearch.
+        """
+        course_keys = [course.id for course in modulestore().get_courses()]
+        not_indexed = []
+        for course_key in course_keys:
+            u_course_key = unicode(course_key)
+            if not self.validate_index("id", u_course_key):
+                not_indexed.append(course_key)
+        return not_indexed
 
 
 class LibrarySearchIndexer(SearchIndexerBase):
