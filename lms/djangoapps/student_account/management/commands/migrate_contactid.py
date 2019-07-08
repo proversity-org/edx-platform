@@ -57,14 +57,19 @@ class Command(BaseCommand):
 
             extra_data = getattr(social_user, 'extra_data', {})
 
-            if not extra_data.get('contactid', False) or not getattr(social_user, 'provider', False):
+            user_contact_id = extra_data.get('contactid', '')
+
+            if not user_contact_id or not getattr(social_user, 'provider', False):
                 continue
+
+            if isinstance(user_contact_id, list):
+                user_contact_id = next(iter(user_contact_id), '')
 
             contact_id_source = 'sso:{}'.format(social_user.provider)
             user_contact_id = UserSalesforceContactId(
-                user = social_user.user,
-                contact_id = extra_data['contactid'],
-                contact_id_source = contact_id_source,
+                user=social_user.user,
+                contact_id=user_contact_id,
+                contact_id_source=contact_id_source,
             )
 
             if options.get('dry_run', False):
