@@ -1071,6 +1071,10 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
         """
         return edxval_api.get_video_info_for_course_and_profiles(unicode(course_id), video_profile_names)
 
+    @XBlock.supports("multi_device")
+    def student_view(self, context):
+        return super(VideoDescriptor, self).student_view(context)
+
     def student_view_data(self, context=None):
         """
         Returns a JSON representation of the student_view of this XModule.
