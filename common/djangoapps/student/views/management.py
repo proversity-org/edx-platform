@@ -136,6 +136,8 @@ def index(request, extra_context=None, user=AnonymousUser()):
     extra_context is used to allow immediate display of certain modal windows, eg signup,
     as used by external_auth.
     """
+    CAROUSEL_LIMIT_COURSES = 4
+
     if extra_context is None:
         extra_context = {}
 
@@ -173,6 +175,18 @@ def index(request, extra_context=None, user=AnonymousUser()):
 
     # allow for theme override of the courses list
     context['courses_list'] = theming_helpers.get_template_path('courses_list.html')
+
+    # Add a new list of lists containing the courses in groups of CAROUSEL_LIMIT_COURSES number.
+    # [
+    #   ['course one', 'course two', 'course three', 'course four'],
+    #   ['course one', ...], ...
+    # ]
+    carousel_courses = []
+
+    for index_course in range(0, len(courses), CAROUSEL_LIMIT_COURSES):
+        carousel_courses.append(courses[index_course:index_course + CAROUSEL_LIMIT_COURSES])
+
+    context["carousel_courses"] = carousel_courses
 
     # Insert additional context for use in the template
     context.update(extra_context)
