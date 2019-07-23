@@ -136,7 +136,7 @@ def index(request, extra_context=None, user=AnonymousUser()):
     extra_context is used to allow immediate display of certain modal windows, eg signup,
     as used by external_auth.
     """
-    CAROUSEL_LIMIT_COURSES = 4
+    CAROUSEL_LIMIT_COURSES = configuration_helpers.get_value('CAROUSEL_LIMIT_COURSES', 4)
 
     if extra_context is None:
         extra_context = {}
