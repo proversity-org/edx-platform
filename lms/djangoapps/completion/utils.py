@@ -1,5 +1,6 @@
 import logging
 
+from django.core.exceptions import ObjectDoesNotExist
 from opaque_keys.edx.locator import BlockUsageLocator
 from student.models import get_user
 from social_django.models import UserSocialAuth
@@ -10,6 +11,7 @@ from lms.djangoapps.completion.models import BlockCompletion
 from lms.djangoapps.course_blocks.api import get_course_blocks
 from lms.djangoapps.courseware.courses import get_course_by_id
 from lms.djangoapps.instructor_task.models import ReportStore
+from lms.djangoapps.student_account.models import UserSalesforceContactId
 
 
 logger = logging.getLogger(__name__)
@@ -29,16 +31,27 @@ class GenerateCompletionReport(object):
         """
 
         def get_contact_id(user):
-            contact_ids = [
-                social_auth.extra_data.get("contactid")
-                for social_auth in UserSocialAuth.get_social_auth_for_user(user)
-                if social_auth.provider == "tpa-saml"
-            ]
-            first_id = next(iter(contact_ids), None)
+            """
+            Returns the contact id value from UserSalesforceContactId model.
 
-            if isinstance(first_id, list):
-                return next(iter(first_id), None)
-            return first_id
+            Args:
+                user: django.contrib.auth.models.User instance.
+            Returns:
+                contact_id: User contact id value.
+                Empty string, if the UserSalesforceContactId record, does not exists.
+            """
+            try:
+                contact_id_record = UserSalesforceContactId.objects.get(
+                    user=user,
+                )
+            except ObjectDoesNotExist:
+                logger.warn('User %s does not have a UserSalesforceContactId record.', user.email)
+                return ''
+
+            if isinstance(contact_id_record.contact_id, list):
+                return next(iter(contact_id_record.contact_id), None)
+
+            return contact_id_record.contact_id
 
         rows = []
 
