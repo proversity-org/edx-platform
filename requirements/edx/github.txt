@@ -120,3 +120,6 @@ git+https://github.com/proversity-org/openedx-graded-discussion-xblock.git@v0.1.
 
 git+https://github.com/edx/edx-analytics-data-api-client.git#egg=edx-analytics-data-api-client
 git+https://github.com/jadolg/rocketchat_API.git@0.6.21#egg=rocketchat-API==0.6.21
+
+## Django  Plugins
+git+https://github.com/proversity-org/openedx-proversity-reports.git@ednx/PE-422#egg=openedx-proversity-reports==0.4.0
