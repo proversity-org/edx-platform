@@ -122,4 +122,4 @@ git+https://github.com/edx/edx-analytics-data-api-client.git#egg=edx-analytics-d
 git+https://github.com/jadolg/rocketchat_API.git@0.6.21#egg=rocketchat-API==0.6.21
 
 ## Django  Plugins
-git+https://github.com/proversity-org/openedx-proversity-reports.git@ednx/PE-422#egg=openedx-proversity-reports==0.4.0
+-e git+https://github.com/proversity-org/openedx-proversity-reports.git@a517b1f966764948ee321ec744e48177b5eb344a#egg=openedx-proversity-reports==0.4.0
