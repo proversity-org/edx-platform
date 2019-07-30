@@ -14,6 +14,7 @@ from courseware.courses import get_course_with_access
 from student.models import CourseEnrollment
 from lms.djangoapps.courseware.views.views import CourseTabView
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.features.course_experience import default_course_url_name
 
 from .. import USE_BOOTSTRAP_FLAG
@@ -73,7 +74,11 @@ class CourseReviewsFragmentView(EdxFragmentView):
             'is_enrolled': is_enrolled,
         }
 
-        html = render_to_string('course_experience/course-reviews-fragment.html', context)
+        if configuration_helpers.get_value('CUSTOM_COURSE_EXPERIENCE_FRAGMENTS', settings.CUSTOM_COURSE_EXPERIENCE_FRAGMENTS):
+            html = render_to_string('course_experience/course-reviews-fragment-proversity.html', context)
+        else:
+            html = render_to_string('course_experience/course-reviews-fragment.html', context)
+
         return Fragment(html)
 
 

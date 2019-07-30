@@ -6,12 +6,14 @@ this fragment dismisses the message for a limited time so new updates
 will continue to appear, where the welcome message gets permanently
 dismissed.
 """
+from django.conf import settings
 from django.template.loader import render_to_string
 from opaque_keys.edx.keys import CourseKey
 from web_fragments.fragment import Fragment
 
 from courseware.courses import get_course_with_access
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.features.course_experience.views.course_updates import get_ordered_updates
 
 
@@ -35,7 +37,12 @@ class LatestUpdateFragmentView(EdxFragmentView):
         context = {
             'update_html': update_html,
         }
-        html = render_to_string('course_experience/latest-update-fragment.html', context)
+
+        if configuration_helpers.get_value('CUSTOM_COURSE_EXPERIENCE_FRAGMENTS', settings.CUSTOM_COURSE_EXPERIENCE_FRAGMENTS):
+            html = render_to_string('course_experience/latest-update-fragment-proversity.html', context)
+        else:
+            html = render_to_string('course_experience/latest-update-fragment.html', context)
+
         return Fragment(html)
 
     @classmethod

@@ -1105,6 +1105,11 @@ COURSE_ENROLLMENT_MODES = ENV_TOKENS.get('COURSE_ENROLLMENT_MODES', COURSE_ENROL
 ############## Settings for Writable Gradebook  #########################
 WRITABLE_GRADEBOOK_URL = ENV_TOKENS.get('WRITABLE_GRADEBOOK_URL', WRITABLE_GRADEBOOK_URL)
 
+############## Settings for use custom course experience fragments. ##############
+# This setting is used to enable the custom proversity fragments stored in
+# openedx/features/course_experience/templates/course_experience/*-proversity.html
+CUSTOM_COURSE_EXPERIENCE_FRAGMENTS = False
+
 ############################### Plugin Settings ###############################
 
 # This is at the bottom because it is going to load more settings after base settings are loaded

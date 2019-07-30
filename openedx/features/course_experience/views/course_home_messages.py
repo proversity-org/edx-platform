@@ -5,6 +5,7 @@ View logic for handling course messages.
 from datetime import datetime
 
 from babel.dates import format_date, format_timedelta
+from django.conf import settings
 from django.contrib import auth
 from django.template.loader import render_to_string
 from django.utils.http import urlquote_plus
@@ -24,6 +25,7 @@ from lms.djangoapps.course_goals.api import (
 )
 from lms.djangoapps.course_goals.models import GOAL_KEY_CHOICES
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.core.djangolib.markup import HTML, Text
 from openedx.features.course_experience import CourseHomeMessages
 from student.models import CourseEnrollment
@@ -99,7 +101,11 @@ class CourseHomeMessageFragmentView(EdxFragmentView):
             'username': request.user.username,
         }
 
-        html = render_to_string('course_experience/course-messages-fragment.html', context)
+        if configuration_helpers.get_value('CUSTOM_COURSE_EXPERIENCE_FRAGMENTS', settings.CUSTOM_COURSE_EXPERIENCE_FRAGMENTS):
+            html = render_to_string('course_experience/course-messages-fragment-proversity.html', context)
+        else:
+            html = render_to_string('course_experience/course-messages-fragment.html', context)
+
         return Fragment(html)
 
 

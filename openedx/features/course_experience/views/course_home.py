@@ -2,6 +2,7 @@
 Views for the course home page.
 """
 
+from django.conf import settings
 from django.urls import reverse
 from django.template.context_processors import csrf
 from django.template.loader import render_to_string
@@ -24,6 +25,7 @@ from lms.djangoapps.course_goals.api import (
 from lms.djangoapps.courseware.exceptions import CourseAccessRedirect
 from lms.djangoapps.courseware.views.views import CourseTabView
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.core.djangoapps.util.maintenance_banner import add_maintenance_banner
 from openedx.features.course_experience.course_tools import CourseToolsPluginManager
 from openedx.features.course_duration_limits.access import generate_course_expired_fragment
@@ -220,5 +222,10 @@ class CourseHomeFragmentView(EdxFragmentView):
             'upgrade_price': upgrade_price,
             'upgrade_url': upgrade_url,
         }
-        html = render_to_string('course_experience/course-home-fragment.html', context)
+
+        if configuration_helpers.get_value('CUSTOM_COURSE_EXPERIENCE_FRAGMENTS', settings.CUSTOM_COURSE_EXPERIENCE_FRAGMENTS):
+            html = render_to_string('course_experience/course-home-fragment-proversity.html', context)
+        else:
+            html = render_to_string('course_experience/course-home-fragment.html', context)
+
         return Fragment(html)

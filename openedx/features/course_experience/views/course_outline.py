@@ -5,6 +5,7 @@ import re
 import datetime
 
 from completion import waffle as completion_waffle
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.template.context_processors import csrf
 from django.template.loader import render_to_string
@@ -15,6 +16,7 @@ from web_fragments.fragment import Fragment
 
 from courseware.courses import get_course_overview_with_access
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from student.models import CourseEnrollment
 
 from util.milestones_helpers import get_course_content_milestones
@@ -66,7 +68,10 @@ class CourseOutlineFragmentView(EdxFragmentView):
         context['gated_content'] = gated_content
         context['xblock_display_names'] = xblock_display_names
 
-        html = render_to_string('course_experience/course-outline-fragment.html', context)
+        if configuration_helpers.get_value('CUSTOM_COURSE_EXPERIENCE_FRAGMENTS', settings.CUSTOM_COURSE_EXPERIENCE_FRAGMENTS):
+            html = render_to_string('course_experience/course-outline-fragment-proversity.html', context)
+        else:
+            html = render_to_string('course_experience/course-outline-fragment.html', context)
         return Fragment(html)
 
     def create_xblock_id_and_name_dict(self, course_block_tree, xblock_display_names=None):
