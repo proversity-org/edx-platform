@@ -1,12 +1,14 @@
 """
 Fragment for rendering the course's sock and associated toggle button.
 """
+from django.conf import settings
 from django.template.loader import render_to_string
 from web_fragments.fragment import Fragment
 
 from course_modes.models import get_cosmetic_verified_display_price
 from courseware.date_summary import verified_upgrade_deadline_link, verified_upgrade_link_is_valid
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from student.models import CourseEnrollment
 
 
@@ -19,7 +21,12 @@ class CourseSockFragmentView(EdxFragmentView):
         Render the course's sock fragment.
         """
         context = self.get_verification_context(request, course)
-        html = render_to_string('course_experience/course-sock-fragment.html', context)
+
+        if configuration_helpers.get_value('CUSTOM_COURSE_EXPERIENCE_FRAGMENTS', settings.CUSTOM_COURSE_EXPERIENCE_FRAGMENTS):
+            html = render_to_string('course_experience/course-sock-fragment-proversity.html', context)
+        else:
+            html = render_to_string('course_experience/course-sock-fragment.html', context)
+
         return Fragment(html)
 
     @staticmethod

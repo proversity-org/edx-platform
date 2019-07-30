@@ -3,6 +3,7 @@ Views that handle course updates.
 """
 from datetime import datetime
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.template.context_processors import csrf
 from django.urls import reverse
@@ -15,6 +16,7 @@ from web_fragments.fragment import Fragment
 from courseware.courses import get_course_info_section_module, get_course_with_access
 from lms.djangoapps.courseware.views.views import CourseTabView
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.features.course_experience import default_course_url_name
 
 from .. import USE_BOOTSTRAP_FLAG
@@ -103,7 +105,12 @@ class CourseUpdatesFragmentView(EdxFragmentView):
             'disable_courseware_js': True,
             'uses_pattern_library': True,
         }
-        html = render_to_string('course_experience/course-updates-fragment.html', context)
+
+        if configuration_helpers.get_value('CUSTOM_COURSE_EXPERIENCE_FRAGMENTS', settings.CUSTOM_COURSE_EXPERIENCE_FRAGMENTS):
+            html = render_to_string('course_experience/course-updates-fragment-proversity.html', context)
+        else:
+            html = render_to_string('course_experience/course-updates-fragment.html', context)
+
         return Fragment(html)
 
     @classmethod

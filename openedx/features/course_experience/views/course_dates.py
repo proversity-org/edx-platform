@@ -1,6 +1,7 @@
 """
 Fragment for rendering the course dates sidebar.
 """
+from django.conf import settings
 from django.http import Http404
 from django.template.loader import render_to_string
 from django.utils.translation import get_language_bidi
@@ -9,6 +10,7 @@ from web_fragments.fragment import Fragment
 
 from courseware.courses import get_course_date_blocks, get_course_with_access
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 
 
 class CourseDatesFragmentView(EdxFragmentView):
@@ -28,7 +30,12 @@ class CourseDatesFragmentView(EdxFragmentView):
         context = {
             'course_date_blocks': course_date_blocks
         }
-        html = render_to_string(self.template_name, context)
+
+        if configuration_helpers.get_value('CUSTOM_COURSE_EXPERIENCE_FRAGMENTS', settings.CUSTOM_COURSE_EXPERIENCE_FRAGMENTS):
+            html = render_to_string('course_experience/course-dates-fragment-proversity.html', context)
+        else:
+            html = render_to_string(self.template_name, context)
+
         dates_fragment = Fragment(html)
         self.add_fragment_resource_urls(dates_fragment)
 
