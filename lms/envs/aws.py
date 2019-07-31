@@ -1108,7 +1108,10 @@ WRITABLE_GRADEBOOK_URL = ENV_TOKENS.get('WRITABLE_GRADEBOOK_URL', WRITABLE_GRADE
 ############## Settings for use custom course experience fragments. ##############
 # This setting is used to enable the custom proversity fragments stored in
 # openedx/features/course_experience/templates/course_experience/*-proversity.html
-CUSTOM_COURSE_EXPERIENCE_FRAGMENTS = False
+CUSTOM_COURSE_EXPERIENCE_FRAGMENTS = ENV_TOKENS.get(
+    'CUSTOM_COURSE_EXPERIENCE_FRAGMENTS',
+    CUSTOM_COURSE_EXPERIENCE_FRAGMENTS
+)
 
 ############################### Plugin Settings ###############################
 
