@@ -48,9 +48,10 @@ def fake_support_backend_values(name, default=None):  # pylint: disable=unused-a
 @mock.patch.dict("django.conf.settings.FEATURES", {"ENABLE_FEEDBACK_SUBMISSION": True})
 @override_settings(
     DEFAULT_FROM_EMAIL=TEST_SUPPORT_EMAIL,
-    ZENDESK_URL="dummy",
-    ZENDESK_USER="dummy",
-    ZENDESK_API_KEY="dummy",
+    HELPDESK="zendesk",
+    HELPDESK_URL="dummy",
+    HELPDESK_USER="dummy",
+    HELPDESK_API_KEY="dummy",
     ZENDESK_CUSTOM_FIELDS={},
 )
 @mock.patch("util.views._ZendeskApi", autospec=True)
@@ -594,9 +595,10 @@ class SubmitFeedbackTest(EnterpriseServiceMockMixin, TestCase):
                 with self.assertRaises(Exception):
                     self._build_and_run_request(self._anon_user, self._anon_fields)
 
-        test_case("django.conf.settings.ZENDESK_URL")
-        test_case("django.conf.settings.ZENDESK_USER")
-        test_case("django.conf.settings.ZENDESK_API_KEY")
+        test_case("django.conf.settings.HELPDESK")
+        test_case("django.conf.settings.HELPDESK_URL")
+        test_case("django.conf.settings.HELPDESK_USER")
+        test_case("django.conf.settings.HELPDESK_API_KEY")
 
     @mock.patch("openedx.core.djangoapps.site_configuration.helpers.get_value", fake_support_backend_values)
     def test_valid_request_over_email(self, zendesk_mock_class):  # pylint: disable=unused-argument
