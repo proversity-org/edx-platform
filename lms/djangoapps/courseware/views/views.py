@@ -104,8 +104,9 @@ from student.models import CourseEnrollment, UserTestGroup
 from track import segment
 from util.cache import cache, cache_if_anonymous
 from util.db import outer_atomic
+from util.help_desk import _record_feedback_in_zendesk
 from util.milestones_helpers import get_prerequisite_courses_display
-from util.views import _record_feedback_in_zendesk, ensure_valid_course_key, ensure_valid_usage_key
+from util.views import ensure_valid_course_key, ensure_valid_usage_key
 from xmodule.course_module import COURSE_VISIBILITY_PUBLIC, COURSE_VISIBILITY_PUBLIC_OUTLINE
 from web_fragments.fragment import Fragment
 from xmodule.modulestore.django import modulestore
