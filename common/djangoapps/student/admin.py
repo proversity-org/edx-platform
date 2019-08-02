@@ -27,7 +27,8 @@ from student.models import (
     RegistrationCookieConfiguration,
     UserAttribute,
     UserProfile,
-    UserTestGroup
+    UserTestGroup,
+    LoginFailures,
 )
 from student.roles import REGISTERED_ACCESS_ROLES
 from xmodule.modulestore.django import modulestore
@@ -192,11 +193,14 @@ class CourseEnrollmentForm(forms.ModelForm):
 @admin.register(CourseEnrollment)
 class CourseEnrollmentAdmin(admin.ModelAdmin):
     """ Admin interface for the CourseEnrollment model. """
-    list_display = ('id', 'course_id', 'mode', 'user', 'is_active',)
+    list_display = ('id', 'course_id', 'course_name', 'mode', 'user', 'is_active',)
     list_filter = ('mode', 'is_active',)
     raw_id_fields = ('user',)
     search_fields = ('course__id', 'mode', 'user__username',)
     form = CourseEnrollmentForm
+
+    def course_name(self, obj):
+        return obj.course.display_name if obj.course else None
 
     def get_search_results(self, request, queryset, search_term):
         qs, use_distinct = super(CourseEnrollmentAdmin, self).get_search_results(request, queryset, search_term)
@@ -316,11 +320,20 @@ class CourseEnrollmentAllowedAdmin(admin.ModelAdmin):
         model = CourseEnrollmentAllowed
 
 
+class LoginFailuresAdmin(admin.ModelAdmin):
+    """ Admin interface for the LoginFailures model """
+    list_display = ('user', 'failure_count', 'lockout_until',)
+    search_fields = ('user__username', 'user__email',)
+
+    class Meta(object):
+        model = LoginFailures
+
 admin.site.register(UserTestGroup)
 admin.site.register(Registration)
 admin.site.register(PendingNameChange)
 admin.site.register(DashboardConfiguration, ConfigurationModelAdmin)
 admin.site.register(RegistrationCookieConfiguration, ConfigurationModelAdmin)
+admin.site.register(LoginFailures, LoginFailuresAdmin)
 
 
 # We must first un-register the User model since it may also be registered by the auth app.
