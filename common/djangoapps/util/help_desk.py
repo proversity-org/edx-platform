@@ -26,12 +26,12 @@ class HelpDeskService(object):
     @abstractmethod
     def get_help_desk_service(self):
         """
-        Returns the configured help desk service depending on HELP_DESK_SERVICE_BACKEND value.
+        Returns the configured help desk service depending on HELPDESK_SERVICE_BACKEND value.
         """
-        help_desk_service = getattr(settings, 'HELP_DESK_SERVICE_BACKEND', '')
+        help_desk_service = getattr(settings, 'HELPDESK_SERVICE_BACKEND', '')
 
         if not help_desk_service:
-            raise ValueError('HELP_DESK_SERVICE_BACKEND')
+            raise ValueError('HELPDESK_SERVICE_BACKEND was not provided.')
 
         module_string = help_desk_service.split(':')
         help_desk_class_string = module_string[-1]
