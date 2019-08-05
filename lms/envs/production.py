@@ -1104,6 +1104,13 @@ COURSE_ENROLLMENT_MODES = ENV_TOKENS.get('COURSE_ENROLLMENT_MODES', COURSE_ENROL
 ############## Settings for Writable Gradebook  #########################
 WRITABLE_GRADEBOOK_URL = ENV_TOKENS.get('WRITABLE_GRADEBOOK_URL', WRITABLE_GRADEBOOK_URL)
 
+############## Helpdesk #########################
+HELPDESK = ENV_TOKENS.get('HELPDESK', HELPDESK)
+HELPDESK_URL = ENV_TOKENS.get('HELPDESK_URL', HELPDESK_URL)
+HELPDESK_USER = AUTH_TOKENS.get('HELPDESK_USER', HELPDESK_USER)
+HELPDESK_API_KEY = AUTH_TOKENS.get('HELPDESK_API_KEY', HELPDESK_API_KEY)
+HELPDESK_SERVICE_BACKEND = ENV_TOKENS.get('HELPDESK_SERVICE_BACKEND', HELPDESK_SERVICE_BACKEND)
+
 ############################### Plugin Settings ###############################
 
 # This is at the bottom because it is going to load more settings after base settings are loaded
