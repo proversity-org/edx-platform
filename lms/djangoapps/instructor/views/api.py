@@ -2729,8 +2729,14 @@ def send_email(request, course_id):
                       course_id, request.user, targets)
         return HttpResponseBadRequest(repr(err))
 
+    # Get the settings from the configuration helpers to make the email context site aware.
+    site_context = {
+        'platform_name': configuration_helpers.get_value('platform_name', settings.PLATFORM_NAME),
+        'LMS_ROOT_URL': configuration_helpers.get_value('LMS_ROOT_URL', settings.LMS_ROOT_URL),
+    }
+
     # Submit the task, so that the correct InstructorTask object gets created (for monitoring purposes)
-    lms.djangoapps.instructor_task.api.submit_bulk_course_email(request, course_id, email.id)
+    lms.djangoapps.instructor_task.api.submit_bulk_course_email(request, course_id, email.id, site_context)
 
     response_payload = {
         'course_id': text_type(course_id),
