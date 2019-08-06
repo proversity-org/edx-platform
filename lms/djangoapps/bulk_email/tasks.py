@@ -95,7 +95,7 @@ BULK_EMAIL_FAILURE_ERRORS = (
 )
 
 
-def _get_course_email_context(course, site_context):
+def _get_course_email_context(course, site_context={}):  # pylint: disable=dangerous-default-value
     """
     Returns context arguments to apply to all emails, independent of recipient.
     """
@@ -103,10 +103,8 @@ def _get_course_email_context(course, site_context):
     course_title = course.display_name
     course_end_date = get_default_time_display(course.end)
     course_root = reverse('course_root', kwargs={'course_id': course_id})
-    base_url = site_context.get('LMS_ROOT_URL', settings.LMS_ROOT_URL) if site_context \
-        else settings.LMS_ROOT_URL
-    platform_name = site_context.get('platform_name', settings.PLATFORM_NAME) if site_context \
-        else configuration_helpers.get_value('platform_name', settings.PLATFORM_NAME)
+    base_url = site_context.get('LMS_ROOT_URL', settings.LMS_ROOT_URL)
+    platform_name = site_context.get('platform_name', settings.PLATFORM_NAME)
 
     course_url = '{}{}'.format(
         base_url,
