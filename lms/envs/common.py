@@ -3494,6 +3494,10 @@ USER_STATE_BATCH_SIZE = 5000
 # openedx/features/course_experience/templates/course_experience/*-proversity.html
 CUSTOM_COURSE_EXPERIENCE_FRAGMENTS = False
 
+############## Setting to sort the dashboard courses by. ##############
+# Possible choices: created, created_reverse, course_name, course_name_reverse.
+USER_COURSE_ENROLLMENTS_ORDER_BY = ''
+
 ############## Plugin Django Apps #########################
 
 from openedx.core.djangoapps.plugins import plugin_apps, plugin_settings, constants as plugin_constants
