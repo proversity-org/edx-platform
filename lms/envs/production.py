@@ -1112,6 +1112,13 @@ HELPDESK_USER = AUTH_TOKENS.get('HELPDESK_USER', HELPDESK_USER)
 HELPDESK_API_KEY = AUTH_TOKENS.get('HELPDESK_API_KEY', HELPDESK_API_KEY)
 HELPDESK_SERVICE_BACKEND = ENV_TOKENS.get('HELPDESK_SERVICE_BACKEND', HELPDESK_SERVICE_BACKEND)
 
+############## Setting to sort the dashboard courses by. ##############
+# Possible choices: created, created_reverse, course_name, course_name_reverse.
+USER_COURSE_ENROLLMENTS_ORDER_BY = ENV_TOKENS.get(
+    'USER_COURSE_ENROLLMENTS_ORDER_BY',
+    USER_COURSE_ENROLLMENTS_ORDER_BY,
+)
+
 ############################### Plugin Settings ###############################
 
 # This is at the bottom because it is going to load more settings after base settings are loaded
