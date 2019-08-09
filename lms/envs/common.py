@@ -505,6 +505,9 @@ OAUTH_OIDC_USERINFO_HANDLERS = (
 OAUTH_EXPIRE_CONFIDENTIAL_CLIENT_DAYS = 365
 OAUTH_EXPIRE_PUBLIC_CLIENT_DAYS = 30
 
+# Settings for custom oAuth backends.
+CUSTOM_OAUTH_BACKEND_SETTINGS = {}
+
 ################################## DJANGO OAUTH TOOLKIT #######################################
 
 # Scope description strings are presented to the user
