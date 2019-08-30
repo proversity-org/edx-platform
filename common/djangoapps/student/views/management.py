@@ -31,8 +31,6 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import get_language, ungettext
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_POST
-from edx_ace.message import MessageType
-from edx_ace.recipient import Recipient
 from ipware.ip import get_ip
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
@@ -294,10 +292,7 @@ def register_user(request, extra_context=None):
     return render_to_response('register.html', context)
 
 
-class AccountActivation(MessageType):
-    pass
-
-def compose_activation_email(root_url, user, user_registration=None, route_enabled=False, profile_name=''):
+def compose_activation_email(root_url, user, request, user_registration=None, route_enabled=False, profile_name=''):
     """
     Construct all the required params for the activation email
     through celery task
@@ -320,15 +315,17 @@ def compose_activation_email(root_url, user, user_registration=None, route_enabl
     else:
         dest_addr = user.email
 
-    msg = AccountActivation().personalize(
-        recipient=Recipient(user.username, dest_addr),
-        language=preferences_api.get_user_preference(user, LANGUAGE_KEY),
-        user_context=message_context,
-    )
+    msg = {
+        'dest_addr': dest_addr,
+        'username': user.username,
+        'language': preferences_api.get_user_preference(user, LANGUAGE_KEY),
+        'user_context': message_context,
+        'site_id':  request.site.id,
+    }
     return msg
 
 
-def compose_and_send_activation_email(user, profile, user_registration=None):
+def compose_and_send_activation_email(user, profile, request, user_registration=None):
     """
     Construct all the required params and send the activation email
     through celery task
@@ -339,8 +336,7 @@ def compose_and_send_activation_email(user, profile, user_registration=None):
     """
     route_enabled = settings.FEATURES.get('REROUTE_ACTIVATION_EMAIL')
     root_url = configuration_helpers.get_value('LMS_ROOT_URL', settings.LMS_ROOT_URL)
-    msg = compose_activation_email(root_url, user, user_registration, route_enabled, profile.name)
-
+    msg = compose_activation_email(root_url, user,  request, user_registration, route_enabled, profile.name,)
     send_activation_email.delay(msg)
 
 
@@ -852,7 +848,7 @@ def create_account_with_params(request, params):
         registration.activate()
         _enroll_user_in_pending_courses(user)  # Enroll student in any pending courses
     else:
-        compose_and_send_activation_email(user, profile, registration)
+        compose_and_send_activation_email(user, profile, request, registration,)
 
     new_user = authenticate_new_user(request, user.username, params['password'])
     django_login(request, new_user)

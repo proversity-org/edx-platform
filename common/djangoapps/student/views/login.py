@@ -221,7 +221,7 @@ def _generate_not_activated_message(user):
     return not_activated_message
 
 
-def _log_and_raise_inactive_user_auth_error(unauthenticated_user):
+def _log_and_raise_inactive_user_auth_error(unauthenticated_user, request):
     """
     Depending on Django version we can get here a couple of ways, but this takes care of logging an auth attempt
     by an inactive user, re-sending the activation email, and raising an error with the correct message.
@@ -237,7 +237,7 @@ def _log_and_raise_inactive_user_auth_error(unauthenticated_user):
         )
 
     profile = UserProfile.objects.get(user=unauthenticated_user)
-    compose_and_send_activation_email(unauthenticated_user, profile)
+    compose_and_send_activation_email(unauthenticated_user, profile, request)
 
     raise AuthFailedError(_generate_not_activated_message(unauthenticated_user))
 
@@ -262,7 +262,7 @@ def _authenticate_first_party(request, unauthenticated_user):
         raise AuthFailedError(_('Too many failed login attempts. Try again later.'))
 
 
-def _handle_failed_authentication(user):
+def _handle_failed_authentication(user, request):
     """
     Handles updating the failed login count, inactive user notifications, and logging failed authentications.
     """
@@ -271,7 +271,7 @@ def _handle_failed_authentication(user):
             LoginFailures.increment_lockout_counter(user)
 
         if not user.is_active:
-            _log_and_raise_inactive_user_auth_error(user)
+            _log_and_raise_inactive_user_auth_error(user, request)
 
         # if we didn't find this username earlier, the account for this email
         # doesn't exist, and doesn't have a corresponding password
@@ -425,7 +425,7 @@ def login_user(request):
             possibly_authenticated_user = _authenticate_first_party(request, email_user)
 
         if possibly_authenticated_user is None or not possibly_authenticated_user.is_active:
-            _handle_failed_authentication(email_user)
+            _handle_failed_authentication(email_user, request)
 
         _handle_successful_authentication_and_login(possibly_authenticated_user, request)
 
