@@ -90,6 +90,7 @@ from django.views.generic import View
 from edxmako.shortcuts import marketing_link, render_to_response, render_to_string
 from enrollment.api import add_enrollment
 from lms.djangoapps.ccx.custom_exception import CCXLocatorValidationException
+from openedx.core.djangoapps.plugins.plugin_extension_points import run_extension_point
 from openedx.core.djangoapps.user_api.preferences.api import get_user_preferences
 from lms.djangoapps.commerce.utils import EcommerceService
 from lms.djangoapps.courseware.exceptions import CourseAccessRedirect, Redirect
@@ -334,6 +335,14 @@ def course_info(request, course_id):
 
     Assumes the course_id is in a valid format.
     """
+
+    custom_course_home = run_extension_point(
+            'OEE_COURSE_HOME_CALCULATOR',
+            course_id=course_id,
+        )
+    if custom_course_home:
+        return redirect(custom_course_home)
+
     # TODO: LEARNER-611: This can be deleted with Course Info removal.  The new
     #    Course Home is using its own processing of last accessed.
     def get_last_accessed_courseware(course, request, user):
