@@ -3,6 +3,7 @@ Views for the course home page.
 """
 
 from django.core.urlresolvers import reverse
+from django.shortcuts import redirect
 from django.template.context_processors import csrf
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
@@ -27,6 +28,7 @@ from lms.djangoapps.course_goals.api import (
 from lms.djangoapps.courseware.exceptions import CourseAccessRedirect
 from lms.djangoapps.courseware.views.views import CourseTabView
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
+from openedx.core.djangoapps.plugins.plugin_extension_points import run_extension_point
 from openedx.features.course_experience.course_tools import CourseToolsPluginManager
 from student.models import CourseEnrollment
 from util.views import ensure_valid_course_key
@@ -55,6 +57,14 @@ class CourseHomeView(CourseTabView):
         """
         Displays the home page for the specified course.
         """
+
+        custom_course_home = run_extension_point(
+            'OEE_COURSE_HOME_CALCULATOR',
+            course_id=course_id,
+        )
+        if custom_course_home:
+            return redirect(custom_course_home)
+
         return super(CourseHomeView, self).get(request, course_id, 'courseware', **kwargs)
 
     def uses_bootstrap(self, request, course, tab):
