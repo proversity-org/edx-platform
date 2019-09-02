@@ -297,26 +297,21 @@ def compose_activation_email(root_url, user, request, user_registration=None, ro
     Construct all the required params for the activation email
     through celery task
      """
-    if user_registration is None:
+    if not user_registration:
         user_registration = Registration.objects.get(user=user)
     message_context = generate_activation_email_context(user, user_registration)
     message_context.update({
         'confirm_activation_link': '{root_url}/activate/{activation_key}'.format(
             root_url=root_url,
-            activation_key=message_context['key']
+            activation_key=message_context['key'],
         ),
         'route_enabled': route_enabled,
         'routed_user': user.username,
         'routed_user_email': user.email,
         'routed_profile_name': profile_name,
     })
-    if route_enabled:
-        dest_addr = settings.FEATURES['REROUTE_ACTIVATION_EMAIL']
-    else:
-        dest_addr = user.email
-
     msg = {
-        'dest_addr': dest_addr,
+        'dest_addr': route_enabled if route_enabled else user.email,
         'username': user.username,
         'language': preferences_api.get_user_preference(user, LANGUAGE_KEY),
         'user_context': message_context,
@@ -336,7 +331,7 @@ def compose_and_send_activation_email(user, profile, request, user_registration=
     """
     route_enabled = settings.FEATURES.get('REROUTE_ACTIVATION_EMAIL')
     root_url = configuration_helpers.get_value('LMS_ROOT_URL', settings.LMS_ROOT_URL)
-    msg = compose_activation_email(root_url, user,  request, user_registration, route_enabled, profile.name,)
+    msg = compose_activation_email(root_url, user, request, user_registration, route_enabled, profile.name)
     send_activation_email.delay(msg)
 
 
@@ -848,7 +843,7 @@ def create_account_with_params(request, params):
         registration.activate()
         _enroll_user_in_pending_courses(user)  # Enroll student in any pending courses
     else:
-        compose_and_send_activation_email(user, profile, request, registration,)
+        compose_and_send_activation_email(user, profile, request, registration)
 
     new_user = authenticate_new_user(request, user.username, params['password'])
     django_login(request, new_user)
