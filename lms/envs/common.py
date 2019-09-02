@@ -3522,6 +3522,7 @@ ACE_CHANNEL_SAILTHRU_API_KEY = None
 ACE_CHANNEL_SAILTHRU_API_SECRET = None
 
 ACE_ROUTING_KEY = LOW_PRIORITY_QUEUE
+ACE_CHANNEL_DEFAULT_EMAIL = "django_email"
 
 # Initialize to 'unknown', but read from JSON in aws.py
 EDX_PLATFORM_REVISION = 'unknown'
