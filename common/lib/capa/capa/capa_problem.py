@@ -168,6 +168,8 @@ class LoncapaProblem(object):
 
         self.student_answers = state.get('student_answers', {})
         self.has_saved_answers = state.get('has_saved_answers', False)
+        self.attempts = state.get('attempts', 0)
+
         if 'correct_map' in state:
             self.correct_map.set_dict(state['correct_map'])
         self.done = state.get('done', False)
@@ -216,6 +218,47 @@ class LoncapaProblem(object):
 
             if extract_tree:
                 self.extracted_tree = self._extract_html(self.tree)
+
+    def get_question_answer_text(self):
+        """
+        Get answer text from ChoiceResponse and MultipleChoiceResponse
+        types.
+        """
+        answer = ''
+
+        try:
+            responders_values = self.responders.values()[0]
+
+            if isinstance(responders_values, responsetypes.ChoiceResponse):
+                for elem in responders_values.get_choices():
+                    for val in self.student_answers.values():
+                        for k in val:
+                            if k == elem.get('name'):
+                                answer += "<div>{}</div>".format(elem.text)
+            elif isinstance(responders_values, responsetypes.MultipleChoiceResponse):
+                for elem in responders_values.get_choices():
+                    for val in self.student_answers.values():
+                        if val == elem.get('name'):
+                            answer += elem.text
+        except Exception as error:  # pylint: disable=broad-except
+            log.error(str(error))
+
+        return answer
+
+    def get_question_from_p_tag(self):
+        """
+        Get question text embedded in a <p> tag from xml element tree.
+        """
+        root = self.tree
+        question = ''
+
+        try:
+            for paragraph in root.iter('p'):
+                question += "<p>{}</p>".format(paragraph.text)
+        except Exception as error:  # pylint: disable=broad-except
+            log.error(str(error))
+
+        return question
 
     def make_xml_compatible(self, tree):
         """
@@ -290,12 +333,15 @@ class LoncapaProblem(object):
             2) Populate any student answers.
         """
 
-        return {'seed': self.seed,
-                'student_answers': self.student_answers,
-                'has_saved_answers': self.has_saved_answers,
-                'correct_map': self.correct_map.get_dict(),
-                'input_state': self.input_state,
-                'done': self.done}
+        return {
+            'seed': self.seed,
+            'student_answers': self.student_answers,
+            'has_saved_answers': self.has_saved_answers,
+            'correct_map': self.correct_map.get_dict(),
+            'input_state': self.input_state,
+            'done': self.done,
+            'attempts': self.attempts,
+        }
 
     def get_max_score(self):
         """
