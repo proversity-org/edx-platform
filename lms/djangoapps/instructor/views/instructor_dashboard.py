@@ -197,6 +197,22 @@ def instructor_dashboard_2(request, course_id):
     if certs_enabled and access['admin']:
         sections.append(_section_certificates(course))
 
+    def get_course_blocks(course_key, category):
+        """
+        Retrieve all XBlocks in the course for a particular category.
+
+        Returns only XBlocks that are published and haven't been deleted.
+        """
+        # Note: we need to check if found components have been orphaned
+        # due to a bug in split modulestore (PLAT-799).  Once that bug
+        # is resolved, we can skip the `_is_in_course_tree()` check entirely.
+        return [
+            block for block in modulestore().get_items(
+                course_key,
+                qualifiers={'category': category},
+            )
+        ]
+
     openassessment_blocks = modulestore().get_items(
         course_key, qualifiers={'category': 'openassessment'}
     )
@@ -206,6 +222,15 @@ def instructor_dashboard_2(request, course_id):
     ]
     if len(openassessment_blocks) > 0:
         sections.append(_section_open_response_assessment(request, course, openassessment_blocks, access))
+
+    # Get all the recap xblocks in a course
+
+    recap_blocks = get_course_blocks(course_key, 'recap')
+
+    # Add the Recap instructor dashboard tab if there is a recap Xblock
+
+    if len(recap_blocks) > 0:
+        sections.append(_section_recap(request, course, recap_blocks, access))
 
     disable_buttons = not _is_small_course(course_key)
 
@@ -784,6 +809,38 @@ def _section_open_response_assessment(request, course, openassessment_blocks, ac
         'access': access,
         'course_id': unicode(course_key),
     }
+    return section_data
+
+
+def _section_recap(request, course, recap_blocks, access):
+    """Provide data for the Recap dashboard section."""
+
+    course_key = course.id
+    recap_block = recap_blocks[0]
+    block, __ = get_module_by_usage_id(
+        request, unicode(course_key), unicode(recap_block.location),
+        disable_staff_debug_info=True, course=course
+    )
+    # Set up recap instructor dashboard fragment, pass data to the context
+    fragment = block.render('recap_blocks_listing_view', context={})
+    # Wrap the fragment and get all resources associated with this XBlock view
+    fragment = wrap_xblock(
+        'LmsRuntime', recap_block, 'recap_blocks_listing_view', fragment, None,
+        extra_data={'course-id': unicode(course_key)},
+        usage_id_serializer=lambda usage_id: quote_slashes(unicode(usage_id)),
+        # Generate a new request_token here at random, because this module isn't connected to any other
+        # xblock rendering.
+        request_token=uuid.uuid1().get_hex()
+    )
+
+    section_data = {
+        'fragment': fragment,
+        'section_key': 'recap',
+        'section_display_name': _('Recap'),
+        'access': access,
+        'course_id': unicode(course_key)
+    }
+
     return section_data
 
 
