@@ -207,6 +207,13 @@ def instructor_dashboard_2(request, course_id):
     if len(openassessment_blocks) > 0:
         sections.append(_section_open_response_assessment(request, course, openassessment_blocks, access))
 
+    # Get all the recap xblocks in a course
+    recap_blocks = modulestore().get_items(course_key, qualifiers={'category': 'recap'})
+
+    # Add the Recap instructor dashboard tab if there is a recap Xblock
+    if len(recap_blocks) > 0 and configuration_helpers.get_value('SHOW_RECAP_REPORTS_TAB', True):
+        sections.append(_section_recap(request, course, recap_blocks, access))
+
     disable_buttons = not _is_small_course(course_key)
 
     certificate_white_list = CertificateWhitelist.get_certificate_white_list(course_key)
@@ -784,6 +791,45 @@ def _section_open_response_assessment(request, course, openassessment_blocks, ac
         'access': access,
         'course_id': unicode(course_key),
     }
+    return section_data
+
+
+def _section_recap(request, course, recap_blocks, access):
+    """Provide data for the Recap dashboard section."""
+
+    course_key = course.id
+    recap_block = recap_blocks[0]
+    block, __ = get_module_by_usage_id(
+        request=request,
+        course_id=unicode(course_key),
+        usage_id=unicode(recap_block.location),
+        disable_staff_debug_info=True,
+        course=course,
+    )
+    # Set up recap instructor dashboard fragment, pass data to the context
+    fragment = block.render('recap_blocks_listing_view', context={})
+    # Wrap the fragment and get all resources associated with this XBlock view
+    fragment = wrap_xblock(
+        runtime_class='LmsRuntime',
+        block=recap_block,
+        view='recap_blocks_listing_view',
+        frag=fragment,
+        context=None,
+        extra_data={'course-id': unicode(course_key)},
+        usage_id_serializer=lambda usage_id: quote_slashes(unicode(usage_id)),
+        # Generate a new request_token here at random, because this module isn't connected to any other
+        # xblock rendering.
+        request_token=uuid.uuid1().get_hex(),
+    )
+
+    section_data = {
+        'fragment': fragment,
+        'section_key': 'recap',
+        'section_display_name': _('Recap'),
+        'access': access,
+        'course_id': unicode(course_key),
+    }
+
     return section_data
 
 
