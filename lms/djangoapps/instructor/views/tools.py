@@ -10,6 +10,7 @@ from pytz import UTC
 from django.utils.translation import ugettext as _
 from opaque_keys.edx.keys import UsageKey
 from six import text_type, string_types
+from social_django.models import UserSocialAuth
 
 from courseware.models import StudentFieldOverride
 from lms.djangoapps.courseware.field_overrides import disable_overrides
@@ -71,7 +72,11 @@ def get_student_from_identifier(unique_student_identifier):
 
     DEPRECATED: use student.models.get_user_by_username_or_email instead.
     """
-    return get_user_by_username_or_email(unique_student_identifier)
+    try:
+        # Allow enrollments using the uid from the UserSocialAuth table.
+        return UserSocialAuth.objects.get(uid=unique_student_identifier).user
+    except UserSocialAuth.DoesNotExist:
+        return get_user_by_username_or_email(unique_student_identifier)
 
 
 def require_student_from_identifier(unique_student_identifier):
