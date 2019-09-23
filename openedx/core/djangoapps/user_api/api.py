@@ -911,26 +911,28 @@ class RegistrationFormFactory(object):
             },
         )
 
-    def _add_extended_profile_field(self, form_desc, field, required=True):
+    def _add_extended_profile_field(self, form_desc, field):
         """Add a field to a form description.
         Arguments:
-            form_desc: A form description
-            field: the field name defined on extended_profile_fields
+            form_desc: A form description.
+            field: the field name defined on extended_profile_fields.
         Keyword Arguments:
-            required (bool): Whether this field is required; defaults to True
+            required (bool): Whether this field is required; defaults to True.
         """
-
-        extended_profile__label = _(field)
-
-        extended_profile_field_options = configuration_helpers.get_value('EXTRA_FIELD_OPTIONS', [])
-
-        options = [(value, _(value)) for value in extended_profile_field_options.get(field, [])]
+        extended_profile_label = _(field)
+        extra_field_options = configuration_helpers.get_value('EXTRA_FIELD_OPTIONS', [])
+        options = [(value, _(value)) for value in extra_field_options.get(field, [])]
+        registration_extra_fields = configuration_helpers.get_value(
+            'REGISTRATION_EXTRA_FIELDS',
+            settings.REGISTRATION_EXTRA_FIELDS,
+        )
+        required = True if registration_extra_fields.get(field, '') != 'hidden' else False
 
         if options:
             form_desc.add_field(
                 field,
-                field_type="select",
-                label=extended_profile__label,
+                field_type='select',
+                label=extended_profile_label,
                 include_default_option=True,
                 options=options,
                 required=required,
@@ -938,7 +940,7 @@ class RegistrationFormFactory(object):
         else:
             form_desc.add_field(
                 field,
-                label=extended_profile__label,
+                label=extended_profile_label,
                 include_default_option=True,
                 required=required,
             )

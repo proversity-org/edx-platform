@@ -275,10 +275,10 @@ class AccountCreationForm(forms.Form):
                         }
                     )
 
-        extended_profile_field_options = configuration_helpers.get_value('EXTRA_FIELD_OPTIONS', [])
+        extra_field_options = configuration_helpers.get_value('EXTRA_FIELD_OPTIONS', [])
 
         for field in self.extended_profile_fields:
-            options = [(value, _(value)) for value in extended_profile_field_options.get(field, [])]
+            options = [(value, _(value)) for value in extra_field_options.get(field, [])]
 
             if field not in self.fields and options:
                 self.fields[field] = forms.ChoiceField(required=True, choices=options)
