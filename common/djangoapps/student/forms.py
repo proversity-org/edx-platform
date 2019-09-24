@@ -275,9 +275,15 @@ class AccountCreationForm(forms.Form):
                         }
                     )
 
+        extra_field_options = configuration_helpers.get_value('EXTRA_FIELD_OPTIONS', [])
+
         for field in self.extended_profile_fields:
-            if field not in self.fields:
-                self.fields[field] = forms.CharField(required=False)
+            options = [(value, _(value)) for value in extra_field_options.get(field, [])]
+
+            if field not in self.fields and options:
+                self.fields[field] = forms.ChoiceField(required=True, choices=options)
+            elif field not in self.fields:
+                self.fields[field] = forms.CharField(required=True)
 
     def clean_password(self):
         """Enforce password policies (if applicable)"""
