@@ -2,6 +2,7 @@
 from django.utils.translation import ugettext_lazy as _
 
 from course_modes.models import CourseMode
+from courseware.courses import get_course_by_id
 from student.helpers import VERIFY_STATUS_APPROVED, VERIFY_STATUS_NEED_TO_VERIFY, VERIFY_STATUS_SUBMITTED
 
 DISPLAY_VERIFIED = "verified"
@@ -80,3 +81,23 @@ def _enrollment_mode_display(enrollment_mode, verification_status, course_id):
         display_mode = enrollment_mode
 
     return display_mode
+
+
+def is_external_course(course_id):
+    """
+    Decide if the course was confiured as external or not
+    """
+
+    custom_course_settings = {}
+    try:
+        course = get_course_by_id(course_id)
+    except Exception:
+        pass
+    else:
+        if course:
+            custom_course_settings = course.other_course_settings
+
+    return (
+        custom_course_settings.get("external_course_run_id") and
+        custom_course_settings.get("external_course_target")
+    )
