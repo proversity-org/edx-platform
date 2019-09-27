@@ -66,6 +66,7 @@ class TeachFirstOAuth2(BaseOAuth2):
             'username': response.get('username', ''),
             'email': response.get('mail', ''),
             'fullname': response.get('fullname', ''),
+            'salesforceid': response.get('salesforceid', ''),
         }
 
     def user_data(self, access_token, *args, **kwargs):  # pylint: disable=unused-argument
@@ -85,7 +86,7 @@ class TeachFirstOAuth2(BaseOAuth2):
         """
         Returns the user id.
         """
-        return details.get('email', '')
+        return details.get('salesforceid', '')
 
     def extra_data(self, user, uid, response, details=None, *args, **kwargs):
         """
