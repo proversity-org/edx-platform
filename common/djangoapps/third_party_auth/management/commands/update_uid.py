@@ -28,7 +28,6 @@ class Command(TrackedCommand):
         parser.add_argument('provider')
         parser.add_argument('field')
 
-    @transaction.atomic
     def handle(self, provider, field, *args, **kwargs):
         """
         Get all the objects for the given provider and update the uid.
@@ -43,7 +42,8 @@ class Command(TrackedCommand):
 
             try:
                 user_social_auth_register.uid = new_uid
-                user_social_auth_register.save()
+                with transaction.atomic():
+                    user_social_auth_register.save()
             except Exception as error:
                 self.stdout.write('The register with id {} could not be updated error {}'.format(
                     user_social_auth_register.id,
