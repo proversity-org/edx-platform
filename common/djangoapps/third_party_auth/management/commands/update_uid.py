@@ -41,7 +41,13 @@ class Command(TrackedCommand):
             if not new_uid:
                 raise CommandError('There is no field {} in the extra_data field.'.format(field))
 
-            user_social_auth_register.uid = new_uid
-            user_social_auth_register.save()
+            try:
+                user_social_auth_register.uid = new_uid
+                user_social_auth_register.save()
+            except Exception as error:
+                self.stdout.write('The register with id {} could not be updated error {}'.format(
+                    user_social_auth_register.id,
+                    error,
+                ))
 
         self.stdout.write('All the objects for {} have been updated successfully.'.format(provider))
