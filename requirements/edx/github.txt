@@ -119,4 +119,4 @@ git+https://github.com/proversity-org/openedx-graded-discussion-xblock.git@v0.1.
 -e git+https://github.com/eduNEXT/edx_xblock_scorm.git@8d414de89d14d2df4835f4ce71c08b9a5cc121db#egg=edx_xblock_scorm
 
 git+https://github.com/edx/edx-analytics-data-api-client.git#egg=edx-analytics-data-api-client
-git+https://github.com/jadolg/rocketchat_API.git@0.6.21#egg=rocketchat-API==0.6.21
+git+https://github.com/jadolg/rocketchat_API.git@0.6.34#egg=rocketchat-API==0.6.34
