@@ -808,6 +808,11 @@ def _has_catalog_visibility(course, visibility_type):
     """
     Returns whether the given course has the given visibility type
     """
+    ccx_course = CustomCourseForEdX.objects.filter(display_name=course.display_name)
+
+    if ccx_course:
+        course = CourseOverview.get_from_id(ccx_course[0].course_id)
+
     return ACCESS_GRANTED if course.catalog_visibility == visibility_type else ACCESS_DENIED
 
 
