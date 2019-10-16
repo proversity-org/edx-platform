@@ -29,13 +29,21 @@ class ConfigurationModelStrategy(DjangoStrategy):
             setting 'name' is configured via LTIProviderConfig.
         """
         if isinstance(backend, OAuthAuth):
-            provider_config = OAuth2ProviderConfig.current(backend.name)
-            if not provider_config.enabled_for_current_site:
+            raise_exception = False
+            oauth2_slugs = OAuth2ProviderConfig.key_values('provider_slug', flat=True)
+            for oauth2_slug in oauth2_slugs:
+                provider = OAuth2ProviderConfig.current(oauth2_slug)
+                if provider.backend_name == backend.name:
+                    if provider.enabled_for_current_site:
+                        raise_exception = False
+                        try:
+                            return provider.get_setting(name)
+                        except KeyError:
+                            break
+                    else:
+                        raise_exception = True
+            if raise_exception:
                 raise Exception("Can't fetch setting of a disabled backend/provider.")
-            try:
-                return provider_config.get_setting(name)
-            except KeyError:
-                pass
 
         # special case handling of login error URL if we're using a custom auth entry point:
         if name == 'LOGIN_ERROR_URL':

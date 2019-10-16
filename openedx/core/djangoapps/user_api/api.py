@@ -299,6 +299,9 @@ class RegistrationFormFactory(object):
                         required=self._is_field_required(field_name)
                     )
 
+        for field in configuration_helpers.get_value('extended_profile_fields', []):
+            self._add_extended_profile_field(form_desc, field)
+
         return form_desc
 
     def _add_email_field(self, form_desc, required=True):
@@ -846,26 +849,56 @@ class RegistrationFormFactory(object):
         Keyword Arguments:
             required (bool): Whether this field is required; defaults to True
         """
-        # Translators: This is a legal document users must agree to
-        # in order to register a new account.
-        terms_label = _(u"Terms of Service")
-        terms_link = marketing_link("TOS")
 
-        # Translators: "Terms of service" is a legal document users must agree to
-        # in order to register a new account.
-        label = Text(_(u"I agree to the {platform_name} {tos_link_start}{terms_of_service}{tos_link_end}")).format(
-            platform_name=configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME),
-            terms_of_service=terms_label,
-            tos_link_start=HTML("<a href='{terms_link}' target='_blank'>").format(terms_link=terms_link),
-            tos_link_end=HTML("</a>"),
-        )
+        if configuration_helpers.get_value("enableCombinedToSPrivacy", False):
+            # Translators: This is a legal document users must agree to
+            # in order to register a new account.
+            terms_label = _(u"Terms of Service")
+            terms_link = marketing_link("TOS")
+            
+            privacy_label = _(u"Privacy Notice")
+            privacy_link = marketing_link("PRIVACY")
 
-        # Translators: "Terms of service" is a legal document users must agree to
-        # in order to register a new account.
-        error_msg = _(u"You must agree to the {platform_name} {terms_of_service}").format(
-            platform_name=configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME),
-            terms_of_service=terms_label
-        )
+            # Translators: "Terms of service" is a legal document users must agree to
+            # in order to register a new account.
+            label = Text(_(u"I agree to the {platform_name} {tos_link_start}{terms_of_service}{tos_link_end} & {privacy_link_start}{privacy}{privacy_link_end}")).format(
+                platform_name=configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME),
+                terms_of_service=terms_label,
+                tos_link_start=HTML("<a href='{terms_link}' target='_blank'>").format(terms_link=terms_link),
+                tos_link_end=HTML("</a>"),
+                privacy=privacy_label,
+                privacy_link_start=HTML("<a href='{privacy_link}' target='_blank'>").format(privacy_link=privacy_link),
+                privacy_link_end=HTML("</a>"),
+            )
+
+            # Translators: "Terms of service" is a legal document users must agree to
+            # in order to register a new account.
+            error_msg = _(u"You must agree to the {platform_name} {terms_of_service} & {privacy}").format(
+                platform_name=configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME),
+                terms_of_service=terms_label,
+                privacy=privacy_label 
+            )
+        else:
+            # Translators: This is a legal document users must agree to
+            # in order to register a new account.
+            terms_label = _(u"Terms of Service")
+            terms_link = marketing_link("TOS")
+
+            # Translators: "Terms of service" is a legal document users must agree to
+            # in order to register a new account.
+            label = Text(_(u"I agree to the {platform_name} {tos_link_start}{terms_of_service}{tos_link_end}")).format(
+                platform_name=configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME),
+                terms_of_service=terms_label,
+                tos_link_start=HTML("<a href='{terms_link}' target='_blank'>").format(terms_link=terms_link),
+                tos_link_end=HTML("</a>"),
+            )
+
+            # Translators: "Terms of service" is a legal document users must agree to
+            # in order to register a new account.
+            error_msg = _(u"You must agree to the {platform_name} {terms_of_service}").format(
+                platform_name=configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME),
+                terms_of_service=terms_label
+            )
 
         form_desc.add_field(
             "terms_of_service",
@@ -877,6 +910,40 @@ class RegistrationFormFactory(object):
                 "required": error_msg
             },
         )
+
+    def _add_extended_profile_field(self, form_desc, field):
+        """Add a field to a form description.
+        Arguments:
+            form_desc: A form description.
+            field: the field name defined on extended_profile_fields.
+        Keyword Arguments:
+            required (bool): Whether this field is required; defaults to True.
+        """
+        extended_profile_label = _(field)
+        extra_field_options = configuration_helpers.get_value('EXTRA_FIELD_OPTIONS', [])
+        options = [(value, _(value)) for value in extra_field_options.get(field, [])]
+        registration_extra_fields = configuration_helpers.get_value(
+            'REGISTRATION_EXTRA_FIELDS',
+            settings.REGISTRATION_EXTRA_FIELDS,
+        )
+        required = True if registration_extra_fields.get(field, '') != 'hidden' else False
+
+        if options:
+            form_desc.add_field(
+                field,
+                field_type='select',
+                label=extended_profile_label,
+                include_default_option=True,
+                options=options,
+                required=required,
+            )
+        else:
+            form_desc.add_field(
+                field,
+                label=extended_profile_label,
+                include_default_option=True,
+                required=required,
+            )
 
     def _apply_third_party_auth_overrides(self, request, form_desc):
         """Modify the registration form if the user has authenticated with a third-party provider.

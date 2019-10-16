@@ -149,7 +149,7 @@ _AUTH_ENTRY_CHOICES = frozenset([
     AUTH_ENTRY_REGISTER_API,
 ] + AUTH_ENTRY_CUSTOM.keys())
 
-_DEFAULT_RANDOM_PASSWORD_LENGTH = 12
+_DEFAULT_RANDOM_PASSWORD_LENGTH = 80
 _PASSWORD_CHARSET = string.letters + string.digits
 
 logger = getLogger(__name__)
@@ -612,7 +612,7 @@ def ensure_user_information(strategy, auth_entry, backend=None, user=None, socia
             user = User.objects.get(username=username)
             user.social_user = get_social_user(user)
             return user
-        except User.DoesNotExist:    
+        except User.DoesNotExist:
             if auth_entry in [AUTH_ENTRY_LOGIN_API, AUTH_ENTRY_REGISTER_API]:
                 return HttpResponseBadRequest()
             elif auth_entry == AUTH_ENTRY_LOGIN:
@@ -629,10 +629,10 @@ def ensure_user_information(strategy, auth_entry, backend=None, user=None, socia
                 raise AuthEntryError(backend, 'auth_entry is wrong. Settings requires a user.')
             elif auth_entry in AUTH_ENTRY_CUSTOM:
                 # Pass the username, email, etc. via query params to the custom entry page:
-                return redirect_to_custom_form(strategy.request, auth_entry, kwargs)
+                return redirect_to_custom_form(strategy.request, auth_entry, details or {}, kwargs)
             else:
                 raise AuthEntryError(backend, 'auth_entry invalid')
-                
+
     if not user.is_active:
         # The user account has not been verified yet.
         if allow_inactive_user:
@@ -740,26 +740,56 @@ def login_analytics(strategy, auth_entry, current_partial=None, *args, **kwargs)
 
 
 @partial.partial
-def associate_by_email_if_login_api(auth_entry, backend, details, user, current_partial=None, *args, **kwargs):
+def associate_by_email_and_active_user(auth_entry, backend, details, user, current_partial=None, *args, **kwargs):
     """
     This pipeline step associates the current social auth with the user with the
     same email address in the database.  It defers to the social library's associate_by_email
     implementation, which verifies that only a single database user is associated with the email.
 
-    This association is done ONLY if the user entered the pipeline through a LOGIN API.
+    This association is done in order to enable an user to login with the same account into
+    multiples microsites, preventing the user from logging into their OpenedX account first.
     """
+    association_response = associate_by_email(backend, details, user, *args, **kwargs)
+    strategy = kwargs.get('strategy')
+    current_provider = provider.Registry.get_from_pipeline({
+        'backend': strategy.request.backend.name,
+        'kwargs': kwargs
+    })
+
     if auth_entry == AUTH_ENTRY_LOGIN_API:
-        association_response = associate_by_email(backend, details, user, *args, **kwargs)
         if (
-            association_response and
-            association_response.get('user') and
-            association_response['user'].is_active
+                association_response and
+                association_response.get('user') and
+                association_response['user'].is_active
         ):
             # Only return the user matched by email if their email has been activated.
             # Otherwise, an illegitimate user can create an account with another user's
             # email address and the legitimate user would now login to the illegitimate
             # account.
             return association_response
+    elif auth_entry == AUTH_ENTRY_LOGIN and association_response:
+        social_users_matched = social_django.models.DjangoStorage.user.get_social_auth_for_user(
+            association_response.get('user')
+        )
+
+        if not social_users_matched:
+            return None
+
+        for social_user in social_users_matched:
+            sso_providers = provider.Registry.get_enabled_by_backend_name(social_user.provider)
+
+            for sso in sso_providers:
+                if getattr(sso, 'entity_id', False) and sso.entity_id == current_provider.entity_id:
+                    # Only return the user macthed by email if the user has already an SSO association
+                    # with the same SAML entity_id.
+                    return association_response
+                elif (
+                        getattr(sso, 'provider_id', False) and
+                        sso.provider_id == current_provider.provider_id
+                ):
+                    # Only return the user macthed by email if the user has already an SSO association
+                    # with the same oAuth provider_id.
+                    return association_response
 
 
 def user_details_force_sync(auth_entry, strategy, details, user=None, *args, **kwargs):

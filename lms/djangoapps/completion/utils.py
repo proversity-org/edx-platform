@@ -1,12 +1,17 @@
 import logging
 
-from xmodule.modulestore.django import modulestore
+from django.core.exceptions import ObjectDoesNotExist
+from opaque_keys.edx.locator import BlockUsageLocator
 from student.models import get_user
+from social_django.models import UserSocialAuth
+from xmodule.modulestore.django import modulestore
+from xmodule.modulestore.exceptions import ItemNotFoundError
 
 from lms.djangoapps.completion.models import BlockCompletion
 from lms.djangoapps.course_blocks.api import get_course_blocks
 from lms.djangoapps.courseware.courses import get_course_by_id
 from lms.djangoapps.instructor_task.models import ReportStore
+from lms.djangoapps.student_account.models import UserSalesforceContactId
 
 
 logger = logging.getLogger(__name__)
@@ -24,24 +29,51 @@ class GenerateCompletionReport(object):
         """
         Returns a list with the headings and data for every user
         """
+
+        def get_contact_id(user):
+            """
+            Returns the contact id value from UserSalesforceContactId model.
+
+            Args:
+                user: django.contrib.auth.models.User instance.
+            Returns:
+                contact_id: User contact id value.
+                Empty string, if the UserSalesforceContactId record, does not exists.
+            """
+            try:
+                contact_id_record = UserSalesforceContactId.objects.get(
+                    user=user,
+                )
+            except ObjectDoesNotExist:
+                logger.warn('User %s does not have a UserSalesforceContactId record.', user.email)
+                return ''
+
+            if isinstance(contact_id_record.contact_id, list):
+                return next(iter(contact_id_record.contact_id), None)
+
+            return contact_id_record.contact_id
+
         rows = []
 
-        fieldnames = ['First Name',
-                      'Last Name',
-                      'Student Enrollment ID',
-                      'Email',
-                      'First Login',
-                      'Last Login',
-                      'Completed Activities',
-                      'Total Activities',
-                      'Module Code'
-                      ]
+        fieldnames = [
+            'First Name',
+            'Last Name',
+            'Student Enrollment ID',
+            'Email',
+            'First Login',
+            'Last Login',
+            'Completed Activities',
+            'Total Activities',
+            'Module Code',
+            'ContactID 18',
+        ]
 
         required_ids = self.get_required_ids()
         activities = len(required_ids)
 
         for idx, item in enumerate(required_ids):
-            fieldnames.append("Required Activity {}".format(idx + 1))
+            fieldnames.append("Required Activity {} ".format(idx + 1))
+            fieldnames.append("Required Activity {} Name".format(idx + 1))
 
         rows.append(fieldnames)
 
@@ -57,22 +89,37 @@ class GenerateCompletionReport(object):
 
             student_enrollment_id = "{org}-{user_id}".format(org=self.course_key.org, user_id=user.id)
 
-            data = [first_name,
-                    last_name,
-                    student_enrollment_id,
-                    user.email,
-                    user.date_joined.strftime('%Y/%m/%d %H:%M:%S'),
-                    display_last_login,
-                    self.get_count_required_completed_activities(required_ids, completed_activities),
-                    activities,
-                    self.course_key.to_deprecated_string(),
-                    ]
+            data = [
+                first_name,
+                last_name,
+                student_enrollment_id,
+                user.email,
+                user.date_joined.strftime('%Y/%m/%d %H:%M:%S'),
+                display_last_login,
+                self.get_count_required_completed_activities(required_ids, completed_activities),
+                activities,
+                self.course_key.to_deprecated_string(),
+                get_contact_id(user),
+            ]
 
             for id in required_ids:
                 block_type, block_id = id.rsplit("+block@")
                 state = "completed" if self.is_activity_completed(
                     block_id, completed_activities) else "not_completed"
                 data.append(state)
+                locator = BlockUsageLocator(self.course_key, block_type, block_id)
+
+                try:
+                    block = modulestore().get_item(locator)
+                except ItemNotFoundError as item_error:
+                    logger.warn(
+                        "The block type %s with id %s is not valid, error: %s",
+                        block_type,
+                        block_id,
+                        item_error
+                    )
+                    continue
+                data.append(block.display_name)
 
             rows.append(data)
 
@@ -95,8 +142,8 @@ class GenerateCompletionReport(object):
         custom_block_types = self.course.custom_block_type_keys
 
         if custom_block_types:
-                for block_type in custom_block_types:
-                    block_types_filter.append(block_type)
+            for block_type in custom_block_types:
+                block_types_filter.append(block_type)
 
         # filter blocks by types
         if block_types_filter:

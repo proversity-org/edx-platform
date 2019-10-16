@@ -51,6 +51,7 @@ from lms.djangoapps.grades.course_grade_factory import CourseGradeFactory
 from lms.djangoapps.instructor.enrollment import enroll_email, get_email_params
 from lms.djangoapps.instructor.views.api import _split_input_list
 from lms.djangoapps.instructor.views.gradebook_api import get_grade_book_page
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from student.models import CourseEnrollment
 from student.roles import CourseCcxCoachRole
 from xmodule.modulestore.django import SignalHandler
@@ -229,7 +230,9 @@ def create_ccx(request, course, ccx=None):
     )
 
     assign_staff_role_to_ccx(ccx_id, request.user, course.id)
-    add_master_course_staff_to_ccx(course, ccx_id, ccx.display_name)
+
+    if configuration_helpers.get_value('ALLOW_ENROLL_STAFF_TO_CCX', True):
+        add_master_course_staff_to_ccx(course, ccx_id, ccx.display_name)
 
     # using CCX object as sender here.
     responses = SignalHandler.course_published.send(

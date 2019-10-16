@@ -596,3 +596,7 @@ plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.CMS, plugin_c
 ########################## Derive Any Derived Settings  #######################
 
 derive_settings(__name__)
+
+CLOUDFRONT_PRIVATE_SIGNING_KEY = AUTH_TOKENS.get('CLOUDFRONT_PRIVATE_SIGNING_KEY')
+CLOUDFRONT_ID = ENV_TOKENS.get('CLOUDFRONT_ID')
+CLOUDFRONT_URL = ENV_TOKENS.get('CLOUDFRONT_URL')
