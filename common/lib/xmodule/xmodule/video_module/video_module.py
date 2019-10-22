@@ -1137,4 +1137,5 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
             "transcripts": transcripts,
             "encoded_videos": encoded_videos,
             "all_sources": all_sources,
+            "show_captions": self.show_captions,
         }
