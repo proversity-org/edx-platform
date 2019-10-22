@@ -6,6 +6,7 @@ from django.conf import settings
 from django.utils.translation import ugettext_noop
 
 from courseware.access import has_access
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from student.roles import CourseCcxCoachRole
 from xmodule.tabs import CourseTab
 
@@ -16,7 +17,7 @@ class CcxCourseTab(CourseTab):
     """
 
     type = "ccx_coach"
-    title = ugettext_noop("CCX Coach")
+    title = ugettext_noop(configuration_helpers.get_value("CCX_TAB_NAME", "CCX Coach"))
     view_name = "ccx_coach_dashboard"
     is_dynamic = True    # The CCX view is dynamically added to the set of tabs when it is enabled
 
