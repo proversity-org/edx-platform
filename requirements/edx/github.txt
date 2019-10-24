@@ -93,7 +93,7 @@ git+https://github.com/edx/edx-milestones.git@v0.1.11#egg=edx-milestones==0.1.11
 git+https://github.com/edx/xblock-utils.git@v1.0.5#egg=xblock-utils==1.0.5
 -e git+https://github.com/edx-solutions/xblock-google-drive.git@138e6fa0bf3a2013e904a085b9fed77dab7f3f21#egg=xblock-google-drive
 git+https://github.com/edx/edx-user-state-client.git@1.0.2#egg=edx-user-state-client==1.0.2
-git+https://github.com/proversity-org/xblock-lti-consumer.git@4992c95bd188942059cce7d9d704666342bbe3bd#egg=lti_consumer-xblock==1.1.6-1
+git+https://github.com/proversity-org/xblock-lti-consumer.git@4e95983d6fc777a7ca3d5a2e892061f0af62e85f#egg=lti_consumer-xblock==1.1.6-2
 # This is here because all of the other XBlocks are located here. However, it is published to PyPI and will be installed that way
 xblock-review==1.1.4
 -e git+https://github.com/proversity-org/edx-proctoring.git@v1.3.6#egg=edx-proctoring==1.3.6
