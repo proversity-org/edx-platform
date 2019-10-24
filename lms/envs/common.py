@@ -183,6 +183,18 @@ FEATURES = {
     # Toggle to enable certificates of courses on dashboard
     'ENABLE_VERIFIED_CERTIFICATES': False,
 
+    # .. toggle_name: DISABLE_HONOR_CERTIFICATES
+    # .. toggle_type: feature_flag
+    # .. toggle_default: False
+    # .. toggle_description: Set to True to disable honor certificates. Typically used when your installation only allows verified certificates, like courses.edx.org.
+    # .. toggle_category: certificates
+    # .. toggle_use_cases: open_edx
+    # .. toggle_creation_date: 2019-05-14
+    # .. toggle_expiration_date: None
+    # .. toggle_tickets: https://openedx.atlassian.net/browse/PROD-269
+    # .. toggle_status: supported
+    'DISABLE_HONOR_CERTIFICATES': False,  # Toggle to disable honor certificates
+
     # for acceptance and load testing
     'AUTOMATIC_AUTH_FOR_TESTING': False,
 
@@ -419,7 +431,10 @@ XQUEUE_WAITTIME_BETWEEN_REQUESTS = 5  # seconds
 # Used with Email sending
 RETRY_ACTIVATION_EMAIL_MAX_ATTEMPTS = 5
 RETRY_ACTIVATION_EMAIL_TIMEOUT = 0.5
-
+PASSWORD_RESET_EMAIL_RATE_LIMIT = {
+    'no_of_emails': 1,
+    'per_seconds': 60
+}
 # Deadline message configurations
 COURSE_MESSAGE_ALERT_DURATION_IN_DAYS = 14
 
