@@ -224,6 +224,18 @@ class CapaFields(object):
                "or to report an issue, please contact moocsupport@mathworks.com"),
         scope=Scope.settings
     )
+    show_attempts = Boolean(
+        display_name="Show attempts",
+        help="This will show or not the attempts for the problem.",
+        scope=Scope.settings,
+        default=True,
+    )
+    show_graded = Boolean(
+        display_name="Show graded",
+        help="This will show or not the grading for the problem.",
+        scope=Scope.settings,
+        default=True,
+    )
 
 
 class CapaMixin(ScorableXBlockMixin, CapaFields):
@@ -741,6 +753,8 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
             'answer_notification_message': answer_notification_message,
             'has_saved_answers': self.has_saved_answers,
             'save_message': save_message,
+            'show_attempts': self.show_attempts,
+            'show_graded': self.show_graded,
         }
 
         html = self.runtime.render_template('problem.html', context)
