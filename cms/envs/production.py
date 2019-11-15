@@ -605,6 +605,17 @@ RETIREMENT_STATES = ENV_TOKENS.get('RETIREMENT_STATES', RETIREMENT_STATES)
 ############## Settings for Course Enrollment Modes ######################
 COURSE_ENROLLMENT_MODES = ENV_TOKENS.get('COURSE_ENROLLMENT_MODES', COURSE_ENROLLMENT_MODES)
 
+############## File upload max sizes. ##############
+
+### Size of chunks into which asset uploads will be divided
+UPLOAD_CHUNK_SIZE_IN_MB = ENV_TOKENS.get('UPLOAD_CHUNK_SIZE_IN_MB', UPLOAD_CHUNK_SIZE_IN_MB)
+
+### Max size of asset uploads to GridFS
+MAX_ASSET_UPLOAD_FILE_SIZE_IN_MB = ENV_TOKENS.get(
+    'MAX_ASSET_UPLOAD_FILE_SIZE_IN_MB',
+    MAX_ASSET_UPLOAD_FILE_SIZE_IN_MB,
+)
+
 ####################### Plugin Settings ##########################
 
 # This is at the bottom because it is going to load more settings after base settings are loaded
