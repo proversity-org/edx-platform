@@ -27,7 +27,8 @@ from student.models import (
     RegistrationCookieConfiguration,
     UserAttribute,
     UserProfile,
-    UserTestGroup
+    UserSalesforceContactId,
+    UserTestGroup,
 )
 from student.roles import REGISTERED_ACCESS_ROLES
 from xmodule.modulestore.django import modulestore
@@ -316,11 +317,22 @@ class CourseEnrollmentAllowedAdmin(admin.ModelAdmin):
         model = CourseEnrollmentAllowed
 
 
+class UserSalesforceContactIdAdmin(admin.ModelAdmin):
+    """
+    Admin class for UserSalesforceContactId model.
+    """
+    fields = ('user', 'contact_id', 'contact_id_source',)
+    list_display = ('user', 'contact_id', 'contact_id_source',)
+    list_filter = ('contact_id_source',)
+    search_fields = ('user__email',)
+
+
 admin.site.register(UserTestGroup)
 admin.site.register(Registration)
 admin.site.register(PendingNameChange)
 admin.site.register(DashboardConfiguration, ConfigurationModelAdmin)
 admin.site.register(RegistrationCookieConfiguration, ConfigurationModelAdmin)
+admin.site.register(UserSalesforceContactId, UserSalesforceContactIdAdmin)
 
 
 # We must first un-register the User model since it may also be registered by the auth app.
