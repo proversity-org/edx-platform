@@ -180,6 +180,11 @@ class CapaFields(object):
                        scope=Scope.user_state, default={})
     input_state = Dict(help=_("Dictionary for maintaining the state of inputtypes"), scope=Scope.user_state)
     student_answers = Dict(help=_("Dictionary with the current student responses"), scope=Scope.user_state)
+    student_answers_text = String(
+        help=_("Text of the current student answers"),
+        scope=Scope.user_state,
+        default="",
+    )
 
     # enforce_type is set to False here because this field is saved as a dict in the database.
     score = ScoreField(help=_("Dictionary with the current student score"), scope=Scope.user_state, enforce_type=False)
@@ -238,6 +243,7 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
         if self.seed is None:
             self.choose_new_seed()
 
+        self.student_answers_text = 'No data available'
         # Need the problem location in openendedresponse to send out.  Adding
         # it to the system here seems like the least clunky way to get it
         # there.
@@ -355,6 +361,7 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
             'has_saved_answers': self.has_saved_answers,
             'input_state': self.input_state,
             'seed': self.seed,
+            'attempts': self.attempts,
         }
 
     def set_state_from_lcp(self):
@@ -368,6 +375,7 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
         self.student_answers = lcp_state['student_answers']
         self.has_saved_answers = lcp_state['has_saved_answers']
         self.seed = lcp_state['seed']
+        self.attempts = lcp_state.get('attempts', 0)
 
     def set_last_submission_time(self):
         """
@@ -1142,6 +1150,23 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
 
         return {'grade': self.score.raw_earned, 'max_grade': self.score.raw_possible}
 
+    def student_item_key(self):
+        """ Get the student_item_dict required for the submissions API """
+        try:
+            user =  self.runtime.get_real_user(self.runtime.anonymous_student_id)
+            location = self.location.replace(branch=None, version=None)  # Standardize the key in case it isn't already
+            student_item = dict(
+                student_id=user.id,
+                course_id=unicode(location.course_key),
+                item_id=unicode(location),
+                item_type=self.scope_ids.block_type,
+            )
+        except AttributeError:
+            log.error('If you are using Studio, you do not have access to self.runtime.get_real_user')
+            student_item = None
+
+        return student_item
+
     # pylint: disable=too-many-statements
     def submit_problem(self, data, override_time=False):
         """
@@ -1151,6 +1176,10 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
           {'success' : 'correct' | 'incorrect' | AJAX alert msg string,
            'contents' : html}
         """
+        # If submissions.api is import at module level
+        # an AppRegistryNotReady is raised.
+        from submissions import api as sub_api
+
         event_info = dict()
         event_info['state'] = self.lcp.get_state()
         event_info['problem_id'] = text_type(self.location)
@@ -1211,7 +1240,8 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
             correct_map = self.lcp.grade_answers(answers)
             # self.attempts refers to the number of attempts that did not
             # raise an error (0-based)
-            self.attempts = self.attempts + 1
+            self.lcp.attempts = self.lcp.attempts + 1
+            self.attempts = self.lcp.attempts
             self.lcp.done = True
             self.set_state_from_lcp()
             self.set_score(self.score_from_lcp())
@@ -1280,6 +1310,15 @@ class CapaMixin(ScorableXBlockMixin, CapaFields):
         # Withhold success indicator if hiding correctness
         if not self.correctness_available():
             success = 'submitted'
+
+        try:
+            submission = self.lcp.get_question_answer_text()
+            self.student_answers_text = submission
+
+            if sub_api and self.runtime.get_real_user:
+                sub_api.create_submission(self.student_item_key(), submission)
+        except Exception as error:  # pylint: disable=broad-except
+            log.error(str(error))
 
         return {
             'success': success,
