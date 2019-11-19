@@ -339,6 +339,7 @@ def course_info(request, course_id):
     custom_course_home = run_extension_point(
             'OEE_COURSE_HOME_CALCULATOR',
             course_id=course_id,
+            user=request.user,
         )
     if custom_course_home:
         return redirect(custom_course_home)
