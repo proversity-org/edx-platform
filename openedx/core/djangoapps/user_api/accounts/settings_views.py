@@ -213,6 +213,10 @@ def _get_extended_profile_fields():
         "specialty": _(u"Specialty")
     }
 
+    field_labels_map.update(
+        configuration_helpers.get_value('extended_profile_fields_name_mapping', {}),
+    )
+
     extended_profile_field_names = configuration_helpers.get_value('extended_profile_fields', [])
     for field_to_exclude in fields_already_showing:
         if field_to_exclude in extended_profile_field_names:
