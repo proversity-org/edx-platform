@@ -318,6 +318,7 @@ def course_info(request, course_id):
         course_id=course_id,
         user=request.user,
     )
+
     if custom_course_home:
         return redirect(custom_course_home)
 
