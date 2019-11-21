@@ -82,6 +82,7 @@ from openedx.core.djangoapps.credit.api import (
 )
 from openedx.core.djangoapps.models.course_details import CourseDetails
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
+from openedx.core.djangoapps.plugins.plugin_extension_points import run_extension_point
 from openedx.core.djangoapps.programs.utils import ProgramMarketingDataExtender
 from openedx.core.djangoapps.self_paced.models import SelfPacedConfiguration
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
@@ -312,6 +313,15 @@ def course_info(request, course_id):
 
     Assumes the course_id is in a valid format.
     """
+    custom_course_home = run_extension_point(
+        'OEE_COURSE_HOME_CALCULATOR',
+        course_id=course_id,
+        user=request.user,
+    )
+
+    if custom_course_home:
+        return redirect(custom_course_home)
+
     # TODO: LEARNER-611: This can be deleted with Course Info removal.  The new
     #    Course Home is using its own processing of last accessed.
     def get_last_accessed_courseware(course, request, user):
