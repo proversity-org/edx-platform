@@ -616,6 +616,9 @@ MAX_ASSET_UPLOAD_FILE_SIZE_IN_MB = ENV_TOKENS.get(
     MAX_ASSET_UPLOAD_FILE_SIZE_IN_MB,
 )
 
+############# SCORMXBLOCK #########################
+SCORMXBLOCK_ASYNC_THRESHOLD = ENV_TOKENS.get('SCORMXBLOCK_ASYNC_THRESHOLD', 150)
+
 ####################### Plugin Settings ##########################
 
 # This is at the bottom because it is going to load more settings after base settings are loaded
