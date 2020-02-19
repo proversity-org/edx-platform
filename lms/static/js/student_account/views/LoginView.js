@@ -233,9 +233,9 @@
             renderAuthWarning: function() {
                 var message = _.sprintf(
                     gettext('You have successfully signed into %(currentProvider)s, but your %(currentProvider)s' +
-                            ' account does not have a linked %(platformName)s account. To link your accounts,' +
-                            ' sign in now using your %(platformName)s password.'),
-                    {currentProvider: this.currentProvider, platformName: this.platformName}
+                            ' account does not have a linked OpenEdx account. To link your accounts,' +
+                            ' sign in now using your OpenEdx password.'),
+                    {currentProvider: this.currentProvider}
                 );
 
                 this.clearAuthWarning();
