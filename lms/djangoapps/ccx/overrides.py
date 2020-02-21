@@ -69,6 +69,8 @@ def get_current_ccx(course_key):
 
     ccx_cache = get_cache('ccx')
     if course_key not in ccx_cache:
+        msg = "There is no CCX with id %r for course %r"
+        log.error(msg, course_key.ccx, course_key)
         ccx_cache[course_key] = CustomCourseForEdX.objects.get(pk=course_key.ccx)
 
     return ccx_cache[course_key]
