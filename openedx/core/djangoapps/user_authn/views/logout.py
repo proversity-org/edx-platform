@@ -9,6 +9,7 @@ from django.shortcuts import redirect
 from django.utils.http import urlencode
 from django.views.generic import TemplateView
 from provider.oauth2.models import Client
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.core.djangoapps.user_authn.cookies import delete_logged_in_cookies
 from openedx.core.djangoapps.user_authn.utils import is_safe_login_or_logout_redirect
 
@@ -58,7 +59,11 @@ class LogoutView(TemplateView):
         logout(request)
 
         # If we are using studio logout directly and there is not OIDC logouts we can just redirect the user
-        if settings.FEATURES.get('DISABLE_STUDIO_SSO_OVER_LMS', False) and not self.oauth_client_ids:
+        # If ALLOW_SAML_LOGOUT_FROM_URL is set to True, we need to go to the logout page instead of redirect,
+        # to use the existing behavior to log out an user from SAML SSO.
+        if (settings.FEATURES.get('DISABLE_STUDIO_SSO_OVER_LMS', False) and
+            not self.oauth_client_ids and
+            not configuration_helpers.get_value('ALLOW_SAML_LOGOUT_FROM_URL', False)):
             response = redirect(self.target)
         else:
             response = super(LogoutView, self).dispatch(request, *args, **kwargs)
@@ -107,6 +112,11 @@ class LogoutView(TemplateView):
             # avoiding a double-logout.
             if not referrer or (referrer and not uri.startswith(referrer)):
                 logout_uris.append(self._build_logout_url(uri))
+
+        saml_logout_url = configuration_helpers.get_value('SAML_LOGOUT_URL', '')
+
+        if configuration_helpers.get_value('ALLOW_SAML_LOGOUT_FROM_URL', False) and saml_logout_url:
+            logout_uris.append(saml_logout_url)
 
         context.update({
             'target': self.target,
