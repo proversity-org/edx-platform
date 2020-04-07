@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth import logout
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
+from django.utils.functional import cached_property
 from django.utils.http import urlencode
 from django.views.generic import TemplateView
 from provider.oauth2.models import Client
@@ -26,6 +27,7 @@ class LogoutView(TemplateView):
 
     # Keep track of the page to which the user should ultimately be redirected.
     default_target = reverse_lazy('cas-logout') if settings.FEATURES.get('AUTH_USE_CAS') else '/'
+    user_has_saml_provider = False
 
     def post(self, request, *args, **kwargs):
         """
@@ -55,6 +57,7 @@ class LogoutView(TemplateView):
 
         # Get the list of authorized clients before we clear the session.
         self.oauth_client_ids = request.session.get(edx_oauth2_provider.constants.AUTHORIZED_CLIENTS_SESSION_KEY, [])
+        self.user_has_saml_provider = self.is_saml_user(request.user)
 
         logout(request)
 
@@ -63,7 +66,7 @@ class LogoutView(TemplateView):
         # to use the existing behavior to log out an user from SAML SSO.
         if (settings.FEATURES.get('DISABLE_STUDIO_SSO_OVER_LMS', False) and
             not self.oauth_client_ids and
-            not configuration_helpers.get_value('ALLOW_SAML_LOGOUT_FROM_URL', False)):
+            not self.allow_saml_logout_from_url):
             response = redirect(self.target)
         else:
             response = super(LogoutView, self).dispatch(request, *args, **kwargs)
@@ -115,7 +118,7 @@ class LogoutView(TemplateView):
 
         saml_logout_url = configuration_helpers.get_value('SAML_LOGOUT_URL', '')
 
-        if configuration_helpers.get_value('ALLOW_SAML_LOGOUT_FROM_URL', False) and saml_logout_url:
+        if self.allow_saml_logout_from_url and saml_logout_url:
             logout_uris.append(saml_logout_url)
 
         context.update({
@@ -124,3 +127,36 @@ class LogoutView(TemplateView):
         })
 
         return context
+
+    def is_saml_user(self, user):
+        """
+        Check and return if the user has an associated SAML social auth record.
+
+        Args:
+            user: django.contrib.auth.models.User instance.
+        Returns:
+            True/False if the user has an associated SAML social auth record.
+        """
+        saml_user = False
+
+        if not user.is_authenticated:
+            return saml_user
+
+        for social_auth in user.social_auth.select_related('user'):
+            if social_auth.provider == 'tpa-saml':
+                saml_user = True
+
+        return saml_user
+
+    @cached_property
+    def allow_saml_logout_from_url(self):
+        """
+        Return if the feature is enabled at the site configuration level and the user
+        is eligible to use this feature.
+
+        Returns:
+            True/False
+        """
+        allow_saml_logout = configuration_helpers.get_value('ALLOW_SAML_LOGOUT_FROM_URL', False)
+
+        return allow_saml_logout and self.user_has_saml_provider
