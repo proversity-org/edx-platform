@@ -432,3 +432,15 @@ def remove_master_course_staff_from_ccx(master_course, ccx_key, display_name, se
                     email_students=send_email,
                     email_params=email_params,
                 )
+
+
+def get_master_course_by_ccx_id(ccx_id):
+    """
+    Return the master course id by the given CCX course id.
+
+    Args:
+        ccx_id: CCXLocator instance.
+    Returns:
+        None or a CourseLocator instance.
+    """
+    return ccx_id.to_course_locator() if ccx_id else None
