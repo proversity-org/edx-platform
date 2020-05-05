@@ -9,6 +9,7 @@ from contextlib import contextmanager
 from smtplib import SMTPException
 
 import pytz
+from ccx_keys.locator import CCXLocator
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.urls import reverse
@@ -444,3 +445,43 @@ def get_master_course_by_ccx_id(ccx_id):
         None or a CourseLocator instance.
     """
     return ccx_id.to_course_locator() if ccx_id else None
+
+
+def exclude_master_course_staff_users(users, course_key, model='User'):
+    """
+    Return a new filtered queryset depending on weather the user is a staff member of the master course.
+
+    This is for CCX courses only, so if the course_key is not an instance of CCXLocator
+    will return the same users object.
+
+    Users will be interpreted as a staff members
+    if they have any entry in the Course Access Role model for the master course.
+
+    The model argument dictates how the lookup filter should be applied on the provided queryset.
+
+    Args:
+        users: django.db.models.query.QuerySet instance.
+        course_key: CCXLocator instance.
+        model: Dictates how to apply the lookup filter. Defaults to 'User'.
+            'User': Applies the lookup filter on the courseaccessrole model.
+            'CourseEnrollment': Applies the lookup filter on the user and then on
+                                the courseaccessrole model.
+    Returns:
+        Filtered django.db.models.query.QuerySet instance.
+        If course_key is not a CCXLocator instance it will return the users argument.
+        If model value is not recognized will it return the users argument.
+    """
+    if not isinstance(course_key, CCXLocator):
+        return users
+
+    if model == 'User':
+        return users.exclude(
+            courseaccessrole__course_id=get_master_course_by_ccx_id(course_key),
+        )
+
+    if model == 'CourseEnrollment':
+        return users.exclude(
+            user__courseaccessrole__course_id=get_master_course_by_ccx_id(course_key),
+        )
+
+    return users

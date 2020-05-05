@@ -12,7 +12,7 @@ from opaque_keys.edx.keys import CourseKey
 
 from courseware.courses import get_course_with_access
 from edxmako.shortcuts import render_to_response
-from lms.djangoapps.ccx.utils import get_master_course_by_ccx_id
+from lms.djangoapps.ccx.utils import exclude_master_course_staff_users
 from lms.djangoapps.grades.course_grade_factory import CourseGradeFactory
 from lms.djangoapps.instructor.views.api import require_level
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
@@ -76,6 +76,12 @@ def get_grade_book_page(request, course, course_key):
         courseenrollment__is_active=1
     ).order_by('username').select_related("profile")
 
+    if configuration_helpers.get_value('HIDE_MASTER_COURSE_STAFF_FROM_GRADEBOOK', False):
+        enrolled_students = exclude_master_course_staff_users(
+            users=enrolled_students,
+            course_key=course_key,
+        )
+
     total_students = enrolled_students.count()
     page = calculate_page_info(current_offset, total_students)
     offset = page["offset"]
@@ -92,7 +98,6 @@ def get_grade_book_page(request, course, course_key):
                 'id': student.id,
                 'email': student.email,
                 'grade_summary': CourseGradeFactory().read(student, course).summary,
-                'is_master_course_staff': is_user_master_course_staff(student, course_key),
             }
             for student in enrolled_students
         ]
@@ -122,26 +127,3 @@ def spoc_gradebook(request, course_id):
         'staff_access': True,
         'ordered_grades': sorted(course.grade_cutoffs.items(), key=lambda i: i[1], reverse=True),
     })
-
-
-def is_user_master_course_staff(user, ccx_key):
-    """
-    Return if the user is a staff member of the master course.
-
-    The user will be interpreted as a staff member of the master course
-    if it has any entry in the Course Access Role model.
-
-    Args:
-        user: django.contrib.auth.User instance.
-        ccx_key: CCXLocator instance.
-    Returns:
-        True/False depending on the user's access role in the master course.
-    """
-    if not configuration_helpers.get_value('HIDE_MASTER_COURSE_STAFF_FROM_GRADEBOOK', False):
-        return False
-
-    user_course_access_roles = user.courseaccessrole_set.filter(
-        course_id=get_master_course_by_ccx_id(ccx_key),
-    ).count()
-
-    return True if user_course_access_roles else False
