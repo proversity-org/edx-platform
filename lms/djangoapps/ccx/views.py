@@ -542,6 +542,13 @@ def ccx_grades_csv(request, course, ccx=None):
             courseenrollment__course_id=ccx_key,
             courseenrollment__is_active=1
         ).order_by('username').select_related("profile")
+
+        if configuration_helpers.get_value('HIDE_MASTER_COURSE_STAFF_FROM_GRADEBOOK', False):
+            enrolled_students = exclude_master_course_staff_users(
+                users=enrolled_students,
+                course_key=ccx_key,
+            )
+
         grades = CourseGradeFactory().iter(enrolled_students, course)
 
         header = None
