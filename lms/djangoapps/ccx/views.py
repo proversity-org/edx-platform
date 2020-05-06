@@ -50,7 +50,10 @@ from lms.djangoapps.ccx.utils import (
 )
 from lms.djangoapps.grades.course_grade_factory import CourseGradeFactory
 from lms.djangoapps.instructor.enrollment import enroll_email, get_email_params
-from lms.djangoapps.instructor.views.gradebook_api import get_grade_book_page
+from lms.djangoapps.instructor.views.gradebook_api import (
+    exclude_master_course_staff_users,
+    get_grade_book_page,
+)
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from student.models import CourseEnrollment
 from student.roles import CourseCcxCoachRole
@@ -141,10 +144,19 @@ def dashboard(request, course, ccx=None):
         schedule = get_ccx_schedule(course, ccx)
         grading_policy = get_override_for_ccx(
             ccx, course, 'grading_policy', course.grading_policy)
+        enrolled_students = CourseEnrollment.objects.filter(course_id=ccx_locator, is_active=True)
         context['schedule'] = json.dumps(schedule, indent=4)
         context['save_url'] = reverse(
             'save_ccx', kwargs={'course_id': ccx_locator})
-        context['ccx_members'] = CourseEnrollment.objects.filter(course_id=ccx_locator, is_active=True)
+        context['ccx_members'] = (
+            enrolled_students
+            if not configuration_helpers.get_value('HIDE_MASTER_COURSE_STAFF_FROM_STUDENT_LIST', False)
+            else exclude_master_course_staff_users(
+                users=enrolled_students,
+                course_key=ccx_locator,
+                model='CourseEnrollment',
+            )
+        )
         context['gradebook_url'] = reverse(
             'ccx_gradebook', kwargs={'course_id': ccx_locator})
         context['grades_csv_url'] = reverse(
