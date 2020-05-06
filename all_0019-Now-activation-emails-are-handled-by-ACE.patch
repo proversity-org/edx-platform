@@ -1,0 +1,846 @@
+From 934ec3cb305cb8333d420eae3cc747e62f44398b Mon Sep 17 00:00:00 2001
+From: jfavellar90 <jhony.avella@edunext.co>
+Date: Thu, 26 Sep 2019 17:50:06 -0500
+Subject: [PATCH] Now activation emails are handled by ACE Fixing tests by
+ overriding the AUTOMATIC_AUTH_FOR_TESTING feature flag to prevent the call of
+ the activation email function Trying to make tests happy Finally fixing
+ tests!
+
+---
+ cms/templates/emails/activation_email.txt     |  11 --
+ .../emails/activation_email_subject.txt       |   2 -
+ common/djangoapps/student/helpers.py          |   4 +-
+ common/djangoapps/student/message_types.py    |   7 +
+ common/djangoapps/student/tasks.py            |  22 ++-
+ common/djangoapps/student/tests/test_email.py | 132 +++++-------------
+ .../student/tests/test_password_policy.py     |   1 +
+ common/djangoapps/student/tests/test_tasks.py |  50 ++++++-
+ common/djangoapps/student/views/management.py | 102 ++++++--------
+ .../third_party_auth/tests/specs/base.py      |   4 +-
+ .../edx_ace/accountactivation/email/body.html |  57 ++++++++
+ .../edx_ace/accountactivation/email/body.txt  |  11 ++
+ .../accountactivation/email/from_name.txt     |   1 +
+ .../edx_ace/accountactivation/email/head.html |   1 +
+ .../accountactivation/email/subject.txt       |   4 +
+ .../templates/emails/activation_email.txt     |  16 ---
+ .../emails/activation_email_subject.txt       |   3 -
+ lms/templates/emails/activation_email.txt     |  24 ----
+ .../emails/activation_email_subject.txt       |   3 -
+ .../external_auth/tests/test_ssl.py           |   1 +
+ .../core/djangoapps/user_authn/views/login.py |   8 +-
+ .../user_authn/views/tests/test_register.py   |   3 +-
+ 22 files changed, 236 insertions(+), 231 deletions(-)
+ delete mode 100644 cms/templates/emails/activation_email.txt
+ delete mode 100644 cms/templates/emails/activation_email_subject.txt
+ create mode 100644 common/templates/student/edx_ace/accountactivation/email/body.html
+ create mode 100644 common/templates/student/edx_ace/accountactivation/email/body.txt
+ create mode 100644 common/templates/student/edx_ace/accountactivation/email/from_name.txt
+ create mode 100644 common/templates/student/edx_ace/accountactivation/email/head.html
+ create mode 100644 common/templates/student/edx_ace/accountactivation/email/subject.txt
+ delete mode 100644 common/test/test_sites/test_site/templates/emails/activation_email.txt
+ delete mode 100644 common/test/test_sites/test_site/templates/emails/activation_email_subject.txt
+ delete mode 100644 lms/templates/emails/activation_email.txt
+ delete mode 100644 lms/templates/emails/activation_email_subject.txt
+
+diff --git a/cms/templates/emails/activation_email.txt b/cms/templates/emails/activation_email.txt
+deleted file mode 100644
+index 7a54fc6b35..0000000000
+--- a/cms/templates/emails/activation_email.txt
++++ /dev/null
+@@ -1,11 +0,0 @@
+-<%! from django.utils.translation import ugettext as _ %>
+-
+-${_("Thank you for signing up for {studio_name}! To activate your account, please copy and paste this address into your web browser's address bar:").format(studio_name=settings.STUDIO_NAME)}
+-
+-% if is_secure:
+-  https://${ site }/activate/${ key }
+-% else:
+-  http://${ site }/activate/${ key }
+-% endif
+-
+-${_("If you didn't request this, you don't need to do anything; you won't receive any more email from us. Please do not reply to this e-mail; if you require assistance, check the help section of the {studio_name} web site.").format(studio_name=settings.STUDIO_NAME)}
+diff --git a/cms/templates/emails/activation_email_subject.txt b/cms/templates/emails/activation_email_subject.txt
+deleted file mode 100644
+index d638865710..0000000000
+--- a/cms/templates/emails/activation_email_subject.txt
++++ /dev/null
+@@ -1,2 +0,0 @@
+-<%! from django.utils.translation import ugettext as _ %>
+-${_("Your account for {studio_name}").format(studio_name=settings.STUDIO_NAME)}
+diff --git a/common/djangoapps/student/helpers.py b/common/djangoapps/student/helpers.py
+index 8115bfc540..5ecf3ca871 100644
+--- a/common/djangoapps/student/helpers.py
++++ b/common/djangoapps/student/helpers.py
+@@ -382,7 +382,9 @@ def generate_activation_email_context(user, registration):
+         'key': registration.activation_key,
+         'lms_url': configuration_helpers.get_value('LMS_ROOT_URL', settings.LMS_ROOT_URL),
+         'platform_name': configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME),
+-        'support_url': configuration_helpers.get_value('SUPPORT_SITE_LINK', settings.SUPPORT_SITE_LINK),
++        'support_url': configuration_helpers.get_value(
++            'ACTIVATION_EMAIL_SUPPORT_LINK', settings.ACTIVATION_EMAIL_SUPPORT_LINK
++        ) or settings.SUPPORT_SITE_LINK,
+         'support_email': configuration_helpers.get_value('CONTACT_EMAIL', settings.CONTACT_EMAIL),
+     }
+ 
+diff --git a/common/djangoapps/student/message_types.py b/common/djangoapps/student/message_types.py
+index 95f63a3da7..8e42cf8eb1 100644
+--- a/common/djangoapps/student/message_types.py
++++ b/common/djangoapps/student/message_types.py
+@@ -24,3 +24,10 @@ class EmailChange(BaseMessageType):
+         super(EmailChange, self).__init__(*args, **kwargs)
+ 
+         self.options['transactional'] = True
++
++
++class AccountActivation(BaseMessageType):
++    def __init__(self, *args, **kwargs):
++        super(AccountActivation, self).__init__(*args, **kwargs)
++
++        self.options['transactional'] = True  # pylint: disable=unsupported-assignment-operation
+diff --git a/common/djangoapps/student/tasks.py b/common/djangoapps/student/tasks.py
+index 23b9481c30..115fad9073 100644
+--- a/common/djangoapps/student/tasks.py
++++ b/common/djangoapps/student/tasks.py
+@@ -3,30 +3,40 @@ This file contains celery tasks for sending email
+ """
+ import logging
+ 
+-from boto.exception import NoAuthHandlerFound
+ from celery.exceptions import MaxRetriesExceededError
+ from celery.task import task  # pylint: disable=no-name-in-module, import-error
+ from django.conf import settings
+-from django.core import mail
++from edx_ace import ace
++from edx_ace.errors import RecoverableChannelDeliveryError
++from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+ 
+ log = logging.getLogger('edx.celery.task')
+ 
+ 
+ @task(bind=True)
+-def send_activation_email(self, subject, message, from_address, dest_addr):
++def send_activation_email(self, msg, from_address=None):
+     """
+     Sending an activation email to the user.
+     """
+     max_retries = settings.RETRY_ACTIVATION_EMAIL_MAX_ATTEMPTS
+     retries = self.request.retries
++
++    if from_address is None:
++        from_address = configuration_helpers.get_value('ACTIVATION_EMAIL_FROM_ADDRESS') or (
++            configuration_helpers.get_value('email_from_address', settings.DEFAULT_FROM_EMAIL)
++        )
++    msg.options['from_address'] = from_address
++
++    dest_addr = msg.recipient.email_address
++
+     try:
+-        mail.send_mail(subject, message, from_address, [dest_addr], fail_silently=False)
++        ace.send(msg)
+         # Log that the Activation Email has been sent to user without an exception
+         log.info("Activation Email has been sent to User {user_email}".format(
+             user_email=dest_addr
+         ))
+-    except NoAuthHandlerFound:  # pylint: disable=broad-except
+-        log.info('Retrying sending email to user {dest_addr}, attempt # {attempt} of {max_attempts}'. format(
++    except RecoverableChannelDeliveryError:
++        log.info('Retrying sending email to user {dest_addr}, attempt # {attempt} of {max_attempts}'.format(
+             dest_addr=dest_addr,
+             attempt=retries,
+             max_attempts=max_retries
+diff --git a/common/djangoapps/student/tests/test_email.py b/common/djangoapps/student/tests/test_email.py
+index 7dd29304f9..fc97c07285 100644
+--- a/common/djangoapps/student/tests/test_email.py
++++ b/common/djangoapps/student/tests/test_email.py
+@@ -1,4 +1,5 @@
+ # coding=utf-8
++import ddt
+ import json
+ import unittest
+ 
+@@ -19,20 +20,19 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
+ from openedx.core.djangoapps.theming.tests.test_util import with_comprehensive_theme
+ from openedx.core.djangoapps.user_api.config.waffle import PREVENT_AUTH_USER_WRITES, SYSTEM_MAINTENANCE_MSG, waffle
+ from openedx.core.djangolib.testing.utils import CacheIsolationTestCase, CacheIsolationMixin
++from openedx.core.lib.request_utils import safe_get_host
+ from student.models import (
+     PendingEmailChange,
+     Registration,
+     UserProfile,
+ )
+-from openedx.core.lib.request_utils import safe_get_host
+-from student.tests.factories import PendingEmailChangeFactory, RegistrationFactory, UserFactory
++from student.tests.factories import PendingEmailChangeFactory, UserFactory
+ from student.views import (
+     SETTING_CHANGE_INITIATED,
+     confirm_email_change,
+     do_email_change_request,
+     validate_new_email
+ )
+-from student.views import generate_activation_email_context, send_reactivation_email_for_user
+ from third_party_auth.views import inactive_user_view
+ from util.testing import EventTestMixin
+ 
+@@ -90,8 +90,9 @@ class EmailTestMixin(object):
+         self.addCleanup(settings.ALLOWED_HOSTS.pop)
+ 
+ 
++@ddt.ddt
+ @unittest.skipUnless(settings.ROOT_URLCONF == 'lms.urls', 'Test only valid in lms')
+-class ActivationEmailTests(CacheIsolationTestCase):
++class ActivationEmailTests(EmailTemplateTagMixin, CacheIsolationTestCase):
+     """
+     Test sending of the activation email.
+     """
+@@ -101,22 +102,36 @@ class ActivationEmailTests(CacheIsolationTestCase):
+     # Text fragments we expect in the body of an email
+     # sent from an OpenEdX installation.
+     OPENEDX_FRAGMENTS = [
+-        u"high-quality {platform} courses".format(platform=settings.PLATFORM_NAME),
+-        "http://edx.org/activate/",
+         (
+-            "please use our web form at "
+-            u"{support_url} ".format(support_url=settings.SUPPORT_SITE_LINK)
+-        )
++            u"You're almost there! Use the link below to activate your account to access engaging, "
++            u"high-quality {platform_name} courses. Note that you will not be able to log back into your "
++            u"account until you have activated it.".format(
++                platform_name=settings.PLATFORM_NAME
++            )
++        ),
++        u"{}/activate/".format(settings.LMS_ROOT_URL),
++        u"If you need help, please use our web form at ", (
++            settings.ACTIVATION_EMAIL_SUPPORT_LINK or settings.SUPPORT_SITE_LINK
++        ),
++        settings.CONTACT_EMAIL,
++        u"This email message was automatically sent by ",
++        settings.LMS_ROOT_URL,
++        u" because someone attempted to create an account on {platform_name}".format(
++            platform_name=settings.PLATFORM_NAME
++        ),
++        u" using this email address."
+     ]
+ 
+-    def test_activation_email(self):
++    @ddt.data('plain_text', 'html')
++    def test_activation_email(self, test_body_type):
+         self._create_account()
+-        self._assert_activation_email(self.ACTIVATION_SUBJECT, self.OPENEDX_FRAGMENTS)
++        self._assert_activation_email(self.ACTIVATION_SUBJECT, self.OPENEDX_FRAGMENTS, test_body_type)
+ 
+     @with_comprehensive_theme("edx.org")
+-    def test_activation_email_edx_domain(self):
++    @ddt.data('plain_text', 'html')
++    def test_activation_email_edx_domain(self, test_body_type):
+         self._create_account()
+-        self._assert_activation_email(self.ACTIVATION_SUBJECT, self.OPENEDX_FRAGMENTS)
++        self._assert_activation_email(self.ACTIVATION_SUBJECT, self.OPENEDX_FRAGMENTS, test_body_type)
+ 
+     def _create_account(self):
+         """
+@@ -140,15 +155,23 @@ class ActivationEmailTests(CacheIsolationTestCase):
+             )
+         )
+ 
+-    def _assert_activation_email(self, subject, body_fragments):
++    def _assert_activation_email(self, subject, body_fragments, test_body_type):
+         """
+         Verify that the activation email was sent.
+         """
+         self.assertEqual(len(mail.outbox), 1)
+         msg = mail.outbox[0]
+         self.assertEqual(msg.subject, subject)
++
++        body_text = {
++            'plain_text': msg.body,
++            'html': msg.alternatives[0][0]
++        }
++        assert test_body_type in body_text
++        body_to_be_tested = body_text[test_body_type]
++
+         for fragment in body_fragments:
+-            self.assertIn(fragment, msg.body)
++            self.assertIn(fragment, body_to_be_tested)
+ 
+     def test_do_not_send_email_and_do_activate(self):
+         """
+@@ -196,85 +219,6 @@ class ActivationEmailTests(CacheIsolationTestCase):
+                 )
+ 
+ 
+-@patch('student.views.management.render_to_string', Mock(side_effect=mock_render_to_string, autospec=True))
+-@patch('django.contrib.auth.models.User.email_user')
+-class ReactivationEmailTests(EmailTestMixin, CacheIsolationTestCase):
+-    """
+-    Test sending a reactivation email to a user
+-    """
+-
+-    def setUp(self):
+-        super(ReactivationEmailTests, self).setUp()
+-        self.user = UserFactory.create()
+-        self.unregisteredUser = UserFactory.create()
+-        self.registration = RegistrationFactory.create(user=self.user)
+-
+-    def reactivation_email(self, user):
+-        """
+-        Send the reactivation email to the specified user,
+-        and return the response as json data.
+-        """
+-        return json.loads(send_reactivation_email_for_user(user).content)
+-
+-    def assertReactivateEmailSent(self, email_user):
+-        """
+-        Assert that the correct reactivation email has been sent
+-        """
+-        context = generate_activation_email_context(self.user, self.registration)
+-
+-        self.assertEmailUser(
+-            email_user,
+-            'emails/activation_email_subject.txt',
+-            context,
+-            'emails/activation_email.txt',
+-            context
+-        )
+-
+-        # Thorough tests for safe_get_host are elsewhere; here we just want a quick URL sanity check
+-        request = RequestFactory().post('unused_url')
+-        request.user = self.user
+-        request.META['HTTP_HOST'] = "aGenericValidHostName"
+-        self.append_allowed_hosts("aGenericValidHostName")
+-
+-        with patch('edxmako.request_context.get_current_request', return_value=request):
+-            body = render_to_string('emails/activation_email.txt', context)
+-            host = safe_get_host(request)
+-
+-        self.assertIn(host, body)
+-
+-    def test_reactivation_email_failure(self, email_user):
+-        self.user.email_user.side_effect = Exception
+-        response_data = self.reactivation_email(self.user)
+-
+-        self.assertReactivateEmailSent(email_user)
+-        self.assertFalse(response_data['success'])
+-
+-    def test_reactivation_for_unregistered_user(self, email_user):  # pylint: disable=unused-argument
+-        """
+-        Test that trying to send a reactivation email to an unregistered
+-        user fails without throwing a 500 error.
+-        """
+-        response_data = self.reactivation_email(self.unregisteredUser)
+-
+-        self.assertFalse(response_data['success'])
+-
+-    def test_reactivation_for_no_user_profile(self, email_user):  # pylint: disable=unused-argument
+-        """
+-        Test that trying to send a reactivation email to a user without
+-        user profile fails without throwing 500 error.
+-        """
+-        user = UserFactory.build(username='test_user', email='test_user@test.com')
+-        user.save()
+-        response_data = self.reactivation_email(user)
+-        self.assertFalse(response_data['success'])
+-
+-    def test_reactivation_email_success(self, email_user):
+-        response_data = self.reactivation_email(self.user)
+-
+-        self.assertReactivateEmailSent(email_user)
+-        self.assertTrue(response_data['success'])
+-
+-
+ @unittest.skipUnless(settings.ROOT_URLCONF == 'lms.urls', "Test only valid in LMS")
+ class EmailChangeRequestTests(EventTestMixin, EmailTemplateTagMixin, CacheIsolationTestCase):
+     """
+diff --git a/common/djangoapps/student/tests/test_password_policy.py b/common/djangoapps/student/tests/test_password_policy.py
+index 7b4d015165..2460e8d7c9 100644
+--- a/common/djangoapps/student/tests/test_password_policy.py
++++ b/common/djangoapps/student/tests/test_password_policy.py
+@@ -19,6 +19,7 @@ from openedx.core.djangoapps.user_authn.views.deprecated import create_account
+ from util.password_policy_validators import create_validator_config
+ 
+ 
++@patch.dict("django.conf.settings.FEATURES", {'AUTOMATIC_AUTH_FOR_TESTING': True})
+ class TestPasswordPolicy(TestCase):
+     """
+     Go through some password policy tests to make sure things are properly working
+diff --git a/common/djangoapps/student/tests/test_tasks.py b/common/djangoapps/student/tests/test_tasks.py
+index d75af35a2f..460d29ba08 100644
+--- a/common/djangoapps/student/tests/test_tasks.py
++++ b/common/djangoapps/student/tests/test_tasks.py
+@@ -3,12 +3,13 @@ Tests for the Sending activation email celery tasks
+ """
+ 
+ import mock
+-from boto.exception import NoAuthHandlerFound
+ from django.conf import settings
+ from django.test import TestCase
+-
++from edx_ace.errors import ChannelError, RecoverableChannelDeliveryError
+ from lms.djangoapps.courseware.tests.factories import UserFactory
++from student.models import Registration
+ from student.tasks import send_activation_email
++from student.views.management import compose_activation_email
+ 
+ 
+ class SendActivationEmailTestCase(TestCase):
+@@ -20,18 +21,32 @@ class SendActivationEmailTestCase(TestCase):
+         super(SendActivationEmailTestCase, self).setUp()
+         self.student = UserFactory()
+ 
++        registration = Registration()
++        registration.register(self.student)
++
++        self.msg = compose_activation_email("http://www.example.com", self.student, registration)
++
++    def test_ComposeEmail(self):
++        """
++        Tests that attributes of the message are being filled correctly in compose_activation_email
++        """
++        self.assertEquals(self.msg.recipient.username, self.student.username)
++        self.assertEquals(self.msg.recipient.email_address, self.student.email)
++        self.assertEquals(self.msg.context['routed_user'], self.student.username)
++        self.assertEquals(self.msg.context['routed_user_email'], self.student.email)
++        self.assertEquals(self.msg.context['routed_profile_name'], '')
++
+     @mock.patch('time.sleep', mock.Mock(return_value=None))
+     @mock.patch('student.tasks.log')
+-    @mock.patch('django.core.mail.send_mail', mock.Mock(side_effect=NoAuthHandlerFound))
+-    def test_send_email(self, mock_log):
++    @mock.patch('student.tasks.ace.send', mock.Mock(side_effect=RecoverableChannelDeliveryError(None, None)))
++    def test_RetrySendUntilFail(self, mock_log):
+         """
+         Tests retries when the activation email doesn't send
+         """
+         from_address = 'task_testing@example.com'
+         email_max_attempts = settings.RETRY_ACTIVATION_EMAIL_MAX_ATTEMPTS
+ 
+-        # pylint: disable=no-member
+-        send_activation_email.delay('Task_test', 'Task_test_message', from_address, self.student.email)
++        send_activation_email.delay(self.msg, from_address=from_address)
+ 
+         # Asserts sending email retry logging.
+         for attempt in range(email_max_attempts):
+@@ -51,3 +66,26 @@ class SendActivationEmailTestCase(TestCase):
+             exc_info=True
+         )
+         self.assertEquals(mock_log.error.call_count, 1)
++
++    @mock.patch('student.tasks.log')
++    @mock.patch('student.tasks.ace.send', mock.Mock(side_effect=ChannelError))
++    def test_UnrecoverableSendError(self, mock_log):
++        """
++        Tests that a major failure of the send is logged
++        """
++        from_address = 'task_testing@example.com'
++
++        send_activation_email.delay(self.msg, from_address=from_address)
++
++        # Asserts that the error was logged
++        mock_log.exception.assert_called_with(
++            'Unable to send activation email to user from "%s" to "%s"',
++            from_address,
++            self.student.email,
++            exc_info=True
++        )
++
++        # Assert that nothing else was logged
++        self.assertEquals(mock_log.info.call_count, 0)
++        self.assertEquals(mock_log.error.call_count, 0)
++        self.assertEquals(mock_log.exception.call_count, 1)
+diff --git a/common/djangoapps/student/views/management.py b/common/djangoapps/student/views/management.py
+index 28bed49746..acfa9d9a84 100644
+--- a/common/djangoapps/student/views/management.py
++++ b/common/djangoapps/student/views/management.py
+@@ -71,7 +71,7 @@ from student.helpers import (
+     cert_info,
+     generate_activation_email_context,
+ )
+-from student.message_types import EmailChange, PasswordReset
++from student.message_types import AccountActivation, EmailChange, PasswordReset
+ from student.models import (
+     AccountRecovery,
+     CourseEnrollment,
+@@ -186,76 +186,56 @@ def index(request, extra_context=None, user=AnonymousUser()):
+     return render_to_response('index.html', context)
+ 
+ 
+-def compose_and_send_activation_email(user, profile, user_registration=None):
++def compose_activation_email(root_url, user, user_registration=None, route_enabled=False, profile_name=''):
+     """
+-    Construct all the required params and send the activation email
++    Construct all the required params for the activation email
+     through celery task
+-
+-    Arguments:
+-        user: current logged-in user
+-        profile: profile object of the current logged-in user
+-        user_registration: registration of the current logged-in user
+     """
+-    dest_addr = user.email
+     if user_registration is None:
+         user_registration = Registration.objects.get(user=user)
+-    context = generate_activation_email_context(user, user_registration)
+-    subject = render_to_string('emails/activation_email_subject.txt', context)
+-    # Email subject *must not* contain newlines
+-    subject = ''.join(subject.splitlines())
+-    message_for_activation = render_to_string('emails/activation_email.txt', context)
+-    from_address = configuration_helpers.get_value('email_from_address', settings.DEFAULT_FROM_EMAIL)
+-    from_address = configuration_helpers.get_value('ACTIVATION_EMAIL_FROM_ADDRESS', from_address)
+-    if settings.FEATURES.get('REROUTE_ACTIVATION_EMAIL'):
++
++    message_context = generate_activation_email_context(user, user_registration)
++    message_context.update({
++        'confirm_activation_link': '{root_url}/activate/{activation_key}'.format(
++            root_url=root_url,
++            activation_key=message_context['key']
++        ),
++        'route_enabled': route_enabled,
++        'routed_user': user.username,
++        'routed_user_email': user.email,
++        'routed_profile_name': profile_name,
++    })
++
++    if route_enabled:
+         dest_addr = settings.FEATURES['REROUTE_ACTIVATION_EMAIL']
+-        message_for_activation = ("Activation for %s (%s): %s\n" % (user, user.email, profile.name) +
+-                                  '-' * 80 + '\n\n' + message_for_activation)
+-    send_activation_email.delay(subject, message_for_activation, from_address, dest_addr)
++    else:
++        dest_addr = user.email
+ 
++    msg = AccountActivation().personalize(
++        recipient=Recipient(user.username, dest_addr),
++        language=preferences_api.get_user_preference(user, LANGUAGE_KEY),
++        user_context=message_context,
++    )
+ 
+-def send_reactivation_email_for_user(user):
+-    try:
+-        registration = Registration.objects.get(user=user)
+-    except Registration.DoesNotExist:
+-        return JsonResponse({
+-            "success": False,
+-            "error": _('No inactive user with this e-mail exists'),
+-        })
++    return msg
+ 
+-    try:
+-        context = generate_activation_email_context(user, registration)
+-    except ObjectDoesNotExist:
+-        log.error(
+-            u'Unable to send reactivation email due to unavailable profile for the user "%s"',
+-            user.username,
+-            exc_info=True
+-        )
+-        return JsonResponse({
+-            "success": False,
+-            "error": _('Unable to send reactivation email')
+-        })
+ 
+-    subject = render_to_string('emails/activation_email_subject.txt', context)
+-    subject = ''.join(subject.splitlines())
+-    message = render_to_string('emails/activation_email.txt', context)
+-    from_address = configuration_helpers.get_value('email_from_address', settings.DEFAULT_FROM_EMAIL)
+-    from_address = configuration_helpers.get_value('ACTIVATION_EMAIL_FROM_ADDRESS', from_address)
++def compose_and_send_activation_email(user, profile, user_registration=None):
++    """
++    Construct all the required params and send the activation email
++    through celery task
+ 
+-    try:
+-        user.email_user(subject, message, from_address)
+-    except Exception:  # pylint: disable=broad-except
+-        log.error(
+-            u'Unable to send reactivation email from "%s" to "%s"',
+-            from_address,
+-            user.email,
+-            exc_info=True
+-        )
+-        return JsonResponse({
+-            "success": False,
+-            "error": _('Unable to send reactivation email')
+-        })
++    Arguments:
++        user: current logged-in user
++        profile: profile object of the current logged-in user
++        user_registration: registration of the current logged-in user
++    """
++    route_enabled = settings.FEATURES.get('REROUTE_ACTIVATION_EMAIL')
+ 
+-    return JsonResponse({"success": True})
++    root_url = configuration_helpers.get_value('LMS_ROOT_URL', settings.LMS_ROOT_URL)
++    msg = compose_activation_email(root_url, user, user_registration, route_enabled, profile.name)
++
++    send_activation_email(msg)  # pylint: disable=no-value-for-parameter
+ 
+ 
+ @login_required
+@@ -559,7 +539,9 @@ def activate_account(request, key):
+                 '{html_start}Your account could not be activated{html_end}'
+                 'Something went wrong, please <a href="{support_url}">contact support</a> to resolve this issue.'
+             )).format(
+-                support_url=configuration_helpers.get_value('SUPPORT_SITE_LINK', settings.SUPPORT_SITE_LINK),
++                support_url=configuration_helpers.get_value(
++                    'ACTIVATION_EMAIL_SUPPORT_LINK', settings.ACTIVATION_EMAIL_SUPPORT_LINK
++                ) or settings.SUPPORT_SITE_LINK,
+                 html_start=HTML('<p class="message-title">'),
+                 html_end=HTML('</p>'),
+             ),
+diff --git a/common/djangoapps/third_party_auth/tests/specs/base.py b/common/djangoapps/third_party_auth/tests/specs/base.py
+index 190e8edfe5..92aa1342de 100644
+--- a/common/djangoapps/third_party_auth/tests/specs/base.py
++++ b/common/djangoapps/third_party_auth/tests/specs/base.py
+@@ -500,6 +500,7 @@ class IntegrationTestMixin(testutil.TestCase, test.TestCase, HelperMixin):
+ 
+ @unittest.skipUnless(
+     testutil.AUTH_FEATURES_KEY in django_settings.FEATURES, testutil.AUTH_FEATURES_KEY + ' not in settings.FEATURES')
++@mock.patch.dict("django.conf.settings.FEATURES", {'AUTOMATIC_AUTH_FOR_TESTING': True})
+ @django_utils.override_settings()  # For settings reversion on a method-by-method basis.
+ class IntegrationTest(testutil.TestCase, test.TestCase, HelperMixin):
+     """Abstract base class for provider integration tests."""
+@@ -731,7 +732,8 @@ class IntegrationTest(testutil.TestCase, test.TestCase, HelperMixin):
+             actions.do_complete(request.backend, social_views._do_login, user=user, request=request))
+         self.assert_account_settings_context_looks_correct(account_settings_context(request))
+ 
+-    def test_signin_fails_if_account_not_active(self):
++    @mock.patch('openedx.core.djangoapps.user_authn.views.login.compose_and_send_activation_email')
++    def test_signin_fails_if_account_not_active(self, _mock_activation_email):
+         _, strategy = self.get_request_and_strategy(
+             auth_entry=pipeline.AUTH_ENTRY_LOGIN, redirect_uri='social:complete')
+         strategy.request.backend.auth_complete = mock.MagicMock(return_value=self.fake_auth_complete(strategy))
+diff --git a/common/templates/student/edx_ace/accountactivation/email/body.html b/common/templates/student/edx_ace/accountactivation/email/body.html
+new file mode 100644
+index 0000000000..d4497672da
+--- /dev/null
++++ b/common/templates/student/edx_ace/accountactivation/email/body.html
+@@ -0,0 +1,57 @@
++{% extends 'ace_common/edx_ace/common/base_body.html' %}
++
++{% load i18n %}
++{% load static %}
++{% block content %}
++<table width="100%" align="left" border="0" cellpadding="0" cellspacing="0" role="presentation">
++{% if route_enabled %}
++    <tr>
++        <td>
++            <p style="color: rgba(0,0,0,.75);">
++                {% blocktrans %}This is a routed Account Activation email for {{ routed_user }} ({{ routed_user_email }}): {{ routed_profile_name }}{% endblocktrans %}
++                <br />
++            </p>
++        </td>
++    </tr>
++{% endif %}
++    <tr>
++        <td>
++            <h1>
++                {% trans "Account Activation" %}
++            </h1>
++            <p style="color: rgba(0,0,0,.75);">
++                {% blocktrans %}You're almost there! Use the link below to activate your account to access engaging, high-quality {{ platform_name }} courses. Note that you will not be able to log back into your account until you have activated it.{% endblocktrans %}
++                <br />
++            </p>
++
++            {% trans "Activate Your Account" as course_cta_text %}
++            {% include "ace_common/edx_ace/common/return_to_course_cta.html" with course_cta_text=course_cta_text course_cta_url=confirm_activation_link %}
++        </td>
++    </tr>
++    <tr>
++        <td>
++            <p style="color: rgba(0,0,0,.75);">
++                {% blocktrans %}Enjoy learning with {{ platform_name }}.{% endblocktrans %}
++                <br />
++            </p>
++        </td>
++    </tr>
++        <td>
++            <p style="color: rgba(0,0,0,.75);">
++                {% blocktrans %}If you need help, please use our web form at <a href="{{ support_url }}">{{ support_url }}</a> or email <a href="mailto:{{ support_email }}">{{ support_email }}</a>.{% endblocktrans %}
++                <br />
++            </p>
++        </td>
++    <tr>
++
++    </tr>
++    <tr>
++        <td>
++            <p style="color: rgba(0,0,0,.75);">
++                {% blocktrans %}This email message was automatically sent by {{ lms_url }} because someone attempted to create an account on {{ platform_name }} using this email address.{% endblocktrans %}
++                <br />
++            </p>
++        </td>
++    </tr>
++</table>
++{% endblock %}
+diff --git a/common/templates/student/edx_ace/accountactivation/email/body.txt b/common/templates/student/edx_ace/accountactivation/email/body.txt
+new file mode 100644
+index 0000000000..5efa1e2ad4
+--- /dev/null
++++ b/common/templates/student/edx_ace/accountactivation/email/body.txt
+@@ -0,0 +1,11 @@
++{% load i18n %}{% autoescape off %}
++{% blocktrans %}You're almost there! Use the link below to activate your account to access engaging, high-quality {{ platform_name }} courses. Note that you will not be able to log back into your account until you have activated it.{% endblocktrans %}
++
++{{ confirm_activation_link }}
++
++{% blocktrans %}Enjoy learning with {{ platform_name }}.{% endblocktrans %}
++
++{% blocktrans %}If you need help, please use our web form at {{ support_url }} or email {{ support_email }}.{% endblocktrans %}
++
++{% blocktrans %}This email message was automatically sent by {{ lms_url }} because someone attempted to create an account on {{ platform_name }} using this email address.{% endblocktrans %}
++{% endautoescape %}
+diff --git a/common/templates/student/edx_ace/accountactivation/email/from_name.txt b/common/templates/student/edx_ace/accountactivation/email/from_name.txt
+new file mode 100644
+index 0000000000..dcbc23c004
+--- /dev/null
++++ b/common/templates/student/edx_ace/accountactivation/email/from_name.txt
+@@ -0,0 +1 @@
++{{ platform_name }}
+diff --git a/common/templates/student/edx_ace/accountactivation/email/head.html b/common/templates/student/edx_ace/accountactivation/email/head.html
+new file mode 100644
+index 0000000000..366ada7ad9
+--- /dev/null
++++ b/common/templates/student/edx_ace/accountactivation/email/head.html
+@@ -0,0 +1 @@
++{% extends 'ace_common/edx_ace/common/base_head.html' %}
+diff --git a/common/templates/student/edx_ace/accountactivation/email/subject.txt b/common/templates/student/edx_ace/accountactivation/email/subject.txt
+new file mode 100644
+index 0000000000..1fbb6356e8
+--- /dev/null
++++ b/common/templates/student/edx_ace/accountactivation/email/subject.txt
+@@ -0,0 +1,4 @@
++{% load i18n %}
++{% autoescape off %}
++{% blocktrans trimmed %}Action Required: Activate your {{ platform_name }} account{% endblocktrans %}
++{% endautoescape %}
+diff --git a/common/test/test_sites/test_site/templates/emails/activation_email.txt b/common/test/test_sites/test_site/templates/emails/activation_email.txt
+deleted file mode 100644
+index 97b3c4f5e0..0000000000
+--- a/common/test/test_sites/test_site/templates/emails/activation_email.txt
++++ /dev/null
+@@ -1,16 +0,0 @@
+-<%! from django.utils.translation import ugettext as _ %>
+-
+-${_("Thank you for signing up for Open edX! To activate "
+-"your account, please copy and paste this address into your web "
+-"browser's address bar:")}
+-
+-% if is_secure:
+-  https://${ site }/activate/${ key }
+-% else:
+-  http://${ site }/activate/${ key }
+-% endif
+-
+-${_("If you didn't request this, you don't need to do anything; you won't "
+-    "receive any more email from us. Please do not reply to this e-mail; "
+-    "if you require assistance, check the help section of the "
+-    "Open edX web site.")}
+diff --git a/common/test/test_sites/test_site/templates/emails/activation_email_subject.txt b/common/test/test_sites/test_site/templates/emails/activation_email_subject.txt
+deleted file mode 100644
+index fc4ef4425c..0000000000
+--- a/common/test/test_sites/test_site/templates/emails/activation_email_subject.txt
++++ /dev/null
+@@ -1,3 +0,0 @@
+-<%! from django.utils.translation import ugettext as _ %>
+-
+-${_("Your account for Open edX")}
+diff --git a/lms/templates/emails/activation_email.txt b/lms/templates/emails/activation_email.txt
+deleted file mode 100644
+index f5b1f09331..0000000000
+--- a/lms/templates/emails/activation_email.txt
++++ /dev/null
+@@ -1,24 +0,0 @@
+-## mako
+-<%! from django.utils.translation import ugettext as _ %>
+-${_("You're almost there! Use the link to activate your account to access engaging, high-quality "
+-"{platform_name} courses. Note that you will not be able to log back into your account until "
+-"you have activated it.").format(platform_name=platform_name)}
+-
+-% if is_secure:
+-https://${ site }/activate/${ key }
+-% else:
+-http://${ site }/activate/${ key }
+-% endif
+-
+-${_("Enjoy learning with {platform_name}.").format(platform_name=platform_name)}
+-
+-${_("The {platform_name} Team").format(platform_name=platform_name)}
+-
+-${_("If you need help, please use our web form at {support_url} or email {support_email}.").format(
+-  support_url=support_url, support_email=support_email
+-)}
+-
+-${_("This email message was automatically sent by {lms_url} because someone attempted to create an "
+-"account on {platform_name} using this email address.").format(
+-  lms_url=lms_url, platform_name=platform_name
+-)}
+\ No newline at end of file
+diff --git a/lms/templates/emails/activation_email_subject.txt b/lms/templates/emails/activation_email_subject.txt
+deleted file mode 100644
+index a6961b8e6a..0000000000
+--- a/lms/templates/emails/activation_email_subject.txt
++++ /dev/null
+@@ -1,3 +0,0 @@
+-## mako
+-<%! from django.utils.translation import ugettext as _ %>
+-${_("Action Required: Activate your {platform_name} account").format(platform_name=platform_name)}
+diff --git a/openedx/core/djangoapps/external_auth/tests/test_ssl.py b/openedx/core/djangoapps/external_auth/tests/test_ssl.py
+index ea8dc31f88..7f09643bfc 100644
+--- a/openedx/core/djangoapps/external_auth/tests/test_ssl.py
++++ b/openedx/core/djangoapps/external_auth/tests/test_ssl.py
+@@ -28,6 +28,7 @@ from xmodule.modulestore.tests.factories import CourseFactory
+ 
+ FEATURES_WITH_SSL_AUTH = settings.FEATURES.copy()
+ FEATURES_WITH_SSL_AUTH['AUTH_USE_CERTIFICATES'] = True
++FEATURES_WITH_SSL_AUTH['AUTOMATIC_AUTH_FOR_TESTING'] = True
+ FEATURES_WITH_SSL_AUTH_IMMEDIATE_SIGNUP = FEATURES_WITH_SSL_AUTH.copy()
+ FEATURES_WITH_SSL_AUTH_IMMEDIATE_SIGNUP['AUTH_USE_CERTIFICATES_IMMEDIATE_SIGNUP'] = True
+ FEATURES_WITH_SSL_AUTH_AUTO_ACTIVATE = FEATURES_WITH_SSL_AUTH_IMMEDIATE_SIGNUP.copy()
+diff --git a/openedx/core/djangoapps/user_authn/views/login.py b/openedx/core/djangoapps/user_authn/views/login.py
+index 5bf0ab54e6..a1e4d16b5b 100644
+--- a/openedx/core/djangoapps/user_authn/views/login.py
++++ b/openedx/core/djangoapps/user_authn/views/login.py
+@@ -26,8 +26,8 @@ from openedx.core.djangoapps.password_policy import compliance as password_polic
+ from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+ from openedx.core.djangoapps.util.user_messages import PageLevelMessages
+ from openedx.core.djangolib.markup import HTML, Text
+-from student.models import LoginFailures
+-from student.views import send_reactivation_email_for_user
++from student.models import LoginFailures, UserProfile
++from student.views import compose_and_send_activation_email
+ from student.forms import send_password_reset_email_for_user
+ from track import segment
+ import third_party_auth
+@@ -188,7 +188,9 @@ def _log_and_raise_inactive_user_auth_error(unauthenticated_user):
+             unauthenticated_user.username)
+         )
+ 
+-    send_reactivation_email_for_user(unauthenticated_user)
++    profile = UserProfile.objects.get(user=unauthenticated_user)
++    compose_and_send_activation_email(unauthenticated_user, profile)
++
+     raise AuthFailedError(_generate_not_activated_message(unauthenticated_user))
+ 
+ 
+diff --git a/openedx/core/djangoapps/user_authn/views/tests/test_register.py b/openedx/core/djangoapps/user_authn/views/tests/test_register.py
+index 65b7c27b4e..d0777577e6 100644
+--- a/openedx/core/djangoapps/user_authn/views/tests/test_register.py
++++ b/openedx/core/djangoapps/user_authn/views/tests/test_register.py
+@@ -24,6 +24,7 @@ from openedx.core.djangoapps.user_authn.views.register import (
+     REGISTRATION_AFFILIATE_ID, REGISTRATION_UTM_CREATED_AT, REGISTRATION_UTM_PARAMETERS,
+     _skip_activation_email,
+ )
++from openedx.core.djangoapps.ace_common.tests.mixins import EmailTemplateTagMixin
+ from openedx.core.djangoapps.external_auth.models import ExternalAuthMap
+ from openedx.core.djangoapps.lang_pref import LANGUAGE_KEY
+ from openedx.core.djangoapps.site_configuration.tests.mixins import SiteMixin
+@@ -90,7 +91,7 @@ def get_mock_pipeline_data(username=TEST_USERNAME, email=TEST_EMAIL):
+         ]
+     }
+ )
+-class TestCreateAccount(SiteMixin, TestCase):
++class TestCreateAccount(EmailTemplateTagMixin, SiteMixin, TestCase):
+     """Tests for account creation"""
+ 
+     def setUp(self):
+-- 
+2.23.0
+
