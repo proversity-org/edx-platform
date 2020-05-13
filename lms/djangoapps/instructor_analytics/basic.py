@@ -226,6 +226,14 @@ def enrolled_students_features(course_key, features):
         courseenrollment__is_active=1,
     ).order_by('username').select_related('profile')
 
+    if configuration_helpers.get_value('HIDE_MASTER_COURSE_STAFF_FROM_PROFILE_REPORT', False):
+        # Avoid circular import.
+        from lms.djangoapps.instructor.views.gradebook_api import exclude_master_course_staff_users
+        students = exclude_master_course_staff_users(
+            users=students,
+            course_key=course_key,
+        )
+
     if include_cohort_column:
         students = students.prefetch_related('course_groups')
 
