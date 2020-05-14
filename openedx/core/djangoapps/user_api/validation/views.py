@@ -121,7 +121,7 @@ class RegistrationValidationView(APIView):
 
     # This end-point is available to anonymous users, so no authentication is needed.
     authentication_classes = []
-    throttle_classes = (RegistrationValidationThrottle,)
+    #throttle_classes = (RegistrationValidationThrottle,)
 
     def name_handler(self, request):
         name = request.data.get('name')
