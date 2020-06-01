@@ -244,9 +244,7 @@ def create_ccx(request, course, ccx=None):
     )
 
     assign_staff_role_to_ccx(ccx_id, request.user, course.id)
-
-    if configuration_helpers.get_value('ALLOW_ENROLL_STAFF_TO_CCX', True):
-        add_master_course_staff_to_ccx(course, ccx_id, ccx.display_name)
+    add_master_course_staff_to_ccx(course, ccx_id, ccx.display_name)
 
     # using CCX object as sender here.
     responses = SignalHandler.course_published.send(
