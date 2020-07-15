@@ -24,10 +24,8 @@ from openedx.core.djangolib.markup import HTML, Text
                 % if page_content:
                     ${page_content}
                 % else:
-                    ${Text(_('Please wait a few seconds and then reload the page. If the problem persists, please email us at {email}.')).format(
-                    email=HTML('<a href="mailto:{email}">{email}</a>').format(
-                    email=Text(static.get_tech_support_email_address())
-                    )
+                    ${Text(_('Please wait a few seconds and then reload the page. If the problem persists, please visit {support}.')).format(
+                    support=HTML('<a href="http://pearsonadvance.echelp.org/">Support</a>')
                     )}
                 % endif
             </%block>
