@@ -99,6 +99,6 @@
 
 # Third Party XBlocks
 
--e git+https://github.com/eduNEXT/edx-sga.git@4cf3933b36092fc738dbd49dfda72bc708645d40#egg=edx-sga==0.8.3.pearson
+-e git+https://github.com/eduNEXT/edx-sga.git@2fbecffd443e1c0e67384ed6b1c1f1282a1bd972#egg=edx-sga==0.8.3.pearson
 -e git+https://github.com/open-craft/xblock-poll@add89e14558c30f3c8dc7431e5cd6536fff6d941#egg=xblock-poll==1.5.1
 -e git+https://github.com/edx-solutions/xblock-drag-and-drop-v2@v2.1.6#egg=xblock-drag-and-drop-v2==2.1.6
