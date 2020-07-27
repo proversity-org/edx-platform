@@ -1036,6 +1036,7 @@ LANGUAGES = [
     ('id', u'Bahasa Indonesia'),  # Indonesian
     ('it-it', u'Italiano (Italia)'),  # Italian (Italy)
     ('ja-jp', u'日本語 (日本)'),  # Japanese (Japan)
+    ('ka', u'ქართული'),  # Georgian (Georgia) 
     ('kk-kz', u'қазақ тілі (Қазақстан)'),  # Kazakh (Kazakhstan)
     ('km-kh', u'ភាសាខ្មែរ (កម្ពុជា)'),  # Khmer (Cambodia)
     ('kn', u'ಕನ್ನಡ'),  # Kannada
