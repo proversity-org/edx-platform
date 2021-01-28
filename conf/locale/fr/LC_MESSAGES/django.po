@@ -5564,7 +5564,7 @@ msgstr ""
 
 #: common/templates/student/edx_ace/accountactivation/email/body.html
 msgid "Account Activation"
-msgstr ""
+msgstr "Activation de compte"
 
 #: common/templates/student/edx_ace/accountactivation/email/body.html
 #: common/templates/student/edx_ace/accountactivation/email/body.txt
@@ -5574,16 +5574,20 @@ msgid ""
 "engaging, high-quality %(platform_name)s courses. Note that you will not be "
 "able to log back into your account until you have activated it."
 msgstr ""
+"Vous y êtes presque ! Utilisez le lien ci-dessous pour activer votre compte et "
+"accéder à des formations immersives et de grande qualité de %(platform_name)s." 
+"Veuillez noter que vous ne pourrez pas vous reconnecter à votre compte tant "
+"que vous ne l'aurez pas activé."
 
 #: common/templates/student/edx_ace/accountactivation/email/body.html
 msgid "Activate Your Account"
-msgstr ""
+msgstr "Activez votre compte"
 
 #: common/templates/student/edx_ace/accountactivation/email/body.html
 #: common/templates/student/edx_ace/accountactivation/email/body.txt
 #, python-format
 msgid "Enjoy learning with %(platform_name)s."
-msgstr ""
+msgstr "Nous vous souhaitons un excellent apprentissage avec %(platform_name)s."
 
 #: common/templates/student/edx_ace/accountactivation/email/body.html
 #, python-format
@@ -5592,6 +5596,9 @@ msgid ""
 "href=\"%(support_url)s\">%(support_url)s</a> or email <a "
 "href=\"mailto:%(support_email)s\">%(support_email)s</a>."
 msgstr ""
+"Si vous avez besoin d'aide, veuillez utiliser notre formulaire en "
+"ligne à l'adresse <a href=\"%(support_url)s\">%(support_url)s</a> ou envoyer "
+"un e-mail à <a href=\"mailto:%(support_email)s\">%(support_email)s</a>."
 
 #: common/templates/student/edx_ace/accountactivation/email/body.html
 #: common/templates/student/edx_ace/accountactivation/email/body.txt
@@ -5601,6 +5608,8 @@ msgid ""
 "attempted to create an account on %(platform_name)s using this email "
 "address."
 msgstr ""
+"Ce message a été automatiquement envoyé par %(lms_url)s car quelqu'un a "
+"tenté de créer un compte sur %(platform_name)s à l'aide de cette adresse e-mail."
 
 #: common/templates/student/edx_ace/accountactivation/email/body.txt
 #, python-format
@@ -5608,11 +5617,14 @@ msgid ""
 "If you need help, please use our web form at %(support_url)s or email "
 "%(support_email)s."
 msgstr ""
+"Si vous avez besoin d'aide, veuillez utiliser notre formulaire en "
+"ligne à l'adresse %(support_url)s ou envoyer "
+"un e-mail à %(support_email)s."
 
 #: common/templates/student/edx_ace/accountactivation/email/subject.txt
 #, python-format
 msgid "Action Required: Activate your %(platform_name)s account"
-msgstr ""
+msgstr "Action requise : Activez votre compte %(platform_name)s"
 
 #: common/templates/student/edx_ace/accountrecovery/email/body.html
 msgid "Create Password"
@@ -10250,12 +10262,12 @@ msgstr ""
 #: lms/templates/instructor/edx_ace/addbetatester/email/subject.txt
 #, python-format
 msgid "You have been invited to a beta test for %(course_name)s"
-msgstr ""
+msgstr "Vous êtes invité à la formation %(course_name)s"
 
 #: lms/templates/instructor/edx_ace/allowedenroll/email/body.html
 #, python-format
 msgid "You have been invited to %(course_name)s"
-msgstr ""
+msgstr "Vous êtes invité à la formation %(course_name)s"
 
 #: lms/templates/instructor/edx_ace/allowedenroll/email/body.html
 #: lms/templates/instructor/edx_ace/allowedenroll/email/body.txt
@@ -10264,14 +10276,16 @@ msgid ""
 "You have been invited to join %(course_name)s at %(site_name)s by a member "
 "of the course staff."
 msgstr ""
+"Vous êtes invité à assister à la formation %(course_name)s de %(site_name)s, "
+"qui sera animée par un membre du personnel de formation."
 
 #: lms/templates/instructor/edx_ace/allowedenroll/email/body.html
 msgid "To access this course click on the button below and login:"
-msgstr ""
+msgstr "Pour accéder à ce cours, cliquez sur le bouton ci-dessous et connectez-vous:"
 
 #: lms/templates/instructor/edx_ace/allowedenroll/email/body.html
 msgid "To access this course visit it and register:"
-msgstr ""
+msgstr "Pour accéder à ce cours, rendez-vous sur la page correspondante et inscrivez-vous:"
 
 #: lms/templates/instructor/edx_ace/allowedenroll/email/body.html
 #, python-format
@@ -10279,6 +10293,8 @@ msgid ""
 "Please finish your registration and fill out the registration form making "
 "sure to use %(email_address)s in the Email field:"
 msgstr ""
+"Veuillez finaliser votre inscription et remplir le formulaire en indiquant bien "
+"%(email_address)s dans le champ E-mail:"
 
 #: lms/templates/instructor/edx_ace/allowedenroll/email/body.html
 msgid "Finish Your Registration"
@@ -10291,18 +10307,22 @@ msgid ""
 "Once you have registered and activated your account, you will see "
 "%(course_name)s listed on your dashboard."
 msgstr ""
+"Une fois que vous vous serez inscrit et que vous aurez activé votre compte, "
+"vous verrez la formation %(course_name)s sur votre tableau de bord."
 
 #: lms/templates/instructor/edx_ace/allowedenroll/email/body.html
 msgid ""
 "Once you have registered and activated your account, you will be able to "
 "access this course:"
 msgstr ""
+"Une fois que vous vous serez inscrit et que vous aurez activé votre compte, "
+"vous pourrez accéder à ce cours:"
 
 #: lms/templates/instructor/edx_ace/allowedenroll/email/body.html
 #: lms/templates/instructor/edx_ace/allowedenroll/email/body.txt
 #, python-format
 msgid "You can then enroll in %(course_name)s."
-msgstr ""
+msgstr "Vous pouvez ensuite vous inscrire à %(course_name)s."
 
 #: lms/templates/instructor/edx_ace/allowedenroll/email/body.txt
 msgid "Dear student,"
@@ -10338,14 +10358,14 @@ msgstr ""
 #: lms/templates/instructor/edx_ace/allowedenroll/email/subject.txt
 #, python-format
 msgid "You have been invited to register for %(course_name)s"
-msgstr ""
+msgstr "Vous êtes invité à vous inscrire à %(course_name)s"
 
 #: lms/templates/instructor/edx_ace/allowedunenroll/email/body.html
 #: lms/templates/instructor/edx_ace/allowedunenroll/email/subject.txt
 #: lms/templates/instructor/edx_ace/enrolledunenroll/email/subject.txt
 #, python-format
 msgid "You have been unenrolled from %(course_name)s"
-msgstr ""
+msgstr "Votre inscription à %(course_name)s a été annulée"
 
 #: lms/templates/instructor/edx_ace/allowedunenroll/email/body.html
 #: lms/templates/instructor/edx_ace/allowedunenroll/email/body.txt
@@ -10366,6 +10386,9 @@ msgid ""
 "                    You have been unenrolled from %(course_name)s\n"
 "                "
 msgstr ""
+"\n"
+"                    Votre inscription à %(course_name)s a été annulée\n"
+"                "
 
 #: lms/templates/instructor/edx_ace/enrolledunenroll/email/body.html
 #: lms/templates/instructor/edx_ace/enrolledunenroll/email/body.txt
@@ -10375,6 +10398,9 @@ msgid ""
 "of the course staff. This course will no longer appear on your %(site_name)s"
 " dashboard."
 msgstr ""
+"Votre inscription à %(course_name)s sur %(site_name)s a été annulée par un membre "
+"du personnel du cours. Ce cours n'apparaîtra plus sur votre tableau de bord "
+"%(site_name)s."
 
 #: lms/templates/instructor/edx_ace/enrolledunenroll/email/body.html
 #: lms/templates/instructor/edx_ace/enrolledunenroll/email/body.txt
@@ -10389,7 +10415,7 @@ msgstr "Vos autres cours n'ont pas été affectés."
 #: lms/templates/instructor/edx_ace/enrollenrolled/email/body.txt
 #, python-format
 msgid "This email was automatically sent from %(site_name)s to %(full_name)s"
-msgstr ""
+msgstr "Ce message a été envoyé automatiquement par %(site_name)s à %(full_name)s"
 
 #: lms/templates/instructor/edx_ace/enrollenrolled/email/body.html
 #, python-format
